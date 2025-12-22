@@ -1,36 +1,35 @@
+"use client";
+
+import { useDeclarations } from "@/context/DeclarationsContext";
 import DeclarationCard from "./DeclarationCard";
 
-const declarations = [
-  {
-    date: "12/02/2025",
-    author: "Jérome Menard",
-    title: "Fuite d'huile",
-    description: "Châteauneuf-du-Rhône départ Boudeyre",
-  },
-  {
-    date: "10/02/2025",
-    author: "Marie Dupont",
-    title: "Incident électrique",
-    description: "Centrale de Tricastin - Secteur B",
-  },
-  {
-    date: "08/02/2025",
-    author: "Pierre Martin",
-    title: "Anomalie température",
-    description: "Station de pompage Donzère",
-  },
-];
 const DeclarationsList = () => {
-  return (
-    <div className="p-8">
-      <h1 className="text-3xl font-normal text-center mb-8">
-        Déclarations récentes
-      </h1>
+  const { declarations, loading, error } = useDeclarations();
 
-      <div className="flex flex-col gap-4 max-w-[480px] mx-auto">
-        {declarations.map((declaration, index) => (
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-gray-500">Chargement des déclarations...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-red-500">Erreur: {error}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Déclarations récentes</h2>
+
+      <div className="flex flex-col gap-4">
+        {declarations.map((declaration) => (
           <DeclarationCard
-            key={index}
+            key={declaration.id}
             date={declaration.date}
             author={declaration.author}
             title={declaration.title}
@@ -42,4 +41,5 @@ const DeclarationsList = () => {
     </div>
   );
 };
+
 export default DeclarationsList;

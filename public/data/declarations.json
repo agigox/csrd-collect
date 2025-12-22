@@ -1,0 +1,60 @@
+{
+  "declarations": [
+    {
+      "id": "1",
+      "date": "12/02/2025",
+      "author": "Jérome Menard",
+      "title": "Fuite d'huile",
+      "description": "Châteauneuf-du-Rhône départ Boudeyre",
+      "status": "pending"
+    },
+    {
+      "id": "2",
+      "date": "10/02/2025",
+      "author": "Marie Dupont",
+      "title": "Incident électrique",
+      "description": "Centrale de Tricastin - Secteur B",
+      "status": "completed"
+    },
+    {
+      "id": "3",
+      "date": "08/02/2025",
+      "author": "Pierre Martin",
+      "title": "Anomalie température",
+      "description": "Station de pompage Donzère",
+      "status": "modified"
+    },
+    {
+      "id": "4",
+      "date": "05/02/2025",
+      "author": "Sophie Bernard",
+      "title": "Fuite de gaz",
+      "description": "Site industriel Lyon Nord",
+      "status": "pending"
+    },
+    {
+      "id": "5",
+      "date": "03/02/2025",
+      "author": "Luc Moreau",
+      "title": "Déversement accidentel",
+      "description": "Zone portuaire Marseille",
+      "status": "completed"
+    },
+    {
+      "id": "6",
+      "date": "01/02/2025",
+      "author": "Claire Duval",
+      "title": "Pollution sonore",
+      "description": "Usine de traitement Est",
+      "status": "pending"
+    },
+    {
+      "id": "7",
+      "date": "28/01/2025",
+      "author": "Marc Lefebvre",
+      "title": "Émissions atmosphériques",
+      "description": "Cheminée industrielle Zone A",
+      "status": "modified"
+    }
+  ]
+}
