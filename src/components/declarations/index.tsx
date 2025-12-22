@@ -1,5 +1,5 @@
 import Dashboard from "./Dashboard";
-import DeclarationsList from "./DeclarationsList";
+import DeclarationsList from "./declarationsList";
 
 const Declarations = () => {
   return (

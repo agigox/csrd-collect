@@ -1,7 +1,8 @@
 "use client";
 
 import { useDeclarations } from "@/context/DeclarationsContext";
-import DeclarationCard from "./DeclarationCard";
+import DeclarationCard from "../DeclarationCard";
+import Header from "./Header";
 
 const DeclarationsList = () => {
   const { declarations, loading, error } = useDeclarations();
@@ -24,7 +25,7 @@ const DeclarationsList = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4">Déclarations récentes</h2>
+      <Header />
 
       <div className="flex flex-col gap-4">
         {declarations.map((declaration) => (

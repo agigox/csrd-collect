@@ -8,13 +8,24 @@
   --color-sidebar-border: #2d3d4f;
   --color-sidebar-hover: #456b95;
 
-  /* Primary colors */
+  /* Primary/Brand colors */
   --color-primary: #4a90c2;
   --color-primary-hover: #3a7db0;
+  --color-brand: #2964a0;
+  --color-brand-hover: #1e4f7a;
 
   /* Content colors */
   --color-content-bg: #ffffff;
-  --color-content-text: #171717;
+  --color-content-text: #201f1f;
+  --color-content-muted: #6b7280;
+
+  /* Border colors */
+  --color-border-default: #cdcccb;
+  --color-border-brand: #2964a0;
+
+  /* Background colors */
+  --color-bg-default: #ffffff;
+  --color-bg-brand: #2964a0;
 }
 
 html,
