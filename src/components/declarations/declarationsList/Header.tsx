@@ -1,14 +1,14 @@
 "use client";
 
-import { Search, SlidersHorizontal, Megaphone } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
+import AddDeclaration from "@/components/declarations/addDeclaration";
 
 interface HeaderProps {
   onSearch?: () => void;
   onFilter?: () => void;
-  onDeclarer?: () => void;
 }
 
-const Header = ({ onSearch, onFilter, onDeclarer }: HeaderProps) => {
+const Header = ({ onSearch, onFilter }: HeaderProps) => {
   return (
     <div className="flex flex-col gap-2 py-2.5">
       {/* Header row */}
@@ -36,14 +36,8 @@ const Header = ({ onSearch, onFilter, onDeclarer }: HeaderProps) => {
           <SlidersHorizontal className="w-5 h-5 text-brand" />
         </button>
 
-        {/* Déclarer button */}
-        <button
-          onClick={onDeclarer}
-          className="flex items-center gap-1.5 h-8 px-3 bg-bg-brand hover:bg-brand-hover text-white font-semibold text-base rounded transition-colors"
-        >
-          Déclarer
-          <Megaphone className="w-5 h-5" />
-        </button>
+        {/* Déclarer button with Dialog */}
+        <AddDeclaration />
       </div>
 
       {/* Divider */}
