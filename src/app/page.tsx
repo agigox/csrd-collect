@@ -1,18 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { Sidebar } from "@/components/sidebar";
 import Declarations from "@/components/declarations";
+import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
-export default function Home() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+function MainContent() {
+  const { sidebarCollapsed, toggleSidebar } = useSidebar();
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar
-        collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-      />
+      <Sidebar />
       <main
         className={`flex-1 h-screen overflow-x-hidden overflow-y-auto transition-all duration-250 bg-content-bg ${
           sidebarCollapsed ? "ml-[60px]" : "ml-[220px]"
@@ -21,5 +18,13 @@ export default function Home() {
         <Declarations />
       </main>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <SidebarProvider>
+      <MainContent />
+    </SidebarProvider>
   );
 }

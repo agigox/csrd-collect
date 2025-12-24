@@ -1,7 +1,8 @@
 "use client";
 
-import { Search, SlidersHorizontal } from "lucide-react";
 import AddDeclaration from "@/components/declarations/addDeclaration";
+import { Button } from "@/lib/components/ui/button";
+import Icon from "@/lib/Icons";
 
 interface HeaderProps {
   onSearch?: () => void;
@@ -19,22 +20,20 @@ const Header = ({ onSearch, onFilter }: HeaderProps) => {
         </h1>
 
         {/* Search button */}
-        <button
-          onClick={onSearch}
-          className="flex items-center justify-center w-8 h-8 bg-bg-default border border-border-brand rounded hover:bg-gray-50 transition-colors"
-          title="Rechercher"
-        >
-          <Search className="w-5 h-5 text-brand" />
-        </button>
+
+        <Button className="w-8" onClick={onSearch} variant="outline">
+          <Icon name="search" />
+        </Button>
 
         {/* Filter button */}
-        <button
+        <Button
+          className="w-8"
           onClick={onFilter}
-          className="flex items-center justify-center w-8 h-8 bg-bg-default border border-border-brand rounded hover:bg-gray-50 transition-colors"
-          title="Filtrer"
+          variant="outline"
+          size="default"
         >
-          <SlidersHorizontal className="w-5 h-5 text-brand" />
-        </button>
+          <Icon name="filter" />
+        </Button>
 
         {/* Déclarer button with Dialog */}
         <AddDeclaration />

@@ -1,27 +1,30 @@
+import { useSidebar } from "@/context/SidebarContext";
+
 interface NavItemProps {
   icon: React.ReactNode;
   label: string;
-  collapsed: boolean;
   active?: boolean;
-  onClick?: () => void;
 }
-const NavItem = ({
-  icon,
-  label,
-  collapsed,
-  active = false,
-  onClick,
-}: NavItemProps) => {
+const NavItem = ({ icon, label, active = false }: NavItemProps) => {
+  const { sidebarCollapsed, toggleSidebar } = useSidebar();
+  const handlClickNavItem = () => {
+    console.log(label);
+    if (label === "Réduire le menu") {
+      // Toggle sidebar collapse state
+      toggleSidebar();
+    }
+    // Handle navigation item click
+  };
   return (
     <button
-      onClick={onClick}
-      className={`flex items-center gap-4 px-4 py-2 w-full border-none rounded cursor-pointer text-sm text-left text-sidebar-text transition-all duration-150 hover:bg-sidebar-hover ${
+      onClick={handlClickNavItem}
+      className={`flex items-center gap-2 p-2 w-full border-none cursor-pointer text-sm text-left text-sidebar-text transition-all duration-150 hover:bg-sidebar-hover ${
         active ? "bg-sidebar-hover" : "bg-transparent"
-      } ${collapsed ? "justify-center" : "justify-start"}`}
-      title={collapsed ? label : undefined}
+      } ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
+      title={sidebarCollapsed ? label : undefined}
     >
       <span className="flex items-center shrink-0">{icon}</span>
-      {!collapsed && <span>{label}</span>}
+      {!sidebarCollapsed && <span>{label}</span>}
     </button>
   );
 };

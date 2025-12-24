@@ -3,11 +3,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* Font family */
+  --font-family-nunito: var(--font-nunito), system-ui, sans-serif;
+
   /* Sidebar colors */
   --color-sidebar-bg: #15253c;
   --color-sidebar-text: #e6eef8;
-  --color-sidebar-muted: #8b9cb3;
-  --color-sidebar-border: #2d3d4f;
+  --color-sidebar-muted: #456b95;
   --color-sidebar-hover: #456b95;
 
   /* Primary/Brand colors */
@@ -87,8 +89,8 @@ body {
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: #2964a0;
+  --primary-foreground: #fff;
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -110,7 +112,7 @@ body {
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-border: #214770;
   --sidebar-ring: oklch(0.708 0 0);
 }
 

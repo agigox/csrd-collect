@@ -1,60 +1,52 @@
 "use client";
 
-import { Button } from "@/lib/Button";
 import { Divider } from "@/lib/Divider";
-import {
-  DeclareIcon,
-  FolderIcon,
-  DownloadIcon,
-  SettingsIcon,
-  CollapseIcon,
-} from "@/lib/Icons";
+import Icon from "@/lib/Icons";
 import Header from "./Header";
 import UserInfo from "./UserInfo";
 import { Navigation } from "./Navigation";
 import NavItem from "./NavItem";
+import { useSidebar } from "@/context/SidebarContext";
 
-interface SidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
-}
-
-export function Sidebar({ collapsed, onToggle }: SidebarProps) {
+export function Sidebar() {
+  const { sidebarCollapsed } = useSidebar();
   return (
     <aside
-      className={`fixed top-0 left-0 h-screen bg-sidebar-bg text-sidebar-text flex flex-col transition-all duration-250 z-50 overflow-hidden ${
-        collapsed ? "w-[60px]" : "w-[220px]"
+      className={`fixed top-0 left-0 h-screen bg-sidebar-bg pt-2 text-sidebar-text flex flex-col transition-all duration-250 z-50 overflow-hidden ${
+        sidebarCollapsed ? "w-[60px]" : "w-[220px]"
       }`}
     >
-      <Header collapsed={collapsed} />
-
-      {/* User info */}
-      {!collapsed && <UserInfo />}
-
-      {/* Declare button */}
-      <div className="p-4">
-        <Button fullWidth icon={<DeclareIcon />}>
-          {!collapsed && "Déclarer"}
-        </Button>
+      <Header />
+      <div className="px-2">
+        <Divider />
       </div>
 
-      {/* Navigation */}
-      <Navigation collapsed={collapsed} />
+      {/* User info */}
+      {!sidebarCollapsed && <UserInfo />}
 
-      {/* Footer */}
-      <Divider />
-      <div className="p-4 flex flex-col gap-1">
-        <NavItem
-          icon={<SettingsIcon />}
-          label="Paramètres"
-          collapsed={collapsed}
-        />
-        <NavItem
-          icon={<CollapseIcon collapsed={collapsed} />}
-          label="Réduire le menu"
-          collapsed={collapsed}
-          onClick={onToggle}
-        />
+      {/* Navigation */}
+      <div className="flex-1 flex flex-col justify-between">
+        <Navigation />
+
+        {/* Footer */}
+
+        <div className="flex flex-col gap-1">
+          <div className="px-2">
+            <Divider />
+          </div>
+          <NavItem icon={<Icon name="settings" />} label="Paramètres" />
+          <NavItem
+            icon={
+              <Icon
+                name="collapse"
+                className={`transition-transform duration-250 ${
+                  sidebarCollapsed ? "rotate-180" : ""
+                }`}
+              />
+            }
+            label="Réduire le menu"
+          />
+        </div>
       </div>
     </aside>
   );
