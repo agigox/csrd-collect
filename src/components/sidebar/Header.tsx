@@ -1,6 +1,11 @@
 import { useSidebar } from "@/context/SidebarContext";
+import { Inter } from "next/font/google";
 import Image from "next/image";
-
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
 const Header = () => {
   const { sidebarCollapsed } = useSidebar();
 
@@ -22,7 +27,9 @@ const Header = () => {
           </div>
         )}
       </div>
-      <div className="text-xs py-2 text-sidebar-muted w-full text-right">
+      <div
+        className={`text-[10px] font-normal py-2 w-full text-right ${inter.className}`}
+      >
         V1.1.3
       </div>
     </div>

@@ -4,7 +4,11 @@ import { useDeclarations } from "@/context/DeclarationsContext";
 import DeclarationCard from "../DeclarationCard";
 import Header from "./Header";
 
-const DeclarationsList = () => {
+interface DeclarationsListProps {
+  onDeclarer?: () => void;
+}
+
+const DeclarationsList = ({ onDeclarer }: DeclarationsListProps) => {
   const { declarations, loading, error } = useDeclarations();
 
   if (loading) {
@@ -25,7 +29,7 @@ const DeclarationsList = () => {
 
   return (
     <div>
-      <Header />
+      <Header onDeclarer={onDeclarer} />
 
       <div className="flex flex-col gap-4">
         {declarations.map((declaration) => (

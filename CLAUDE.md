@@ -127,3 +127,70 @@ Pour distinguer admin et membre sans authentification :
 1. Le `UserContext` détermine le rôle selon la route courante
 2. Les composants utilisent `useUser()` pour adapter leur affichage
 3. La sidebar et la navigation sont configurables via props `variant`
+
+## Champs de formulaire dynamiques
+
+Le système de champs dynamiques permet de créer des formulaires configurés via JSON.
+
+### Structure
+
+```
+src/lib/form-fields/
+├── types.ts              # Types communs
+├── registry.ts           # Registre des champs
+├── DynamicField.tsx      # Renderer de champ unique
+├── DynamicForm.tsx       # Formulaire complet
+├── index.ts              # Exports centralisés
+├── text/index.tsx        # Champ texte
+├── number/index.tsx      # Champ numérique
+└── select/index.tsx      # Champ sélection
+```
+
+### Utilisation
+
+```typescript
+import { DynamicForm, FieldConfig } from "@/lib/form-fields";
+
+const schema: FieldConfig[] = [
+  { name: "titre", type: "text", label: "Titre", required: true },
+  { name: "annee", type: "number", label: "Année" },
+  { name: "categorie", type: "select", label: "Catégorie", options: [...] }
+];
+
+<DynamicForm schema={schema} values={values} onChange={setValues} errors={errors} />
+```
+
+### Ajouter un nouveau type de champ
+
+1. **Créer le dossier** : `src/lib/form-fields/<type>/`
+
+2. **Créer le composant** dans `index.tsx` :
+   ```typescript
+   "use client";
+   import { Label } from "@/lib/components/ui/label";
+   import type { FieldProps, FieldRegistration } from "../types";
+
+   const MyField = ({ config, value, onChange, error }: FieldProps) => {
+     // Implémentation du champ
+   };
+
+   export const fieldRegistration: FieldRegistration = {
+     type: "<type>",
+     component: MyField,
+     defaultConfig: {},
+   };
+
+   export default MyField;
+   ```
+
+3. **Enregistrer dans le registry** (`registry.ts`) :
+   ```typescript
+   import { fieldRegistration as myField } from "./<type>";
+   registerField(myField);
+   ```
+
+4. **Ajouter le type** dans `types.ts` :
+   - Ajouter à `FieldType`
+   - Créer l'interface `MyFieldConfig` si besoin
+
+Le champ devient automatiquement disponible pour `DynamicForm`.

@@ -1,15 +1,15 @@
 "use client";
 
-import AddDeclaration from "@/components/declarations/addDeclaration";
 import { Button } from "@/lib/components/ui/button";
 import Icon from "@/lib/Icons";
 
 interface HeaderProps {
   onSearch?: () => void;
   onFilter?: () => void;
+  onDeclarer?: () => void;
 }
 
-const Header = ({ onSearch, onFilter }: HeaderProps) => {
+const Header = ({ onSearch, onFilter, onDeclarer }: HeaderProps) => {
   return (
     <div className="flex flex-col gap-2 py-2.5">
       {/* Header row */}
@@ -20,7 +20,6 @@ const Header = ({ onSearch, onFilter }: HeaderProps) => {
         </h1>
 
         {/* Search button */}
-
         <Button className="w-8" onClick={onSearch} variant="outline">
           <Icon name="search" />
         </Button>
@@ -35,8 +34,11 @@ const Header = ({ onSearch, onFilter }: HeaderProps) => {
           <Icon name="filter" />
         </Button>
 
-        {/* Déclarer button with Dialog */}
-        <AddDeclaration />
+        {/* Déclarer button */}
+        <Button onClick={onDeclarer}>
+          <span>Déclarer</span>
+          <Icon name="campaign" />
+        </Button>
       </div>
 
       {/* Divider */}

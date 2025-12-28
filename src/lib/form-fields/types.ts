@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-export type FieldType = "text" | "number" | "select";
+export type FieldType = "text" | "number" | "select" | "unit" | "switch";
 
 export interface ValidationRule {
   type: "required" | "min" | "max" | "pattern";
@@ -38,7 +38,20 @@ export interface TextFieldConfig extends BaseFieldConfig {
   type: "text";
 }
 
-export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig;
+export interface UnitFieldConfig extends BaseFieldConfig {
+  type: "unit";
+  unit: string;
+  min?: number;
+  max?: number;
+  description?: string;
+}
+
+export interface SwitchFieldConfig extends BaseFieldConfig {
+  type: "switch";
+  description?: string;
+}
+
+export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig;
 
 export interface FieldProps<T extends FieldConfig = FieldConfig> {
   config: T;

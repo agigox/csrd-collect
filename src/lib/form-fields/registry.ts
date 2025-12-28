@@ -3,6 +3,8 @@ import type { FieldRegistration, FieldType } from "./types";
 import { fieldRegistration as textField } from "./text";
 import { fieldRegistration as numberField } from "./number";
 import { fieldRegistration as selectField } from "./select";
+import { fieldRegistration as unitField } from "./unit";
+import { fieldRegistration as switchField } from "./switch";
 
 const fieldRegistry = new Map<FieldType, FieldRegistration>();
 
@@ -21,3 +23,5 @@ export function getAllFieldTypes(): FieldType[] {
 registerField(textField);
 registerField(numberField);
 registerField(selectField);
+registerField(unitField);
+registerField(switchField);
