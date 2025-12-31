@@ -3,7 +3,7 @@ import HeaderForms from "@/components/admin/FormsHeader";
 
 export default function AdminPage() {
   return (
-    <div className="p-6">
+    <div className="px-12 py-5">
       <HeaderForms />
       <FormsList />
     </div>

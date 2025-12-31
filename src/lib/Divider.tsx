@@ -8,13 +8,11 @@ export function Divider({
   orientation = "horizontal",
 }: DividerProps) {
   const baseClasses =
-    orientation === "horizontal"
-      ? "w-full h-px"
-      : "h-full w-px";
+    orientation === "horizontal" ? "w-full h-px" : "h-full w-px";
 
   return (
     <div
-      className={`bg-sidebar-border ${baseClasses} ${className}`}
+      className={`${baseClasses} ${className}`}
       role="separator"
       aria-orientation={orientation}
     />

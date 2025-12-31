@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito, Inter } from "next/font/google";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 

@@ -11,7 +11,7 @@ const UserInfo = () => {
         <UserInfoItem label="Equipe :" value="Emasi" />
       </div>
       <div className="px-2">
-        <Divider />
+        <Divider className="bg-sidebar-border" />
       </div>
     </>
   );

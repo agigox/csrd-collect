@@ -92,9 +92,7 @@ const UnitField = ({
     <div className="flex flex-col gap-0.5">
       {/* Label row */}
       <div className="flex items-end gap-1 px-2 py-0.5">
-        <Label htmlFor={config.name} className="text-sm text-content-secondary">
-          {config.label}
-        </Label>
+        <Label htmlFor={config.name}>{config.label}</Label>
         {config.required ? (
           <span className="text-content-danger-default font-bold text-[22px] leading-[18px]">
             *

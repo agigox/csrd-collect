@@ -4,7 +4,12 @@ import { Input } from "@/lib/components/ui/input";
 import { Label } from "@/lib/components/ui/label";
 import type { FieldProps, FieldRegistration, TextFieldConfig } from "../types";
 
-const TextField = ({ config, value, onChange, error }: FieldProps<TextFieldConfig>) => {
+const TextField = ({
+  config,
+  value,
+  onChange,
+  error,
+}: FieldProps<TextFieldConfig>) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };

@@ -5,6 +5,7 @@ import { fieldRegistration as numberField } from "./number";
 import { fieldRegistration as selectField } from "./select";
 import { fieldRegistration as unitField } from "./unit";
 import { fieldRegistration as switchField } from "./switch";
+import { fieldRegistration as calendarField } from "./calendar";
 
 const fieldRegistry = new Map<FieldType, FieldRegistration>();
 
@@ -25,3 +26,4 @@ registerField(numberField);
 registerField(selectField);
 registerField(unitField);
 registerField(switchField);
+registerField(calendarField);

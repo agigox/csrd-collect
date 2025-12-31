@@ -19,11 +19,6 @@
   --color-brand: #2964a0;
   --color-brand-hover: #1e4f7a;
 
-  /* Content colors */
-  --color-content-bg: #ffffff;
-  --color-content-text: #201f1f;
-  --color-content-muted: #6b7280;
-
   /* Border colors */
   --color-border-default: #cdcccb;
   --color-border-brand: #2964a0;
@@ -81,15 +76,23 @@ body {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  --content-color-primary: var(--content-primary);
   --color-content-tertiary: var(--content-tertiary);
   --color-border-secondary: var(--border-secondary);
   --color-content-danger-default: var(--content-danger-default);
+  --color-border-divider: var(--border-divider);
+
+  /* Content colors */
+  --color-content-bg: var(--content-bg);
+  --color-content-text: var(--content-text);
+  --color-content-muted: var(--content-muted);
+  --color-input-label: var(--input-label);
 }
 
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: #201f1f;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -123,6 +126,11 @@ body {
   --border-secondary: #a1a1a0;
   --content-tertiary: #737272;
   --content-danger-default: #de2048;
+  --border-divider: #cdcccb;
+  --content-bg: #f5f5f5;
+  --content-text: #201f1f;
+  --content-muted: #6b7280;
+  --input-label: #626769;
 }
 
 .dark {

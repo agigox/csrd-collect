@@ -12,8 +12,10 @@ import type { FieldConfig } from "@/lib/form-fields";
 
 export interface FormDefinition {
   id: string;
-  name: string;
+  code: string;
+  title: string;
   description: string;
+  norme: string;
   createdAt: string;
   updatedAt: string;
   schema: FieldConfig[];
@@ -92,11 +94,16 @@ export function FormsProvider({ children }: FormsProviderProps) {
     }
   }, [currentForm]);
 
-  const createForm = useCallback((formData: Omit<FormDefinition, "id" | "createdAt" | "updatedAt">): FormDefinition => {
+  const createForm = useCallback((formData: Omit<FormDefinition, "id" | "code" | "createdAt" | "updatedAt">): FormDefinition => {
     const today = new Date().toISOString().split("T")[0];
+    const normePrefix = formData.norme.split("-")[0] || "E1";
+    const randomSuffix = Math.floor(Math.random() * 100).toString().padStart(2, "0");
+    const generatedCode = `${normePrefix}-${Date.now().toString().slice(-4)}_${randomSuffix}`;
+
     const newForm: FormDefinition = {
       ...formData,
       id: Date.now().toString(),
+      code: generatedCode,
       createdAt: today,
       updatedAt: today,
     };

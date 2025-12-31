@@ -15,9 +15,10 @@ interface FieldConfiguratorProps {
 const typeLabels: Record<string, string> = {
   text: "Champ simple",
   number: "Nombre",
-  select: "Liste déroulante",
+  select: "Case à cocher",
   unit: "Quantité avec unité",
   switch: "Interrupteur",
+  calendar: "Date",
 };
 
 const unitOptions = [
@@ -67,116 +68,190 @@ export const FieldConfigurator = ({
     }
   };
 
+  const handleSetDefaultOption = (index: number) => {
+    if (config.type === "select") {
+      // Set the selected option as default without reordering
+      onChange({ ...config, defaultIndex: index });
+    }
+  };
+
   return (
-    <div className="border-b border-b-black p-4 bg-white">
-      <div className="flex justify-between items-start mb-4">
-        <span className="text-sm font-medium text-content-muted">
-          {typeLabels[config.type]}
-        </span>
+    <div className="flex flex-col gap-2">
+      {/* En-tête avec type et bouton supprimer */}
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-base font-bold">{typeLabels[config.type]}</span>
         <Button
-          variant="ghost"
-          size="sm"
+          variant="destructive"
+          size="icon"
           onClick={onRemove}
-          className="text-red-500 hover:text-red-700"
+          className="size-8"
         >
-          <Icon name="close" />
+          <Icon name="trash" size={16} />
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div
-          className={`flex flex-col gap-2 ${
-            config.type === "unit" || config.type === "switch"
-              ? "col-span-2"
-              : ""
-          }`}
-        >
-          <Label htmlFor={`${config.name}-label`}>Libellé</Label>
-          <Input
-            id={`${config.name}-label`}
-            value={config.label}
-            onChange={(e) => onChange({ ...config, label: e.target.value })}
-            placeholder="Libellé affiché"
-          />
-        </div>
+      {/* Libellé du champ (Entête pour select) */}
+      <div className="flex flex-col gap-1">
+        <Label>Entête</Label>
+        <Input
+          value={config.label}
+          onChange={(e) => onChange({ ...config, label: e.target.value })}
+          placeholder={
+            config.type === "select" ? "Nom de l'entête" : "Libellé affiché"
+          }
+          className="h-8 text-sm w-58.75"
+        />
+      </div>
 
-        {config.type !== "unit" && config.type !== "switch" && (
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${config.name}-placeholder`}>Placeholder</Label>
+      {/* Placeholder (pour text, number, calendar - pas pour select) */}
+      {config.type !== "unit" &&
+        config.type !== "switch" &&
+        config.type !== "select" && (
+          <div className="flex flex-col gap-1">
+            <Label>Placeholder</Label>
             <Input
-              id={`${config.name}-placeholder`}
               value={config.placeholder ?? ""}
               onChange={(e) =>
                 onChange({ ...config, placeholder: e.target.value })
               }
-              placeholder="Champ simple d'aide"
+              placeholder="Texte d'aide dans le champ"
+              className="h-8 text-sm w-58.75"
             />
           </div>
         )}
 
-        <div className="col-span-2 flex items-center gap-2">
-          <input
-            type="checkbox"
-            id={`${config.name}-required`}
-            checked={config.required ?? false}
-            onChange={(e) =>
-              onChange({ ...config, required: e.target.checked })
-            }
-            className="size-4"
-          />
-          <Label htmlFor={`${config.name}-required`}>Champ obligatoire</Label>
+      {/* Champ obligatoire */}
+      <div className="flex justify-end">
+        <div className="flex items-center gap-3 mt-2">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={config.required ?? false}
+            onClick={() => onChange({ ...config, required: !config.required })}
+            className={`relative flex items-center h-6 w-10 rounded-full px-1 transition-colors duration-200 ${
+              config.required
+                ? "bg-[#2964a0] justify-end"
+                : "bg-[#e1e1e0] border-2 border-[#737272] justify-start"
+            }`}
+          >
+            <span
+              className={`flex items-center justify-center size-4 rounded-full transition-all duration-200 ${
+                config.required ? "bg-white" : "bg-white shadow-sm"
+              }`}
+            >
+              {config.required && (
+                <svg
+                  width="10"
+                  height="8"
+                  viewBox="0 0 10 8"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 4L3.5 6.5L9 1"
+                    stroke="#2964a0"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </span>
+          </button>
+          <Label
+            className="text-sm cursor-pointer"
+            onClick={() => onChange({ ...config, required: !config.required })}
+          >
+            Champ obligatoire
+          </Label>
         </div>
       </div>
-
+      {/* Options pour les champs select */}
       {config.type === "select" && (
-        <div className="mt-4 border-t pt-4">
-          <div className="flex justify-between items-center mb-2">
-            <Label>Options</Label>
-            <Button variant="outline" size="sm" onClick={handleAddOption}>
-              <Icon name="plus" />
-              Ajouter
-            </Button>
-          </div>
-          <div className="flex flex-col gap-2">
-            {config.options.map((option, index) => (
-              <div key={index} className="flex gap-2 items-center">
-                <Input
-                  value={option.value}
-                  onChange={(e) =>
-                    handleOptionChange(index, "value", e.target.value)
-                  }
-                  placeholder="Valeur"
-                  className="flex-1"
-                />
-                <Input
-                  value={option.label}
-                  onChange={(e) =>
-                    handleOptionChange(index, "label", e.target.value)
-                  }
-                  placeholder="Libellé"
-                  className="flex-1"
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRemoveOption(index)}
-                  disabled={config.options.length <= 1}
-                  className="text-red-500"
-                >
-                  <Icon name="close" />
-                </Button>
+        <div className="flex flex-col gap-3">
+          {config.options.map((option, index) => {
+            const isDefault = index === (config.defaultIndex ?? 0);
+            return (
+              <div key={index} className="flex flex-col gap-1">
+                <Label>
+                  Choix {index + 1}
+                  {isDefault ? " - par défaut" : ""}
+                </Label>
+                <div className="flex gap-2 items-center">
+                  {/* Checkbox - cliquable pour définir comme défaut */}
+                  <button
+                    type="button"
+                    onClick={() => handleSetDefaultOption(index)}
+                    className={`flex items-center justify-center size-5 border-2 rounded bg-white transition-colors ${
+                      isDefault
+                        ? "border-[#2964a0] cursor-default"
+                        : "border-gray-300 hover:border-[#2964a0] cursor-pointer"
+                    }`}
+                    title={
+                      isDefault
+                        ? "Option par défaut"
+                        : "Définir comme option par défaut"
+                    }
+                  >
+                    {isDefault && (
+                      <svg
+                        width="12"
+                        height="10"
+                        viewBox="0 0 12 10"
+                        fill="none"
+                      >
+                        <path
+                          d="M1 5L4 8L11 1"
+                          stroke="#2964a0"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                  <Input
+                    value={option.label}
+                    onChange={(e) =>
+                      handleOptionChange(index, "label", e.target.value)
+                    }
+                    placeholder={`Option ${index + 1}`}
+                    className="flex-1 h-8 text-sm"
+                  />
+                  {/* Bouton + sur la dernière option */}
+                  {index === config.options.length - 1 ? (
+                    <Button
+                      variant="default"
+                      size="icon"
+                      onClick={handleAddOption}
+                      className="size-8"
+                    >
+                      <Icon name="plus" size={14} />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveOption(index)}
+                      disabled={config.options.length <= 1}
+                      className="size-8 text-gray-400 hover:text-red-500"
+                    >
+                      <Icon name="close" size={14} />
+                    </Button>
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       )}
 
+      {/* Min/Max pour les champs number */}
       {config.type === "number" && (
-        <div className="mt-4 border-t pt-4 grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${config.name}-min`}>Minimum</Label>
+        <div className="mt-2 pt-2 border-t grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <Label>Minimum</Label>
             <Input
-              id={`${config.name}-min`}
               type="number"
               value={config.min ?? ""}
               onChange={(e) =>
@@ -186,12 +261,12 @@ export const FieldConfigurator = ({
                 })
               }
               placeholder="Pas de minimum"
+              className="h-8 text-sm"
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${config.name}-max`}>Maximum</Label>
+          <div className="flex flex-col gap-1">
+            <Label>Maximum</Label>
             <Input
-              id={`${config.name}-max`}
               type="number"
               value={config.max ?? ""}
               onChange={(e) =>
@@ -201,20 +276,21 @@ export const FieldConfigurator = ({
                 })
               }
               placeholder="Pas de maximum"
+              className="h-8 text-sm"
             />
           </div>
         </div>
       )}
 
+      {/* Options pour les champs unit */}
       {config.type === "unit" && (
-        <div className="mt-4 border-t pt-4 flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${config.name}-unit`}>Unité</Label>
+        <div className="mt-2 pt-2 border-t flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <Label>Unité</Label>
             <select
-              id={`${config.name}-unit`}
               value={config.unit}
               onChange={(e) => onChange({ ...config, unit: e.target.value })}
-              className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+              className="h-8 w-full rounded border border-gray-300 px-2 py-1 text-sm"
             >
               {unitOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -224,10 +300,9 @@ export const FieldConfigurator = ({
             </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor={`${config.name}-min`}>Minimum</Label>
+            <div className="flex flex-col gap-1">
+              <Label>Minimum</Label>
               <Input
-                id={`${config.name}-min`}
                 type="number"
                 value={config.min ?? ""}
                 onChange={(e) =>
@@ -237,12 +312,12 @@ export const FieldConfigurator = ({
                   })
                 }
                 placeholder="Pas de minimum"
+                className="h-8 text-sm"
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor={`${config.name}-max`}>Maximum</Label>
+            <div className="flex flex-col gap-1">
+              <Label>Maximum</Label>
               <Input
-                id={`${config.name}-max`}
                 type="number"
                 value={config.max ?? ""}
                 onChange={(e) =>
@@ -252,38 +327,36 @@ export const FieldConfigurator = ({
                   })
                 }
                 placeholder="Pas de maximum"
+                className="h-8 text-sm"
               />
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${config.name}-description`}>
-              Message descriptif
-            </Label>
+          <div className="flex flex-col gap-1">
+            <Label>Message descriptif</Label>
             <Input
-              id={`${config.name}-description`}
               value={config.description ?? ""}
               onChange={(e) =>
                 onChange({ ...config, description: e.target.value })
               }
               placeholder="Texte d'aide sous le champ"
+              className="h-8 text-sm"
             />
           </div>
         </div>
       )}
 
+      {/* Description pour les champs switch */}
       {config.type === "switch" && (
-        <div className="mt-4 border-t pt-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${config.name}-description`}>
-              Message descriptif
-            </Label>
+        <div className="mt-2 pt-2 border-t">
+          <div className="flex flex-col gap-1">
+            <Label>Message descriptif</Label>
             <Input
-              id={`${config.name}-description`}
               value={config.description ?? ""}
               onChange={(e) =>
                 onChange({ ...config, description: e.target.value })
               }
               placeholder="Texte d'aide sous le champ"
+              className="h-8 text-sm"
             />
           </div>
         </div>

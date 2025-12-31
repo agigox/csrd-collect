@@ -1,0 +1,42 @@
+.scrollable-container {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  gap: 8px;
+}
+
+.scrollable-container__content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide native scrollbar for Chrome, Safari and Opera */
+.scrollable-container__content::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollable-container__track {
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.scrollable-container__thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.scrollable-container__thumb:active {
+  cursor: grabbing;
+}
+
+.scrollable-container__thumb--visible {
+  opacity: 1;
+}

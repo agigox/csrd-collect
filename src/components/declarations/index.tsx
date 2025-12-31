@@ -59,8 +59,11 @@ const Declarations = () => {
       />
 
       {/* Modal de déclaration avec le formulaire sélectionné */}
-      <Dialog open={declarationDialogOpen} onOpenChange={handleCloseDeclaration}>
-        <DialogContent className="!fixed !top-0 !right-0 !left-auto !h-screen !w-[547px] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-l !border-y-0 !border-r-0 data-[state=open]:!animate-slide-in-from-right data-[state=closed]:!animate-slide-out-to-right">
+      <Dialog
+        open={declarationDialogOpen}
+        onOpenChange={handleCloseDeclaration}
+      >
+        <DialogContent className="fixed! top-0! right-0! !left-auto !h-screen !w-[547px] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-l !border-y-0 !border-r-0 data-[state=open]:!animate-slide-in-from-right data-[state=closed]:!animate-slide-out-to-right">
           <DialogHeader>
             <DialogTitle>Nouvelle déclaration</DialogTitle>
             <DialogDescription>
@@ -80,13 +83,18 @@ const Declarations = () => {
           )}
 
           <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button variant="outline" onClick={() => handleCloseDeclaration(false)}>
+            <Button
+              variant="outline"
+              onClick={() => handleCloseDeclaration(false)}
+            >
               Annuler
             </Button>
-            <Button onClick={() => {
-              console.log("Soumettre:", formValues);
-              handleCloseDeclaration(false);
-            }}>
+            <Button
+              onClick={() => {
+                console.log("Soumettre:", formValues);
+                handleCloseDeclaration(false);
+              }}
+            >
               Soumettre
             </Button>
           </div>

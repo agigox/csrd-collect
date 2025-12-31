@@ -11,11 +11,14 @@ import {
 import Icon, { IconName } from "@/lib/Icons";
 import { FieldConfigurator } from "./FieldConfigurator";
 import type { FieldConfig, FieldType } from "./types";
+import { Divider } from "../Divider";
 
 interface FormBuilderProps {
   schema: FieldConfig[];
   onChange: (schema: FieldConfig[]) => void;
   floatingButton?: boolean;
+  buttonOnly?: boolean;
+  hideButton?: boolean;
 }
 
 interface FieldTypeOption {
@@ -28,15 +31,23 @@ const fieldTypeOptions: FieldTypeOption[] = [
   { type: "text", label: "Champ simple", icon: "textField" },
   { type: "number", label: "Nombre", icon: "textField" },
   { type: "unit", label: "Quantité avec unité", icon: "textField" },
-  { type: "select", label: "Liste déroulante", icon: "list" },
+  { type: "select", label: "Case à cocher", icon: "checkbox" },
   { type: "switch", label: "Interrupteur", icon: "textField" },
+  { type: "calendar", label: "Date", icon: "calendar" },
 ];
 
-export const FormBuilder = ({ schema, onChange, floatingButton = false }: FormBuilderProps) => {
+export const FormBuilder = ({
+  schema,
+  onChange,
+  floatingButton = false,
+  buttonOnly = false,
+  hideButton = false,
+}: FormBuilderProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -60,8 +71,10 @@ export const FormBuilder = ({ schema, onChange, floatingButton = false }: FormBu
         name: fieldName,
         type: "select",
         label: "Nouveau champ",
-        placeholder: "Sélectionner...",
-        options: [{ value: "option1", label: "Option 1" }],
+        options: [
+          { value: "option1", label: "Option 1" },
+          { value: "option2", label: "Option 2" },
+        ],
       };
     } else if (type === "number") {
       newField = {
@@ -81,6 +94,13 @@ export const FormBuilder = ({ schema, onChange, floatingButton = false }: FormBu
         name: fieldName,
         type: "switch",
         label: "Nouveau champ",
+      };
+    } else if (type === "calendar") {
+      newField = {
+        name: fieldName,
+        type: "calendar",
+        label: "Nouveau champ",
+        placeholder: "Date",
       };
     } else {
       newField = {
@@ -108,13 +128,13 @@ export const FormBuilder = ({ schema, onChange, floatingButton = false }: FormBu
   const addButtonContent = (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
-        <Button className="w-full relative z-[101]">
+        <Button className="w-full relative z-101">
           <Icon name="plus" />
           Ajouter un champ
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-64 p-0 z-[101]"
+        className="w-64 p-0 z-101"
         side="top"
         align="center"
         sideOffset={8}
@@ -135,6 +155,25 @@ export const FormBuilder = ({ schema, onChange, floatingButton = false }: FormBu
     </Popover>
   );
 
+  // Mode buttonOnly : afficher uniquement le bouton
+  if (buttonOnly) {
+    return (
+      <>
+        {mounted &&
+          popoverOpen &&
+          createPortal(
+            <div
+              className="fixed inset-0 bg-black/40 z-100 transition-opacity"
+              onClick={() => setPopoverOpen(false)}
+              aria-hidden="true"
+            />,
+            document.body
+          )}
+        {addButtonContent}
+      </>
+    );
+  }
+
   return (
     <>
       {/* Overlay sombre via Portal */}
@@ -142,7 +181,7 @@ export const FormBuilder = ({ schema, onChange, floatingButton = false }: FormBu
         popoverOpen &&
         createPortal(
           <div
-            className="fixed inset-0 bg-black/40 z-[100] transition-opacity"
+            className="fixed inset-0 bg-black/40 z-100 transition-opacity"
             onClick={() => setPopoverOpen(false)}
             aria-hidden="true"
           />,
@@ -152,29 +191,34 @@ export const FormBuilder = ({ schema, onChange, floatingButton = false }: FormBu
       <div className="flex flex-col gap-6">
         {schema.length === 0 ? (
           <div className="text-center py-8 text-content-muted border border-dashed border-border-default rounded-lg">
-            Aucun champ. Utilisez le bouton ci-dessous pour ajouter des champs.
+            Aucune donnée configurée. Utilisez le bouton ci-dessous pour ajouter
+            une donnée à déclarer.
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
             {schema.map((fieldConfig, index) => (
-              <FieldConfigurator
-                key={`${fieldConfig.name}-${index}`}
-                config={fieldConfig}
-                onChange={(config) => handleUpdateField(index, config)}
-                onRemove={() => handleRemoveField(index)}
-              />
+              <div key={`${fieldConfig.name}-${index}`}>
+                <FieldConfigurator
+                  config={fieldConfig}
+                  onChange={(config) => handleUpdateField(index, config)}
+                  onRemove={() => handleRemoveField(index)}
+                />
+                <Divider className="my-7 bg-border-divider" />
+              </div>
             ))}
           </div>
         )}
       </div>
 
       {/* Bouton flottant ou normal */}
-      {floatingButton ? (
-        <div className="absolute bottom-[10px] left-0 right-0 px-6 bg-background">
-          {addButtonContent}
-        </div>
-      ) : (
-        <div className="mt-6">{addButtonContent}</div>
+      {!hideButton && (
+        floatingButton ? (
+          <div className="absolute bottom-2.5 left-0 right-0 px-6 bg-background">
+            {addButtonContent}
+          </div>
+        ) : (
+          <div className="mt-6">{addButtonContent}</div>
+        )
       )}
     </>
   );
