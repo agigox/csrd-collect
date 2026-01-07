@@ -126,11 +126,6 @@ export default function AdminParametrageDeclaratifPage() {
             <Icon name="trash" size={20} />
           </Button>
         </div>
-        {isEditMode && (
-          <div className="text-sm text-muted-foreground">
-            Code: <span className="font-mono">{currentForm.code}</span>
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[calc(100%-300px-24px)_300px] gap-6 flex-1 min-h-0">

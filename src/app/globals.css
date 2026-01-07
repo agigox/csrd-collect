@@ -90,7 +90,7 @@ body {
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: #201f1f;
   --card: oklch(1 0 0);
@@ -100,7 +100,7 @@ body {
   --primary: #2964a0;
   --primary-foreground: #fff;
   --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --secondary-foreground: #3e3e3d;
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);

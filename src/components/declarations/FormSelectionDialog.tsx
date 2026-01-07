@@ -24,6 +24,7 @@ const FormSelectionDialog = ({
   onFormSelect,
 }: FormSelectionDialogProps) => {
   const { forms, loading } = useForms();
+  console.log(forms);
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
 
   const handleCancel = () => {
@@ -42,15 +43,12 @@ const FormSelectionDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <DialogHeader>
           <DialogTitle>Nouvelle déclaration</DialogTitle>
-          <p className="text-sm text-muted-foreground mt-1">
-            Que souhaitez vous déclarer ?
-          </p>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3 max-h-[400px] overflow-y-auto py-2">
+        <div className="flex flex-col gap-3 max-h-100 overflow-y-auto">
           {loading ? (
             <div className="text-center py-8 text-muted-foreground">
               Chargement des formulaires...
@@ -60,30 +58,39 @@ const FormSelectionDialog = ({
               Aucun formulaire disponible
             </div>
           ) : (
-            forms.map((form) => (
-              <button
-                key={form.id}
-                onClick={() => setSelectedFormId(form.id)}
-                className={cn(
-                  "w-full text-left p-4 rounded-lg border-2 transition-colors",
-                  selectedFormId === form.id
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
-                )}
-              >
-                <div className="text-xs text-muted-foreground mb-1">
-                  {form.id}
+            <div className="flex flex-col gap-4">
+              <div className="text-[14px] text-secondary-foreground">
+                Que souhaitez vous déclarer ?
+              </div>
+              <div className="w-full flex items-center justify-center">
+                <div className="max-w-98 flex flex-col gap-[8.5px]">
+                  {forms.map((form) => (
+                    <button
+                      key={form.id}
+                      onClick={() => setSelectedFormId(form.id)}
+                      className={cn(
+                        "text-left p-4 rounded-[4px] border-2 transition-colors py-[7px] px-3",
+                        selectedFormId === form.id
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50"
+                      )}
+                    >
+                      <div className="text-xs text-muted-foreground">
+                        {form.code}
+                      </div>
+                      <div className="font-semibold text-foreground">
+                        {form.title}
+                      </div>
+                      {form.description && (
+                        <div className="text-sm text-muted-foreground">
+                          {form.description}
+                        </div>
+                      )}
+                    </button>
+                  ))}
                 </div>
-                <div className="font-semibold text-foreground">
-                  {form.name}
-                </div>
-                {form.description && (
-                  <div className="text-sm text-muted-foreground mt-1">
-                    {form.description}
-                  </div>
-                )}
-              </button>
-            ))
+              </div>
+            </div>
           )}
         </div>
 

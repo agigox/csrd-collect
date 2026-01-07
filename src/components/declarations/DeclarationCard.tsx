@@ -20,7 +20,7 @@ const DeclarationCard = ({
   return (
     <div
       onClick={onClick}
-      className="group relative w-full max-w-[480px] bg-white rounded overflow-hidden shadow-[0px_2px_4px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)] cursor-pointer transition-all duration-150"
+      className="group relative w-full bg-white rounded overflow-hidden shadow-[0px_2px_4px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)] cursor-pointer transition-all duration-150"
     >
       {/* Left border accent on hover */}
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-150" />

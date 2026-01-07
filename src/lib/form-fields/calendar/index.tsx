@@ -51,7 +51,7 @@ const CalendarField = ({
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex h-8 w-full items-center justify-between rounded-md border bg-white px-3 py-1 text-sm shadow-inner cursor-pointer",
+              "flex h-8 w-full items-center justify-between rounded-md border px-3 py-1 text-sm shadow-inner cursor-pointer",
               error ? "border-red-500" : "border-gray-300",
               "hover:border-gray-400 transition-colors"
             )}
