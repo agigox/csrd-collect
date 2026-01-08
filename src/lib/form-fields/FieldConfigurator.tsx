@@ -16,6 +16,7 @@ const typeLabels: Record<string, string> = {
   text: "Champ simple",
   number: "Nombre",
   select: "Case à cocher",
+  radio: "Choix unique",
   unit: "Quantité avec unité",
   switch: "Interrupteur",
   calendar: "Date",
@@ -37,7 +38,7 @@ export const FieldConfigurator = ({
   onRemove,
 }: FieldConfiguratorProps) => {
   const handleAddOption = () => {
-    if (config.type === "select") {
+    if (config.type === "select" || config.type === "radio") {
       const newOptions = [
         ...config.options,
         {
@@ -54,7 +55,7 @@ export const FieldConfigurator = ({
     field: keyof SelectOption,
     value: string
   ) => {
-    if (config.type === "select") {
+    if (config.type === "select" || config.type === "radio") {
       const newOptions = [...config.options];
       newOptions[index] = { ...newOptions[index], [field]: value };
       onChange({ ...config, options: newOptions });
@@ -62,14 +63,14 @@ export const FieldConfigurator = ({
   };
 
   const handleRemoveOption = (index: number) => {
-    if (config.type === "select" && config.options.length > 1) {
+    if ((config.type === "select" || config.type === "radio") && config.options.length > 1) {
       const newOptions = config.options.filter((_, i) => i !== index);
       onChange({ ...config, options: newOptions });
     }
   };
 
   const handleSetDefaultOption = (index: number) => {
-    if (config.type === "select") {
+    if (config.type === "select" || config.type === "radio") {
       // Set the selected option as default without reordering
       onChange({ ...config, defaultIndex: index });
     }
@@ -103,10 +104,11 @@ export const FieldConfigurator = ({
         />
       </div>
 
-      {/* Placeholder (pour text, number, calendar - pas pour select) */}
+      {/* Placeholder (pour text, number, calendar - pas pour select/radio) */}
       {config.type !== "unit" &&
         config.type !== "switch" &&
-        config.type !== "select" && (
+        config.type !== "select" &&
+        config.type !== "radio" && (
           <div className="flex flex-col gap-1">
             <Label>Placeholder</Label>
             <Input
@@ -166,8 +168,8 @@ export const FieldConfigurator = ({
           </Label>
         </div>
       </div>
-      {/* Options pour les champs select */}
-      {config.type === "select" && (
+      {/* Options pour les champs select et radio */}
+      {(config.type === "select" || config.type === "radio") && (
         <div className="flex flex-col gap-3">
           {config.options.map((option, index) => {
             const isDefault = index === (config.defaultIndex ?? 0);
@@ -178,11 +180,13 @@ export const FieldConfigurator = ({
                   {isDefault ? " - par défaut" : ""}
                 </Label>
                 <div className="flex gap-2 items-center">
-                  {/* Checkbox - cliquable pour définir comme défaut */}
+                  {/* Radio ou Checkbox - cliquable pour définir comme défaut */}
                   <button
                     type="button"
                     onClick={() => handleSetDefaultOption(index)}
-                    className={`flex items-center justify-center size-5 border-2 rounded bg-white transition-colors ${
+                    className={`flex items-center justify-center size-5 border-2 bg-white transition-colors ${
+                      config.type === "radio" ? "rounded-full" : "rounded"
+                    } ${
                       isDefault
                         ? "border-[#2964a0] cursor-default"
                         : "border-gray-300 hover:border-[#2964a0] cursor-pointer"
@@ -193,7 +197,10 @@ export const FieldConfigurator = ({
                         : "Définir comme option par défaut"
                     }
                   >
-                    {isDefault && (
+                    {isDefault && config.type === "radio" && (
+                      <span className="size-[10px] rounded-full bg-[#2964a0]" />
+                    )}
+                    {isDefault && config.type === "select" && (
                       <svg
                         width="12"
                         height="10"

@@ -6,6 +6,7 @@ import { fieldRegistration as selectField } from "./select";
 import { fieldRegistration as unitField } from "./unit";
 import { fieldRegistration as switchField } from "./switch";
 import { fieldRegistration as calendarField } from "./calendar";
+import { fieldRegistration as radioField } from "./radio";
 
 const fieldRegistry = new Map<FieldType, FieldRegistration>();
 
@@ -27,3 +28,4 @@ registerField(selectField);
 registerField(unitField);
 registerField(switchField);
 registerField(calendarField);
+registerField(radioField);

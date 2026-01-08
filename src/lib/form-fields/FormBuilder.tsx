@@ -32,6 +32,7 @@ const fieldTypeOptions: FieldTypeOption[] = [
   { type: "number", label: "Nombre", icon: "textField" },
   { type: "unit", label: "Quantité avec unité", icon: "textField" },
   { type: "select", label: "Case à cocher", icon: "checkbox" },
+  { type: "radio", label: "Choix unique", icon: "checkbox" },
   { type: "switch", label: "Interrupteur", icon: "textField" },
   { type: "calendar", label: "Date", icon: "calendar" },
 ];
@@ -94,6 +95,17 @@ export const FormBuilder = ({
         name: fieldName,
         type: "switch",
         label: "Nouveau champ",
+      };
+    } else if (type === "radio") {
+      newField = {
+        name: fieldName,
+        type: "radio",
+        label: "Nouveau champ",
+        options: [
+          { value: "option1", label: "Option 1" },
+          { value: "option2", label: "Option 2" },
+        ],
+        defaultIndex: 0,
       };
     } else if (type === "calendar") {
       newField = {
