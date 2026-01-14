@@ -20,10 +20,16 @@ const DeclarationCard = ({
   return (
     <div
       onClick={onClick}
-      className="group relative w-full bg-white rounded overflow-hidden shadow-[0px_2px_4px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)] cursor-pointer transition-all duration-150"
+      className="group relative w-full rounded overflow-hidden cursor-pointer transition-all duration-150"
+      style={{
+        background:
+          "linear-gradient(to left, rgba(255, 255, 255, 0.00), rgba(255, 255, 255, 0.00)), linear-gradient(to left, #ffffff, #ffffff)",
+        boxShadow:
+          "0px 0px 2px 0px rgba(0, 0, 0, 0.12),  0px 2px 4px 0px rgba(0, 0, 0, 0.14)",
+      }}
     >
       {/* Left border accent on hover */}
-      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
+      <div className="absolute left-0 top-0 bottom-0 w-0.75 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
 
       <div className="px-3 py-2">
         {/* Header row: date + author badge */}

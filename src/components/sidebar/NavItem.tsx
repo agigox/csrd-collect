@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSidebar } from "@/context/SidebarContext";
+import { useSidebarStore } from "@/stores";
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -11,24 +11,24 @@ interface NavItemProps {
 }
 
 const NavItem = ({ icon, label, href }: NavItemProps) => {
-  const { sidebarCollapsed, toggleSidebar } = useSidebar();
+  const { isCollapsed, toggle } = useSidebarStore();
   const pathname = usePathname();
   const isActive = href ? pathname === href : false;
 
   const handleClick = () => {
     if (label === "Réduire le menu") {
-      toggleSidebar();
+      toggle();
     }
   };
 
   const className = `flex items-center gap-2 p-2 w-full border-none cursor-pointer text-sm text-left text-sidebar-text transition-all duration-150 hover:bg-sidebar-hover ${
     isActive ? "bg-sidebar-hover" : "bg-transparent"
-  } ${sidebarCollapsed ? "justify-center" : "justify-start"}`;
+  } ${isCollapsed ? "justify-center" : "justify-start"}`;
 
   const content = (
     <>
       <span className="flex items-center shrink-0">{icon}</span>
-      {!sidebarCollapsed && <span>{label}</span>}
+      {!isCollapsed && <span>{label}</span>}
     </>
   );
 
@@ -37,7 +37,7 @@ const NavItem = ({ icon, label, href }: NavItemProps) => {
       <Link
         href={href}
         className={className}
-        title={sidebarCollapsed ? label : undefined}
+        title={isCollapsed ? label : undefined}
       >
         {content}
       </Link>
@@ -48,7 +48,7 @@ const NavItem = ({ icon, label, href }: NavItemProps) => {
     <button
       onClick={handleClick}
       className={className}
-      title={sidebarCollapsed ? label : undefined}
+      title={isCollapsed ? label : undefined}
     >
       {content}
     </button>

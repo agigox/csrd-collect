@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/lib/components/ui/button";
+import { Card, CardContent } from "@/lib/components/ui/card";
 import {
   Popover,
   PopoverContent,
@@ -31,10 +32,12 @@ const fieldTypeOptions: FieldTypeOption[] = [
   { type: "text", label: "Champ simple", icon: "textField" },
   { type: "number", label: "Nombre", icon: "textField" },
   { type: "unit", label: "Quantité avec unité", icon: "textField" },
-  { type: "select", label: "Case à cocher", icon: "checkbox" },
+  { type: "select", label: "Liste déroulante", icon: "checkbox" },
   { type: "radio", label: "Choix unique", icon: "checkbox" },
+  { type: "checkbox", label: "Case à cocher", icon: "checkbox" },
   { type: "switch", label: "Interrupteur", icon: "textField" },
   { type: "calendar", label: "Date", icon: "calendar" },
+  { type: "time", label: "Heure", icon: "clock" },
 ];
 
 export const FormBuilder = ({
@@ -107,12 +110,30 @@ export const FormBuilder = ({
         ],
         defaultIndex: 0,
       };
+    } else if (type === "checkbox") {
+      newField = {
+        name: fieldName,
+        type: "checkbox",
+        label: "Nouveau champ",
+        options: [
+          { value: "option1", label: "Option 1" },
+          { value: "option2", label: "Option 2" },
+        ],
+        defaultIndices: [],
+      };
     } else if (type === "calendar") {
       newField = {
         name: fieldName,
         type: "calendar",
         label: "Nouveau champ",
         placeholder: "Date",
+      };
+    } else if (type === "time") {
+      newField = {
+        name: fieldName,
+        type: "time",
+        label: "Nouveau champ",
+        placeholder: "Heure",
       };
     } else {
       newField = {
@@ -207,31 +228,31 @@ export const FormBuilder = ({
             une donnée à déclarer.
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-8">
             {schema.map((fieldConfig, index) => (
-              <div key={`${fieldConfig.name}-${index}`}>
-                <FieldConfigurator
-                  config={fieldConfig}
-                  onChange={(config) => handleUpdateField(index, config)}
-                  onRemove={() => handleRemoveField(index)}
-                />
-                <Divider className="my-7 bg-border-divider" />
-              </div>
+              <Card key={`${fieldConfig.name}-${index}`}>
+                <CardContent>
+                  <FieldConfigurator
+                    config={fieldConfig}
+                    onChange={(config) => handleUpdateField(index, config)}
+                    onRemove={() => handleRemoveField(index)}
+                  />
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
       </div>
 
       {/* Bouton flottant ou normal */}
-      {!hideButton && (
-        floatingButton ? (
+      {!hideButton &&
+        (floatingButton ? (
           <div className="absolute bottom-2.5 left-0 right-0 px-6 bg-background">
             {addButtonContent}
           </div>
         ) : (
           <div className="mt-6">{addButtonContent}</div>
-        )
-      )}
+        ))}
     </>
   );
 };

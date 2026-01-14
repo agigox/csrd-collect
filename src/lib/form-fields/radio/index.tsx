@@ -10,9 +10,10 @@ const RadioField = ({
   error,
 }: FieldProps<RadioFieldConfig>) => {
   // Use default value from config if no value is set
-  const defaultValue = config.defaultIndex !== undefined && config.options[config.defaultIndex]
-    ? config.options[config.defaultIndex].value
-    : "";
+  const defaultValue =
+    config.defaultIndex !== undefined && config.options[config.defaultIndex]
+      ? config.options[config.defaultIndex].value
+      : "";
   const currentValue = (value as string) ?? defaultValue;
 
   const handleChange = (optionValue: string) => {
@@ -20,7 +21,7 @@ const RadioField = ({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 border-2 border-green-500">
       <Label>
         {config.label}
         {config.required && <span className="text-red-500 ml-1">*</span>}
@@ -43,8 +44,8 @@ const RadioField = ({
                   isSelected
                     ? "border-[#2964a0] bg-white"
                     : error
-                      ? "border-[#de2048] bg-white group-hover:border-[#c81640]"
-                      : "border-[#737272] bg-white group-hover:border-[#225082]"
+                    ? "border-[#de2048] bg-white group-hover:border-[#c81640]"
+                    : "border-[#737272] bg-white group-hover:border-[#225082]"
                 }`}
               >
                 {/* Inner Fill */}

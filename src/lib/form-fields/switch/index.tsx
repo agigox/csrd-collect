@@ -1,7 +1,11 @@
 "use client";
 
 import { Label } from "@/lib/components/ui/label";
-import type { FieldProps, FieldRegistration, SwitchFieldConfig } from "../types";
+import type {
+  FieldProps,
+  FieldRegistration,
+  SwitchFieldConfig,
+} from "../types";
 
 const SwitchField = ({
   config,
@@ -68,7 +72,7 @@ const SwitchField = ({
       {/* Description */}
       {config.description && (
         <div className="px-2 py-1">
-          <span className="text-xs text-content-tertiary">
+          <span className="text-xs text-text-primary-tertiary">
             {config.description}
           </span>
         </div>

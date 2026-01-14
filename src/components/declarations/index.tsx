@@ -4,7 +4,7 @@ import { useState } from "react";
 import Dashboard from "./Dashboard";
 import DeclarationsList from "./declarationsList";
 import FormSelectionDialog from "./FormSelectionDialog";
-import { FormDefinition } from "@/context/FormsContext";
+import { useAuthStore, type FormDefinition } from "@/stores";
 import {
   Dialog,
   DialogContent,
@@ -16,11 +16,17 @@ import { Button } from "@/lib/components/ui/button";
 import { DynamicForm } from "@/lib/form-fields";
 
 const Declarations = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [selectionDialogOpen, setSelectionDialogOpen] = useState(false);
   const [declarationDialogOpen, setDeclarationDialogOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<FormDefinition | null>(null);
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  // Don't render declarations if user is not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const handleOpenSelection = () => {
     setSelectionDialogOpen(true);

@@ -11,8 +11,15 @@ import {
 import type { FieldProps, FieldRegistration, SelectFieldConfig } from "../types";
 
 const SelectField = ({ config, value, onChange, error }: FieldProps<SelectFieldConfig>) => {
+  const currentValue = (value as string) ?? "";
+  const hasValue = currentValue !== "";
+
   const handleChange = (newValue: string) => {
     onChange(newValue);
+  };
+
+  const handleClear = () => {
+    onChange("");
   };
 
   return (
@@ -21,11 +28,14 @@ const SelectField = ({ config, value, onChange, error }: FieldProps<SelectFieldC
         {config.label}
         {config.required && <span className="text-red-500 ml-1">*</span>}
       </Label>
-      <Select value={(value as string) ?? ""} onValueChange={handleChange}>
+      <Select value={currentValue} onValueChange={handleChange}>
         <SelectTrigger
           id={config.name}
           aria-invalid={!!error}
           className={error ? "border-red-500 w-full" : "w-full"}
+          clearable={!config.required}
+          hasValue={hasValue}
+          onClear={handleClear}
         >
           <SelectValue placeholder={config.placeholder ?? "Sélectionner..."} />
         </SelectTrigger>

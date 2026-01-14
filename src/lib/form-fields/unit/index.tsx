@@ -98,7 +98,7 @@ const UnitField = ({
             *
           </span>
         ) : (
-          <span className="text-xs text-content-tertiary relative -top-1">
+          <span className="text-xs text-text-primary-tertiary relative -top-1">
             (facultatif)
           </span>
         )}
@@ -136,7 +136,7 @@ const UnitField = ({
             className={`text-xs ${
               displayError
                 ? "text-content-danger-default font-bold"
-                : "text-content-tertiary"
+                : "text-text-primary-tertiary"
             }`}
           >
             {displayError || config.description}

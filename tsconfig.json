@@ -23,7 +23,8 @@
     "paths": {
       "@/lib/*": ["lib/*"],
       "@/components/*": ["components/*"],
-      "@/context/*": ["context/*"]
+      "@/stores": ["stores"],
+      "@/stores/*": ["stores/*"]
     }
   },
   "include": [

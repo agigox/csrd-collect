@@ -1,11 +1,10 @@
 import { Avatar, AvatarFallback } from "@/lib/components/ui/avatar";
 import { Separator } from "@/lib/components/ui/separator";
-import { useUser } from "@/context/UserContext";
+
+const ADMIN_NAME = "Julien Neuville";
 
 const AdminUserInfo = () => {
-  const { name } = useUser();
-
-  const initials = name
+  const initials = ADMIN_NAME
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -20,7 +19,7 @@ const AdminUserInfo = () => {
             {initials}
           </AvatarFallback>
         </Avatar>
-        <span className="text-base font-semibold truncate">{name}</span>
+        <span className="text-base font-semibold truncate">{ADMIN_NAME}</span>
       </div>
       <div className="px-2">
         <Separator className="bg-sidebar-border" />

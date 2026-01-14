@@ -11,7 +11,7 @@ import {
 import { Button } from "@/lib/components/ui/button";
 import Icon from "@/lib/Icons";
 import FormSelectionDialog from "../FormSelectionDialog";
-import { FormDefinition } from "@/context/FormsContext";
+import { type FormDefinition } from "@/stores";
 import { DynamicForm } from "@/lib/form-fields";
 
 interface AddDeclarationProps {

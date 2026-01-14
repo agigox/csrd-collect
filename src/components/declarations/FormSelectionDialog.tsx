@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/lib/components/ui/dialog";
 import { Button } from "@/lib/components/ui/button";
-import { useForms, FormDefinition } from "@/context/FormsContext";
+import { useFormsStore, type FormDefinition } from "@/stores";
 import { cn } from "@/lib/utils";
 
 interface FormSelectionDialogProps {
@@ -23,9 +23,14 @@ const FormSelectionDialog = ({
   onOpenChange,
   onFormSelect,
 }: FormSelectionDialogProps) => {
-  const { forms, loading } = useForms();
-  console.log(forms);
+  const { forms, loading, fetchForms } = useFormsStore();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      fetchForms();
+    }
+  }, [open, fetchForms]);
 
   const handleCancel = () => {
     setSelectedFormId(null);

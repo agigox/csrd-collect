@@ -1,4 +1,4 @@
-import { useSidebar } from "@/context/SidebarContext";
+import { useSidebarStore } from "@/stores";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 const inter = Inter({
@@ -7,7 +7,7 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 const Header = () => {
-  const { sidebarCollapsed } = useSidebar();
+  const isCollapsed = useSidebarStore((state) => state.isCollapsed);
 
   return (
     <div className="flex flex-col gap-1 items-start pt-5 px-4 pb-0 justify-between">
@@ -19,7 +19,7 @@ const Header = () => {
           height={24}
           className="rounded-md shrink-0"
         />
-        {!sidebarCollapsed && (
+        {!isCollapsed && (
           <div className="overflow-hidden flex flex-col">
             <div className="font-semibold text-base whitespace-nowrap">
               Le collecteur

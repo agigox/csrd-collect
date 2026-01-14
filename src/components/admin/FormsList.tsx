@@ -9,7 +9,7 @@ import {
   TabsContent,
 } from "@/lib/components/ui/tabs";
 import { FormCard } from "./FormCard";
-import { useForms } from "@/context/FormsContext";
+import { useFormsStore } from "@/stores";
 
 const categories = [
   { value: "all", label: "Tous" },
@@ -21,8 +21,12 @@ const categories = [
 
 export const FormsList = () => {
   const [activeTab, setActiveTab] = useState("all");
-  const { forms, loading, setCurrentForm } = useForms();
+  const { forms, loading, setCurrentForm, fetchForms } = useFormsStore();
   const router = useRouter();
+
+  useEffect(() => {
+    fetchForms();
+  }, [fetchForms]);
 
   // Clear currentForm when returning to the list
   useEffect(() => {

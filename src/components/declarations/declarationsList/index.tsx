@@ -1,6 +1,7 @@
 "use client";
 
-import { useDeclarations } from "@/context/DeclarationsContext";
+import { useMemo, useEffect } from "react";
+import { useDeclarationsStore } from "@/stores";
 import DeclarationCard from "../DeclarationCard";
 import Header from "./Header";
 
@@ -8,8 +9,37 @@ interface DeclarationsListProps {
   onDeclarer?: () => void;
 }
 
+interface DateSeparatorProps {
+  date: string;
+}
+
+const DateSeparator = ({ date }: DateSeparatorProps) => (
+  <div className="flex items-center gap-4 py-2">
+    <span className="text-sm text-gray-500 whitespace-nowrap">{date}</span>
+    <div className="flex-1 h-px bg-gray-300" />
+  </div>
+);
+
 const DeclarationsList = ({ onDeclarer }: DeclarationsListProps) => {
-  const { declarations, loading, error } = useDeclarations();
+  const { declarations, loading, error, fetchDeclarations } = useDeclarationsStore();
+
+  useEffect(() => {
+    fetchDeclarations();
+  }, [fetchDeclarations]);
+
+  const groupedDeclarations = useMemo(() => {
+    const groups: Record<string, typeof declarations> = {};
+
+    declarations.forEach((declaration) => {
+      const date = declaration.date;
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(declaration);
+    });
+
+    return groups;
+  }, [declarations]);
 
   if (loading) {
     return (
@@ -32,15 +62,22 @@ const DeclarationsList = ({ onDeclarer }: DeclarationsListProps) => {
       <Header onDeclarer={onDeclarer} />
 
       <div className="flex flex-col gap-4">
-        {declarations.map((declaration) => (
-          <DeclarationCard
-            key={declaration.id}
-            date={declaration.date}
-            author={declaration.author}
-            title={declaration.title}
-            description={declaration.description}
-            onClick={() => console.log("Clicked:", declaration.title)}
-          />
+        {Object.entries(groupedDeclarations).map(([date, dateDeclarations]) => (
+          <div key={date}>
+            <DateSeparator date={date} />
+            <div className="flex flex-col gap-4">
+              {dateDeclarations.map((declaration) => (
+                <DeclarationCard
+                  key={declaration.id}
+                  date={declaration.date}
+                  author={declaration.author}
+                  title={declaration.title}
+                  description={declaration.description}
+                  onClick={() => console.log("Clicked:", declaration.title)}
+                />
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </div>

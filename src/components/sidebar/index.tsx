@@ -7,16 +7,17 @@ import UserInfo from "./UserInfo";
 import AdminUserInfo from "./AdminUserInfo";
 import { Navigation } from "./Navigation";
 import NavItem from "./NavItem";
-import { useSidebar } from "@/context/SidebarContext";
-import { useUser } from "@/context/UserContext";
+import { useSidebarStore } from "@/stores";
+import { usePathname } from "next/navigation";
 
 interface SidebarProps {
   variant?: "admin" | "member";
 }
 
 export function Sidebar({ variant }: SidebarProps) {
-  const { sidebarCollapsed } = useSidebar();
-  const { isAdmin } = useUser();
+  const isCollapsed = useSidebarStore((state) => state.isCollapsed);
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin");
 
   const effectiveVariant = variant ?? (isAdmin ? "admin" : "member");
   const showAdminUI = effectiveVariant === "admin";
@@ -24,7 +25,7 @@ export function Sidebar({ variant }: SidebarProps) {
   return (
     <aside
       className={`fixed top-0 left-0 h-screen bg-sidebar-bg pt-2 text-sidebar-text flex flex-col transition-all duration-250 z-50 overflow-hidden ${
-        sidebarCollapsed ? "w-[60px]" : "w-[220px]"
+        isCollapsed ? "w-[60px]" : "w-[220px]"
       }`}
     >
       <Header />
@@ -32,7 +33,7 @@ export function Sidebar({ variant }: SidebarProps) {
         <Separator className="bg-sidebar-border" />
       </div>
 
-      {!sidebarCollapsed && (showAdminUI ? <AdminUserInfo /> : <UserInfo />)}
+      {!isCollapsed && (showAdminUI ? <AdminUserInfo /> : <UserInfo />)}
 
       <div className="flex-1 flex flex-col justify-between">
         <Navigation variant={effectiveVariant} />
@@ -51,7 +52,7 @@ export function Sidebar({ variant }: SidebarProps) {
               <Icon
                 name="collapse"
                 className={`transition-transform duration-250 ${
-                  sidebarCollapsed ? "rotate-180" : ""
+                  isCollapsed ? "rotate-180" : ""
                 }`}
               />
             }

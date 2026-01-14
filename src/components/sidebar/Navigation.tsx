@@ -1,7 +1,7 @@
 import Icon, { IconName } from "@/lib/Icons";
 import NavItem from "./NavItem";
 import { Button } from "@/lib/components/ui/button";
-import { useSidebar } from "@/context/SidebarContext";
+import { useSidebarStore } from "@/stores";
 
 interface MenuItem {
   icon: IconName;
@@ -25,16 +25,16 @@ interface NavigationProps {
 }
 
 export const Navigation = ({ variant = "member" }: NavigationProps) => {
-  const { sidebarCollapsed } = useSidebar();
+  const isCollapsed = useSidebarStore((state) => state.isCollapsed);
   const isAdmin = variant === "admin";
   const menuItems = isAdmin ? adminMenuItems : memberMenuItems;
 
   return (
     <div className="flex flex-col gap-10 py-4">
       {!isAdmin && (
-        <div className={!sidebarCollapsed ? "mx-2" : ""}>
+        <div className={!isCollapsed ? "mx-2" : ""}>
           <Button className="w-full">
-            {!sidebarCollapsed && "Déclarer"}
+            {!isCollapsed && "Déclarer"}
             <Icon name="campaign" />
           </Button>
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Megaphone } from "lucide-react";
-import { useDeclarations } from "@/context/DeclarationsContext";
+import { useDeclarationsStore } from "@/stores";
 
 interface StatCardProps {
   value: number;
@@ -59,7 +59,7 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ onDeclarer }: DashboardProps) => {
-  const { stats, loading } = useDeclarations();
+  const { stats, loading } = useDeclarationsStore();
 
   return (
     <div className="flex flex-col gap-4 w-full">

@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-export type FieldType = "text" | "number" | "select" | "unit" | "switch" | "calendar" | "radio";
+export type FieldType = "text" | "number" | "select" | "unit" | "switch" | "calendar" | "radio" | "checkbox" | "time";
 
 export interface ValidationRule {
   type: "required" | "min" | "max" | "pattern";
@@ -62,7 +62,18 @@ export interface RadioFieldConfig extends BaseFieldConfig {
   defaultIndex?: number;
 }
 
-export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig | CalendarFieldConfig | RadioFieldConfig;
+export interface CheckboxFieldConfig extends BaseFieldConfig {
+  type: "checkbox";
+  options: SelectOption[];
+  defaultIndices?: number[];
+}
+
+export interface TimeFieldConfig extends BaseFieldConfig {
+  type: "time";
+  format?: "12h" | "24h";
+}
+
+export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig | CalendarFieldConfig | RadioFieldConfig | CheckboxFieldConfig | TimeFieldConfig;
 
 export interface FieldProps<T extends FieldConfig = FieldConfig> {
   config: T;

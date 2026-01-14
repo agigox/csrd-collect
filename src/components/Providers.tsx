@@ -1,8 +1,6 @@
 "use client";
 
-import { DeclarationsProvider } from "@/context/DeclarationsContext";
-import { FormsProvider } from "@/context/FormsContext";
-import { UserProvider } from "@/context/UserContext";
+import { AuthGuard } from "@/components/auth";
 import { ReactNode } from "react";
 
 interface ProvidersProps {
@@ -10,11 +8,5 @@ interface ProvidersProps {
 }
 
 export default function Providers({ children }: ProvidersProps) {
-  return (
-    <UserProvider>
-      <DeclarationsProvider>
-        <FormsProvider>{children}</FormsProvider>
-      </DeclarationsProvider>
-    </UserProvider>
-  );
+  return <AuthGuard>{children}</AuthGuard>;
 }
