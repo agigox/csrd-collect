@@ -22,7 +22,7 @@ const RadioField = ({
   };
 
   return (
-    <div className="flex flex-col gap-2 border-2 border-green-500">
+    <div className="flex flex-col gap-2">
       <Label>
         {config.label}
         {config.required && <span className="text-red-500 ml-1">*</span>}
@@ -75,7 +75,13 @@ const RadioField = ({
 export const fieldRegistration: FieldRegistration = {
   type: "radio",
   component: RadioField,
-  defaultConfig: {},
+  defaultConfig: {
+    options: [
+      { value: "option_1", label: "Choix 1" },
+      { value: "option_2", label: "Choix 2" },
+      { value: "option_3", label: "Choix 3" },
+    ],
+  },
 };
 
 export default RadioField;

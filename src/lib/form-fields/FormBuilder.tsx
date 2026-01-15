@@ -95,8 +95,11 @@ export const FormBuilder = ({
         name: fieldName,
         type: "radio",
         label: "Nouveau champ",
-        options: [],
-        defaultIndex: 0,
+        options: [
+          { value: "option_1", label: "Choix 1" },
+          { value: "option_2", label: "Choix 2" },
+          { value: "option_3", label: "Choix 3" },
+        ],
       };
     } else if (type === "checkbox") {
       newField = {
