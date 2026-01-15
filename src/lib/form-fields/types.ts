@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-export type FieldType = "text" | "number" | "select" | "unit" | "switch" | "date" | "radio" | "checkbox";
+export type FieldType = "text" | "number" | "select" | "unit" | "switch" | "date" | "radio" | "checkbox" | "import";
 
 export interface ValidationRule {
   type: "required" | "min" | "max" | "pattern";

@@ -19,8 +19,8 @@ export const typeLabels: Record<string, string> = {
   number: "Nombre",
   select: "Liste déroulante",
   radio: "Choix unique",
-  checkbox: "Case à cocher",
+  checkbox: "Choix multiple",
   unit: "Quantité avec unité",
-  switch: "Interrupteur",
+  switch: "Switch",
   date: "Date",
 };

@@ -69,7 +69,7 @@ L'innovation clé : des **formulaires configurables en JSON**.
 - `number` - Valeur numérique
 - `select` - Liste déroulante
 - `unit` - Nombre avec unité (kg, L, m²...)
-- `switch` - Interrupteur oui/non
+- `switch` - Switch oui/non
 - `calendar` - Sélecteur de date
 
 ### Exemple de configuration

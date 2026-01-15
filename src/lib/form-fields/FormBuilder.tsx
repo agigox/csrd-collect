@@ -21,17 +21,20 @@ interface FieldTypeOption {
   type: FieldType;
   label: string;
   icon: IconName;
+  borderBottom?: boolean;
 }
 
 const fieldTypeOptions: FieldTypeOption[] = [
-  { type: "text", label: "Champ libre", icon: "textField" },
-  { type: "number", label: "Nombre", icon: "textField" },
-  { type: "unit", label: "Quantité avec unité", icon: "textField" },
-  { type: "select", label: "Liste déroulante", icon: "checkbox" },
-  { type: "radio", label: "Choix unique", icon: "checkbox" },
-  { type: "checkbox", label: "Case à cocher", icon: "checkbox" },
-  { type: "switch", label: "Interrupteur", icon: "textField" },
-  { type: "date", label: "Date", icon: "calendar" },
+  { type: "date", label: "Heure et Date", icon: "calendar", borderBottom: true },
+  { type: "text", label: "Champ libre", icon: "letter" },
+  { type: "number", label: "Nombre", icon: "letter" },
+  { type: "unit", label: "Quantité avec unité", icon: "letter", borderBottom: true },
+  { type: "radio", label: "Choix unique", icon: "checkCircle" },
+  { type: "checkbox", label: "Choix multiple", icon: "checkbox", borderBottom: true },
+  { type: "select", label: "Liste déroulante", icon: "listAlt", borderBottom: true },
+  { type: "import", label: "Import de fichier", icon: "upload" },
+  { type: "switch", label: "Switch", icon: "switch" },
+  
 ];
 
 export const FormBuilder = ({
@@ -170,7 +173,9 @@ export const FormBuilder = ({
             <button
               key={option.type}
               onClick={() => handleAddField(option.type)}
-              className="flex items-center gap-3 px-4 py-3 text-sm text-left hover:bg-muted transition-colors border-b border-border last:border-b-0"
+              className={`flex items-center gap-3 px-4 py-3 text-sm text-left hover:bg-muted transition-colors ${
+                option.borderBottom ? "border-b border-border" : ""
+              }`}
             >
               <Icon name={option.icon} size={18} />
               <span>{option.label}</span>
