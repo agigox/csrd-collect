@@ -87,10 +87,12 @@ body {
   --color-content-text: var(--content-text);
   --color-content-muted: var(--content-muted);
   --color-input-label: var(--input-label);
+  --color-border-primary: var(--border-primary);
   --color-border-primary-hl-default: var(--border-primary-hl-default);
   --color-background-brand-navigation-default: var(
     --background-brand-navigation-default
   );
+  --color-content-secondary: var(--content-secondary);
 }
 
 :root {
@@ -135,8 +137,10 @@ body {
   --content-text: #201f1f;
   --content-muted: #6b7280;
   --input-label: #626769;
+  --border-primary: #737272;
   --border-primary-hl-default: #225082;
   --background-brand-navigation-default: #15253c;
+  --content-secondary: #3e3e3d;
 }
 
 .dark {

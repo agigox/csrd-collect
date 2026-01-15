@@ -12,7 +12,7 @@ interface HeaderProps {
 
 export const Header = ({ type, onDuplicate, onRemove }: HeaderProps) => {
   return (
-    <div className="flex justify-between items-center mb-2">
+    <div className="flex justify-between items-center h-10">
       <h2 className="font-bold text-base">{typeLabels[type]}</h2>
       <div className="flex items-center gap-2">
         <button

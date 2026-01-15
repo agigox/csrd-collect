@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
 import type { FieldProps, FieldRegistration, TextFieldConfig } from "../types";
@@ -10,6 +11,13 @@ const TextField = ({
   onChange,
   error,
 }: FieldProps<TextFieldConfig>) => {
+  // Apply default value on mount if no value is set
+  useEffect(() => {
+    if (config.defaultValue && !value) {
+      onChange(config.defaultValue);
+    }
+  }, [config.defaultValue]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
@@ -24,7 +32,6 @@ const TextField = ({
         id={config.name}
         name={config.name}
         type="text"
-        placeholder={config.placeholder}
         value={(value as string) ?? ""}
         onChange={handleChange}
         aria-invalid={!!error}
@@ -38,9 +45,7 @@ const TextField = ({
 export const fieldRegistration: FieldRegistration = {
   type: "text",
   component: TextField,
-  defaultConfig: {
-    placeholder: "",
-  },
+  defaultConfig: {},
 };
 
 export default TextField;

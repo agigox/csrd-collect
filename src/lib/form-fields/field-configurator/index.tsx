@@ -82,24 +82,25 @@ export const FieldConfigurator = ({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <Header
         type={config.type}
         onDuplicate={onDuplicate}
         onRemove={onRemove}
       />
+      <div className="flex flex-col gap-4">
+        <LabelField
+          value={config.label}
+          onChange={(label) => onChange({ ...config, label })}
+        />
 
-      <LabelField
-        value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
-      />
+        {renderSpecificConfigurator()}
 
-      {renderSpecificConfigurator()}
-
-      <DescriptionField
-        value={config.description ?? ""}
-        onChange={(description) => onChange({ ...config, description })}
-      />
+        <DescriptionField
+          value={config.description ?? ""}
+          onChange={(description) => onChange({ ...config, description })}
+        />
+      </div>
 
       <RequiredToggle
         required={config.required ?? false}

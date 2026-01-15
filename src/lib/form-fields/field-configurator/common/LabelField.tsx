@@ -10,7 +10,7 @@ interface LabelFieldProps {
 
 export const LabelField = ({ value, onChange }: LabelFieldProps) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col">
       <Label>Entête</Label>
       <Input
         value={value}

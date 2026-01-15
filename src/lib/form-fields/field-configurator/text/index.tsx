@@ -10,12 +10,11 @@ export const TextConfigurator = ({
   onChange,
 }: SpecificConfiguratorProps<TextFieldConfig>) => {
   return (
-    <div className="flex flex-col gap-1">
-      <Label>Placeholder</Label>
+    <div className="flex flex-col">
+      <Label>Valeur par défaut</Label>
       <Input
-        value={config.placeholder ?? ""}
-        onChange={(e) => onChange({ ...config, placeholder: e.target.value })}
-        placeholder="Texte d'aide dans le champ"
+        value={(config.defaultValue as string) ?? ""}
+        onChange={(e) => onChange({ ...config, defaultValue: e.target.value })}
         className="h-8 text-sm w-58.75"
       />
     </div>

@@ -163,7 +163,7 @@ export default function AdminParametrageDeclaratifPage() {
                   <h2 className="text-white h-10">Titre du formulaire</h2>
                   <div className="flex flex-col gap-4.5">
                     <div className="flex justify-between items-start gap-4">
-                      <div className="flex flex-col gap-2 flex-1">
+                      <div className="flex flex-col flex-1">
                         <Label className="text-white">
                           Titre de la donnée déclarée
                         </Label>
@@ -186,7 +186,7 @@ export default function AdminParametrageDeclaratifPage() {
                       )}
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col">
                       <Label className="text-white">Description</Label>
                       <Input
                         value={formDescription}
@@ -196,7 +196,7 @@ export default function AdminParametrageDeclaratifPage() {
                       />
                     </div>
 
-                    <div className="flex flex-col gap-1 w-50">
+                    <div className="flex flex-col w-50">
                       <Label className="text-white">Norme</Label>
                       <select
                         value={formNorme}
