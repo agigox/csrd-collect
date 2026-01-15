@@ -1,16 +1,25 @@
 "use client";
 
-import { Label } from "@/lib/components/ui/label";
+import { Label } from "@/lib/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/lib/components/ui/select";
-import type { FieldProps, FieldRegistration, SelectFieldConfig } from "../types";
+} from "@/lib/ui/select";
+import type {
+  FieldProps,
+  FieldRegistration,
+  SelectFieldConfig,
+} from "../types";
 
-const SelectField = ({ config, value, onChange, error }: FieldProps<SelectFieldConfig>) => {
+const SelectField = ({
+  config,
+  value,
+  onChange,
+  error,
+}: FieldProps<SelectFieldConfig>) => {
   const currentValue = (value as string) ?? "";
   const hasValue = currentValue !== "";
 
@@ -40,7 +49,7 @@ const SelectField = ({ config, value, onChange, error }: FieldProps<SelectFieldC
           <SelectValue placeholder={config.placeholder ?? "Sélectionner..."} />
         </SelectTrigger>
         <SelectContent>
-          {config.options.map((option) => (
+          {(config.options ?? []).map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}
             </SelectItem>

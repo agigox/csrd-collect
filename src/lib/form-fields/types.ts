@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-export type FieldType = "text" | "number" | "select" | "unit" | "switch" | "calendar" | "radio" | "checkbox" | "time";
+export type FieldType = "text" | "number" | "select" | "unit" | "switch" | "date" | "radio" | "checkbox";
 
 export interface ValidationRule {
   type: "required" | "min" | "max" | "pattern";
@@ -16,6 +16,7 @@ export interface BaseFieldConfig {
   required?: boolean;
   defaultValue?: unknown;
   validation?: ValidationRule[];
+  description?: string;
 }
 
 export interface SelectOption {
@@ -23,10 +24,15 @@ export interface SelectOption {
   label: string;
 }
 
+export type DataSourceType = "csv" | "api";
+
 export interface SelectFieldConfig extends BaseFieldConfig {
   type: "select";
   options: SelectOption[];
   defaultIndex?: number;
+  dataType?: string; // Type de donnée (ex: "Adresse")
+  dataSourceType?: DataSourceType; // Type de source: CSV ou API
+  apiUrl?: string; // URL de l'API pour charger les options
 }
 
 export interface NumberFieldConfig extends BaseFieldConfig {
@@ -44,16 +50,18 @@ export interface UnitFieldConfig extends BaseFieldConfig {
   unit: string;
   min?: number;
   max?: number;
-  description?: string;
 }
 
 export interface SwitchFieldConfig extends BaseFieldConfig {
   type: "switch";
-  description?: string;
 }
 
-export interface CalendarFieldConfig extends BaseFieldConfig {
-  type: "calendar";
+export type DateDefaultValue = "none" | "today";
+
+export interface DateFieldConfig extends BaseFieldConfig {
+  type: "date";
+  includeTime?: boolean;
+  defaultDateValue?: DateDefaultValue;
 }
 
 export interface RadioFieldConfig extends BaseFieldConfig {
@@ -68,12 +76,7 @@ export interface CheckboxFieldConfig extends BaseFieldConfig {
   defaultIndices?: number[];
 }
 
-export interface TimeFieldConfig extends BaseFieldConfig {
-  type: "time";
-  format?: "12h" | "24h";
-}
-
-export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig | CalendarFieldConfig | RadioFieldConfig | CheckboxFieldConfig | TimeFieldConfig;
+export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig | DateFieldConfig | RadioFieldConfig | CheckboxFieldConfig;
 
 export interface FieldProps<T extends FieldConfig = FieldConfig> {
   config: T;

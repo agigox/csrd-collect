@@ -1,6 +1,6 @@
 "use client";
 
-import { Label } from "@/lib/components/ui/label";
+import { Label } from "@/lib/ui/label";
 import type {
   FieldProps,
   FieldRegistration,

@@ -4,8 +4,8 @@ import React, {
   useEffect,
   useCallback,
   CSSProperties,
-} from 'react';
-import './ScrollableContainer.css';
+} from "react";
+import "./ScrollableContainer.css";
 
 export interface ScrollableContainerProps {
   children: React.ReactNode;
@@ -27,19 +27,22 @@ export interface ScrollableContainerProps {
   height?: number | string;
   /** Custom styles for the container */
   style?: CSSProperties;
+  /** Callback fired when overflow state changes (scrollbar appears/disappears) */
+  onOverflowChange?: (hasOverflow: boolean) => void;
 }
 
 export const ScrollableContainer = ({
   children,
   scrollbarWidth = 8,
-  trackColor = 'transparent',
-  thumbColor = 'rgba(59, 67, 74, 0.4)',
+  trackColor = "transparent",
+  thumbColor = "rgba(59, 67, 74, 0.4)",
   thumbBorderRadius = 10,
   trackBorderRadius = 10,
   thumbHeight = 64,
-  className = '',
+  className = "",
   height,
   style,
+  onOverflowChange,
 }: ScrollableContainerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -58,7 +61,13 @@ export const ScrollableContainer = ({
     const checkOverflow = () => {
       if (contentRef.current) {
         const { scrollHeight, clientHeight } = contentRef.current;
-        setHasOverflow(scrollHeight > clientHeight);
+        const newHasOverflow = scrollHeight > clientHeight;
+        setHasOverflow((prev) => {
+          if (prev !== newHasOverflow) {
+            onOverflowChange?.(newHasOverflow);
+          }
+          return newHasOverflow;
+        });
       }
     };
 
@@ -70,7 +79,7 @@ export const ScrollableContainer = ({
     }
 
     return () => resizeObserver.disconnect();
-  }, [children]);
+  }, [children, onOverflowChange]);
 
   // Update thumb position on scroll
   const updateThumbPosition = useCallback(() => {
@@ -93,16 +102,13 @@ export const ScrollableContainer = ({
   }, [updateThumbPosition]);
 
   // Handle mouse down on thumb
-  const handleThumbMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(true);
-      dragStartY.current = e.clientY;
-      dragStartScrollTop.current = contentRef.current?.scrollTop || 0;
-    },
-    []
-  );
+  const handleThumbMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+    dragStartY.current = e.clientY;
+    dragStartScrollTop.current = contentRef.current?.scrollTop || 0;
+  }, []);
 
   // Handle mouse move for dragging
   useEffect(() => {
@@ -124,44 +130,51 @@ export const ScrollableContainer = ({
     };
 
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, thumbHeight]);
 
   // Handle click on track
-  const handleTrackClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (!contentRef.current || !trackRef.current || e.target === thumbRef.current) return;
+  const handleTrackClick = useCallback((e: React.MouseEvent) => {
+    if (
+      !contentRef.current ||
+      !trackRef.current ||
+      e.target === thumbRef.current
+    )
+      return;
 
-      const trackRect = trackRef.current.getBoundingClientRect();
-      const clickY = e.clientY - trackRect.top;
-      const trackHeight = trackRef.current.clientHeight;
-      const { scrollHeight, clientHeight } = contentRef.current;
-      const scrollableDistance = scrollHeight - clientHeight;
+    const trackRect = trackRef.current.getBoundingClientRect();
+    const clickY = e.clientY - trackRect.top;
+    const trackHeight = trackRef.current.clientHeight;
+    const { scrollHeight, clientHeight } = contentRef.current;
+    const scrollableDistance = scrollHeight - clientHeight;
 
-      const clickRatio = clickY / trackHeight;
-      contentRef.current.scrollTop = clickRatio * scrollableDistance;
-    },
-    []
-  );
+    const clickRatio = clickY / trackHeight;
+    contentRef.current.scrollTop = clickRatio * scrollableDistance;
+  }, []);
 
   // Handle wheel event on the container
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    if (!contentRef.current || !hasOverflow) return;
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      if (!contentRef.current || !hasOverflow) return;
 
-    contentRef.current.scrollTop += e.deltaY;
-  }, [hasOverflow]);
+      contentRef.current.scrollTop += e.deltaY;
+    },
+    [hasOverflow]
+  );
 
   return (
     <div
       ref={containerRef}
-      className={`scrollable-container ${hasOverflow ? 'scrollable-container--has-overflow' : ''} ${className}`}
+      className={`scrollable-container ${
+        hasOverflow ? "scrollable-container--has-overflow" : ""
+      } ${className}`}
       style={{ maxHeight: height, ...style }}
       data-name="ScrollableContainer"
       onMouseEnter={() => setIsHovered(true)}
@@ -176,30 +189,35 @@ export const ScrollableContainer = ({
         {children}
       </div>
 
-      <div
-        ref={trackRef}
-        className={`scrollable-container__track ${hasOverflow ? 'scrollable-container__track--active' : ''}`}
-        style={{
-          width: scrollbarWidth,
-          backgroundColor: trackColor,
-          borderRadius: trackBorderRadius,
-          visibility: hasOverflow ? 'visible' : 'hidden',
-        }}
-        onClick={hasOverflow ? handleTrackClick : undefined}
-      >
+      {hasOverflow && (
         <div
-          ref={thumbRef}
-          className={`scrollable-container__thumb ${isHovered || isDragging ? 'scrollable-container__thumb--visible' : ''}`}
+          ref={trackRef}
+          className="scrollable-container__track scrollable-container__track--active"
           style={{
-            height: thumbHeight,
             width: scrollbarWidth,
-            backgroundColor: thumbColor,
-            borderRadius: thumbBorderRadius,
-            transform: `translateY(${thumbTop}px)`,
+            backgroundColor: trackColor,
+            borderRadius: trackBorderRadius,
           }}
-          onMouseDown={hasOverflow ? handleThumbMouseDown : undefined}
-        />
-      </div>
+          onClick={handleTrackClick}
+        >
+          <div
+            ref={thumbRef}
+            className={`scrollable-container__thumb ${
+              isHovered || isDragging
+                ? "scrollable-container__thumb--visible"
+                : ""
+            }`}
+            style={{
+              height: thumbHeight,
+              width: scrollbarWidth,
+              backgroundColor: thumbColor,
+              borderRadius: thumbBorderRadius,
+              transform: `translateY(${thumbTop}px)`,
+            }}
+            onMouseDown={handleThumbMouseDown}
+          />
+        </div>
+      )}
     </div>
   );
 };

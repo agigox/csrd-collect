@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/lib/components/ui/card";
+import { Card } from "@/lib/ui/card";
 import { Divider } from "@/lib/Divider";
 
 interface FormCardProps {
@@ -10,7 +10,12 @@ interface FormCardProps {
   onClick?: () => void;
 }
 
-export const FormCard = ({ code, title, description, onClick }: FormCardProps) => {
+export const FormCard = ({
+  code,
+  title,
+  description,
+  onClick,
+}: FormCardProps) => {
   return (
     <Card
       onClick={onClick}

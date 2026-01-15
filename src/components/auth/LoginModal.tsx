@@ -7,16 +7,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/lib/components/ui/dialog";
+} from "@/lib/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/lib/components/ui/select";
-import { Button } from "@/lib/components/ui/button";
-import { Label } from "@/lib/components/ui/label";
+} from "@/lib/ui/select";
+import { Button } from "@/lib/ui/button";
+import { Label } from "@/lib/ui/label";
 import { useAuthStore, type TeamInfo } from "@/stores";
 
 // Mock data - à remplacer par des données API

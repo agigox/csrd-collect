@@ -65,9 +65,7 @@ function DialogContent({
         )}
         {...props}
       >
-        <div className="flex items-start gap-4">
-          <div className="flex-1 flex flex-col gap-6">{children}</div>
-        </div>
+        {children}
       </DialogPrimitive.Content>
     </DialogPortal>
   );
@@ -102,7 +100,7 @@ function DialogTitle({
 }: React.ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center w-full">
         <DialogPrimitive.Title
           data-slot="dialog-title"
           className={cn("text-2xl leading-8 font-semibold", className)}
@@ -116,7 +114,6 @@ function DialogTitle({
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       </div>
-      <Divider className="bg-border-divider mt-2" />
     </>
   );
 }

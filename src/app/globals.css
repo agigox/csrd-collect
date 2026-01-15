@@ -8,7 +8,7 @@
   --font-family-inter: var(--font-inter), system-ui, sans-serif;
 
   /* Sidebar colors */
-  --color-sidebar-bg: #15253c;
+
   --color-sidebar-text: #e6eef8;
   --color-sidebar-muted: #456b95;
   --color-sidebar-hover: #456b95;
@@ -87,8 +87,10 @@ body {
   --color-content-text: var(--content-text);
   --color-content-muted: var(--content-muted);
   --color-input-label: var(--input-label);
-  --color-card-create: var(--card-create);
   --color-border-primary-hl-default: var(--border-primary-hl-default);
+  --color-background-brand-navigation-default: var(
+    --background-brand-navigation-default
+  );
 }
 
 :root {
@@ -133,8 +135,8 @@ body {
   --content-text: #201f1f;
   --content-muted: #6b7280;
   --input-label: #626769;
-  --card-create: #b9edfe;
   --border-primary-hl-default: #225082;
+  --background-brand-navigation-default: #15253c;
 }
 
 .dark {

@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/lib/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/lib/ui/tabs";
 import { FormCard } from "./FormCard";
 import { useFormsStore } from "@/stores";
 
@@ -47,7 +42,9 @@ export const FormsList = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Chargement des formulaires...</div>;
+    return (
+      <div className="text-center py-8">Chargement des formulaires...</div>
+    );
   }
 
   return (

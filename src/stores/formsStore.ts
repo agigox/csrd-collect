@@ -19,9 +19,9 @@ interface FormsState {
   error: string | null;
   currentForm: FormDefinition | null;
   setCurrentForm: (form: FormDefinition | null) => void;
-  saveForm: (form: FormDefinition) => void;
-  createForm: (form: Omit<FormDefinition, "id" | "code" | "createdAt" | "updatedAt">) => FormDefinition;
-  deleteForm: (id: string) => void;
+  saveForm: (form: FormDefinition) => Promise<void>;
+  createForm: (form: Omit<FormDefinition, "id" | "code" | "createdAt" | "updatedAt">) => Promise<FormDefinition>;
+  deleteForm: (id: string) => Promise<void>;
   fetchForms: () => Promise<void>;
 }
 
@@ -40,29 +40,43 @@ export const useFormsStore = create<FormsState>()(
           form ? "FORMS/SET_CURRENT_FORM" : "FORMS/CLEAR_CURRENT_FORM"
         ),
 
-      saveForm: (updatedForm: FormDefinition) => {
+      saveForm: async (updatedForm: FormDefinition) => {
         const today = new Date().toISOString().split("T")[0];
         const formWithDate = { ...updatedForm, updatedAt: today };
 
-        set(
-          (state) => {
-            const index = state.forms.findIndex((f) => f.id === updatedForm.id);
-            if (index !== -1) {
-              const newForms = [...state.forms];
-              newForms[index] = formWithDate;
-              return {
-                forms: newForms,
-                currentForm: state.currentForm?.id === updatedForm.id ? formWithDate : state.currentForm,
-              };
-            }
-            return state;
-          },
-          false,
-          "FORMS/SAVE_FORM"
-        );
+        try {
+          const response = await fetch(`http://localhost:4000/forms/${updatedForm.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formWithDate),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+          }
+
+          set(
+            (state) => {
+              const index = state.forms.findIndex((f) => f.id === updatedForm.id);
+              if (index !== -1) {
+                const newForms = [...state.forms];
+                newForms[index] = formWithDate;
+                return {
+                  forms: newForms,
+                  currentForm: state.currentForm?.id === updatedForm.id ? formWithDate : state.currentForm,
+                };
+              }
+              return state;
+            },
+            false,
+            "FORMS/SAVE_FORM"
+          );
+        } catch (err) {
+          console.error("Erreur lors de la sauvegarde du formulaire:", err);
+        }
       },
 
-      createForm: (formData) => {
+      createForm: async (formData) => {
         const today = new Date().toISOString().split("T")[0];
         const normePrefix = formData.norme.split("-")[0] || "E1";
         const randomSuffix = Math.floor(Math.random() * 100).toString().padStart(2, "0");
@@ -76,24 +90,51 @@ export const useFormsStore = create<FormsState>()(
           updatedAt: today,
         };
 
-        set(
-          (state) => ({ forms: [...state.forms, newForm] }),
-          false,
-          "FORMS/CREATE_FORM"
-        );
+        try {
+          const response = await fetch("http://localhost:4000/forms", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newForm),
+          });
 
-        return newForm;
+          if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+          }
+
+          set(
+            (state) => ({ forms: [...state.forms, newForm] }),
+            false,
+            "FORMS/CREATE_FORM"
+          );
+
+          return newForm;
+        } catch (err) {
+          console.error("Erreur lors de la création du formulaire:", err);
+          return newForm;
+        }
       },
 
-      deleteForm: (id: string) => {
-        set(
-          (state) => ({
-            forms: state.forms.filter((f) => f.id !== id),
-            currentForm: state.currentForm?.id === id ? null : state.currentForm,
-          }),
-          false,
-          "FORMS/DELETE_FORM"
-        );
+      deleteForm: async (id: string) => {
+        try {
+          const response = await fetch(`http://localhost:4000/forms/${id}`, {
+            method: "DELETE",
+          });
+
+          if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+          }
+
+          set(
+            (state) => ({
+              forms: state.forms.filter((f) => f.id !== id),
+              currentForm: state.currentForm?.id === id ? null : state.currentForm,
+            }),
+            false,
+            "FORMS/DELETE_FORM"
+          );
+        } catch (err) {
+          console.error("Erreur lors de la suppression du formulaire:", err);
+        }
       },
 
       fetchForms: async () => {
@@ -104,15 +145,15 @@ export const useFormsStore = create<FormsState>()(
         );
 
         try {
-          const response = await fetch("/data/forms.json");
+          const response = await fetch("http://localhost:4000/forms");
 
           if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
           }
 
-          const data = await response.json();
+          const forms = await response.json() as FormDefinition[];
           set(
-            { forms: data.forms, loading: false },
+            { forms, loading: false },
             false,
             "FORMS/FETCH_SUCCESS"
           );

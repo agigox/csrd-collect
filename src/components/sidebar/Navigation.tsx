@@ -1,6 +1,6 @@
 import Icon, { IconName } from "@/lib/Icons";
 import NavItem from "./NavItem";
-import { Button } from "@/lib/components/ui/button";
+import { Button } from "@/lib/ui/button";
 import { useSidebarStore } from "@/stores";
 
 interface MenuItem {
@@ -11,13 +11,25 @@ interface MenuItem {
 
 const memberMenuItems: MenuItem[] = [
   { icon: "folder", label: "Déclarations", href: "/" },
-  { icon: "download", label: "Paramètrage déclaratif", href: "/parametrage-declaratif" },
+  {
+    icon: "download",
+    label: "Paramètrage déclaratif",
+    href: "/parametrage-declaratif",
+  },
 ];
 
 const adminMenuItems: MenuItem[] = [
   { icon: "tune", label: "Administration d'équipe", href: "/admin" },
-  { icon: "download", label: "Paramètrage déclaratif", href: "/admin/parametrage-declaratif" },
-  { icon: "download", label: "Gestion des données", href: "/admin/gestion-donnees" },
+  {
+    icon: "download",
+    label: "Paramètrage déclaratif",
+    href: "/admin/parametrage-declaratif",
+  },
+  {
+    icon: "download",
+    label: "Gestion des données",
+    href: "/admin/gestion-donnees",
+  },
 ];
 
 interface NavigationProps {

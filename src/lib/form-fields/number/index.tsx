@@ -1,10 +1,19 @@
 "use client";
 
-import { Input } from "@/lib/components/ui/input";
-import { Label } from "@/lib/components/ui/label";
-import type { FieldProps, FieldRegistration, NumberFieldConfig } from "../types";
+import { Input } from "@/lib/ui/input";
+import { Label } from "@/lib/ui/label";
+import type {
+  FieldProps,
+  FieldRegistration,
+  NumberFieldConfig,
+} from "../types";
 
-const NumberField = ({ config, value, onChange, error }: FieldProps<NumberFieldConfig>) => {
+const NumberField = ({
+  config,
+  value,
+  onChange,
+  error,
+}: FieldProps<NumberFieldConfig>) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numValue = e.target.value === "" ? undefined : Number(e.target.value);
     onChange(numValue);

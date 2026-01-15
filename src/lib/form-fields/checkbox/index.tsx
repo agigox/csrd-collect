@@ -1,7 +1,11 @@
 "use client";
 
-import { Label } from "@/lib/components/ui/label";
-import type { FieldProps, FieldRegistration, CheckboxFieldConfig } from "../types";
+import { Label } from "@/lib/ui/label";
+import type {
+  FieldProps,
+  FieldRegistration,
+  CheckboxFieldConfig,
+} from "../types";
 
 const CheckboxField = ({
   config,
@@ -10,16 +14,19 @@ const CheckboxField = ({
   error,
 }: FieldProps<CheckboxFieldConfig>) => {
   // Use default values from config if no value is set
+  const options = config.options ?? [];
   const getDefaultValues = (): string[] => {
     if (config.defaultIndices && config.defaultIndices.length > 0) {
       return config.defaultIndices
-        .filter((idx) => config.options[idx])
-        .map((idx) => config.options[idx].value);
+        .filter((idx) => options[idx])
+        .map((idx) => options[idx].value);
     }
     return [];
   };
 
-  const currentValues: string[] = Array.isArray(value) ? value : getDefaultValues();
+  const currentValues: string[] = Array.isArray(value)
+    ? value
+    : getDefaultValues();
 
   const handleToggle = (optionValue: string) => {
     if (currentValues.includes(optionValue)) {
@@ -38,7 +45,7 @@ const CheckboxField = ({
         {config.required && <span className="text-red-500 ml-1">*</span>}
       </Label>
       <div className="flex flex-col gap-3">
-        {config.options.map((option) => {
+        {options.map((option) => {
           const isSelected = currentValues.includes(option.value);
           return (
             <label
@@ -55,8 +62,8 @@ const CheckboxField = ({
                   isSelected
                     ? "border-[#2964a0] bg-[#2964a0]"
                     : error
-                      ? "border-[#de2048] bg-white group-hover:border-[#c81640]"
-                      : "border-[#737272] bg-white group-hover:border-[#225082]"
+                    ? "border-[#de2048] bg-white group-hover:border-[#c81640]"
+                    : "border-[#737272] bg-white group-hover:border-[#225082]"
                 }`}
               >
                 {/* Checkmark */}

@@ -6,7 +6,39 @@
       "author": "Jérome Menard",
       "title": "Fuite d'huile",
       "description": "Châteauneuf-du-Rhône départ Boudeyre",
-      "status": "pending"
+      "status": "pending",
+      "history": [
+        {
+          "id": "h1-1",
+          "userName": "Jérome Menard",
+          "timestamp": "il y a 20 minutes",
+          "action": "a modifié le formulaire",
+          "details": [
+            { "label": "Huile déversée : 47,52 L" },
+            { "label": "a modifié cela" },
+            { "label": "a modifié ceci" }
+          ]
+        },
+        {
+          "id": "h1-2",
+          "userName": "Jérome Menard",
+          "timestamp": "Aujourd'hui, 16h48",
+          "action": "a modifié le formulaire",
+          "details": [{ "label": "Changement de valeur" }]
+        },
+        {
+          "id": "h1-3",
+          "userName": "Jérome Menard",
+          "timestamp": "Hier, 9:34",
+          "action": "a mis à jours le titre"
+        },
+        {
+          "id": "h1-4",
+          "userName": "Jérome Menard",
+          "timestamp": "06/01/2025, 11:15",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "1111",
@@ -14,7 +46,15 @@
       "author": "Jérome Menard",
       "title": "Fuite d'huile",
       "description": "Châteauneuf-du-Rhône départ Boudeyre",
-      "status": "pending"
+      "status": "pending",
+      "history": [
+        {
+          "id": "h1111-1",
+          "userName": "Jérome Menard",
+          "timestamp": "12/02/2025, 10:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "2",
@@ -22,7 +62,31 @@
       "author": "Marie Dupont",
       "title": "Incident électrique",
       "description": "Centrale de Tricastin - Secteur B",
-      "status": "completed"
+      "status": "completed",
+      "history": [
+        {
+          "id": "h2-1",
+          "userName": "Marie Dupont",
+          "timestamp": "10/02/2025, 15:30",
+          "action": "a validé la déclaration"
+        },
+        {
+          "id": "h2-2",
+          "userName": "Marie Dupont",
+          "timestamp": "10/02/2025, 14:00",
+          "action": "a modifié le formulaire",
+          "details": [
+            { "label": "Tension mesurée : 220V" },
+            { "label": "Zone affectée : Secteur B" }
+          ]
+        },
+        {
+          "id": "h2-3",
+          "userName": "Marie Dupont",
+          "timestamp": "10/02/2025, 09:15",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "3",
@@ -30,7 +94,28 @@
       "author": "Pierre Martin",
       "title": "Anomalie température",
       "description": "Station de pompage Donzère",
-      "status": "modified"
+      "status": "modified",
+      "history": [
+        {
+          "id": "h3-1",
+          "userName": "Sophie Bernard",
+          "timestamp": "09/02/2025, 11:00",
+          "action": "a demandé une modification",
+          "details": [{ "label": "Vérifier les relevés de température" }]
+        },
+        {
+          "id": "h3-2",
+          "userName": "Pierre Martin",
+          "timestamp": "08/02/2025, 16:45",
+          "action": "a soumis la déclaration"
+        },
+        {
+          "id": "h3-3",
+          "userName": "Pierre Martin",
+          "timestamp": "08/02/2025, 14:30",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "4",
@@ -38,7 +123,15 @@
       "author": "Sophie Bernard",
       "title": "Fuite de gaz",
       "description": "Site industriel Lyon Nord",
-      "status": "pending"
+      "status": "pending",
+      "history": [
+        {
+          "id": "h4-1",
+          "userName": "Sophie Bernard",
+          "timestamp": "05/02/2025, 08:30",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "5",
@@ -46,7 +139,31 @@
       "author": "Luc Moreau",
       "title": "Déversement accidentel",
       "description": "Zone portuaire Marseille",
-      "status": "completed"
+      "status": "completed",
+      "history": [
+        {
+          "id": "h5-1",
+          "userName": "Admin",
+          "timestamp": "04/02/2025, 10:00",
+          "action": "a clôturé la déclaration"
+        },
+        {
+          "id": "h5-2",
+          "userName": "Luc Moreau",
+          "timestamp": "03/02/2025, 17:00",
+          "action": "a modifié le formulaire",
+          "details": [
+            { "label": "Volume déversé : 150L" },
+            { "label": "Type de produit : Carburant" }
+          ]
+        },
+        {
+          "id": "h5-3",
+          "userName": "Luc Moreau",
+          "timestamp": "03/02/2025, 11:20",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "6",
@@ -54,7 +171,15 @@
       "author": "Claire Duval",
       "title": "Pollution sonore",
       "description": "Usine de traitement Est",
-      "status": "pending"
+      "status": "pending",
+      "history": [
+        {
+          "id": "h6-1",
+          "userName": "Claire Duval",
+          "timestamp": "01/02/2025, 14:15",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "7",
@@ -62,7 +187,22 @@
       "author": "Marc Lefebvre",
       "title": "Émissions atmosphériques",
       "description": "Cheminée industrielle Zone A",
-      "status": "modified"
+      "status": "modified",
+      "history": [
+        {
+          "id": "h7-1",
+          "userName": "Admin",
+          "timestamp": "29/01/2025, 09:00",
+          "action": "a demandé des précisions",
+          "details": [{ "label": "Ajouter les relevés de mesure" }]
+        },
+        {
+          "id": "h7-2",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 16:30",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "8",
@@ -70,7 +210,15 @@
       "author": "Marc Lefebvre",
       "title": "Émissions atmosphériques",
       "description": "Cheminée industrielle Zone A",
-      "status": "modified"
+      "status": "modified",
+      "history": [
+        {
+          "id": "h8-1",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 15:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "9",
@@ -78,7 +226,15 @@
       "author": "Marc Lefebvre",
       "title": "Émissions atmosphériques",
       "description": "Cheminée industrielle Zone A",
-      "status": "modified"
+      "status": "modified",
+      "history": [
+        {
+          "id": "h9-1",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 14:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
     },
     {
       "id": "10",
@@ -86,7 +242,15 @@
       "author": "Marc Lefebvre",
       "title": "Émissions atmosphériques",
       "description": "Cheminée industrielle Zone A",
-      "status": "modified"
+      "status": "modified",
+      "history": [
+        {
+          "id": "h10-1",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 13:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
     }
   ]
 }

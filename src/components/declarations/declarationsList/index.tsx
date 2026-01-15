@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useEffect } from "react";
-import { useDeclarationsStore } from "@/stores";
+import { useDeclarationsStore, type Declaration } from "@/stores";
 import DeclarationCard from "../DeclarationCard";
 import Header from "./Header";
 
 interface DeclarationsListProps {
   onDeclarer?: () => void;
+  onEditDeclaration?: (declaration: Declaration) => void;
 }
 
 interface DateSeparatorProps {
@@ -20,7 +21,7 @@ const DateSeparator = ({ date }: DateSeparatorProps) => (
   </div>
 );
 
-const DeclarationsList = ({ onDeclarer }: DeclarationsListProps) => {
+const DeclarationsList = ({ onDeclarer, onEditDeclaration }: DeclarationsListProps) => {
   const { declarations, loading, error, fetchDeclarations } = useDeclarationsStore();
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const DeclarationsList = ({ onDeclarer }: DeclarationsListProps) => {
                   author={declaration.author}
                   title={declaration.title}
                   description={declaration.description}
-                  onClick={() => console.log("Clicked:", declaration.title)}
+                  onClick={() => onEditDeclaration?.(declaration)}
                 />
               ))}
             </div>

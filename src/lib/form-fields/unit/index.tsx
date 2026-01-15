@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Label } from "@/lib/components/ui/label";
+import { Label } from "@/lib/ui/label";
 import type { FieldProps, FieldRegistration, UnitFieldConfig } from "../types";
 import Icon from "@/lib/Icons";
 

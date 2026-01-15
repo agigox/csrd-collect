@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/lib/components/ui/dialog";
-import { Button } from "@/lib/components/ui/button";
+} from "@/lib/ui/dialog";
+import { Button } from "@/lib/ui/button";
 import { useFormsStore, type FormDefinition } from "@/stores";
 import { cn } from "@/lib/utils";
 
@@ -74,7 +74,7 @@ const FormSelectionDialog = ({
                       key={form.id}
                       onClick={() => setSelectedFormId(form.id)}
                       className={cn(
-                        "text-left p-4 rounded-[4px] border-2 transition-colors py-[7px] px-3",
+                        "text-left p-4 rounded-lg border-2 transition-colors py-1.75 px-3",
                         selectedFormId === form.id
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"

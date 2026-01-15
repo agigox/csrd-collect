@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/lib/components/ui/button";
+import { Button } from "@/lib/ui/button";
 import Icon from "@/lib/Icons";
 
 interface HeaderProps {

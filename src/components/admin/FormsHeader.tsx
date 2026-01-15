@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/lib/components/ui/button";
+import { Button } from "@/lib/ui/button";
 import { Divider } from "@/lib/Divider";
 import Icon from "@/lib/Icons";
 

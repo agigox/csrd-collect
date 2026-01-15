@@ -1,6 +1,6 @@
 "use client";
 
-import { Label } from "@/lib/components/ui/label";
+import { Label } from "@/lib/ui/label";
 import type { FieldProps, FieldRegistration, RadioFieldConfig } from "../types";
 
 const RadioField = ({
@@ -10,9 +10,10 @@ const RadioField = ({
   error,
 }: FieldProps<RadioFieldConfig>) => {
   // Use default value from config if no value is set
+  const options = config.options ?? [];
   const defaultValue =
-    config.defaultIndex !== undefined && config.options[config.defaultIndex]
-      ? config.options[config.defaultIndex].value
+    config.defaultIndex !== undefined && options[config.defaultIndex]
+      ? options[config.defaultIndex].value
       : "";
   const currentValue = (value as string) ?? defaultValue;
 
@@ -27,7 +28,7 @@ const RadioField = ({
         {config.required && <span className="text-red-500 ml-1">*</span>}
       </Label>
       <div className="flex flex-col gap-3">
-        {config.options.map((option) => {
+        {options.map((option) => {
           const isSelected = currentValue === option.value;
           return (
             <label

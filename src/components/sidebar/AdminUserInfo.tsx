@@ -1,11 +1,10 @@
-import { Avatar, AvatarFallback } from "@/lib/components/ui/avatar";
-import { Separator } from "@/lib/components/ui/separator";
+import { Avatar, AvatarFallback } from "@/lib/ui/avatar";
+import { Separator } from "@/lib/ui/separator";
 
 const ADMIN_NAME = "Julien Neuville";
 
 const AdminUserInfo = () => {
-  const initials = ADMIN_NAME
-    .split(" ")
+  const initials = ADMIN_NAME.split(" ")
     .map((n) => n[0])
     .join("")
     .toUpperCase()

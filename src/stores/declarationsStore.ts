@@ -1,13 +1,28 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
+export interface ModificationDetail {
+  label: string;
+}
+
+export interface ModificationEntry {
+  id: string;
+  userName: string;
+  timestamp: string;
+  action: string;
+  details?: ModificationDetail[];
+}
+
 export interface Declaration {
   id: string;
+  formId: string;
   date: string;
   author: string;
   title: string;
   description: string;
   status: "pending" | "completed" | "modified";
+  formValues?: Record<string, unknown>;
+  history?: ModificationEntry[];
 }
 
 export interface DeclarationStats {
@@ -22,6 +37,7 @@ interface DeclarationsState {
   error: string | null;
   stats: DeclarationStats;
   fetchDeclarations: () => Promise<void>;
+  updateDeclaration: (id: string, formValues: Record<string, unknown>) => Promise<void>;
 }
 
 const computeStats = (declarations: Declaration[]): DeclarationStats => ({
@@ -50,14 +66,13 @@ export const useDeclarationsStore = create<DeclarationsState>()(
         );
 
         try {
-          const response = await fetch("/data/declarations.json");
+          const response = await fetch("http://localhost:4000/declarations");
 
           if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status}`);
           }
 
-          const data = await response.json();
-          const declarations = data.declarations as Declaration[];
+          const declarations = await response.json() as Declaration[];
 
           set(
             {
@@ -78,6 +93,53 @@ export const useDeclarationsStore = create<DeclarationsState>()(
             "DECLARATIONS/FETCH_ERROR"
           );
           console.error("Erreur lors du chargement des déclarations:", err);
+        }
+      },
+
+      updateDeclaration: async (id: string, formValues: Record<string, unknown>) => {
+        try {
+          // Get current declaration
+          const state = useDeclarationsStore.getState();
+          const declaration = state.declarations.find((d) => d.id === id);
+
+          if (!declaration) {
+            throw new Error("Déclaration non trouvée");
+          }
+
+          // Update declaration with new form values
+          const updatedDeclaration: Declaration = {
+            ...declaration,
+            formValues,
+            status: "modified",
+          };
+
+          const response = await fetch(`http://localhost:4000/declarations/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedDeclaration),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+          }
+
+          // Update local state
+          set(
+            (state) => {
+              const newDeclarations = state.declarations.map((d) =>
+                d.id === id ? updatedDeclaration : d
+              );
+              return {
+                declarations: newDeclarations,
+                stats: computeStats(newDeclarations),
+              };
+            },
+            false,
+            "DECLARATIONS/UPDATE_SUCCESS"
+          );
+        } catch (err) {
+          console.error("Erreur lors de la mise à jour de la déclaration:", err);
+          throw err;
         }
       },
     }),

@@ -1,7 +1,7 @@
 "use client";
 
-import { Input } from "@/lib/components/ui/input";
-import { Label } from "@/lib/components/ui/label";
+import { Input } from "@/lib/ui/input";
+import { Label } from "@/lib/ui/label";
 import type { FieldProps, FieldRegistration, TextFieldConfig } from "../types";
 
 const TextField = ({

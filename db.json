@@ -1,0 +1,614 @@
+{
+  "declarations": [
+    {
+      "id": "1",
+      "formId": "1",
+      "date": "12/02/2025",
+      "author": "Jérome Menard",
+      "title": "Fuite d'huile",
+      "description": "Châteauneuf-du-Rhône départ Boudeyre",
+      "status": "modified",
+      "formValues": {
+        "titre": "Fuite d'huile",
+        "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
+        "quantite": 47.52,
+        "gravite": "faible"
+      },
+      "history": [
+        {
+          "id": "h1-1",
+          "userName": "Jérome Menard",
+          "timestamp": "il y a 20 minutes",
+          "action": "a modifié le formulaire",
+          "details": [
+            {
+              "label": "Huile déversée : 47,52 L"
+            },
+            {
+              "label": "a modifié cela"
+            },
+            {
+              "label": "a modifié ceci"
+            }
+          ]
+        },
+        {
+          "id": "h1-2",
+          "userName": "Jérome Menard",
+          "timestamp": "Aujourd'hui, 16h48",
+          "action": "a modifié le formulaire",
+          "details": [
+            {
+              "label": "Changement de valeur"
+            }
+          ]
+        },
+        {
+          "id": "h1-3",
+          "userName": "Jérome Menard",
+          "timestamp": "Hier, 9:34",
+          "action": "a mis à jours le titre"
+        },
+        {
+          "id": "h1-4",
+          "userName": "Jérome Menard",
+          "timestamp": "06/01/2025, 11:15",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "1111",
+      "formId": "1",
+      "date": "12/02/2025",
+      "author": "Jérome Menard",
+      "title": "Fuite d'huile",
+      "description": "Châteauneuf-du-Rhône départ Boudeyre",
+      "status": "pending",
+      "formValues": {
+        "titre": "Fuite d'huile",
+        "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
+        "quantite": 15,
+        "gravite": "faible"
+      },
+      "history": [
+        {
+          "id": "h1111-1",
+          "userName": "Jérome Menard",
+          "timestamp": "12/02/2025, 10:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "formId": "2",
+      "date": "10/02/2025",
+      "author": "Marie Dupont",
+      "title": "Incident électrique",
+      "description": "Centrale de Tricastin - Secteur B",
+      "status": "completed",
+      "formValues": {
+        "titre": "Incident électrique",
+        "secteur": "Secteur B"
+      },
+      "history": [
+        {
+          "id": "h2-1",
+          "userName": "Marie Dupont",
+          "timestamp": "10/02/2025, 15:30",
+          "action": "a validé la déclaration"
+        },
+        {
+          "id": "h2-2",
+          "userName": "Marie Dupont",
+          "timestamp": "10/02/2025, 14:00",
+          "action": "a modifié le formulaire",
+          "details": [
+            {
+              "label": "Tension mesurée : 220V"
+            },
+            {
+              "label": "Zone affectée : Secteur B"
+            }
+          ]
+        },
+        {
+          "id": "h2-3",
+          "userName": "Marie Dupont",
+          "timestamp": "10/02/2025, 09:15",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "formId": "3",
+      "date": "08/02/2025",
+      "author": "Pierre Martin",
+      "title": "Anomalie température",
+      "description": "Station de pompage Donzère",
+      "status": "modified",
+      "formValues": {
+        "emissions": 250
+      },
+      "history": [
+        {
+          "id": "h3-1",
+          "userName": "Sophie Bernard",
+          "timestamp": "09/02/2025, 11:00",
+          "action": "a demandé une modification",
+          "details": [
+            {
+              "label": "Vérifier les relevés de température"
+            }
+          ]
+        },
+        {
+          "id": "h3-2",
+          "userName": "Pierre Martin",
+          "timestamp": "08/02/2025, 16:45",
+          "action": "a soumis la déclaration"
+        },
+        {
+          "id": "h3-3",
+          "userName": "Pierre Martin",
+          "timestamp": "08/02/2025, 14:30",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "formId": "2",
+      "date": "05/02/2025",
+      "author": "Sophie Bernard",
+      "title": "Fuite de gaz",
+      "description": "Site industriel Lyon Nord",
+      "status": "pending",
+      "formValues": {
+        "titre": "Fuite de gaz",
+        "secteur": "Site industriel Lyon Nord"
+      },
+      "history": [
+        {
+          "id": "h4-1",
+          "userName": "Sophie Bernard",
+          "timestamp": "05/02/2025, 08:30",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "formId": "4",
+      "date": "03/02/2025",
+      "author": "Luc Moreau",
+      "title": "Déversement accidentel",
+      "description": "Zone portuaire Marseille",
+      "status": "completed",
+      "formValues": {
+        "volume_rejete": 150
+      },
+      "history": [
+        {
+          "id": "h5-1",
+          "userName": "Admin",
+          "timestamp": "04/02/2025, 10:00",
+          "action": "a clôturé la déclaration"
+        },
+        {
+          "id": "h5-2",
+          "userName": "Luc Moreau",
+          "timestamp": "03/02/2025, 17:00",
+          "action": "a modifié le formulaire",
+          "details": [
+            {
+              "label": "Volume déversé : 150L"
+            },
+            {
+              "label": "Type de produit : Carburant"
+            }
+          ]
+        },
+        {
+          "id": "h5-3",
+          "userName": "Luc Moreau",
+          "timestamp": "03/02/2025, 11:20",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "formId": "3",
+      "date": "01/02/2025",
+      "author": "Claire Duval",
+      "title": "Pollution sonore",
+      "description": "Usine de traitement Est",
+      "status": "pending",
+      "formValues": {
+        "emissions": 75
+      },
+      "history": [
+        {
+          "id": "h6-1",
+          "userName": "Claire Duval",
+          "timestamp": "01/02/2025, 14:15",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "formId": "3",
+      "date": "28/01/2025",
+      "author": "Marc Lefebvre",
+      "title": "Émissions atmosphériques",
+      "description": "Cheminée industrielle Zone A",
+      "status": "modified",
+      "formValues": {
+        "emissions": 500
+      },
+      "history": [
+        {
+          "id": "h7-1",
+          "userName": "Admin",
+          "timestamp": "29/01/2025, 09:00",
+          "action": "a demandé des précisions",
+          "details": [
+            {
+              "label": "Ajouter les relevés de mesure"
+            }
+          ]
+        },
+        {
+          "id": "h7-2",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 16:30",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "formId": "3",
+      "date": "28/01/2025",
+      "author": "Marc Lefebvre",
+      "title": "Émissions atmosphériques",
+      "description": "Cheminée industrielle Zone A",
+      "status": "modified",
+      "formValues": {
+        "emissions": 320
+      },
+      "history": [
+        {
+          "id": "h8-1",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 15:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "9",
+      "formId": "3",
+      "date": "28/01/2025",
+      "author": "Marc Lefebvre",
+      "title": "Émissions atmosphériques",
+      "description": "Cheminée industrielle Zone A",
+      "status": "modified",
+      "formValues": {
+        "emissions": 410
+      },
+      "history": [
+        {
+          "id": "h9-1",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 14:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "formId": "5",
+      "date": "28/01/2025",
+      "author": "Marc Lefebvre",
+      "title": "Émissions atmosphériques",
+      "description": "Cheminée industrielle Zone A",
+      "status": "modified",
+      "formValues": {
+        "surface_contaminee": 25
+      },
+      "history": [
+        {
+          "id": "h10-1",
+          "userName": "Marc Lefebvre",
+          "timestamp": "28/01/2025, 13:00",
+          "action": "a initié cette déclaration"
+        }
+      ]
+    }
+  ],
+  "forms": [
+    {
+      "id": "1",
+      "code": "E2-4_vol_01",
+      "title": "Fuite d'huile (SF6)",
+      "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
+      "norme": "E2-Pollution",
+      "createdAt": "2025-01-15",
+      "updatedAt": "2026-01-15",
+      "schema": [
+        {
+          "name": "titre",
+          "type": "text",
+          "label": "Titre de l'incident",
+          "placeholder": "Entrez un titre",
+          "required": true
+        },
+        {
+          "name": "quantite",
+          "type": "number",
+          "label": "Quantite estimee (litres)"
+        },
+        {
+          "name": "gravite",
+          "type": "select",
+          "label": "Niveau de gravite",
+          "options": [
+            {
+              "value": "faible",
+              "label": "Faible"
+            },
+            {
+              "value": "moyen",
+              "label": "Moyen"
+            },
+            {
+              "value": "eleve",
+              "label": "Eleve"
+            },
+            {
+              "value": "critique",
+              "label": "Critique"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "code": "E2-4_vol_02",
+      "title": "Fuite de gaz",
+      "description": "Déclaration permettant la collecte liée aux données de type fuite de gaz",
+      "norme": "E2-Pollution",
+      "createdAt": "2025-01-20",
+      "updatedAt": "2026-01-14",
+      "schema": [
+        {
+          "name": "titre",
+          "type": "text",
+          "label": "Titre de l'incident",
+          "placeholder": "Entrez un titre",
+          "required": true
+        },
+        {
+          "name": "secteur",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_13",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_12",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_11",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_10",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_9",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_8",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_7",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_6",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_5",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_4",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_3",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_2",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        },
+        {
+          "name": "text_1",
+          "type": "text",
+          "label": "Secteur concerne",
+          "placeholder": "Ex: Secteur B"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "code": "E1-3_air_01",
+      "title": "Émissions atmosphériques",
+      "description": "Déclaration des émissions de polluants dans l'atmosphère",
+      "norme": "E1-Pollution",
+      "createdAt": "2025-01-25",
+      "updatedAt": "2025-01-25",
+      "schema": [
+        {
+          "name": "emissions",
+          "type": "unit",
+          "label": "Emissions CO2",
+          "unit": "kg",
+          "min": 0,
+          "description": "Quantité d'émissions en kg"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "code": "E3-2_eau_01",
+      "title": "Pollution des eaux",
+      "description": "Déclaration des rejets dans les eaux de surface et souterraines",
+      "norme": "E3-Pollution",
+      "createdAt": "2025-01-26",
+      "updatedAt": "2025-01-26",
+      "schema": [
+        {
+          "name": "volume_rejete",
+          "type": "unit",
+          "label": "Volume rejeté",
+          "unit": "L",
+          "min": 0,
+          "description": "Volume d'eau polluée"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "code": "E4-1_sol_01",
+      "title": "Contamination des sols",
+      "description": "Déclaration des incidents de contamination des sols",
+      "norme": "E4-Pollution",
+      "createdAt": "2025-01-27",
+      "updatedAt": "2025-01-27",
+      "schema": [
+        {
+          "name": "surface_contaminee",
+          "type": "unit",
+          "label": "Surface contaminée",
+          "unit": "m²",
+          "min": 0,
+          "description": "Surface affectée en m²"
+        }
+      ]
+    },
+    {
+      "id": "1768397114899",
+      "title": "Test 12",
+      "description": "A description",
+      "norme": "E2-Pollution",
+      "schema": [
+        {
+          "name": "switch_1",
+          "type": "switch",
+          "label": "Test"
+        },
+        {
+          "name": "switch_4",
+          "type": "switch",
+          "label": "Test"
+        },
+        {
+          "name": "switch_3",
+          "type": "switch",
+          "label": "Test"
+        },
+        {
+          "name": "switch_2",
+          "type": "switch",
+          "label": "Test"
+        }
+      ],
+      "code": "E2-4899_13",
+      "createdAt": "2026-01-14",
+      "updatedAt": "2026-01-15"
+    }
+  ],
+  "addresses": [
+    {
+      "value": "paris",
+      "label": "Paris"
+    },
+    {
+      "value": "lyon",
+      "label": "Lyon"
+    },
+    {
+      "value": "marseille",
+      "label": "Marseille"
+    },
+    {
+      "value": "toulouse",
+      "label": "Toulouse"
+    },
+    {
+      "value": "nice",
+      "label": "Nice"
+    },
+    {
+      "value": "nantes",
+      "label": "Nantes"
+    },
+    {
+      "value": "strasbourg",
+      "label": "Strasbourg"
+    },
+    {
+      "value": "montpellier",
+      "label": "Montpellier"
+    },
+    {
+      "value": "bordeaux",
+      "label": "Bordeaux"
+    },
+    {
+      "value": "lille",
+      "label": "Lille"
+    }
+  ]
+}
