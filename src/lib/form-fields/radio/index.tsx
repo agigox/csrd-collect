@@ -27,6 +27,9 @@ const RadioField = ({
         {config.label}
         {config.required && <span className="text-red-500 ml-1">*</span>}
       </Label>
+      {config.description && (
+        <p className="text-sm text-gray-500">{config.description}</p>
+      )}
       <div className="flex flex-col gap-3">
         {options.map((option) => {
           const isSelected = currentValue === option.value;

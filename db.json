@@ -567,6 +567,174 @@
       "code": "E2-4899_13",
       "createdAt": "2026-01-14",
       "updatedAt": "2026-01-15"
+    },
+    {
+      "id": "1768552726572",
+      "title": "LO",
+      "description": "Description",
+      "norme": "E4-Pollution",
+      "schema": [
+        {
+          "name": "text_1",
+          "type": "text",
+          "label": "Email",
+          "placeholder": "",
+          "defaultValue": "email@email.com",
+          "description": "Description du champs email"
+        },
+        {
+          "name": "date_1",
+          "type": "date",
+          "label": "Date de naissance",
+          "includeTime": true,
+          "defaultDateValue": "today",
+          "description": "La description du champs"
+        },
+        {
+          "name": "select_1",
+          "type": "select",
+          "label": "E2 - Pollution",
+          "options": [
+            {
+              "value": "paris",
+              "label": "Paris"
+            },
+            {
+              "value": "lyon",
+              "label": "Lyon"
+            },
+            {
+              "value": "marseille",
+              "label": "Marseille"
+            },
+            {
+              "value": "toulouse",
+              "label": "Toulouse"
+            },
+            {
+              "value": "nice",
+              "label": "Nice"
+            },
+            {
+              "value": "nantes",
+              "label": "Nantes"
+            },
+            {
+              "value": "strasbourg",
+              "label": "Strasbourg"
+            },
+            {
+              "value": "montpellier",
+              "label": "Montpellier"
+            },
+            {
+              "value": "bordeaux",
+              "label": "Bordeaux"
+            },
+            {
+              "value": "lille",
+              "label": "Lille"
+            }
+          ],
+          "dataType": "adresse",
+          "apiUrl": "http://localhost:4000/addresses",
+          "defaultIndex": 9,
+          "description": "Descition"
+        },
+        {
+          "name": "radio_1",
+          "type": "radio",
+          "label": "Choix unique",
+          "options": [
+            {
+              "value": "option_1",
+              "label": "Choix 1"
+            },
+            {
+              "value": "option_2",
+              "label": "Choix 2"
+            },
+            {
+              "value": "option_3",
+              "label": "Choix 3"
+            }
+          ],
+          "defaultIndex": 1,
+          "description": "Description"
+        }
+      ],
+      "code": "E4-6572_22",
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "1768552955456",
+      "title": "Test Formulaire",
+      "description": "",
+      "norme": "E2-Pollution",
+      "schema": [
+        {
+          "name": "text_1",
+          "type": "text",
+          "label": "Nouveau champ",
+          "placeholder": ""
+        }
+      ],
+      "code": "E2-5456_91",
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "1768553007672",
+      "title": "Test Checkbox",
+      "description": "",
+      "norme": "E2-Pollution",
+      "schema": [
+        {
+          "name": "checkbox_1",
+          "type": "checkbox",
+          "label": "Nouveau champ",
+          "options": [],
+          "defaultIndices": []
+        }
+      ],
+      "code": "E2-7672_56",
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "1768553071855",
+      "title": "eee",
+      "description": "eeee",
+      "norme": "E2-Pollution",
+      "schema": [
+        {
+          "name": "text_1",
+          "type": "text",
+          "label": "Nouveau champ",
+          "placeholder": ""
+        }
+      ],
+      "code": "E2-1855_22",
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
+    },
+    {
+      "id": "1768553631627",
+      "title": "Test Final",
+      "description": "",
+      "norme": "E2-Pollution",
+      "schema": [
+        {
+          "name": "text_1",
+          "type": "text",
+          "label": "Nouveau champ",
+          "placeholder": ""
+        }
+      ],
+      "code": "E2-1627_25",
+      "createdAt": "2026-01-16",
+      "updatedAt": "2026-01-16"
     }
   ],
   "addresses": [

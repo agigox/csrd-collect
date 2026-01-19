@@ -25,6 +25,9 @@ const NumberField = ({
         {config.label}
         {config.required && <span className="text-red-500 ml-1">*</span>}
       </Label>
+      {config.description && (
+        <p className="text-sm text-gray-500">{config.description}</p>
+      )}
       <Input
         id={config.name}
         name={config.name}

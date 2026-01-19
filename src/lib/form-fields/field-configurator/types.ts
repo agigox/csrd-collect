@@ -23,4 +23,5 @@ export const typeLabels: Record<string, string> = {
   unit: "Quantité avec unité",
   switch: "Switch",
   date: "Date",
+  import: "Import de fichier",
 };

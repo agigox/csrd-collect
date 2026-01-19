@@ -48,10 +48,10 @@ export default function AdminParametrageDeclaratifPage() {
 
   useEffect(() => {
     if (currentForm) {
-      setSchema(currentForm.schema);
-      setFormTitle(currentForm.title);
-      setFormDescription(currentForm.description);
-      setFormNorme(currentForm.norme);
+      setSchema(currentForm.schema ?? []);
+      setFormTitle(currentForm.title ?? "");
+      setFormDescription(currentForm.description ?? "");
+      setFormNorme(currentForm.norme ?? "E2-Pollution");
     } else {
       setSchema([]);
       setFormTitle("");

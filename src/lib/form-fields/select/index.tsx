@@ -37,6 +37,9 @@ const SelectField = ({
         {config.label}
         {config.required && <span className="text-red-500 ml-1">*</span>}
       </Label>
+      {config.description && (
+        <p className="text-sm text-gray-500">{config.description}</p>
+      )}
       <Select value={currentValue} onValueChange={handleChange}>
         <SelectTrigger
           id={config.name}
