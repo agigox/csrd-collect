@@ -7,6 +7,13 @@ import { Button } from "@/lib/ui/button";
 import { Card, CardContent } from "@/lib/ui/card";
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/lib/ui/select";
 import { useFormsStore } from "@/stores";
 import Icon from "@/lib/Icons";
 import { Divider } from "@/lib/Divider";
@@ -35,10 +42,10 @@ export default function AdminParametrageDeclaratifPage() {
   const [formDescription, setFormDescription] = useState("");
   const [formNorme, setFormNorme] = useState("E2-Pollution");
   const [previewValues, setPreviewValues] = useState<Record<string, unknown>>(
-    {}
+    {},
   );
   const [previewErrors, setPreviewErrors] = useState<Record<string, string>>(
-    {}
+    {},
   );
   const [isSaving, setIsSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -82,7 +89,7 @@ export default function AdminParametrageDeclaratifPage() {
         });
       } else {
         // Create new form
-        const newForm = createForm({
+        const newForm = await createForm({
           title: formTitle,
           description: formDescription,
           norme: formNorme,
@@ -127,7 +134,9 @@ export default function AdminParametrageDeclaratifPage() {
         }`}
       >
         {/* Configuration des données */}
-        <div className="flex flex-col min-h-0">
+        <div
+          className={`flex flex-col min-h-0 ${!showPreview ? "max-w-[602px] mx-auto w-full" : ""}`}
+        >
           <div className="flex items-center justify-between w-full h-8">
             <h1 className="text-2xl font-semibold">
               {isEditMode ? "Modifier le formulaire" : "Nouveau formulaire"}
@@ -198,17 +207,18 @@ export default function AdminParametrageDeclaratifPage() {
 
                     <div className="flex flex-col w-50">
                       <Label className="text-white">Norme</Label>
-                      <select
-                        value={formNorme}
-                        onChange={(e) => setFormNorme(e.target.value)}
-                        className="h-8 w-full rounded border border-gray-300 px-2 py-1 text-sm bg-white"
-                      >
-                        {normeOptions.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                      <Select value={formNorme} onValueChange={setFormNorme}>
+                        <SelectTrigger className="h-8 w-full bg-white">
+                          <SelectValue placeholder="Sélectionner une norme" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {normeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>

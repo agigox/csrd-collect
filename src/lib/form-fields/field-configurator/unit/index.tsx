@@ -2,6 +2,13 @@
 
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/lib/ui/select";
 import type { UnitFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 
@@ -23,17 +30,21 @@ export const UnitConfigurator = ({
     <div className="mt-2 pt-2 border-t flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <Label>Unité</Label>
-        <select
+        <Select
           value={config.unit}
-          onChange={(e) => onChange({ ...config, unit: e.target.value })}
-          className="h-8 w-full rounded border border-gray-300 px-2 py-1 text-sm"
+          onValueChange={(value) => onChange({ ...config, unit: value })}
         >
-          {unitOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-8 w-full">
+            <SelectValue placeholder="Sélectionner une unité" />
+          </SelectTrigger>
+          <SelectContent>
+            {unitOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">

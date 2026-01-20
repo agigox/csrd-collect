@@ -120,215 +120,6 @@
           "action": "a initié cette déclaration"
         }
       ]
-    },
-    {
-      "id": "3",
-      "formId": "3",
-      "date": "08/02/2025",
-      "author": "Pierre Martin",
-      "title": "Anomalie température",
-      "description": "Station de pompage Donzère",
-      "status": "modified",
-      "formValues": {
-        "emissions": 250
-      },
-      "history": [
-        {
-          "id": "h3-1",
-          "userName": "Sophie Bernard",
-          "timestamp": "09/02/2025, 11:00",
-          "action": "a demandé une modification",
-          "details": [
-            {
-              "label": "Vérifier les relevés de température"
-            }
-          ]
-        },
-        {
-          "id": "h3-2",
-          "userName": "Pierre Martin",
-          "timestamp": "08/02/2025, 16:45",
-          "action": "a soumis la déclaration"
-        },
-        {
-          "id": "h3-3",
-          "userName": "Pierre Martin",
-          "timestamp": "08/02/2025, 14:30",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "4",
-      "formId": "2",
-      "date": "05/02/2025",
-      "author": "Sophie Bernard",
-      "title": "Fuite de gaz",
-      "description": "Site industriel Lyon Nord",
-      "status": "pending",
-      "formValues": {
-        "titre": "Fuite de gaz",
-        "secteur": "Site industriel Lyon Nord"
-      },
-      "history": [
-        {
-          "id": "h4-1",
-          "userName": "Sophie Bernard",
-          "timestamp": "05/02/2025, 08:30",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "5",
-      "formId": "4",
-      "date": "03/02/2025",
-      "author": "Luc Moreau",
-      "title": "Déversement accidentel",
-      "description": "Zone portuaire Marseille",
-      "status": "completed",
-      "formValues": {
-        "volume_rejete": 150
-      },
-      "history": [
-        {
-          "id": "h5-1",
-          "userName": "Admin",
-          "timestamp": "04/02/2025, 10:00",
-          "action": "a clôturé la déclaration"
-        },
-        {
-          "id": "h5-2",
-          "userName": "Luc Moreau",
-          "timestamp": "03/02/2025, 17:00",
-          "action": "a modifié le formulaire",
-          "details": [
-            {
-              "label": "Volume déversé : 150L"
-            },
-            {
-              "label": "Type de produit : Carburant"
-            }
-          ]
-        },
-        {
-          "id": "h5-3",
-          "userName": "Luc Moreau",
-          "timestamp": "03/02/2025, 11:20",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "6",
-      "formId": "3",
-      "date": "01/02/2025",
-      "author": "Claire Duval",
-      "title": "Pollution sonore",
-      "description": "Usine de traitement Est",
-      "status": "pending",
-      "formValues": {
-        "emissions": 75
-      },
-      "history": [
-        {
-          "id": "h6-1",
-          "userName": "Claire Duval",
-          "timestamp": "01/02/2025, 14:15",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "7",
-      "formId": "3",
-      "date": "28/01/2025",
-      "author": "Marc Lefebvre",
-      "title": "Émissions atmosphériques",
-      "description": "Cheminée industrielle Zone A",
-      "status": "modified",
-      "formValues": {
-        "emissions": 500
-      },
-      "history": [
-        {
-          "id": "h7-1",
-          "userName": "Admin",
-          "timestamp": "29/01/2025, 09:00",
-          "action": "a demandé des précisions",
-          "details": [
-            {
-              "label": "Ajouter les relevés de mesure"
-            }
-          ]
-        },
-        {
-          "id": "h7-2",
-          "userName": "Marc Lefebvre",
-          "timestamp": "28/01/2025, 16:30",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "8",
-      "formId": "3",
-      "date": "28/01/2025",
-      "author": "Marc Lefebvre",
-      "title": "Émissions atmosphériques",
-      "description": "Cheminée industrielle Zone A",
-      "status": "modified",
-      "formValues": {
-        "emissions": 320
-      },
-      "history": [
-        {
-          "id": "h8-1",
-          "userName": "Marc Lefebvre",
-          "timestamp": "28/01/2025, 15:00",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "9",
-      "formId": "3",
-      "date": "28/01/2025",
-      "author": "Marc Lefebvre",
-      "title": "Émissions atmosphériques",
-      "description": "Cheminée industrielle Zone A",
-      "status": "modified",
-      "formValues": {
-        "emissions": 410
-      },
-      "history": [
-        {
-          "id": "h9-1",
-          "userName": "Marc Lefebvre",
-          "timestamp": "28/01/2025, 14:00",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "10",
-      "formId": "5",
-      "date": "28/01/2025",
-      "author": "Marc Lefebvre",
-      "title": "Émissions atmosphériques",
-      "description": "Cheminée industrielle Zone A",
-      "status": "modified",
-      "formValues": {
-        "surface_contaminee": 25
-      },
-      "history": [
-        {
-          "id": "h10-1",
-          "userName": "Marc Lefebvre",
-          "timestamp": "28/01/2025, 13:00",
-          "action": "a initié cette déclaration"
-        }
-      ]
     }
   ],
   "forms": [
@@ -479,304 +270,107 @@
           "placeholder": "Ex: Secteur B"
         }
       ]
-    },
-    {
-      "id": "3",
-      "code": "E1-3_air_01",
-      "title": "Émissions atmosphériques",
-      "description": "Déclaration des émissions de polluants dans l'atmosphère",
-      "norme": "E1-Pollution",
-      "createdAt": "2025-01-25",
-      "updatedAt": "2025-01-25",
-      "schema": [
-        {
-          "name": "emissions",
-          "type": "unit",
-          "label": "Emissions CO2",
-          "unit": "kg",
-          "min": 0,
-          "description": "Quantité d'émissions en kg"
-        }
-      ]
-    },
-    {
-      "id": "4",
-      "code": "E3-2_eau_01",
-      "title": "Pollution des eaux",
-      "description": "Déclaration des rejets dans les eaux de surface et souterraines",
-      "norme": "E3-Pollution",
-      "createdAt": "2025-01-26",
-      "updatedAt": "2025-01-26",
-      "schema": [
-        {
-          "name": "volume_rejete",
-          "type": "unit",
-          "label": "Volume rejeté",
-          "unit": "L",
-          "min": 0,
-          "description": "Volume d'eau polluée"
-        }
-      ]
-    },
-    {
-      "id": "5",
-      "code": "E4-1_sol_01",
-      "title": "Contamination des sols",
-      "description": "Déclaration des incidents de contamination des sols",
-      "norme": "E4-Pollution",
-      "createdAt": "2025-01-27",
-      "updatedAt": "2025-01-27",
-      "schema": [
-        {
-          "name": "surface_contaminee",
-          "type": "unit",
-          "label": "Surface contaminée",
-          "unit": "m²",
-          "min": 0,
-          "description": "Surface affectée en m²"
-        }
-      ]
-    },
-    {
-      "id": "1768397114899",
-      "title": "Test 12",
-      "description": "A description",
-      "norme": "E2-Pollution",
-      "schema": [
-        {
-          "name": "switch_1",
-          "type": "switch",
-          "label": "Test"
-        },
-        {
-          "name": "switch_4",
-          "type": "switch",
-          "label": "Test"
-        },
-        {
-          "name": "switch_3",
-          "type": "switch",
-          "label": "Test"
-        },
-        {
-          "name": "switch_2",
-          "type": "switch",
-          "label": "Test"
-        }
-      ],
-      "code": "E2-4899_13",
-      "createdAt": "2026-01-14",
-      "updatedAt": "2026-01-15"
-    },
-    {
-      "id": "1768552726572",
-      "title": "LO",
-      "description": "Description",
-      "norme": "E4-Pollution",
-      "schema": [
-        {
-          "name": "text_1",
-          "type": "text",
-          "label": "Email",
-          "placeholder": "",
-          "defaultValue": "email@email.com",
-          "description": "Description du champs email"
-        },
-        {
-          "name": "date_1",
-          "type": "date",
-          "label": "Date de naissance",
-          "includeTime": true,
-          "defaultDateValue": "today",
-          "description": "La description du champs"
-        },
-        {
-          "name": "select_1",
-          "type": "select",
-          "label": "E2 - Pollution",
-          "options": [
-            {
-              "value": "paris",
-              "label": "Paris"
-            },
-            {
-              "value": "lyon",
-              "label": "Lyon"
-            },
-            {
-              "value": "marseille",
-              "label": "Marseille"
-            },
-            {
-              "value": "toulouse",
-              "label": "Toulouse"
-            },
-            {
-              "value": "nice",
-              "label": "Nice"
-            },
-            {
-              "value": "nantes",
-              "label": "Nantes"
-            },
-            {
-              "value": "strasbourg",
-              "label": "Strasbourg"
-            },
-            {
-              "value": "montpellier",
-              "label": "Montpellier"
-            },
-            {
-              "value": "bordeaux",
-              "label": "Bordeaux"
-            },
-            {
-              "value": "lille",
-              "label": "Lille"
-            }
-          ],
-          "dataType": "adresse",
-          "apiUrl": "http://localhost:4000/addresses",
-          "defaultIndex": 9,
-          "description": "Descition"
-        },
-        {
-          "name": "radio_1",
-          "type": "radio",
-          "label": "Choix unique",
-          "options": [
-            {
-              "value": "option_1",
-              "label": "Choix 1"
-            },
-            {
-              "value": "option_2",
-              "label": "Choix 2"
-            },
-            {
-              "value": "option_3",
-              "label": "Choix 3"
-            }
-          ],
-          "defaultIndex": 1,
-          "description": "Description"
-        }
-      ],
-      "code": "E4-6572_22",
-      "createdAt": "2026-01-16",
-      "updatedAt": "2026-01-16"
-    },
-    {
-      "id": "1768552955456",
-      "title": "Test Formulaire",
-      "description": "",
-      "norme": "E2-Pollution",
-      "schema": [
-        {
-          "name": "text_1",
-          "type": "text",
-          "label": "Nouveau champ",
-          "placeholder": ""
-        }
-      ],
-      "code": "E2-5456_91",
-      "createdAt": "2026-01-16",
-      "updatedAt": "2026-01-16"
-    },
-    {
-      "id": "1768553007672",
-      "title": "Test Checkbox",
-      "description": "",
-      "norme": "E2-Pollution",
-      "schema": [
-        {
-          "name": "checkbox_1",
-          "type": "checkbox",
-          "label": "Nouveau champ",
-          "options": [],
-          "defaultIndices": []
-        }
-      ],
-      "code": "E2-7672_56",
-      "createdAt": "2026-01-16",
-      "updatedAt": "2026-01-16"
-    },
-    {
-      "id": "1768553071855",
-      "title": "eee",
-      "description": "eeee",
-      "norme": "E2-Pollution",
-      "schema": [
-        {
-          "name": "text_1",
-          "type": "text",
-          "label": "Nouveau champ",
-          "placeholder": ""
-        }
-      ],
-      "code": "E2-1855_22",
-      "createdAt": "2026-01-16",
-      "updatedAt": "2026-01-16"
-    },
-    {
-      "id": "1768553631627",
-      "title": "Test Final",
-      "description": "",
-      "norme": "E2-Pollution",
-      "schema": [
-        {
-          "name": "text_1",
-          "type": "text",
-          "label": "Nouveau champ",
-          "placeholder": ""
-        }
-      ],
-      "code": "E2-1627_25",
-      "createdAt": "2026-01-16",
-      "updatedAt": "2026-01-16"
     }
   ],
-  "addresses": [
-    {
-      "value": "paris",
-      "label": "Paris"
+  "options": {
+    "addresses": {
+      "label": "Adresses",
+      "data": [
+        {
+          "key": "cities",
+          "label": "Villes",
+          "items": [
+            { "value": "paris", "label": "Paris" },
+            { "value": "lyon", "label": "Lyon" },
+            { "value": "marseille", "label": "Marseille" },
+            { "value": "toulouse", "label": "Toulouse" },
+            { "value": "nice", "label": "Nice" },
+            { "value": "nantes", "label": "Nantes" },
+            { "value": "strasbourg", "label": "Strasbourg" },
+            { "value": "montpellier", "label": "Montpellier" },
+            { "value": "bordeaux", "label": "Bordeaux" },
+            { "value": "lille", "label": "Lille" }
+          ]
+        },
+        {
+          "key": "postal_codes",
+          "label": "Codes postaux",
+          "items": [
+            { "value": "78210", "label": "78210 - Saint-Cyr-l'École" },
+            { "value": "78211", "label": "78211 - Saint-Cyr-l'École Cedex" },
+            { "value": "75001", "label": "75001 - Paris 1er" },
+            { "value": "69001", "label": "69001 - Lyon 1er" },
+            { "value": "13001", "label": "13001 - Marseille 1er" }
+          ]
+        },
+        {
+          "key": "streets",
+          "label": "Rues",
+          "items": [
+            { "value": "rue_rivoli", "label": "Rue de Rivoli" },
+            { "value": "champs_elysees", "label": "Avenue des Champs-Élysées" },
+            { "value": "rue_republique", "label": "Rue de la République" },
+            { "value": "boulevard_haussmann", "label": "Boulevard Haussmann" }
+          ]
+        }
+      ]
     },
-    {
-      "value": "lyon",
-      "label": "Lyon"
+    "users": {
+      "label": "Utilisateurs",
+      "data": [
+        {
+          "key": "user_ids",
+          "label": "Identifiants",
+          "items": [
+            { "value": "user_001", "label": "USR-001" },
+            { "value": "user_002", "label": "USR-002" },
+            { "value": "user_003", "label": "USR-003" },
+            { "value": "user_004", "label": "USR-004" }
+          ]
+        },
+        {
+          "key": "user_names",
+          "label": "Noms",
+          "items": [
+            { "value": "jean_dupont", "label": "Jean Dupont" },
+            { "value": "marie_martin", "label": "Marie Martin" },
+            { "value": "pierre_durand", "label": "Pierre Durand" },
+            { "value": "sophie_bernard", "label": "Sophie Bernard" }
+          ]
+        },
+        {
+          "key": "user_emails",
+          "label": "Emails",
+          "items": [
+            { "value": "jean@example.com", "label": "jean@example.com" },
+            { "value": "marie@example.com", "label": "marie@example.com" },
+            { "value": "pierre@example.com", "label": "pierre@example.com" }
+          ]
+        }
+      ]
     },
-    {
-      "value": "marseille",
-      "label": "Marseille"
-    },
-    {
-      "value": "toulouse",
-      "label": "Toulouse"
-    },
-    {
-      "value": "nice",
-      "label": "Nice"
-    },
-    {
-      "value": "nantes",
-      "label": "Nantes"
-    },
-    {
-      "value": "strasbourg",
-      "label": "Strasbourg"
-    },
-    {
-      "value": "montpellier",
-      "label": "Montpellier"
-    },
-    {
-      "value": "bordeaux",
-      "label": "Bordeaux"
-    },
-    {
-      "value": "lille",
-      "label": "Lille"
+    "products": {
+      "label": "Produits",
+      "data": [
+        {
+          "key": "product_categories",
+          "label": "Catégories",
+          "items": [
+            { "value": "electronics", "label": "Électronique" },
+            { "value": "clothing", "label": "Vêtements" },
+            { "value": "food", "label": "Alimentation" }
+          ]
+        },
+        {
+          "key": "product_brands",
+          "label": "Marques",
+          "items": [
+            { "value": "brand_a", "label": "Marque A" },
+            { "value": "brand_b", "label": "Marque B" },
+            { "value": "brand_c", "label": "Marque C" }
+          ]
+        }
+      ]
     }
-  ]
+  }
 }

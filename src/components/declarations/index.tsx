@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Dashboard from "./Dashboard";
 import DeclarationsList from "./declarationsList";
 import FormSelectionDialog from "./FormSelectionDialog";
 import { useAuthStore, useFormsStore, type FormDefinition } from "@/stores";
@@ -91,15 +90,12 @@ const Declarations = () => {
   };
 
   return (
-    <div className="p-8 flex gap-8">
-      <div className="flex-1">
+    <div className="p-8 flex justify-center">
+      <div className="w-full max-w-[602px]">
         <DeclarationsList
           onDeclarer={handleOpenSelection}
           onEditDeclaration={handleEditDeclaration}
         />
-      </div>
-      <div className="flex-1">
-        <Dashboard onDeclarer={handleOpenSelection} />
       </div>
 
       {/* Modal de sélection du type de formulaire */}

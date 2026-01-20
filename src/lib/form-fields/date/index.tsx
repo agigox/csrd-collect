@@ -1,12 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Label } from "@/lib/ui/label";
 import { Button } from "@/lib/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { Calendar } from "@/lib/ui/calendar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/lib/ui/tooltip";
 import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
 import type { FieldProps, FieldRegistration, DateFieldConfig } from "../types";
@@ -39,13 +44,24 @@ const DateField = ({
   };
 
   const dateValue = parseValue(value);
+  const prevDefaultDateValue = useRef(config.defaultDateValue);
 
-  // Apply default date value when config changes to "today"
+  // Apply default date value when config changes
   useEffect(() => {
-    if (config.defaultDateValue === "today" && !value) {
-      onChange({ date: new Date().toISOString() });
+    const prevValue = prevDefaultDateValue.current;
+    const currentValue = config.defaultDateValue;
+
+    // Only react to actual changes
+    if (prevValue !== currentValue) {
+      prevDefaultDateValue.current = currentValue;
+
+      if (currentValue === "today") {
+        onChange({ date: new Date().toISOString() });
+      } else if (currentValue === "none") {
+        onChange(undefined);
+      }
     }
-  }, [config.defaultDateValue]);
+  }, [config.defaultDateValue, onChange]);
 
   const dateObj = dateValue?.date ? new Date(dateValue.date) : undefined;
 
@@ -116,12 +132,25 @@ const DateField = ({
   // Generate minutes array (0-59, every 5 minutes)
   const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
 
+  const labelContent = (
+    <Label htmlFor={config.name}>
+      {config.label}
+      {config.required && <span className="text-red-500 ml-1">*</span>}
+    </Label>
+  );
+
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={config.name}>
-        {config.label}
-        {config.required && <span className="text-red-500 ml-1">*</span>}
-      </Label>
+      {config.description ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="w-fit cursor-help">{labelContent}</span>
+          </TooltipTrigger>
+          <TooltipContent>{config.description}</TooltipContent>
+        </Tooltip>
+      ) : (
+        labelContent
+      )}
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -237,10 +266,6 @@ const DateField = ({
         </PopoverContent>
       </Popover>
 
-      {config.description && (
-        <span className="text-sm text-gray-500">{config.description}</span>
-      )}
-
       {error && <span className="text-sm text-red-500">{error}</span>}
     </div>
   );
@@ -249,10 +274,7 @@ const DateField = ({
 export const fieldRegistration: FieldRegistration = {
   type: "date",
   component: DateField,
-  defaultConfig: {
-    includeTime: false,
-    defaultDateValue: "none",
-  },
+  defaultConfig: {},
 };
 
 export default DateField;

@@ -48,7 +48,7 @@ const FormSelectionDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-125">
+      <DialogContent className="sm:max-w-125" hideOverlay>
         <DialogHeader>
           <DialogTitle>Nouvelle déclaration</DialogTitle>
         </DialogHeader>

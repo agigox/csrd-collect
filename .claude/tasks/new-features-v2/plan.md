@@ -1,12 +1,1 @@
-- Ajouter des valeurs par défauts aux différents champs dynamique
-- Pour le champs Date, il faut ajouter une valeur par défaut
-- Ajoute une condition sur la date, on peut renseigner des dates passées
-- Ajoute la possiblité d'ajouter l'heure à la date (tu ajoute une option pour renseigner l'heure ou pas), une case à cocher
-- Dans le champs text, remplacer placeholder par un mot plus parlant comme 'Aide'
-- Ajoute une valeur par défault au champs text
-- Pour le champs nombre, il faut préciser si c'est décimal ou entier
-- Il faut ajouter la possibilité qu'on puisse configurer des hover sur les fields (pour ajouter des descriptions sur les champs, pour renseigner par exemple: saisir dans ce champs le nombre des litres qui ont été perdus). Message descriptif sur un texte assez court et le hover sur toute une phrase, on afficher un tooltip sur le hover
-- Pour les listes, il faut enrichier: liste simple (ce qu'on a déjà), choix multiple et choix unique
-- Ajoute la possiblité qu'on peut charger des options à travers un fichier csv ou excel (la possiblité de créer des listes à partir d'une source des données)
-- Gérer dynamiquement la dépendance entre les champs des formulaires (ex: dans le formulaire fuite d'huile, le bloc de coupure dépend on choisi LS ou materiel Poste, GMR et GDP impacte aussi les bloc de coupure)
-- recherche native dans les listes longues: Taper les deux premières lettres, et on peut afficher la liste a base de cette recherche (on peut chercher sur le nom ou sur le code par exemple)
+

@@ -70,7 +70,7 @@ const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
           <DialogHeader>
             <DialogTitle>Nouvelle déclaration</DialogTitle>
             <DialogDescription>
-              {selectedForm?.name || "Formulaire"}
+              {selectedForm?.title || "Formulaire"}
             </DialogDescription>
           </DialogHeader>
 

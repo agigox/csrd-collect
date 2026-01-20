@@ -2,6 +2,11 @@
 
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/lib/ui/tooltip";
 import type { FieldProps, FieldRegistration, TextFieldConfig } from "../types";
 
 const TextField = ({
@@ -18,14 +23,24 @@ const TextField = ({
     onChange(e.target.value);
   };
 
+  const labelContent = (
+    <Label htmlFor={config.name}>
+      {config.label}
+      {config.required && <span className="text-red-500 ml-1">*</span>}
+    </Label>
+  );
+
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={config.name}>
-        {config.label}
-        {config.required && <span className="text-red-500 ml-1">*</span>}
-      </Label>
-      {config.description && (
-        <p className="text-sm text-gray-500">{config.description}</p>
+      {config.description ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="w-fit cursor-help">{labelContent}</span>
+          </TooltipTrigger>
+          <TooltipContent>{config.description}</TooltipContent>
+        </Tooltip>
+      ) : (
+        labelContent
       )}
       <Input
         id={config.name}

@@ -2,6 +2,11 @@
 
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/lib/ui/tooltip";
 import type {
   FieldProps,
   FieldRegistration,
@@ -19,27 +24,44 @@ const NumberField = ({
     onChange(numValue);
   };
 
+  const labelContent = (
+    <Label htmlFor={config.name}>
+      {config.label}
+      {config.required && <span className="text-red-500 ml-1">*</span>}
+    </Label>
+  );
+
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={config.name}>
-        {config.label}
-        {config.required && <span className="text-red-500 ml-1">*</span>}
-      </Label>
-      {config.description && (
-        <p className="text-sm text-gray-500">{config.description}</p>
+      {config.description ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="w-fit cursor-help">{labelContent}</span>
+          </TooltipTrigger>
+          <TooltipContent>{config.description}</TooltipContent>
+        </Tooltip>
+      ) : (
+        labelContent
       )}
-      <Input
-        id={config.name}
-        name={config.name}
-        type="number"
-        placeholder={config.placeholder}
-        value={value !== undefined ? String(value) : ""}
-        onChange={handleChange}
-        min={config.min}
-        max={config.max}
-        aria-invalid={!!error}
-        className={error ? "border-red-500" : ""}
-      />
+      <div className="flex items-center gap-2">
+        <Input
+          id={config.name}
+          name={config.name}
+          type="number"
+          placeholder={config.placeholder}
+          value={value !== undefined ? String(value) : ""}
+          onChange={handleChange}
+          min={config.min}
+          max={config.max}
+          aria-invalid={!!error}
+          className={error ? "border-red-500 flex-1" : "flex-1"}
+        />
+        {config.unit && (
+          <span className="text-sm font-medium text-gray-600 shrink-0">
+            {config.unit}
+          </span>
+        )}
+      </div>
       {error && <span className="text-sm text-red-500">{error}</span>}
     </div>
   );

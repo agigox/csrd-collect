@@ -1,6 +1,11 @@
 "use client";
 
 import { Label } from "@/lib/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/lib/ui/tooltip";
 import type { FieldProps, FieldRegistration, RadioFieldConfig } from "../types";
 
 const RadioField = ({
@@ -21,14 +26,24 @@ const RadioField = ({
     onChange(optionValue);
   };
 
+  const labelContent = (
+    <Label>
+      {config.label}
+      {config.required && <span className="text-red-500 ml-1">*</span>}
+    </Label>
+  );
+
   return (
     <div className="flex flex-col gap-2">
-      <Label>
-        {config.label}
-        {config.required && <span className="text-red-500 ml-1">*</span>}
-      </Label>
-      {config.description && (
-        <p className="text-sm text-gray-500">{config.description}</p>
+      {config.description ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="w-fit cursor-help">{labelContent}</span>
+          </TooltipTrigger>
+          <TooltipContent>{config.description}</TooltipContent>
+        </Tooltip>
+      ) : (
+        labelContent
       )}
       <div className="flex flex-col gap-3">
         {options.map((option) => {
@@ -78,13 +93,7 @@ const RadioField = ({
 export const fieldRegistration: FieldRegistration = {
   type: "radio",
   component: RadioField,
-  defaultConfig: {
-    options: [
-      { value: "option_1", label: "Choix 1" },
-      { value: "option_2", label: "Choix 2" },
-      { value: "option_3", label: "Choix 3" },
-    ],
-  },
+  defaultConfig: {},
 };
 
 export default RadioField;

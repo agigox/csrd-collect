@@ -8,6 +8,7 @@ import { fieldRegistration as switchField } from "./switch";
 import { fieldRegistration as dateField } from "./date";
 import { fieldRegistration as radioField } from "./radio";
 import { fieldRegistration as checkboxField } from "./checkbox";
+import { fieldRegistration as importField } from "./import";
 
 const fieldRegistry = new Map<FieldType, FieldRegistration>();
 
@@ -31,3 +32,4 @@ registerField(switchField);
 registerField(dateField);
 registerField(radioField);
 registerField(checkboxField);
+registerField(importField);

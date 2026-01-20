@@ -17,6 +17,7 @@ export interface BaseFieldConfig {
   defaultValue?: unknown;
   validation?: ValidationRule[];
   description?: string;
+  isDuplicate?: boolean;
 }
 
 export interface SelectOption {
@@ -24,21 +25,23 @@ export interface SelectOption {
   label: string;
 }
 
-export type DataSourceType = "csv" | "api";
+export type SelectionMode = "single" | "multiple";
 
 export interface SelectFieldConfig extends BaseFieldConfig {
   type: "select";
   options: SelectOption[];
   defaultIndex?: number;
-  dataType?: string; // Type de donnée (ex: "Adresse")
-  dataSourceType?: DataSourceType; // Type de source: CSV ou API
-  apiUrl?: string; // URL de l'API pour charger les options
+  defaultIndices?: number[];
+  selectionMode?: SelectionMode;
+  dataType?: string; // Clé du type de donnée (ex: "addresses", "users")
+  dataSource?: string; // Clé de la source de donnée (ex: "cities", "postal_codes")
 }
 
 export interface NumberFieldConfig extends BaseFieldConfig {
   type: "number";
   min?: number;
   max?: number;
+  unit?: string;
 }
 
 export interface TextFieldConfig extends BaseFieldConfig {
@@ -76,7 +79,13 @@ export interface CheckboxFieldConfig extends BaseFieldConfig {
   defaultIndices?: number[];
 }
 
-export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig | DateFieldConfig | RadioFieldConfig | CheckboxFieldConfig;
+export interface ImportFieldConfig extends BaseFieldConfig {
+  type: "import";
+  acceptedFormats?: string[];
+  maxFileSize?: number; // in MB
+}
+
+export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig | DateFieldConfig | RadioFieldConfig | CheckboxFieldConfig | ImportFieldConfig;
 
 export interface FieldProps<T extends FieldConfig = FieldConfig> {
   config: T;

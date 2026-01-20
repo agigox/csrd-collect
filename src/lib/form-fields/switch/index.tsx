@@ -1,6 +1,11 @@
 "use client";
 
 import { Label } from "@/lib/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/lib/ui/tooltip";
 import type {
   FieldProps,
   FieldRegistration,
@@ -17,6 +22,16 @@ const SwitchField = ({
   const handleToggle = () => {
     onChange(!isChecked);
   };
+
+  const labelElement = (
+    <Label
+      htmlFor={config.name}
+      className="text-sm text-content-primary cursor-pointer"
+      onClick={handleToggle}
+    >
+      {config.label}
+    </Label>
+  );
 
   return (
     <div className="flex flex-col gap-0.5">
@@ -59,24 +74,18 @@ const SwitchField = ({
           </span>
         </button>
 
-        {/* Label */}
-        <Label
-          htmlFor={config.name}
-          className="text-sm text-content-primary cursor-pointer"
-          onClick={handleToggle}
-        >
-          {config.label}
-        </Label>
+        {/* Label with Tooltip */}
+        {config.description ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="cursor-help">{labelElement}</span>
+            </TooltipTrigger>
+            <TooltipContent>{config.description}</TooltipContent>
+          </Tooltip>
+        ) : (
+          labelElement
+        )}
       </div>
-
-      {/* Description */}
-      {config.description && (
-        <div className="px-2 py-1">
-          <span className="text-xs text-text-primary-tertiary">
-            {config.description}
-          </span>
-        </div>
-      )}
     </div>
   );
 };
