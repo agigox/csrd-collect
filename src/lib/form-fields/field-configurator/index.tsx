@@ -16,15 +16,28 @@ import { CheckboxConfigurator } from "./checkbox";
 import { UnitConfigurator } from "./unit";
 import { SwitchConfigurator } from "./switch";
 import { DateConfigurator } from "./date";
+import { ImportConfigurator } from "./import";
 
 export const FieldConfigurator = ({
   config,
   onChange,
   onRemove,
   onDuplicate,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
+  dragHandleAttributes,
+  dragHandleListeners,
 }: FieldConfiguratorProps) => {
+  // Remove isDuplicate flag when user modifies any field
   const handleChange = (newConfig: FieldConfig) => {
-    onChange(newConfig);
+    if (newConfig.isDuplicate) {
+      const { isDuplicate, ...configWithoutDuplicate } = newConfig;
+      onChange(configWithoutDuplicate as FieldConfig);
+    } else {
+      onChange(newConfig);
+    }
   };
 
   const renderSpecificConfigurator = () => {
@@ -76,6 +89,10 @@ export const FieldConfigurator = ({
         return (
           <DateConfigurator config={config} onChange={(c) => handleChange(c)} />
         );
+      case "import":
+        return (
+          <ImportConfigurator config={config} onChange={(c) => handleChange(c)} />
+        );
       default:
         return null;
     }
@@ -87,24 +104,31 @@ export const FieldConfigurator = ({
         type={config.type}
         onDuplicate={onDuplicate}
         onRemove={onRemove}
+        onMoveUp={onMoveUp}
+        onMoveDown={onMoveDown}
+        canMoveUp={canMoveUp}
+        canMoveDown={canMoveDown}
+        isDuplicate={config.isDuplicate}
+        dragHandleAttributes={dragHandleAttributes}
+        dragHandleListeners={dragHandleListeners}
       />
       <div className="flex flex-col gap-4">
         <LabelField
           value={config.label}
-          onChange={(label) => onChange({ ...config, label })}
+          onChange={(label) => handleChange({ ...config, label })}
         />
 
         {renderSpecificConfigurator()}
 
         <DescriptionField
           value={config.description ?? ""}
-          onChange={(description) => onChange({ ...config, description })}
+          onChange={(description) => handleChange({ ...config, description })}
         />
       </div>
 
       <RequiredToggle
         required={config.required ?? false}
-        onChange={(required) => onChange({ ...config, required })}
+        onChange={(required) => handleChange({ ...config, required })}
       />
     </div>
   );

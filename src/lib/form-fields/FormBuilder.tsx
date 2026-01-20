@@ -2,6 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/lib/ui/button";
 import { Card, CardContent } from "@/lib/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
@@ -27,15 +44,73 @@ interface FieldTypeOption {
 const fieldTypeOptions: FieldTypeOption[] = [
   { type: "date", label: "Heure et Date", icon: "calendar", borderBottom: true },
   { type: "text", label: "Champ libre", icon: "letter" },
-  { type: "number", label: "Nombre", icon: "letter" },
-  { type: "unit", label: "Quantité avec unité", icon: "letter", borderBottom: true },
+  { type: "number", label: "Nombre", icon: "letter", borderBottom: true },
   { type: "radio", label: "Choix unique", icon: "checkCircle" },
   { type: "checkbox", label: "Choix multiple", icon: "checkbox", borderBottom: true },
   { type: "select", label: "Liste déroulante", icon: "listAlt", borderBottom: true },
   { type: "import", label: "Import de fichier", icon: "upload" },
   { type: "switch", label: "Switch", icon: "switch" },
-  
 ];
+
+// Sortable Field Card component
+interface SortableFieldCardProps {
+  id: string;
+  fieldConfig: FieldConfig;
+  index: number;
+  totalFields: number;
+  onUpdate: (config: FieldConfig) => void;
+  onRemove: () => void;
+  onDuplicate: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+}
+
+const SortableFieldCard = ({
+  id,
+  fieldConfig,
+  index,
+  totalFields,
+  onUpdate,
+  onRemove,
+  onDuplicate,
+  onMoveUp,
+  onMoveDown,
+}: SortableFieldCardProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : "auto",
+  };
+
+  return (
+    <Card ref={setNodeRef} style={style}>
+      <CardContent>
+        <FieldConfigurator
+          config={fieldConfig}
+          onChange={onUpdate}
+          onRemove={onRemove}
+          onDuplicate={onDuplicate}
+          onMoveUp={onMoveUp}
+          onMoveDown={onMoveDown}
+          canMoveUp={index > 0}
+          canMoveDown={index < totalFields - 1}
+          dragHandleAttributes={attributes}
+          dragHandleListeners={listeners}
+        />
+      </CardContent>
+    </Card>
+  );
+};
 
 export const FormBuilder = ({
   schema,
@@ -46,6 +121,18 @@ export const FormBuilder = ({
 }: FormBuilderProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px movement required before drag starts
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -80,13 +167,6 @@ export const FormBuilder = ({
         type: "number",
         label: "Nouveau champ",
       };
-    } else if (type === "unit") {
-      newField = {
-        name: fieldName,
-        type: "unit",
-        label: "Nouveau champ",
-        unit: "L",
-      };
     } else if (type === "switch") {
       newField = {
         name: fieldName,
@@ -120,6 +200,13 @@ export const FormBuilder = ({
         includeTime: false,
         defaultDateValue: "none",
       };
+    } else if (type === "import") {
+      newField = {
+        name: fieldName,
+        type: "import",
+        label: "Import de fichier",
+        acceptedFormats: [],
+      };
     } else {
       newField = {
         name: fieldName,
@@ -148,11 +235,43 @@ export const FormBuilder = ({
     const duplicatedField = {
       ...fieldToDuplicate,
       name: generateFieldName(fieldToDuplicate.type),
+      isDuplicate: true,
     };
     const newSchema = [...schema];
     newSchema.splice(index + 1, 0, duplicatedField);
     onChange(newSchema);
   };
+
+  const handleMoveUp = (index: number) => {
+    if (index <= 0) return;
+    const newSchema = [...schema];
+    [newSchema[index - 1], newSchema[index]] = [newSchema[index], newSchema[index - 1]];
+    onChange(newSchema);
+  };
+
+  const handleMoveDown = (index: number) => {
+    if (index >= schema.length - 1) return;
+    const newSchema = [...schema];
+    [newSchema[index], newSchema[index + 1]] = [newSchema[index + 1], newSchema[index]];
+    onChange(newSchema);
+  };
+
+  // Handle drag end for reordering
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = schema.findIndex((f) => f.name === active.id);
+      const newIndex = schema.findIndex((f) => f.name === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        onChange(arrayMove(schema, oldIndex, newIndex));
+      }
+    }
+  };
+
+  // Get sortable item IDs
+  const sortableIds = schema.map((f) => f.name);
 
   const addButtonContent = (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -226,20 +345,33 @@ export const FormBuilder = ({
             une donnée à déclarer.
           </div>
         ) : (
-          <div className="flex flex-col gap-8">
-            {schema.map((fieldConfig, index) => (
-              <Card key={`${fieldConfig.name}-${index}`}>
-                <CardContent>
-                  <FieldConfigurator
-                    config={fieldConfig}
-                    onChange={(config) => handleUpdateField(index, config)}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={sortableIds}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="flex flex-col gap-8">
+                {schema.map((fieldConfig, index) => (
+                  <SortableFieldCard
+                    key={fieldConfig.name}
+                    id={fieldConfig.name}
+                    fieldConfig={fieldConfig}
+                    index={index}
+                    totalFields={schema.length}
+                    onUpdate={(config) => handleUpdateField(index, config)}
                     onRemove={() => handleRemoveField(index)}
                     onDuplicate={() => handleDuplicateField(index)}
+                    onMoveUp={() => handleMoveUp(index)}
+                    onMoveDown={() => handleMoveDown(index)}
                   />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         )}
       </div>
 
