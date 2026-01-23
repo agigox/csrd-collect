@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import DeclarationsList from "./declarationsList";
 import FormSelectionDialog from "./FormSelectionDialog";
 import { useAuthStore, useFormsStore, type FormDefinition } from "@/stores";
@@ -19,9 +19,13 @@ import { useDeclarationsStore, type Declaration } from "@/stores";
 
 const Declarations = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const updateDeclaration = useDeclarationsStore(
-    (state) => state.updateDeclaration
-  );
+  const {
+    updateDeclaration,
+    addTempDeclaration,
+    updateTempDeclaration,
+    removeTempDeclaration,
+    confirmTempDeclaration,
+  } = useDeclarationsStore();
   const { forms, fetchForms } = useFormsStore();
   const [selectionDialogOpen, setSelectionDialogOpen] = useState(false);
   const [declarationDialogOpen, setDeclarationDialogOpen] = useState(false);
@@ -31,6 +35,9 @@ const Declarations = () => {
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showHistory, setShowHistory] = useState(true);
+  const [tempDeclarationId, setTempDeclarationId] = useState<string | null>(
+    null,
+  );
 
   // Load forms when component mounts
   useEffect(() => {
@@ -50,12 +57,42 @@ const Declarations = () => {
     setSelectedForm(form);
     setFormValues({});
     setFormErrors({});
+
+    // Create temporary declaration
+    const tempId = `temp_${Date.now()}`;
+    const today = new Date();
+    const dateStr = today.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    const tempDeclaration: Declaration = {
+      id: tempId,
+      formId: form.id,
+      date: dateStr,
+      author: "Utilisateur actuel",
+      title: form.title || "Nouvelle déclaration",
+      description: form.description || "",
+      status: "pending",
+      formValues: {},
+      isNew: true,
+    };
+
+    addTempDeclaration(tempDeclaration);
+    setTempDeclarationId(tempId);
+    setSelectedDeclaration(tempDeclaration);
     setDeclarationDialogOpen(true);
   };
 
   const handleCloseDeclaration = (open: boolean) => {
     setDeclarationDialogOpen(open);
     if (!open) {
+      // If closing with a temp declaration, remove it
+      if (tempDeclarationId) {
+        removeTempDeclaration(tempDeclarationId);
+        setTempDeclarationId(null);
+      }
       setSelectedForm(null);
       setSelectedDeclaration(null);
       setFormValues({});
@@ -65,6 +102,19 @@ const Declarations = () => {
 
   // Handler for editing an existing declaration
   const handleEditDeclaration = (declaration: Declaration) => {
+    // If switching from a temp declaration to another, remove the temp
+    if (tempDeclarationId && declaration.id !== tempDeclarationId) {
+      removeTempDeclaration(tempDeclarationId);
+      setTempDeclarationId(null);
+    }
+
+    // If this is the temp declaration, keep track of it
+    if (declaration.isNew) {
+      setTempDeclarationId(declaration.id);
+    } else {
+      setTempDeclarationId(null);
+    }
+
     setSelectedDeclaration(declaration);
     // Load the form associated with this declaration
     const declarationForm = forms.find((f) => f.id === declaration.formId);
@@ -74,27 +124,64 @@ const Declarations = () => {
       setFormValues(declaration.formValues || {});
     }
     setFormErrors({});
-    setDeclarationDialogOpen(true);
+    // Only open if not already open
+    if (!declarationDialogOpen) {
+      setDeclarationDialogOpen(true);
+    }
   };
+
+  // Handler for form value changes - sync with temp declaration
+  const handleFormValuesChange = useCallback(
+    (newValues: Record<string, unknown>) => {
+      setFormValues(newValues);
+
+      // Sync with temp declaration in real-time
+      if (tempDeclarationId) {
+        // Extract title from form values if available
+        const titleField = Object.entries(newValues).find(
+          ([key]) =>
+            key.toLowerCase().includes("titre") ||
+            key.toLowerCase().includes("title"),
+        );
+        const title = titleField ? String(titleField[1] || "") : undefined;
+
+        updateTempDeclaration(tempDeclarationId, {
+          formValues: newValues,
+          ...(title && { title }),
+        });
+      }
+    },
+    [tempDeclarationId, updateTempDeclaration],
+  );
 
   // Handler for submitting the form
   const handleSubmit = async () => {
     if (selectedDeclaration) {
-      // Update existing declaration
-      await updateDeclaration(selectedDeclaration.id, formValues);
-    } else {
-      // TODO: Create new declaration
-      console.log("Créer nouvelle déclaration:", formValues);
+      if (tempDeclarationId && selectedDeclaration.id === tempDeclarationId) {
+        // Confirm temp declaration (create new)
+        await confirmTempDeclaration(tempDeclarationId);
+        setTempDeclarationId(null);
+      } else {
+        // Update existing declaration
+        await updateDeclaration(selectedDeclaration.id, formValues);
+      }
     }
-    handleCloseDeclaration(false);
+    // Close without removing temp (it's been confirmed or it's an existing declaration)
+    setDeclarationDialogOpen(false);
+    setSelectedForm(null);
+    setSelectedDeclaration(null);
+    setFormValues({});
+    setFormErrors({});
+    setTempDeclarationId(null);
   };
 
   return (
-    <div className="p-8 flex justify-center">
-      <div className="w-full max-w-[602px]">
+    <div className="p-8 flex justify-start">
+      <div className="w-full max-w-101.5">
         <DeclarationsList
           onDeclarer={handleOpenSelection}
           onEditDeclaration={handleEditDeclaration}
+          selectedDeclarationId={selectedDeclaration?.id}
         />
       </div>
 
@@ -109,16 +196,22 @@ const Declarations = () => {
       <Dialog
         open={declarationDialogOpen}
         onOpenChange={handleCloseDeclaration}
+        modal={false}
       >
-        <DialogContent className="fixed! top-0! right-0! left-auto! h-screen! w-198! max-w-none! translate-x-0! translate-y-0! rounded-none! border-l! border-y-0! border-r-0! data-[state=open]:animate-slide-in-from-right! data-[state=closed]:animate-slide-out-to-right! flex! flex-col! min-h-0!">
+        <DialogContent
+          hideOverlay
+          onInteractOutside={(e) => e.preventDefault()}
+          onPointerDownOutside={(e) => e.preventDefault()}
+          className="fixed! top-0! right-0! left-auto! h-screen! w-198! max-w-none! translate-x-0! translate-y-0! rounded-none! border-l! border-y-0! border-r-0! flex! flex-col! min-h-0!"
+        >
           <DialogHeader>
             <div className="flex items-center gap-2 justify-between">
               <DialogTitle>
                 <div className="flex flex-col">
                   <div>
-                    {selectedDeclaration
-                      ? "Modifier la déclaration"
-                      : "Nouvelle déclaration"}
+                    {selectedDeclaration?.isNew
+                      ? "Nouvelle déclaration"
+                      : "Modifier la déclaration"}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     ID {selectedDeclaration?.id || selectedForm?.id || ""}
@@ -145,7 +238,7 @@ const Declarations = () => {
                   <DynamicForm
                     schema={selectedForm.schema}
                     values={formValues}
-                    onChange={setFormValues}
+                    onChange={handleFormValuesChange}
                     errors={formErrors}
                   />
                 </ScrollableContainer>

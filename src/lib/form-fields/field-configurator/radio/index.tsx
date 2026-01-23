@@ -1,20 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/lib/ui/select";
 import Icon from "@/lib/Icons";
 import type { RadioFieldConfig, SelectOption } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
 export const RadioConfigurator = ({
   config,
   onChange,
 }: SpecificConfiguratorProps<RadioFieldConfig>) => {
-  const [showDefaultSelector, setShowDefaultSelector] = useState(
-    config.defaultIndex !== undefined
-  );
-
   const handleOptionChange = (
     index: number,
     field: keyof SelectOption,
@@ -53,48 +56,43 @@ export const RadioConfigurator = ({
     onChange({ ...config, options: newOptions, defaultIndex: newDefaultIndex });
   };
 
-  const handleToggleDefaultSelector = () => {
-    if (showDefaultSelector) {
-      setShowDefaultSelector(false);
+  const options = config.options ?? [];
+  const hasDefaultValue = config.defaultIndex !== undefined;
+
+  // Gérer le toggle du checkbox "Définir une valeur par défaut"
+  const handleToggleDefaultValue = () => {
+    if (hasDefaultValue) {
       onChange({ ...config, defaultIndex: undefined });
     } else {
-      setShowDefaultSelector(true);
+      onChange({ ...config, defaultIndex: options.length > 0 ? 0 : undefined });
     }
   };
 
-  const handleSetDefaultIndex = (index: number) => {
-    onChange({ ...config, defaultIndex: index });
+  // Gérer le changement de valeur par défaut
+  const handleDefaultChange = (value: string) => {
+    const index = options.findIndex((o) => o.value === value);
+    onChange({ ...config, defaultIndex: index >= 0 ? index : undefined });
   };
 
-  const options = config.options ?? [];
+  // Obtenir la valeur actuelle pour le select
+  const currentDefaultValue =
+    config.defaultIndex !== undefined && options[config.defaultIndex]
+      ? options[config.defaultIndex].value
+      : "";
 
   return (
     <div className="flex flex-col gap-3">
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label })}
+      />
       {options.map((option, index) => {
         const isLast = index === options.length - 1;
-        const isDefault = showDefaultSelector && config.defaultIndex === index;
         return (
           <div key={index} className="flex flex-col gap-1">
             <Label>Choix {index + 1}</Label>
             <div className="flex gap-2 items-center">
-              {/* Radio button - cliquable si mode sélection défaut actif */}
-              <button
-                type="button"
-                onClick={() => showDefaultSelector && handleSetDefaultIndex(index)}
-                disabled={!showDefaultSelector}
-                className={`flex items-center justify-center size-5 border-2 bg-white rounded-full transition-colors ${
-                  isDefault
-                    ? "border-[#2964a0]"
-                    : showDefaultSelector
-                    ? "border-gray-300 hover:border-[#2964a0] cursor-pointer"
-                    : "border-gray-300 cursor-default"
-                }`}
-                title={showDefaultSelector ? "Définir comme valeur par défaut" : undefined}
-              >
-                {isDefault && (
-                  <span className="size-[10px] rounded-full bg-[#2964a0]" />
-                )}
-              </button>
+              <span className="flex items-center justify-center size-5 border-2 bg-white rounded-full border-gray-300" />
               <Input
                 value={option.label}
                 onChange={(e) =>
@@ -126,45 +124,69 @@ export const RadioConfigurator = ({
         );
       })}
 
-      {/* Checkbox pour activer la sélection d'une valeur par défaut */}
-      <div className="flex flex-col gap-2 mt-2">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleToggleDefaultSelector}
-            className={`flex items-center justify-center size-5 border-2 bg-white transition-colors rounded ${
-              showDefaultSelector
-                ? "border-[#2964a0]"
-                : "border-gray-300 hover:border-[#2964a0]"
-            }`}
-          >
-            {showDefaultSelector && (
-              <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-                <path
-                  d="M1 5L4 8L11 1"
-                  stroke="#2964a0"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
-          </button>
-          <Label
-            className="text-sm cursor-pointer text-[#2964a0]"
-            onClick={handleToggleDefaultSelector}
-          >
-            Définir une valeur par défaut
-          </Label>
+      {/* Définir une valeur par défaut */}
+      {options.length > 0 && (
+        <div className="flex flex-col gap-2 mt-2">
+          {!hasDefaultValue ? (
+            <label className="flex items-center gap-2 cursor-pointer">
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={false}
+                onClick={handleToggleDefaultValue}
+                className="flex items-center justify-center size-4 rounded border-2 border-[#737272] bg-white hover:border-[#225082] transition-colors"
+              />
+              <span className="text-sm">Définir une valeur par défaut</span>
+            </label>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={true}
+                onClick={handleToggleDefaultValue}
+                className="flex items-center justify-center size-4 rounded border-2 border-[#2964a0] bg-[#2964a0] transition-colors shrink-0"
+              >
+                <svg
+                  width="10"
+                  height="8"
+                  viewBox="0 0 10 8"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 4L3.5 6.5L9 1"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <Select
+                value={currentDefaultValue}
+                onValueChange={handleDefaultChange}
+              >
+                <SelectTrigger
+                  className="h-8 text-sm flex-1"
+                  clearable
+                  hasValue={!!currentDefaultValue}
+                  onClear={() => handleDefaultChange("")}
+                >
+                  <SelectValue placeholder="Sélectionner une valeur par défaut..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
-
-        {/* Message d'aide quand le mode sélection est actif */}
-        {showDefaultSelector && (
-          <p className="text-xs text-gray-500 ml-8">
-            Cliquez sur un bouton radio ci-dessus pour définir la valeur par défaut
-          </p>
-        )}
-      </div>
+      )}
     </div>
   );
 };

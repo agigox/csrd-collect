@@ -120,6 +120,20 @@
           "action": "a initié cette déclaration"
         }
       ]
+    },
+    {
+      "id": "temp_1768931119168",
+      "formId": "1",
+      "date": "20/01/2026",
+      "author": "Utilisateur actuel",
+      "title": "eeeee",
+      "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
+      "status": "pending",
+      "formValues": {
+        "titre": "eeeee",
+        "quantite": 4,
+        "gravite": "eleve"
+      }
     }
   ],
   "forms": [
@@ -280,37 +294,94 @@
           "key": "cities",
           "label": "Villes",
           "items": [
-            { "value": "paris", "label": "Paris" },
-            { "value": "lyon", "label": "Lyon" },
-            { "value": "marseille", "label": "Marseille" },
-            { "value": "toulouse", "label": "Toulouse" },
-            { "value": "nice", "label": "Nice" },
-            { "value": "nantes", "label": "Nantes" },
-            { "value": "strasbourg", "label": "Strasbourg" },
-            { "value": "montpellier", "label": "Montpellier" },
-            { "value": "bordeaux", "label": "Bordeaux" },
-            { "value": "lille", "label": "Lille" }
+            {
+              "value": "paris",
+              "label": "Paris"
+            },
+            {
+              "value": "lyon",
+              "label": "Lyon"
+            },
+            {
+              "value": "marseille",
+              "label": "Marseille"
+            },
+            {
+              "value": "toulouse",
+              "label": "Toulouse"
+            },
+            {
+              "value": "nice",
+              "label": "Nice"
+            },
+            {
+              "value": "nantes",
+              "label": "Nantes"
+            },
+            {
+              "value": "strasbourg",
+              "label": "Strasbourg"
+            },
+            {
+              "value": "montpellier",
+              "label": "Montpellier"
+            },
+            {
+              "value": "bordeaux",
+              "label": "Bordeaux"
+            },
+            {
+              "value": "lille",
+              "label": "Lille"
+            }
           ]
         },
         {
           "key": "postal_codes",
           "label": "Codes postaux",
           "items": [
-            { "value": "78210", "label": "78210 - Saint-Cyr-l'École" },
-            { "value": "78211", "label": "78211 - Saint-Cyr-l'École Cedex" },
-            { "value": "75001", "label": "75001 - Paris 1er" },
-            { "value": "69001", "label": "69001 - Lyon 1er" },
-            { "value": "13001", "label": "13001 - Marseille 1er" }
+            {
+              "value": "78210",
+              "label": "78210 - Saint-Cyr-l'École"
+            },
+            {
+              "value": "78211",
+              "label": "78211 - Saint-Cyr-l'École Cedex"
+            },
+            {
+              "value": "75001",
+              "label": "75001 - Paris 1er"
+            },
+            {
+              "value": "69001",
+              "label": "69001 - Lyon 1er"
+            },
+            {
+              "value": "13001",
+              "label": "13001 - Marseille 1er"
+            }
           ]
         },
         {
           "key": "streets",
           "label": "Rues",
           "items": [
-            { "value": "rue_rivoli", "label": "Rue de Rivoli" },
-            { "value": "champs_elysees", "label": "Avenue des Champs-Élysées" },
-            { "value": "rue_republique", "label": "Rue de la République" },
-            { "value": "boulevard_haussmann", "label": "Boulevard Haussmann" }
+            {
+              "value": "rue_rivoli",
+              "label": "Rue de Rivoli"
+            },
+            {
+              "value": "champs_elysees",
+              "label": "Avenue des Champs-Élysées"
+            },
+            {
+              "value": "rue_republique",
+              "label": "Rue de la République"
+            },
+            {
+              "value": "boulevard_haussmann",
+              "label": "Boulevard Haussmann"
+            }
           ]
         }
       ]
@@ -322,29 +393,62 @@
           "key": "user_ids",
           "label": "Identifiants",
           "items": [
-            { "value": "user_001", "label": "USR-001" },
-            { "value": "user_002", "label": "USR-002" },
-            { "value": "user_003", "label": "USR-003" },
-            { "value": "user_004", "label": "USR-004" }
+            {
+              "value": "user_001",
+              "label": "USR-001"
+            },
+            {
+              "value": "user_002",
+              "label": "USR-002"
+            },
+            {
+              "value": "user_003",
+              "label": "USR-003"
+            },
+            {
+              "value": "user_004",
+              "label": "USR-004"
+            }
           ]
         },
         {
           "key": "user_names",
           "label": "Noms",
           "items": [
-            { "value": "jean_dupont", "label": "Jean Dupont" },
-            { "value": "marie_martin", "label": "Marie Martin" },
-            { "value": "pierre_durand", "label": "Pierre Durand" },
-            { "value": "sophie_bernard", "label": "Sophie Bernard" }
+            {
+              "value": "jean_dupont",
+              "label": "Jean Dupont"
+            },
+            {
+              "value": "marie_martin",
+              "label": "Marie Martin"
+            },
+            {
+              "value": "pierre_durand",
+              "label": "Pierre Durand"
+            },
+            {
+              "value": "sophie_bernard",
+              "label": "Sophie Bernard"
+            }
           ]
         },
         {
           "key": "user_emails",
           "label": "Emails",
           "items": [
-            { "value": "jean@example.com", "label": "jean@example.com" },
-            { "value": "marie@example.com", "label": "marie@example.com" },
-            { "value": "pierre@example.com", "label": "pierre@example.com" }
+            {
+              "value": "jean@example.com",
+              "label": "jean@example.com"
+            },
+            {
+              "value": "marie@example.com",
+              "label": "marie@example.com"
+            },
+            {
+              "value": "pierre@example.com",
+              "label": "pierre@example.com"
+            }
           ]
         }
       ]
@@ -356,18 +460,36 @@
           "key": "product_categories",
           "label": "Catégories",
           "items": [
-            { "value": "electronics", "label": "Électronique" },
-            { "value": "clothing", "label": "Vêtements" },
-            { "value": "food", "label": "Alimentation" }
+            {
+              "value": "electronics",
+              "label": "Électronique"
+            },
+            {
+              "value": "clothing",
+              "label": "Vêtements"
+            },
+            {
+              "value": "food",
+              "label": "Alimentation"
+            }
           ]
         },
         {
           "key": "product_brands",
           "label": "Marques",
           "items": [
-            { "value": "brand_a", "label": "Marque A" },
-            { "value": "brand_b", "label": "Marque B" },
-            { "value": "brand_c", "label": "Marque C" }
+            {
+              "value": "brand_a",
+              "label": "Marque A"
+            },
+            {
+              "value": "brand_b",
+              "label": "Marque B"
+            },
+            {
+              "value": "brand_c",
+              "label": "Marque C"
+            }
           ]
         }
       ]

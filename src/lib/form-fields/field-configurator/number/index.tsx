@@ -11,6 +11,7 @@ import {
 } from "@/lib/ui/select";
 import type { NumberFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
 const unitOptions = [
   { value: "", label: "Sans unité" },
@@ -29,6 +30,10 @@ export const NumberConfigurator = ({
 }: SpecificConfiguratorProps<NumberFieldConfig>) => {
   return (
     <>
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label })}
+      />
       <div className="flex gap-4">
         <div className="flex flex-col gap-1">
           <Label>Placeholder</Label>

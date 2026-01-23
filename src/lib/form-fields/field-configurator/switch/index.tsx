@@ -2,13 +2,18 @@
 
 import type { SwitchFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
-// Switch has no specific configuration beyond the common fields
-// (label, description, required are all handled by the main FieldConfigurator)
-export const SwitchConfigurator = (
-  _props: SpecificConfiguratorProps<SwitchFieldConfig>
-) => {
-  return null;
+export const SwitchConfigurator = ({
+  config,
+  onChange,
+}: SpecificConfiguratorProps<SwitchFieldConfig>) => {
+  return (
+    <LabelField
+      value={config.label}
+      onChange={(label) => onChange({ ...config, label })}
+    />
+  );
 };
 
 export default SwitchConfigurator;

@@ -4,7 +4,6 @@ import type { FieldConfig } from "../types";
 import type { FieldConfiguratorProps } from "./types";
 
 import { Header } from "./common/Header";
-import { LabelField } from "./common/LabelField";
 import { DescriptionField } from "./common/DescriptionField";
 import { RequiredToggle } from "./common/RequiredToggle";
 
@@ -113,11 +112,6 @@ export const FieldConfigurator = ({
         dragHandleListeners={dragHandleListeners}
       />
       <div className="flex flex-col gap-4">
-        <LabelField
-          value={config.label}
-          onChange={(label) => handleChange({ ...config, label })}
-        />
-
         {renderSpecificConfigurator()}
 
         <DescriptionField

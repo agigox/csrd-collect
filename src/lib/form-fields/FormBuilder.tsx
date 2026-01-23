@@ -42,12 +42,27 @@ interface FieldTypeOption {
 }
 
 const fieldTypeOptions: FieldTypeOption[] = [
-  { type: "date", label: "Heure et Date", icon: "calendar", borderBottom: true },
+  {
+    type: "date",
+    label: "Heure et Date",
+    icon: "calendar",
+    borderBottom: true,
+  },
   { type: "text", label: "Champ libre", icon: "letter" },
   { type: "number", label: "Nombre", icon: "letter", borderBottom: true },
   { type: "radio", label: "Choix unique", icon: "checkCircle" },
-  { type: "checkbox", label: "Choix multiple", icon: "checkbox", borderBottom: true },
-  { type: "select", label: "Liste déroulante", icon: "listAlt", borderBottom: true },
+  {
+    type: "checkbox",
+    label: "Choix multiple",
+    icon: "checkbox",
+    borderBottom: true,
+  },
+  {
+    type: "select",
+    label: "Liste déroulante",
+    icon: "listAlt",
+    borderBottom: true,
+  },
   { type: "import", label: "Import de fichier", icon: "upload" },
   { type: "switch", label: "Switch", icon: "switch" },
 ];
@@ -131,7 +146,7 @@ export const FormBuilder = ({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   useEffect(() => {
@@ -160,24 +175,26 @@ export const FormBuilder = ({
         type: "select",
         label: "E2 - Pollution",
         options: [],
+        selectionMode: "single",
       };
     } else if (type === "number") {
       newField = {
         name: fieldName,
         type: "number",
-        label: "Nouveau champ",
+        label: "Nombre",
+        placeholder: "",
       };
     } else if (type === "switch") {
       newField = {
         name: fieldName,
         type: "switch",
-        label: "Nouveau champ",
+        label: "Switch",
       };
     } else if (type === "radio") {
       newField = {
         name: fieldName,
         type: "radio",
-        label: "Nouveau champ",
+        label: "Choix unique",
         options: [
           { value: "option_1", label: "Choix 1" },
           { value: "option_2", label: "Choix 2" },
@@ -188,15 +205,18 @@ export const FormBuilder = ({
       newField = {
         name: fieldName,
         type: "checkbox",
-        label: "Nouveau champ",
-        options: [],
-        defaultIndices: [],
+        label: "Choix multiple",
+        options: [
+          { value: "option_1", label: "Choix 1" },
+          { value: "option_2", label: "Choix 2" },
+          { value: "option_3", label: "Choix 3" },
+        ],
       };
     } else if (type === "date") {
       newField = {
         name: fieldName,
         type: "date",
-        label: "Date",
+        label: "Heure et Date",
         includeTime: false,
         defaultDateValue: "none",
       };
@@ -211,8 +231,9 @@ export const FormBuilder = ({
       newField = {
         name: fieldName,
         type: "text",
-        label: "Nouveau champ",
+        label: "Autre",
         placeholder: "",
+        defaultValue: "Lorem",
       };
     }
 
@@ -245,14 +266,20 @@ export const FormBuilder = ({
   const handleMoveUp = (index: number) => {
     if (index <= 0) return;
     const newSchema = [...schema];
-    [newSchema[index - 1], newSchema[index]] = [newSchema[index], newSchema[index - 1]];
+    [newSchema[index - 1], newSchema[index]] = [
+      newSchema[index],
+      newSchema[index - 1],
+    ];
     onChange(newSchema);
   };
 
   const handleMoveDown = (index: number) => {
     if (index >= schema.length - 1) return;
     const newSchema = [...schema];
-    [newSchema[index], newSchema[index + 1]] = [newSchema[index + 1], newSchema[index]];
+    [newSchema[index], newSchema[index + 1]] = [
+      newSchema[index + 1],
+      newSchema[index],
+    ];
     onChange(newSchema);
   };
 
@@ -317,7 +344,7 @@ export const FormBuilder = ({
               onClick={() => setPopoverOpen(false)}
               aria-hidden="true"
             />,
-            document.body
+            document.body,
           )}
         {addButtonContent}
       </>
@@ -335,7 +362,7 @@ export const FormBuilder = ({
             onClick={() => setPopoverOpen(false)}
             aria-hidden="true"
           />,
-          document.body
+          document.body,
         )}
 
       <div className="flex flex-col gap-6">

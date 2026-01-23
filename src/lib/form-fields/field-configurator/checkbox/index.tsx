@@ -1,51 +1,17 @@
 "use client";
 
-import { useRef } from "react";
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
-import { Button } from "@/lib/ui/button";
+import { MultiSelect } from "@/lib/ui/multi-select";
+import Icon from "@/lib/Icons";
 import type { CheckboxFieldConfig, SelectOption } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
 export const CheckboxConfigurator = ({
   config,
   onChange,
 }: SpecificConfiguratorProps<CheckboxFieldConfig>) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleCsvImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
-      if (!text) return;
-
-      const lines = text.split(/\r?\n/).filter((line) => line.trim() !== "");
-      const newOptions: SelectOption[] = lines.map((line) => {
-        const parts = line.split(",").map((p) => p.trim());
-        if (parts.length >= 2) {
-          return { value: parts[0], label: parts[1] };
-        }
-        const value = parts[0];
-        return {
-          value: value.toLowerCase().replace(/\s+/g, "_"),
-          label: value,
-        };
-      });
-
-      if (newOptions.length > 0) {
-        onChange({ ...config, options: newOptions, defaultIndices: [] });
-      }
-    };
-    reader.readAsText(file);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
   const handleOptionChange = (
     index: number,
     field: keyof SelectOption,
@@ -56,81 +22,149 @@ export const CheckboxConfigurator = ({
     onChange({ ...config, options: newOptions });
   };
 
-  const handleToggleDefaultOption = (index: number) => {
-    const currentDefaults = config.defaultIndices ?? [];
-    const newDefaults = currentDefaults.includes(index)
-      ? currentDefaults.filter((i) => i !== index)
-      : [...currentDefaults, index];
-    onChange({ ...config, defaultIndices: newDefaults });
+  const handleAddOption = () => {
+    const newOptions = [...(config.options ?? [])];
+    const newIndex = newOptions.length + 1;
+    newOptions.push({
+      value: `option_${newIndex}`,
+      label: `Choix ${newIndex}`,
+    });
+    onChange({ ...config, options: newOptions });
   };
+
+  const handleRemoveOption = (index: number) => {
+    const newOptions = [...(config.options ?? [])];
+    if (newOptions.length <= 1) return; // Keep at least one option
+
+    // If removing a default option, update defaultIndices
+    const currentDefaults = config.defaultIndices ?? [];
+    const newDefaults = currentDefaults
+      .filter((i) => i !== index)
+      .map((i) => (i > index ? i - 1 : i));
+
+    newOptions.splice(index, 1);
+    onChange({ ...config, options: newOptions, defaultIndices: newDefaults });
+  };
+
+  const options = config.options ?? [];
+  const hasDefaultValue = config.defaultIndices !== undefined;
+
+  // Gérer le toggle du checkbox "Définir une valeur par défaut"
+  const handleToggleDefaultValue = () => {
+    if (hasDefaultValue) {
+      onChange({ ...config, defaultIndices: undefined });
+    } else {
+      onChange({ ...config, defaultIndices: [] });
+    }
+  };
+
+  // Gérer le changement de valeurs par défaut (multiple)
+  const handleDefaultMultipleChange = (values: string[]) => {
+    const indices = values
+      .map((v) => options.findIndex((o) => o.value === v))
+      .filter((i) => i >= 0);
+    onChange({ ...config, defaultIndices: indices });
+  };
+
+  // Obtenir les valeurs actuelles pour le multi-select
+  const currentDefaultMultipleValues = (config.defaultIndices ?? [])
+    .filter((i) => options[i])
+    .map((i) => options[i].value);
 
   return (
     <div className="flex flex-col gap-3">
-      {(config.options ?? []).map((option, index) => {
-        const isDefault = (config.defaultIndices ?? []).includes(index);
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label })}
+      />
+      {options.map((option, index) => {
+        const isLast = index === options.length - 1;
         return (
-          <div key={index} className="flex flex-col gap-1 w-60">
-            <Label>
-              Choix {index + 1}
-              {isDefault ? " - par défaut" : ""}
-            </Label>
+          <div key={index} className="flex flex-col gap-1">
+            <Label>Choix {index + 1}</Label>
             <div className="flex gap-2 items-center">
-              <button
-                type="button"
-                onClick={() => handleToggleDefaultOption(index)}
-                className={`flex items-center justify-center size-5 border-2 bg-white transition-colors rounded ${
-                  isDefault
-                    ? "border-[#2964a0] cursor-pointer"
-                    : "border-gray-300 hover:border-[#2964a0] cursor-pointer"
-                }`}
-                title={
-                  isDefault
-                    ? "Retirer des valeurs par défaut"
-                    : "Ajouter aux valeurs par défaut"
-                }
-              >
-                {isDefault && (
-                  <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-                    <path
-                      d="M1 5L4 8L11 1"
-                      stroke="#2964a0"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
-              </button>
+              <span className="flex items-center justify-center size-5 border-2 bg-white rounded border-gray-300" />
               <Input
                 value={option.label}
                 onChange={(e) =>
                   handleOptionChange(index, "label", e.target.value)
                 }
-                placeholder={`Option ${index + 1}`}
                 className="flex-1 h-8 text-sm"
               />
+              {isLast ? (
+                <button
+                  type="button"
+                  onClick={handleAddOption}
+                  className="flex items-center justify-center size-8 bg-[#2964a0] hover:bg-[#234f7a] text-white rounded transition-colors"
+                  title="Ajouter une option"
+                >
+                  <Icon name="plus" size={16} color="white" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveOption(index)}
+                  className="flex items-center justify-center size-8 text-gray-500 hover:text-red-500 transition-colors"
+                  title="Supprimer cette option"
+                >
+                  <Icon name="close" size={16} />
+                </button>
+              )}
             </div>
           </div>
         );
       })}
 
-      <div className="flex items-center gap-2 mt-2">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".csv,.txt"
-          onChange={handleCsvImport}
-          className="hidden"
-        />
-        <Button
-          variant="import"
-          size="sm"
-          onClick={() => fileInputRef.current?.click()}
-          className="text-xs"
-        >
-          Importer CSV
-        </Button>
-      </div>
+      {/* Définir une valeur par défaut */}
+      {options.length > 0 && (
+        <div className="flex flex-col gap-2 mt-2">
+          {!hasDefaultValue ? (
+            <label className="flex items-center gap-2 cursor-pointer">
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={false}
+                onClick={handleToggleDefaultValue}
+                className="flex items-center justify-center size-4 rounded border-2 border-[#737272] bg-white hover:border-[#225082] transition-colors"
+              />
+              <span className="text-sm">Définir des valeurs par défaut</span>
+            </label>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={true}
+                onClick={handleToggleDefaultValue}
+                className="flex items-center justify-center size-4 rounded border-2 border-[#2964a0] bg-[#2964a0] transition-colors shrink-0"
+              >
+                <svg
+                  width="10"
+                  height="8"
+                  viewBox="0 0 10 8"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 4L3.5 6.5L9 1"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              <MultiSelect
+                options={options}
+                value={currentDefaultMultipleValues}
+                onChange={handleDefaultMultipleChange}
+                placeholder="Sélectionner des valeurs par défaut..."
+                className="flex-1"
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

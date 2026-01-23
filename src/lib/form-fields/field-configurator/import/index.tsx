@@ -4,6 +4,7 @@ import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
 import type { ImportFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
 const formatOptions = [
   { value: ".pdf", label: "PDF" },
@@ -43,6 +44,10 @@ export const ImportConfigurator = ({
 
   return (
     <div className="flex flex-col gap-4">
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label })}
+      />
       <div className="flex flex-col gap-2">
         <Label>Formats acceptés</Label>
         <div className="flex flex-wrap gap-2">

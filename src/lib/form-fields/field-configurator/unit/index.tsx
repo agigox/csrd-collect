@@ -11,6 +11,7 @@ import {
 } from "@/lib/ui/select";
 import type { UnitFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
 const unitOptions = [
   { value: "L", label: "Litres (L)" },
@@ -28,6 +29,10 @@ export const UnitConfigurator = ({
 }: SpecificConfiguratorProps<UnitFieldConfig>) => {
   return (
     <div className="mt-2 pt-2 border-t flex flex-col gap-4">
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label })}
+      />
       <div className="flex flex-col gap-1">
         <Label>Unité</Label>
         <Select

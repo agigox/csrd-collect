@@ -11,6 +11,7 @@ import {
 import Icon from "@/lib/Icons";
 import type { DateFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
 const defaultDateOptions = [
   { value: "none", label: "Aucune" },
@@ -23,6 +24,10 @@ export const DateConfigurator = ({
 }: SpecificConfiguratorProps<DateFieldConfig>) => {
   return (
     <div className="flex flex-col gap-4">
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label })}
+      />
       {/* Inclure l'heure */}
       <div className="flex items-center gap-3">
         <button

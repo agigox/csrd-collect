@@ -12,6 +12,7 @@ import {
 import { MultiSelect } from "@/lib/ui/multi-select";
 import type { SelectFieldConfig, SelectOption } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
+import { LabelField } from "../common/LabelField";
 
 // Type pour la structure des options dans db.json
 interface DataSourceItem {
@@ -108,9 +109,10 @@ export const SelectConfigurator = ({
   const options = config.options ?? [];
 
   // Vérifier si une valeur par défaut est définie
-  const hasDefaultValue = selectionMode === "single"
-    ? config.defaultIndex !== undefined
-    : config.defaultIndices !== undefined;
+  const hasDefaultValue =
+    selectionMode === "single"
+      ? config.defaultIndex !== undefined
+      : config.defaultIndices !== undefined;
 
   // Gérer le toggle du checkbox "Définir une valeur par défaut"
   const handleToggleDefaultValue = () => {
@@ -124,7 +126,10 @@ export const SelectConfigurator = ({
     } else {
       // Activer avec la première option par défaut
       if (selectionMode === "single") {
-        onChange({ ...config, defaultIndex: options.length > 0 ? 0 : undefined });
+        onChange({
+          ...config,
+          defaultIndex: options.length > 0 ? 0 : undefined,
+        });
       } else {
         onChange({ ...config, defaultIndices: [] });
       }
@@ -158,48 +163,10 @@ export const SelectConfigurator = ({
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Mode de sélection */}
-      <div className="flex flex-col gap-2">
-        <Label>Mode de sélection</Label>
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <button
-              type="button"
-              role="radio"
-              aria-checked={selectionMode === "single"}
-              onClick={() => onChange({ ...config, selectionMode: "single" })}
-              className={`relative flex items-center justify-center size-4 rounded-full border-2 transition-colors ${
-                selectionMode === "single"
-                  ? "border-[#2964a0] bg-white"
-                  : "border-[#737272] bg-white hover:border-[#225082]"
-              }`}
-            >
-              {selectionMode === "single" && (
-                <span className="size-[10px] rounded-full bg-[#2964a0]" />
-              )}
-            </button>
-            <span className="text-sm">Choix unique</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <button
-              type="button"
-              role="radio"
-              aria-checked={selectionMode === "multiple"}
-              onClick={() => onChange({ ...config, selectionMode: "multiple" })}
-              className={`relative flex items-center justify-center size-4 rounded-full border-2 transition-colors ${
-                selectionMode === "multiple"
-                  ? "border-[#2964a0] bg-white"
-                  : "border-[#737272] bg-white hover:border-[#225082]"
-              }`}
-            >
-              {selectionMode === "multiple" && (
-                <span className="size-[10px] rounded-full bg-[#2964a0]" />
-              )}
-            </button>
-            <span className="text-sm">Choix multiple</span>
-          </label>
-        </div>
-      </div>
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label })}
+      />
 
       {/* Chargement ou erreur */}
       {isLoading && (
@@ -216,7 +183,12 @@ export const SelectConfigurator = ({
               value={config.dataType ?? ""}
               onValueChange={handleDataTypeChange}
             >
-              <SelectTrigger className="h-8 text-sm w-58.75">
+              <SelectTrigger
+                className="h-8 text-sm w-58.75"
+                clearable
+                hasValue={!!config.dataType}
+                onClear={() => handleDataTypeChange("")}
+              >
                 <SelectValue placeholder="Sélectionner un type..." />
               </SelectTrigger>
               <SelectContent>
@@ -236,7 +208,12 @@ export const SelectConfigurator = ({
               onValueChange={handleDataSourceChange}
               disabled={!config.dataType}
             >
-              <SelectTrigger className="h-8 text-sm">
+              <SelectTrigger
+                className="h-8 text-sm"
+                clearable
+                hasValue={!!config.dataSource}
+                onClear={() => handleDataSourceChange("")}
+              >
                 <SelectValue
                   placeholder={
                     config.dataType
@@ -256,6 +233,48 @@ export const SelectConfigurator = ({
           </div>
         </div>
       )}
+      {/* Mode de sélection */}
+      <div className="flex flex-col gap-2">
+        <Label>Mode de sélection</Label>
+        <div className="flex gap-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={selectionMode === "single"}
+              onClick={() => onChange({ ...config, selectionMode: "single" })}
+              className={`relative flex items-center justify-center size-4 rounded-full border-2 transition-colors ${
+                selectionMode === "single"
+                  ? "border-[#2964a0] bg-white"
+                  : "border-[#737272] bg-white hover:border-[#225082]"
+              }`}
+            >
+              {selectionMode === "single" && (
+                <span className="size-2.5 rounded-full bg-[#2964a0]" />
+              )}
+            </button>
+            <span className="text-sm">Choix unique</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={selectionMode === "multiple"}
+              onClick={() => onChange({ ...config, selectionMode: "multiple" })}
+              className={`relative flex items-center justify-center size-4 rounded-full border-2 transition-colors ${
+                selectionMode === "multiple"
+                  ? "border-[#2964a0] bg-white"
+                  : "border-[#737272] bg-white hover:border-[#225082]"
+              }`}
+            >
+              {selectionMode === "multiple" && (
+                <span className="size-2.5 rounded-full bg-[#2964a0]" />
+              )}
+            </button>
+            <span className="text-sm">Choix multiple</span>
+          </label>
+        </div>
+      </div>
 
       {/* Définir une valeur par défaut */}
       {options.length > 0 && (
@@ -301,7 +320,12 @@ export const SelectConfigurator = ({
                   value={currentDefaultSingleValue}
                   onValueChange={handleDefaultSingleChange}
                 >
-                  <SelectTrigger className="h-8 text-sm flex-1">
+                  <SelectTrigger
+                    className="h-8 text-sm flex-1"
+                    clearable
+                    hasValue={!!currentDefaultSingleValue}
+                    onClear={() => handleDefaultSingleChange("")}
+                  >
                     <SelectValue placeholder="Sélectionner une valeur par défaut..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -325,7 +349,6 @@ export const SelectConfigurator = ({
           )}
         </div>
       )}
-
     </div>
   );
 };

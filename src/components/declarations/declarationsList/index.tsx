@@ -8,6 +8,7 @@ import Header from "./Header";
 interface DeclarationsListProps {
   onDeclarer?: () => void;
   onEditDeclaration?: (declaration: Declaration) => void;
+  selectedDeclarationId?: string;
 }
 
 interface DateSeparatorProps {
@@ -21,8 +22,13 @@ const DateSeparator = ({ date }: DateSeparatorProps) => (
   </div>
 );
 
-const DeclarationsList = ({ onDeclarer, onEditDeclaration }: DeclarationsListProps) => {
-  const { declarations, loading, error, fetchDeclarations } = useDeclarationsStore();
+const DeclarationsList = ({
+  onDeclarer,
+  onEditDeclaration,
+  selectedDeclarationId,
+}: DeclarationsListProps) => {
+  const { declarations, loading, error, fetchDeclarations } =
+    useDeclarationsStore();
 
   useEffect(() => {
     fetchDeclarations();
@@ -59,7 +65,7 @@ const DeclarationsList = ({ onDeclarer, onEditDeclaration }: DeclarationsListPro
   }
 
   return (
-    <div>
+    <>
       <Header onDeclarer={onDeclarer} />
 
       <div className="flex flex-col gap-4">
@@ -75,13 +81,15 @@ const DeclarationsList = ({ onDeclarer, onEditDeclaration }: DeclarationsListPro
                   title={declaration.title}
                   description={declaration.description}
                   onClick={() => onEditDeclaration?.(declaration)}
+                  isSelected={declaration.id === selectedDeclarationId}
+                  isNew={declaration.isNew}
                 />
               ))}
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
