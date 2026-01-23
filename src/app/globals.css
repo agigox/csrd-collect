@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "@design-system-rte/react/style.css";
+@import "@design-system-rte/core/css/rte-fonts.css";
+@import "@design-system-rte/core/css/rte-themes.css";
 
 @custom-variant dark (&:is(.dark *));
 

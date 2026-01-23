@@ -1,15 +1,22 @@
 "use client";
 
-import { Button } from "@/lib/ui/button";
 import Icon from "@/lib/Icons";
+import { ButtonBis } from "@/lib/ui/button-bis";
+import { IconButton, IconButtonToggle } from "@design-system-rte/react";
 
 interface HeaderProps {
   onSearch?: () => void;
   onFilter?: () => void;
   onDeclarer?: () => void;
+  isFilterOpen?: boolean;
 }
 
-const Header = ({ onSearch, onFilter, onDeclarer }: HeaderProps) => {
+const Header = ({
+  onSearch,
+  onFilter,
+  onDeclarer,
+  isFilterOpen = false,
+}: HeaderProps) => {
   return (
     <div className="flex flex-col gap-2 py-2.5">
       {/* Header row */}
@@ -20,25 +27,38 @@ const Header = ({ onSearch, onFilter, onDeclarer }: HeaderProps) => {
         </h1>
 
         {/* Search button */}
-        <Button className="w-8" onClick={onSearch} variant="outline">
-          <Icon name="search" />
-        </Button>
+
+        <IconButton
+          appearance="outlined"
+          aria-label="icon button aria label"
+          badgeContent="empty"
+          name="search"
+          onClick={onSearch}
+          size="m"
+          variant="secondary"
+        />
 
         {/* Filter button */}
-        <Button
-          className="w-8"
+
+        <IconButtonToggle
+          aria-label="Afficher/masquer les filtres"
+          name="filter-alt"
           onClick={onFilter}
-          variant="outline"
-          size="default"
-        >
-          <Icon name="filter" />
-        </Button>
+          size="m"
+          variant="secondary"
+          selected={isFilterOpen}
+        />
 
         {/* Déclarer button */}
-        <Button onClick={onDeclarer}>
-          <span>Déclarer</span>
-          <Icon name="campaign" />
-        </Button>
+
+        <ButtonBis
+          iconPosition="right"
+          label="Déclarer"
+          onClick={onDeclarer}
+          size="m"
+          variant="primary"
+          icon={<Icon name="campaign" color="white" />}
+        />
       </div>
 
       {/* Divider */}

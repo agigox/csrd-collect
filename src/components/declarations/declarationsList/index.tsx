@@ -1,26 +1,16 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useDeclarationsStore, type Declaration } from "@/stores";
-import DeclarationCard from "../DeclarationCard";
 import Header from "./Header";
+import Filters, { type FiltersState } from "./Filters";
+import List from "./List";
 
 interface DeclarationsListProps {
   onDeclarer?: () => void;
   onEditDeclaration?: (declaration: Declaration) => void;
   selectedDeclarationId?: string;
 }
-
-interface DateSeparatorProps {
-  date: string;
-}
-
-const DateSeparator = ({ date }: DateSeparatorProps) => (
-  <div className="flex items-center gap-4 py-2">
-    <span className="text-sm text-gray-500 whitespace-nowrap">{date}</span>
-    <div className="flex-1 h-px bg-gray-300" />
-  </div>
-);
 
 const DeclarationsList = ({
   onDeclarer,
@@ -29,6 +19,16 @@ const DeclarationsList = ({
 }: DeclarationsListProps) => {
   const { declarations, loading, error, fetchDeclarations } =
     useDeclarationsStore();
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<FiltersState>({
+    declarationType: [],
+    users: [],
+  });
+
+  const handleFilterToggle = () => {
+    setIsFilterOpen((prev) => !prev);
+  };
 
   useEffect(() => {
     fetchDeclarations();
@@ -66,29 +66,23 @@ const DeclarationsList = ({
 
   return (
     <>
-      <Header onDeclarer={onDeclarer} />
+      <Header
+        onDeclarer={onDeclarer}
+        onFilter={handleFilterToggle}
+        isFilterOpen={isFilterOpen}
+      />
 
-      <div className="flex flex-col gap-4">
-        {Object.entries(groupedDeclarations).map(([date, dateDeclarations]) => (
-          <div key={date}>
-            <DateSeparator date={date} />
-            <div className="flex flex-col gap-4">
-              {dateDeclarations.map((declaration) => (
-                <DeclarationCard
-                  key={declaration.id}
-                  date={declaration.date}
-                  author={declaration.author}
-                  title={declaration.title}
-                  description={declaration.description}
-                  onClick={() => onEditDeclaration?.(declaration)}
-                  isSelected={declaration.id === selectedDeclarationId}
-                  isNew={declaration.isNew}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <Filters
+        isOpen={isFilterOpen}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
+
+      <List
+        groupedDeclarations={groupedDeclarations}
+        onEditDeclaration={onEditDeclaration}
+        selectedDeclarationId={selectedDeclarationId}
+      />
     </>
   );
 };

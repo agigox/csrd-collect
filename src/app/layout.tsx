@@ -21,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${nunito.className} antialiased`}>
+      <body
+        className={`${nunito.className} antialiased`}
+        data-theme="bleu_iceberg"
+        data-mode="light"
+      >
         <Providers>{children}</Providers>
       </body>
     </html>

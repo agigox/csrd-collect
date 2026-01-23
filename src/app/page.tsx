@@ -12,7 +12,7 @@ export default function Home() {
       <Sidebar />
       <main
         className={`flex-1 h-screen overflow-x-hidden overflow-y-auto transition-all duration-250 bg-content-bg ${
-          isCollapsed ? "ml-[60px]" : "ml-[220px]"
+          isCollapsed ? "ml-15" : "ml-55"
         }`}
       >
         <Declarations />
