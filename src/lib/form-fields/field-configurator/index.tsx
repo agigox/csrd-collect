@@ -3,9 +3,8 @@
 import type { FieldConfig } from "../types";
 import type { FieldConfiguratorProps } from "./types";
 
-import { Header } from "./common/Header";
 import { DescriptionField } from "./common/DescriptionField";
-import { RequiredToggle } from "./common/RequiredToggle";
+import { Footer } from "./common/Footer";
 
 import { TextConfigurator } from "./text";
 import { NumberConfigurator } from "./number";
@@ -102,30 +101,24 @@ export const FieldConfigurator = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <Header
-        type={config.type}
+      {renderSpecificConfigurator()}
+
+      <DescriptionField
+        value={config.description ?? ""}
+        onChange={(description) => handleChange({ ...config, description })}
+      />
+
+      <Footer
+        required={config.required ?? false}
+        onRequiredChange={(required) => handleChange({ ...config, required })}
         onDuplicate={onDuplicate}
         onRemove={onRemove}
         onMoveUp={onMoveUp}
         onMoveDown={onMoveDown}
         canMoveUp={canMoveUp}
         canMoveDown={canMoveDown}
-        isDuplicate={config.isDuplicate}
         dragHandleAttributes={dragHandleAttributes}
         dragHandleListeners={dragHandleListeners}
-      />
-      <div className="flex flex-col gap-4">
-        {renderSpecificConfigurator()}
-
-        <DescriptionField
-          value={config.description ?? ""}
-          onChange={(description) => handleChange({ ...config, description })}
-        />
-      </div>
-
-      <RequiredToggle
-        required={config.required ?? false}
-        onChange={(required) => handleChange({ ...config, required })}
       />
     </div>
   );

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { DynamicForm, FormBuilder, FieldConfig } from "@/lib/form-fields";
+import { LabelField } from "@/lib/form-fields/field-configurator/common/LabelField";
 import { Button } from "@/lib/ui/button";
 import { Card, CardContent } from "@/lib/ui/card";
 import { Input } from "@/lib/ui/input";
@@ -132,10 +133,16 @@ export default function AdminParametrageDeclaratifPage() {
         <div
           className={`flex flex-col min-h-0 ${!showPreview ? "w-150.5 mx-auto" : ""}`}
         >
-          <div className="flex items-center justify-between gap-2.5 w-full h-8">
-            <div className="heading-m flex-1 bg-background-hover rounded-(--radius) pl-2">
-              {isEditMode ? "Modifier le formulaire" : "Nouveau formulaire"}
-            </div>
+          <div className="flex items-end justify-between gap-2.5 w-full h-8">
+            <LabelField
+              value={formTitle}
+              onChange={setFormTitle}
+              placeholder="Titre de la donnée à déclarer"
+              label="Titre de la donnée à déclarer"
+              showLabel={true}
+              displayClassName="heading-m bg-background-hover"
+              inputClassName="heading-m"
+            />
             <div className="flex gap-2.5 shrink-0 items-center">
               <ButtonBis
                 label={isSaving ? "Sauvegarde..." : "Enregistrer"}
@@ -153,13 +160,24 @@ export default function AdminParametrageDeclaratifPage() {
                 iconPosition="left"
               />
 
+              {isEditMode && (
+                <IconButton
+                  appearance="outlined"
+                  aria-label="Supprimer le formulaire"
+                  name="delete"
+                  onClick={handleDelete}
+                  size="m"
+                  variant="danger"
+                />
+              )}
+
               <IconButton
                 appearance="outlined"
-                aria-label="icon button aria label"
-                name="delete"
+                aria-label="Annuler"
+                name="close"
                 onClick={handleCancel}
                 size="m"
-                variant="danger"
+                variant="secondary"
               />
             </div>
           </div>
@@ -169,32 +187,7 @@ export default function AdminParametrageDeclaratifPage() {
             <Card className="bg-background-brand-navigation-default">
               <CardContent className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                  <h2 className="text-white h-10">Titre du formulaire</h2>
                   <div className="flex flex-col gap-4.5">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex flex-col flex-1">
-                        <Label className="text-white">
-                          Titre de la donnée déclarée
-                        </Label>
-                        <Input
-                          value={formTitle}
-                          onChange={(e) => setFormTitle(e.target.value)}
-                          placeholder="Ex: Fuite d'huile"
-                          className="h-8 text-sm font-semibold uppercase bg-white"
-                        />
-                      </div>
-                      {isEditMode && (
-                        <IconButton
-                          appearance="outlined"
-                          aria-label="icon button aria label"
-                          name="delete"
-                          onClick={handleDelete}
-                          size="m"
-                          variant="danger"
-                        />
-                      )}
-                    </div>
-
                     <div className="flex flex-col">
                       <Label className="text-white">Description</Label>
                       <Input

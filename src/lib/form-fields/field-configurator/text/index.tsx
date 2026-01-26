@@ -14,7 +14,8 @@ export const TextConfigurator = ({
     <div className="flex gap-2.5">
       <LabelField
         value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
         className="flex-1 w-full"
       />
       <div className="flex flex-col w-50">

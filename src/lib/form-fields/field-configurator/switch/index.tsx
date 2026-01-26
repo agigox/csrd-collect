@@ -11,7 +11,8 @@ export const SwitchConfigurator = ({
   return (
     <LabelField
       value={config.label}
-      onChange={(label) => onChange({ ...config, label })}
+      onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+      isDuplicate={config.isDuplicate}
     />
   );
 };

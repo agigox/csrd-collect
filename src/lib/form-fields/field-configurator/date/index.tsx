@@ -26,7 +26,8 @@ export const DateConfigurator = ({
     <div className="flex flex-col gap-4">
       <LabelField
         value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
       />
       {/* Inclure l'heure */}
       <div className="flex items-center gap-3">
@@ -90,7 +91,6 @@ export const DateConfigurator = ({
           </SelectContent>
         </Select>
       </div>
-
     </div>
   );
 };

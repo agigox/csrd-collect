@@ -46,7 +46,8 @@ export const ImportConfigurator = ({
     <div className="flex flex-col gap-4">
       <LabelField
         value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
       />
       <div className="flex flex-col gap-2">
         <Label>Formats acceptés</Label>

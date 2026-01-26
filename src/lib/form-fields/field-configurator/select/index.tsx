@@ -165,7 +165,8 @@ export const SelectConfigurator = ({
     <div className="flex flex-col gap-3">
       <LabelField
         value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
       />
 
       {/* Chargement ou erreur */}

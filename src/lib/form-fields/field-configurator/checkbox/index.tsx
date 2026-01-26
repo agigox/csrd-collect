@@ -15,7 +15,7 @@ export const CheckboxConfigurator = ({
   const handleOptionChange = (
     index: number,
     field: keyof SelectOption,
-    value: string
+    value: string,
   ) => {
     const newOptions = [...(config.options ?? [])];
     newOptions[index] = { ...newOptions[index], [field]: value };
@@ -75,7 +75,8 @@ export const CheckboxConfigurator = ({
     <div className="flex flex-col gap-3">
       <LabelField
         value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
       />
       {options.map((option, index) => {
         const isLast = index === options.length - 1;

@@ -32,7 +32,8 @@ export const NumberConfigurator = ({
     <>
       <LabelField
         value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
       />
       <div className="flex gap-4">
         <div className="flex flex-col gap-1">

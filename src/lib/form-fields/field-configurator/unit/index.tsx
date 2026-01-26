@@ -31,7 +31,8 @@ export const UnitConfigurator = ({
     <div className="mt-2 pt-2 border-t flex flex-col gap-4">
       <LabelField
         value={config.label}
-        onChange={(label) => onChange({ ...config, label })}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
       />
       <div className="flex flex-col gap-1">
         <Label>Unité</Label>

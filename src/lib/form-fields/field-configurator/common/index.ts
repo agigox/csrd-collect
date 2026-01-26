@@ -1,4 +1,4 @@
 export { Header } from "./Header";
-export { RequiredToggle } from "./RequiredToggle";
+export { Footer } from "./Footer";
 export { LabelField } from "./LabelField";
 export { DescriptionField } from "./DescriptionField";
