@@ -32,7 +32,7 @@ export const FieldConfigurator = ({
   // Remove isDuplicate flag when user modifies any field
   const handleChange = (newConfig: FieldConfig) => {
     if (newConfig.isDuplicate) {
-      const { isDuplicate, ...configWithoutDuplicate } = newConfig;
+      const { ...configWithoutDuplicate } = newConfig;
       onChange(configWithoutDuplicate as FieldConfig);
     } else {
       onChange(newConfig);
@@ -90,7 +90,10 @@ export const FieldConfigurator = ({
         );
       case "import":
         return (
-          <ImportConfigurator config={config} onChange={(c) => handleChange(c)} />
+          <ImportConfigurator
+            config={config}
+            onChange={(c) => handleChange(c)}
+          />
         );
       default:
         return null;

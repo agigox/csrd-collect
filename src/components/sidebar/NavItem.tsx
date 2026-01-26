@@ -21,7 +21,7 @@ const NavItem = ({ icon, label, href }: NavItemProps) => {
     }
   };
 
-  const className = `flex items-center gap-2 p-2 w-full border-none cursor-pointer text-sm text-left text-sidebar-text transition-all duration-150 hover:bg-sidebar-hover ${
+  const className = `flex items-center gap-2 p-2 w-full border-none cursor-pointer text-sm text-left text-background-brand-unselected-default transition-all duration-150 hover:bg-sidebar-hover ${
     isActive ? "bg-sidebar-hover" : "bg-transparent"
   } ${isCollapsed ? "justify-center" : "justify-start"}`;
 

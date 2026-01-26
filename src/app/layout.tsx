@@ -20,12 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body
-        className={`${nunito.className} antialiased`}
-        data-theme="bleu_iceberg"
-        data-mode="light"
-      >
+    <html lang="fr" data-theme="bleu_iceberg" data-mode="light">
+      <body className={`${nunito.className} antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

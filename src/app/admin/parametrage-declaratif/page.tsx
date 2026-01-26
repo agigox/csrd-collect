@@ -15,9 +15,10 @@ import {
   SelectValue,
 } from "@/lib/ui/select";
 import { useFormsStore } from "@/stores";
-import Icon from "@/lib/Icons";
 import { Divider } from "@/lib/Divider";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
+import { ButtonBis } from "@/lib/ui/button-bis";
+import { Icon, IconButton } from "@design-system-rte/react";
 
 const normeOptions = [
   { value: "E1-Pollution", label: "E1 - Pollution" },
@@ -126,41 +127,40 @@ export default function AdminParametrageDeclaratifPage() {
 
   return (
     <div className="p-6 h-[calc(100vh-0px)] flex flex-col">
-      <div
-        className={`grid gap-6 flex-1 min-h-0 ${
-          showPreview
-            ? "grid-cols-1 lg:grid-cols-[calc(100%-348px)_324px]"
-            : "grid-cols-1"
-        }`}
-      >
+      <div className="flex gap-6 flex-1 min-h-0">
         {/* Configuration des données */}
         <div
-          className={`flex flex-col min-h-0 ${!showPreview ? "max-w-[602px] mx-auto w-full" : ""}`}
+          className={`flex flex-col min-h-0 ${!showPreview ? "w-150.5 mx-auto" : ""}`}
         >
-          <div className="flex items-center justify-between w-full h-8">
-            <h1 className="text-2xl font-semibold">
+          <div className="flex items-center justify-between gap-2.5 w-full h-8">
+            <div className="heading-m flex-1 bg-background-hover rounded-(--radius) pl-2">
               {isEditMode ? "Modifier le formulaire" : "Nouveau formulaire"}
-            </h1>
+            </div>
             <div className="flex gap-2.5 shrink-0 items-center">
-              <Button onClick={handleSave} disabled={isSaving}>
-                <Icon name="save" size={16} />
-                {isSaving ? "Sauvegarde..." : "Enregistrer"}
-              </Button>
-              <Button
-                variant="destructive"
-                size="icon"
+              <ButtonBis
+                label={isSaving ? "Sauvegarde..." : "Enregistrer"}
+                onClick={handleSave}
+                variant="primary"
+                icon={
+                  <Icon
+                    appearance="filled"
+                    aria-label="save"
+                    color="var(--content-primary-inverse)"
+                    name="save"
+                    size={20}
+                  />
+                }
+                iconPosition="left"
+              />
+
+              <IconButton
+                appearance="outlined"
+                aria-label="icon button aria label"
+                name="delete"
                 onClick={handleCancel}
-                className="size-8"
-              >
-                <Icon name="trash" size={16} />
-              </Button>
-              {/* Bouton Prévisualisation - caché quand le modal est affiché */}
-              {!showPreview && (
-                <Button variant="outline" onClick={() => setShowPreview(true)}>
-                  <Icon name="eye" size={16} />
-                  Prévisualisation
-                </Button>
-              )}
+                size="m"
+                variant="danger"
+              />
             </div>
           </div>
           <Divider className="mt-2 mb-8 bg-border-divider" />
@@ -184,14 +184,14 @@ export default function AdminParametrageDeclaratifPage() {
                         />
                       </div>
                       {isEditMode && (
-                        <Button
-                          variant="destructive"
-                          size="icon"
+                        <IconButton
+                          appearance="outlined"
+                          aria-label="icon button aria label"
+                          name="delete"
                           onClick={handleDelete}
-                          className="size-8 shrink-0 mt-6"
-                        >
-                          <Icon name="trash" size={16} />
-                        </Button>
+                          size="m"
+                          variant="danger"
+                        />
                       )}
                     </div>
 
@@ -228,7 +228,7 @@ export default function AdminParametrageDeclaratifPage() {
             {/* Configuration des champs */}
             <div className="pt-8">
               {schema.length === 0 ? (
-                <div className="text-center py-8 text-content-muted border border-dashed border-border-default rounded-lg">
+                <div className="text-center py-8 text-content-muted border border-dashed border-border-default rounded-lg px-2">
                   Aucune donnée configurée. Utilisez le bouton ci-dessous pour
                   ajouter une donnée à déclarer.
                 </div>
@@ -244,15 +244,15 @@ export default function AdminParametrageDeclaratifPage() {
               <FormBuilder schema={schema} onChange={setSchema} buttonOnly />
             </div>
             <Button onClick={handleSave} disabled={isSaving}>
-              <Icon name="save" size={16} />
+              {/* <CustomIcon name="save" size={16} /> */}
               {isSaving ? "Sauvegarde..." : "Sauvegarder"}
             </Button>
           </div>
         </div>
 
         {/* Pré visualisation */}
-        {showPreview && (
-          <div className="flex flex-col gap-4 p-6 bg-white shadow-[0px_4px_8px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)] -mr-6 -my-6">
+        {showPreview ? (
+          <div className="w-81 shrink-0 flex flex-col gap-4 p-6 bg-white shadow-[0px_4px_8px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)] -mr-6 -my-6">
             {/* Header */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
@@ -264,7 +264,8 @@ export default function AdminParametrageDeclaratifPage() {
                   className="p-1 hover:bg-gray-100 rounded transition-colors"
                   aria-label="Fermer la prévisualisation"
                 >
-                  <Icon name="close" size={20} />
+                  {/*<CustomIcon name="close" size={20} /> */}
+                  <Icon name="close" size={20} color="var(--content-primary)" />
                 </button>
               </div>
               <Divider className="bg-border-divider" />
@@ -285,6 +286,24 @@ export default function AdminParametrageDeclaratifPage() {
                 />
               )}
             </ScrollableContainer>
+          </div>
+        ) : (
+          <div className="h-8">
+            <ButtonBis
+              label="Pré visualisation"
+              onClick={() => setShowPreview(true)}
+              variant="secondary"
+              icon={
+                <Icon
+                  appearance="filled"
+                  aria-label="save"
+                  color="var(--content-brand-default)"
+                  name={showPreview ? "visibility-show" : "visibility-hide"}
+                  size={20}
+                />
+              }
+              iconPosition="left"
+            />
           </div>
         )}
       </div>

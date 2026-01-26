@@ -1,11 +1,7 @@
 "use client";
 
 import { Label } from "@/lib/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/lib/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/ui/tooltip";
 import type {
   FieldProps,
   FieldRegistration,
@@ -32,7 +28,6 @@ const SwitchField = ({
       {config.label}
     </Label>
   );
-
   return (
     <div className="flex flex-col gap-0.5">
       <div className="flex items-center gap-3 px-2 py-1">

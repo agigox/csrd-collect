@@ -3,13 +3,14 @@
 import { useRef } from "react";
 import { Label } from "@/lib/ui/label";
 import { Button } from "@/lib/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/lib/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/ui/tooltip";
 import Icon from "@/lib/Icons";
-import type { FieldProps, FieldRegistration, ImportFieldConfig } from "../types";
+import type {
+  FieldProps,
+  FieldRegistration,
+  ImportFieldConfig,
+} from "../types";
+import { IconButton } from "@design-system-rte/react";
 
 interface FileValue {
   name: string;
@@ -93,17 +94,19 @@ const ImportField = ({
           <Icon name="file" size={20} className="text-gray-500" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{fileValue.name}</p>
-            <p className="text-xs text-gray-500">{formatFileSize(fileValue.size)}</p>
+            <p className="text-xs text-gray-500">
+              {formatFileSize(fileValue.size)}
+            </p>
           </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
+
+          <IconButton
+            appearance="outlined"
+            aria-label="icon button aria label"
+            name="delete"
             onClick={handleRemoveFile}
-            className="text-red-500 hover:text-red-700 hover:bg-red-50"
-          >
-            <Icon name="trash" size={16} />
-          </Button>
+            size="m"
+            variant="danger"
+          />
         </div>
       ) : (
         <Button

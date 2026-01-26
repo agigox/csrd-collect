@@ -26,7 +26,7 @@ export function Sidebar({ variant }: SidebarProps) {
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-screen bg-background-brand-navigation-default pt-2 text-sidebar-text flex flex-col transition-all duration-250 z-50 overflow-hidden ${
+      className={`fixed top-0 left-0 h-screen bg-background-brand-navigation-default pt-2 text-background-brand-unselected-default flex flex-col transition-all duration-250 z-50 overflow-hidden ${
         isCollapsed ? "w-15" : "w-55"
       }`}
     >
@@ -52,7 +52,7 @@ export function Sidebar({ variant }: SidebarProps) {
           />
           <button
             onClick={logout}
-            className={`flex items-center gap-2 p-2 w-full border-none cursor-pointer text-sm text-left text-sidebar-text transition-all duration-150 hover:bg-sidebar-hover bg-transparent ${
+            className={`flex items-center gap-2 p-2 w-full border-none cursor-pointer text-sm text-left text-background-brand-unselected-default transition-all duration-150 hover:bg-sidebar-hover bg-transparent ${
               isCollapsed ? "justify-center" : "justify-start"
             }`}
             title={isCollapsed ? "Déconnexion" : undefined}

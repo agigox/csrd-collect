@@ -14,6 +14,7 @@ import {
   DialogFooter,
 } from "@/lib/ui/dialog";
 import { Button } from "@/lib/ui/button";
+import { IconButton } from "@design-system-rte/react";
 
 interface HeaderProps {
   type: FieldType;
@@ -51,19 +52,19 @@ export const Header = ({
   return (
     <>
       <div
-        className="flex justify-between items-center h-10"
+        className="flex justify-between items-center h-8"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="flex items-center gap-2">
-          <h2 className="font-bold text-base">
+        <div className="flex flex-1 items-center gap-2">
+          <div className="heading-s flex items-center bg-background-brand-unselected-default flex-1 rounded-(--radius) pl-2 h-8">
             {typeLabels[type]}
             {isDuplicate && (
               <span className="ml-2 text-xs font-normal text-muted-foreground">
                 (copie)
               </span>
             )}
-          </h2>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {/* Drag handle */}
@@ -123,14 +124,15 @@ export const Header = ({
               color="var(--primary)"
             />
           </button>
-          <button
-            type="button"
+
+          <IconButton
+            appearance="outlined"
+            aria-label="icon button aria label"
+            name="delete"
             onClick={() => setShowDeleteConfirm(true)}
-            className="p-2 rounded-full bg-white hover:bg-gray-100 transition-colors"
-            title="Supprimer ce champ"
-          >
-            <Icon name="trash" color="#ED1C1C" />
-          </button>
+            size="m"
+            variant="danger"
+          />
         </div>
       </div>
 

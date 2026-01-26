@@ -6,13 +6,55 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Font family */
-  --font-family-nunito: var(--font-nunito), system-ui, sans-serif;
+  /* ===== RTE Design System - Typography Primitives ===== */
+
+  /* Font families */
+  --font-family-nunito: "Nunito", system-ui, sans-serif;
+  --font-family-arial: "Arial", sans-serif;
   --font-family-inter: var(--font-inter), system-ui, sans-serif;
 
-  /* Sidebar colors */
+  /* Font sizes (RTE scale) */
+  --font-size-rte-s: 10px;
+  --font-size-rte-m: 12px;
+  --font-size-rte-l: 14px;
+  --font-size-rte-xl: 16px;
+  --font-size-rte-2xl: 20px;
+  --font-size-rte-3xl: 24px;
+  --font-size-rte-4xl: 28px;
+  --font-size-rte-5xl: 32px;
+  --font-size-rte-6xl: 40px;
+  --font-size-rte-7xl: 48px;
+  --font-size-rte-8xl: 56px;
+  --font-size-rte-9xl: 68px;
+  --font-size-rte-10xl: 80px;
 
-  --color-sidebar-text: #e6eef8;
+  /* Line heights (RTE scale) */
+  --line-height-rte-s: 14px;
+  --line-height-rte-m: 16px;
+  --line-height-rte-l: 20px;
+  --line-height-rte-xl: 24px;
+  --line-height-rte-2xl: 28px;
+  --line-height-rte-3xl: 32px;
+  --line-height-rte-4xl: 36px;
+  --line-height-rte-5xl: 40px;
+  --line-height-rte-6xl: 48px;
+  --line-height-rte-7xl: 56px;
+  --line-height-rte-8xl: 64px;
+  --line-height-rte-9xl: 80px;
+  --line-height-rte-10xl: 92px;
+
+  /* Letter spacing */
+  --letter-spacing-none: 0px;
+  --letter-spacing-s: -0.5px;
+  --letter-spacing-xs: -1px;
+
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Sidebar colors */
   --color-sidebar-muted: #456b95;
   --color-sidebar-hover: #456b95;
 
@@ -40,6 +82,7 @@ body {
 }
 
 @theme inline {
+  /* Radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -47,6 +90,8 @@ body {
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Shadcn/ui base colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -79,27 +124,234 @@ body {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --content-color-primary: var(--content-primary);
-  --color-text-primary-tertiary: var(--text-primary-tertiary);
-  --color-border-secondary: var(--border-secondary);
-  --color-content-danger-default: var(--content-danger-default);
-  --color-border-divider: var(--border-divider);
+  /* ===== RTE Design System - Background Colors ===== */
+  --color-background-default: var(--background-default);
+  --color-background-hover: var(--background-hover);
+  --color-background-neutral-regular-default: var(
+    --background-neutral-regular-default
+  );
+  --color-background-neutral-regular-hover: var(
+    --background-neutral-regular-hover
+  );
+  --color-background-neutral-bold-default: var(
+    --background-neutral-bold-default
+  );
+  --color-background-neutral-bold-hover: var(--background-neutral-bold-hover);
+  --color-background-neutral-navigation-default: var(
+    --background-neutral-navigation-default
+  );
+  --color-background-neutral-navigation-hover: var(
+    --background-neutral-navigation-hover
+  );
+  --color-background-disabled: var(--background-disabled);
+  --color-background-inverse: var(--background-inverse);
+  --color-background-brand-default: var(--background-brand-default);
+  --color-background-brand-hover: var(--background-brand-hover);
+  --color-background-brand-pressed: var(--background-brand-pressed);
+  --color-background-brand-selected-default: var(
+    --background-brand-selected-default
+  );
+  --color-background-brand-selected-hover: var(
+    --background-brand-selected-hover
+  );
+  --color-background-brand-unselected-default: var(
+    --background-brand-unselected-default
+  );
+  --color-background-brand-unselected-hover: var(
+    --background-brand-unselected-hover
+  );
+  --color-background-brand-inverse-default: var(
+    --background-brand-inverse-default
+  );
+  --color-background-brand-inverse-hover: var(--background-brand-inverse-hover);
+  --color-background-brand-inverse-pressed: var(
+    --background-brand-inverse-pressed
+  );
+  --color-background-brand-navigation-default: var(
+    --background-brand-navigation-default
+  );
+  --color-background-brand-navigation-hover: var(
+    --background-brand-navigation-hover
+  );
+  --color-background-brand-navigation-pressed: var(
+    --background-brand-navigation-pressed
+  );
+  --color-background-danger-default: var(--background-danger-default);
+  --color-background-danger-hover: var(--background-danger-hover);
+  --color-background-danger-pressed: var(--background-danger-pressed);
+  --color-background-info-default: var(--background-info-default);
+  --color-background-warning-default: var(--background-warning-default);
+  --color-background-success-default: var(--background-success-default);
+  --color-background-brand-hover-opacity-20: var(
+    --background-brand-hover-opacity-20
+  );
+  --color-background-danger-hover-opacity-20: var(
+    --background-danger-hover-opacity-20
+  );
+  --color-background-hover-opacity-50: var(--background-hover-opacity-50);
 
-  /* Content colors */
+  /* ===== RTE Design System - Border Colors ===== */
+  --color-border-primary: var(--border-primary);
+  --color-border-secondary: var(--border-secondary);
+  --color-border-tertiary: var(--border-tertiary);
+  --color-border-divider: var(--border-divider);
+  --color-border-disabled: var(--border-disabled);
+  --color-border-inverse: var(--border-inverse);
+  --color-border-brand-default: var(--border-brand-default);
+  --color-border-brand-focused: var(--border-brand-focused);
+  --color-border-brand-navigation-active: var(--border-brand-navigation-active);
+  --color-border-brand-navigation-divider: var(
+    --border-brand-navigation-divider
+  );
+  --color-border-danger: var(--border-danger);
+  --color-border-info: var(--border-info);
+  --color-border-warning: var(--border-warning);
+  --color-border-success: var(--border-success);
+
+  /* ===== RTE Design System - Content Colors ===== */
+  --color-content-primary: var(--content-primary);
+  --color-content-secondary: var(--content-secondary);
+  --color-content-tertiary: var(--content-tertiary);
+  --color-content-primary-inverse: var(--content-primary-inverse);
+  --color-content-disabled: var(--content-disabled);
+  --color-content-brand-default: var(--content-brand-default);
+  --color-content-brand-hover: var(--content-brand-hover);
+  --color-content-brand-pressed: var(--content-brand-pressed);
+  --color-content-brand-navigation-default: var(
+    --content-brand-navigation-default
+  );
+  --color-content-brand-navigation-hover: var(--content-brand-navigation-hover);
+  --color-content-brand-navigation-disabled: var(
+    --content-brand-navigation-disabled
+  );
+  --color-content-link-default: var(--content-link-default);
+  --color-content-link-hover: var(--content-link-hover);
+  --color-content-link-pressed: var(--content-link-pressed);
+  --color-content-link-visited-default: var(--content-link-visited-default);
+  --color-content-link-visited-hover: var(--content-link-visited-hover);
+  --color-content-link-visited-pressed: var(--content-link-visited-pressed);
+  --color-content-danger-default: var(--content-danger-default);
+  --color-content-danger-hover: var(--content-danger-hover);
+  --color-content-danger-inverse: var(--content-danger-inverse);
+  --color-content-success-default: var(--content-success-default);
+  --color-content-success-hover: var(--content-success-hover);
+  --color-content-info-default: var(--content-info-default);
+  --color-content-info-hover: var(--content-info-hover);
+  --color-content-decorative: var(--content-decorative);
+
+  /* ===== RTE Design System - Brand Navigation Dividers ===== */
+  --color-brand-navigation-divider: var(--brand-navigation-divider);
+  --color-brand-navigation-divider-2: var(--brand-navigation-divider-2);
+  --color-brand-navigation-divider-3: var(--brand-navigation-divider-3);
+  --color-brand-navigation-divider-4: var(--brand-navigation-divider-4);
+  --color-brand-navigation-divider-5: var(--brand-navigation-divider-5);
+  --color-brand-navigation-divider-6: var(--brand-navigation-divider-6);
+  --color-brand-navigation-divider-7: var(--brand-navigation-divider-7);
+
+  /* ===== RTE Design System - Chart Colors ===== */
+  --color-chart-brand: var(--chart-brand);
+  --color-chart-neutral: var(--chart-neutral);
+  --color-chart-category-1: var(--chart-category-1);
+  --color-chart-category-2: var(--chart-category-2);
+  --color-chart-category-3: var(--chart-category-3);
+  --color-chart-category-4: var(--chart-category-4);
+  --color-chart-category-5: var(--chart-category-5);
+  --color-chart-category-6: var(--chart-category-6);
+  --color-chart-category-7: var(--chart-category-7);
+  --color-chart-category-8: var(--chart-category-8);
+  --color-chart-bleu-iceberg: var(--chart-bleu-iceberg);
+  --color-chart-bleu-iceberg-bold: var(--chart-bleu-iceberg-bold);
+  --color-chart-vert-foret: var(--chart-vert-foret);
+  --color-chart-vert-foret-bold: var(--chart-vert-foret-bold);
+  --color-chart-violet: var(--chart-violet);
+  --color-chart-violet-bold: var(--chart-violet-bold);
+  --color-chart-bleu-rte: var(--chart-bleu-rte);
+  --color-chart-bleu-rte-bold: var(--chart-bleu-rte-bold);
+  --color-chart-bleu-digital: var(--chart-bleu-digital);
+  --color-chart-bleu-digital-bold: var(--chart-bleu-digital-bold);
+  --color-chart-marine: var(--chart-marine);
+  --color-chart-marine-bold: var(--chart-marine-bold);
+  --color-chart-bleu-petrole: var(--chart-bleu-petrole);
+  --color-chart-bleu-petrole-bold: var(--chart-bleu-petrole-bold);
+  --color-chart-bleu-cyan: var(--chart-bleu-cyan);
+  --color-chart-bleu-cyan-bold: var(--chart-bleu-cyan-bold);
+  --color-chart-vert: var(--chart-vert);
+  --color-chart-vert-bold: var(--chart-vert-bold);
+  --color-chart-vert-indications: var(--chart-vert-indications);
+  --color-chart-vert-indications-bold: var(--chart-vert-indications-bold);
+  --color-chart-vert-digital: var(--chart-vert-digital);
+  --color-chart-vert-digital-bold: var(--chart-vert-digital-bold);
+  --color-chart-jaune: var(--chart-jaune);
+  --color-chart-jaune-bold: var(--chart-jaune-bold);
+  --color-chart-jaune-ocre: var(--chart-jaune-ocre);
+  --color-chart-jaune-ocre-bold: var(--chart-jaune-ocre-bold);
+  --color-chart-jaune-indications: var(--chart-jaune-indications);
+  --color-chart-jaune-indications-bold: var(--chart-jaune-indications-bold);
+  --color-chart-saumon: var(--chart-saumon);
+  --color-chart-saumon-bold: var(--chart-saumon-bold);
+  --color-chart-rose-digital: var(--chart-rose-digital);
+  --color-chart-rose-digital-bold: var(--chart-rose-digital-bold);
+  --color-chart-fuschia: var(--chart-fuschia);
+  --color-chart-fuschia-bold: var(--chart-fuschia-bold);
+  --color-chart-rouge-indications: var(--chart-rouge-indications);
+  --color-chart-rouge-indications-bold: var(--chart-rouge-indications-bold);
+  --color-chart-greyscale: var(--chart-greyscale);
+  --color-chart-greyscale-bold: var(--chart-greyscale-bold);
+  --color-chart-taupe: var(--chart-taupe);
+  --color-chart-taupe-bold: var(--chart-taupe-bold);
+
+  /* ===== RTE Design System - Decorative Colors ===== */
+  --color-decorative-neutral: var(--decorative-neutral);
+  --color-decorative-bleu-iceberg: var(--decorative-bleu-iceberg);
+  --color-decorative-vert-foret: var(--decorative-vert-foret);
+  --color-decorative-violet: var(--decorative-violet);
+  --color-decorative-bleu-rte: var(--decorative-bleu-rte);
+  --color-decorative-bleu-digital: var(--decorative-bleu-digital);
+  --color-decorative-marine: var(--decorative-marine);
+  --color-decorative-bleu-petrole: var(--decorative-bleu-petrole);
+  --color-decorative-bleu-cyan: var(--decorative-bleu-cyan);
+  --color-decorative-vert: var(--decorative-vert);
+  --color-decorative-vert-indications: var(--decorative-vert-indications);
+  --color-decorative-vert-digital: var(--decorative-vert-digital);
+  --color-decorative-jaune: var(--decorative-jaune);
+  --color-decorative-jaune-ocre: var(--decorative-jaune-ocre);
+  --color-decorative-jaune-indications: var(--decorative-jaune-indications);
+  --color-decorative-saumon: var(--decorative-saumon);
+  --color-decorative-rose-digital: var(--decorative-rose-digital);
+  --color-decorative-fuschia: var(--decorative-fuschia);
+  --color-decorative-rouge-indication: var(--decorative-rouge-indication);
+  --color-decorative-taupe: var(--decorative-taupe);
+
+  /* ===== RTE Design System - Elevation/Shadow Colors ===== */
+  --color-elevation-surface-inner-shadow: var(--elevation-surface-inner-shadow);
+  --color-elevation-surface-shadow-1: var(--elevation-surface-shadow-1);
+  --color-elevation-surface-shadow-2: var(--elevation-surface-shadow-2);
+  --color-elevation-surface-shadow-3: var(--elevation-surface-shadow-3);
+  --color-elevation-surface-shadow-4: var(--elevation-surface-shadow-4);
+  --color-elevation-surface-shadow-5: var(--elevation-surface-shadow-5);
+  --color-elevation-surface-shadow-6: var(--elevation-surface-shadow-6);
+  --color-elevation-shadow-ambient: var(--elevation-shadow-ambient);
+  --color-elevation-shadow-ambient-darker: var(
+    --elevation-shadow-ambient-darker
+  );
+  --color-elevation-shadow-ambient-brand: var(--elevation-shadow-ambient-brand);
+  --color-elevation-shadow-key: var(--elevation-shadow-key);
+  --color-elevation-shadow-key-darker: var(--elevation-shadow-key-darker);
+  --color-elevation-shadow-key-brand: var(--elevation-shadow-key-brand);
+
+  /* Legacy mappings */
   --color-content-bg: var(--content-bg);
   --color-content-text: var(--content-text);
   --color-content-muted: var(--content-muted);
   --color-input-label: var(--input-label);
-  --color-border-primary: var(--border-primary);
   --color-border-primary-hl-default: var(--border-primary-hl-default);
-  --color-background-brand-navigation-default: var(
-    --background-brand-navigation-default
-  );
-  --color-content-secondary: var(--content-secondary);
+  --color-text-primary-tertiary: var(--text-primary-tertiary);
 }
 
 :root {
   --radius: 0.5rem;
+
+  /* Shadcn/ui base colors */
   --background: oklch(1 0 0);
   --foreground: #201f1f;
   --card: oklch(1 0 0);
@@ -132,18 +384,189 @@ body {
   --sidebar-border: #214770;
   --sidebar-ring: oklch(0.708 0 0);
 
-  --border-secondary: #a1a1a0;
+  /* Legacy/custom variables */
   --text-primary-tertiary: #225082;
-  --content-danger-default: #de2048;
-  --border-divider: #cdcccb;
   --content-bg: #f5f5f5;
   --content-text: #201f1f;
   --content-muted: #6b7280;
   --input-label: #626769;
-  --border-primary: #737272;
   --border-primary-hl-default: #225082;
+
+  /* ===== RTE Design System Fallbacks (bleu_iceberg light) ===== */
+  /* Background */
+  --background-default: #ffffff;
+  --background-hover: #ebebea;
+  --background-neutral-regular-default: #e1e1e0;
+  --background-neutral-regular-hover: #c2c1c0;
+  --background-neutral-bold-default: #737272;
+  --background-neutral-bold-hover: #4c4c4b;
+  --background-neutral-navigation-default: #ebebea;
+  --background-neutral-navigation-hover: #e1e1e0;
+  --background-disabled: #f4f5f4;
+  --background-inverse: #201f1f;
+  --background-brand-default: #2964a0;
+  --background-brand-hover: #225082;
+  --background-brand-pressed: #214770;
+  --background-brand-selected-default: #2964a0;
+  --background-brand-selected-hover: #225082;
+  --background-brand-unselected-default: #e6eef8;
+  --background-brand-unselected-hover: #c7dbf0;
+  --background-brand-inverse-default: #ffffff;
+  --background-brand-inverse-hover: #f3f6fc;
+  --background-brand-inverse-pressed: #e6eef8;
   --background-brand-navigation-default: #15253c;
+  --background-brand-navigation-hover: #1f3b5b;
+  --background-brand-navigation-pressed: #225082;
+  --background-danger-default: #de2048;
+  --background-danger-hover: #c81640;
+  --background-danger-pressed: #9d1439;
+  --background-info-default: #1465fc;
+  --background-warning-default: #ffe500;
+  --background-success-default: #0b8a4d;
+  --background-brand-hover-opacity-20: rgba(34, 80, 130, 0.2);
+  --background-danger-hover-opacity-20: rgba(200, 22, 64, 0.2);
+  --background-hover-opacity-50: rgba(235, 235, 234, 0.5);
+
+  /* Border */
+  --border-primary: #737272;
+  --border-secondary: #a1a1a0;
+  --border-tertiary: #cdcccb;
+  --border-divider: #cdcccb;
+  --border-disabled: #cdcccb;
+  --border-inverse: #ffffff;
+  --border-brand-default: #2964a0;
+  --border-brand-focused: #1f3b5b;
+  --border-brand-navigation-active: #225082;
+  --border-brand-navigation-divider: #214770;
+  --border-danger: #de2048;
+  --border-info: #1465fc;
+  --border-warning: #f4922b;
+  --border-success: #0b8a4d;
+
+  /* Content */
+  --content-primary: #201f1f;
   --content-secondary: #3e3e3d;
+  --content-tertiary: #737272;
+  --content-primary-inverse: #ffffff;
+  --content-disabled: #cdcccb;
+  --content-brand-default: #2964a0;
+  --content-brand-hover: #225082;
+  --content-brand-pressed: #214770;
+  --content-brand-navigation-default: #e6eef8;
+  --content-brand-navigation-hover: #f3f6fc;
+  --content-brand-navigation-disabled: #225082;
+  --content-link-default: #2b86ff;
+  --content-link-hover: #1465fc;
+  --content-link-pressed: #0d4fea;
+  --content-link-visited-default: #7d5a9f;
+  --content-link-visited-hover: #674883;
+  --content-link-visited-pressed: #563c6c;
+  --content-danger-default: #de2048;
+  --content-danger-hover: #c81640;
+  --content-danger-inverse: #ffffff;
+  --content-success-default: #0b8a4d;
+  --content-success-hover: #0e6d40;
+  --content-info-default: #1465fc;
+  --content-info-hover: #0d4fea;
+  --content-decorative: #201f1f;
+
+  /* Brand Navigation Dividers */
+  --brand-navigation-divider: #214770;
+  --brand-navigation-divider-2: #214770;
+  --brand-navigation-divider-3: #214770;
+  --brand-navigation-divider-4: #214770;
+  --brand-navigation-divider-5: #214770;
+  --brand-navigation-divider-6: #214770;
+  --brand-navigation-divider-7: #214770;
+
+  /* Chart */
+  --chart-brand: #397ebe;
+  --chart-neutral: #acacab;
+  --chart-category-1: #397ebe;
+  --chart-category-2: #ff2c74;
+  --chart-category-3: #7d5a9f;
+  --chart-category-4: #4dba97;
+  --chart-category-5: #233857;
+  --chart-category-6: #ed6e13;
+  --chart-category-7: #73636c;
+  --chart-category-8: #639cad;
+  --chart-bleu-iceberg: #e6eef8;
+  --chart-bleu-iceberg-bold: #397ebe;
+  --chart-vert-foret: #d7f4e6;
+  --chart-vert-foret-bold: #4dba97;
+  --chart-violet: #d2c3e4;
+  --chart-violet-bold: #7d5a9f;
+  --chart-bleu-rte: #e0f5fe;
+  --chart-bleu-rte-bold: #00a6d9;
+  --chart-bleu-digital: #d8ebff;
+  --chart-bleu-digital-bold: #2b86ff;
+  --chart-marine: #e7edf7;
+  --chart-marine-bold: #2f5d9a;
+  --chart-bleu-petrole: #deecef;
+  --chart-bleu-petrole-bold: #478093;
+  --chart-bleu-cyan: #d1f9fc;
+  --chart-bleu-cyan-bold: #0fb3cb;
+  --chart-vert: #c7fff4;
+  --chart-vert-bold: #04c8b1;
+  --chart-vert-indications: #e6f2a4;
+  --chart-vert-indications-bold: #bed942;
+  --chart-vert-digital: #d9ffec;
+  --chart-vert-digital-bold: #3cec96;
+  --chart-jaune: #faffc1;
+  --chart-jaune-bold: #ffe500;
+  --chart-jaune-ocre: #faefc7;
+  --chart-jaune-ocre-bold: #ebb53d;
+  --chart-jaune-indications: #fce7c9;
+  --chart-jaune-indications-bold: #f4922b;
+  --chart-saumon: #fde8e3;
+  --chart-saumon-bold: #ec775c;
+  --chart-rose-digital: #ffccd1;
+  --chart-rose-digital-bold: #f93a58;
+  --chart-fuschia: #ffe1e9;
+  --chart-fuschia-bold: #ff2c74;
+  --chart-rouge-indications: #fdced4;
+  --chart-rouge-indications-bold: #f14662;
+  --chart-greyscale: #ebebea;
+  --chart-greyscale-bold: #7f7e7e;
+  --chart-taupe: #e7e3e6;
+  --chart-taupe-bold: #8a7883;
+
+  /* Decorative */
+  --decorative-neutral: #ebebea;
+  --decorative-bleu-iceberg: #c7dbf0;
+  --decorative-vert-foret: #d7f4e6;
+  --decorative-violet: #e6def0;
+  --decorative-bleu-rte: #b9edfe;
+  --decorative-bleu-digital: #baddff;
+  --decorative-marine: #e7edf7;
+  --decorative-bleu-petrole: #c1dae0;
+  --decorative-bleu-cyan: #a9f2f8;
+  --decorative-vert: #90ffe8;
+  --decorative-vert-indications: #e6f2a4;
+  --decorative-vert-digital: #b5fdd9;
+  --decorative-jaune: #faffc1;
+  --decorative-jaune-ocre: #f5de93;
+  --decorative-jaune-indications: #f9ce8e;
+  --decorative-saumon: #f9b7a8;
+  --decorative-rose-digital: #ffccd1;
+  --decorative-fuschia: #ffc8d8;
+  --decorative-rouge-indication: #ffe4e6;
+  --decorative-taupe: #e7e3e6;
+
+  /* Elevation/Shadow */
+  --elevation-surface-inner-shadow: rgba(0, 0, 0, 0);
+  --elevation-surface-shadow-1: rgba(255, 255, 255, 0);
+  --elevation-surface-shadow-2: rgba(255, 255, 255, 0);
+  --elevation-surface-shadow-3: rgba(255, 255, 255, 0);
+  --elevation-surface-shadow-4: rgba(255, 255, 255, 0);
+  --elevation-surface-shadow-5: rgba(255, 255, 255, 0);
+  --elevation-surface-shadow-6: rgba(255, 255, 255, 0);
+  --elevation-shadow-ambient: rgba(0, 0, 0, 0.12);
+  --elevation-shadow-ambient-darker: rgba(0, 0, 0, 0.2);
+  --elevation-shadow-ambient-brand: rgba(0, 0, 0, 0.25);
+  --elevation-shadow-key: rgba(0, 0, 0, 0.14);
+  --elevation-shadow-key-darker: rgba(0, 0, 0, 0.24);
+  --elevation-shadow-key-brand: rgba(0, 0, 0, 0.31);
 }
 
 .dark {
@@ -190,6 +613,176 @@ body {
   h2 {
     font-size: 1rem;
     font-weight: bold;
+  }
+}
+
+/* ===== RTE Design System - Typography Utilities ===== */
+@layer utilities {
+  /* Headings (Nunito, SemiBold) */
+  .heading-5xl {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-10xl);
+    line-height: var(--line-height-rte-10xl);
+    letter-spacing: var(--letter-spacing-xs);
+  }
+  .heading-4xl {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-9xl);
+    line-height: var(--line-height-rte-9xl);
+    letter-spacing: var(--letter-spacing-xs);
+  }
+  .heading-3xl {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-8xl);
+    line-height: var(--line-height-rte-8xl);
+    letter-spacing: var(--letter-spacing-xs);
+  }
+  .heading-2xl {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-7xl);
+    line-height: var(--line-height-rte-7xl);
+    letter-spacing: var(--letter-spacing-xs);
+  }
+  .heading-xl {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-6xl);
+    line-height: var(--line-height-rte-6xl);
+    letter-spacing: var(--letter-spacing-xs);
+  }
+  .heading-l {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-5xl);
+    line-height: var(--line-height-rte-5xl);
+    letter-spacing: var(--letter-spacing-xs);
+  }
+  .heading-m {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-3xl);
+    line-height: var(--line-height-rte-3xl);
+    letter-spacing: var(--letter-spacing-s);
+  }
+  .heading-s {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-2xl);
+    line-height: var(--line-height-rte-2xl);
+    letter-spacing: var(--letter-spacing-s);
+  }
+  .heading-xs {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-xl);
+    line-height: var(--line-height-rte-xl);
+    letter-spacing: var(--letter-spacing-s);
+  }
+  .heading-2xs {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-l);
+    line-height: var(--line-height-rte-l);
+    letter-spacing: var(--letter-spacing-none);
+  }
+
+  /* Text styles (Arial) */
+  .text-xl-regular {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-rte-2xl);
+    line-height: var(--line-height-rte-2xl);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-xl-bold {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-rte-2xl);
+    line-height: var(--line-height-rte-2xl);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-l-regular {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-rte-xl);
+    line-height: var(--line-height-rte-xl);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-l-bold {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-rte-xl);
+    line-height: var(--line-height-rte-xl);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-m-regular {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-rte-l);
+    line-height: var(--line-height-rte-l);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-m-bold {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-rte-l);
+    line-height: var(--line-height-rte-l);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-s-regular {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-rte-m);
+    line-height: var(--line-height-rte-m);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-s-bold {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-rte-m);
+    line-height: var(--line-height-rte-m);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-xs-regular {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-rte-s);
+    line-height: var(--line-height-rte-s);
+    letter-spacing: var(--letter-spacing-none);
+  }
+  .text-xs-bold {
+    font-family: var(--font-family-arial);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-rte-s);
+    line-height: var(--line-height-rte-s);
+    letter-spacing: var(--letter-spacing-none);
+  }
+
+  /* Button text styles (Nunito, SemiBold) */
+  .button-text-s {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-l);
+    line-height: var(--line-height-rte-l);
+    letter-spacing: var(--letter-spacing-s);
+  }
+  .button-text-m {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-xl);
+    line-height: var(--line-height-rte-xl);
+    letter-spacing: var(--letter-spacing-s);
+  }
+  .button-text-l {
+    font-family: var(--font-family-nunito);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-rte-2xl);
+    line-height: var(--line-height-rte-2xl);
+    letter-spacing: var(--letter-spacing-s);
   }
 }
 

@@ -5,35 +5,12 @@ import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
+import { Chip } from "@design-system-rte/react";
 
 interface FilterOption {
   value: string;
   label: string;
 }
-
-interface FilterChipProps {
-  label: string;
-  onRemove: () => void;
-}
-
-const FilterChip = ({ label, onRemove }: FilterChipProps) => {
-  return (
-    <span className="inline-flex items-center gap-0 bg-[#e6eef8] text-[#2964a0] text-sm rounded-full px-2 py-0">
-      <span className="truncate max-w-[80px]">{label}</span>
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove();
-        }}
-        className="ml-1 hover:bg-[#d0dff0] rounded-full p-0.5 transition-colors"
-        aria-label={`Supprimer ${label}`}
-      >
-        <Icon name="close" size={12} />
-      </button>
-    </span>
-  );
-};
 
 interface FilterSelectProps {
   label: string;
@@ -88,7 +65,7 @@ const FilterSelect = ({
               "flex-1 max-w-[280px] min-w-[112px] h-8 flex items-center gap-2 px-2 py-1",
               "border border-[#a1a1a0] rounded bg-white cursor-pointer",
               "shadow-[inset_0_1px_4px_0_rgba(0,0,0,0.14)]",
-              "hover:border-gray-400 transition-colors"
+              "hover:border-gray-400 transition-colors",
             )}
           >
             {/* Chips or placeholder */}
@@ -100,14 +77,21 @@ const FilterSelect = ({
               ) : (
                 <div className="flex items-center gap-2 overflow-hidden">
                   {visibleChips.map((opt) => (
-                    <FilterChip
+                    <Chip
                       key={opt.value}
+                      id={opt.value}
                       label={opt.label}
-                      onRemove={() => handleRemoveChip(opt.value)}
+                      onClose={(e) => {
+                        e.stopPropagation();
+                        handleRemoveChip(opt.value);
+                      }}
+                      compactSpacing
+                      type="input"
+                      className="px-2!"
                     />
                   ))}
                   {hiddenCount > 0 && (
-                    <span className="inline-flex items-center justify-center bg-[#2964a0] text-white text-xs font-bold rounded-full min-w-[16px] h-4 px-0.5">
+                    <span className="inline-flex items-center justify-center bg-[#2964a0] text-white text-xs font-bold rounded-full min-w-4 h-4 px-0.5">
                       +{hiddenCount}
                     </span>
                   )}
@@ -116,7 +100,7 @@ const FilterSelect = ({
             </div>
 
             {/* Icons */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               {value.length > 0 && (
                 <button
                   type="button"
@@ -130,7 +114,7 @@ const FilterSelect = ({
               <ChevronDownIcon
                 className={cn(
                   "size-5 opacity-50 transition-transform duration-200",
-                  open && "rotate-180"
+                  open && "rotate-180",
                 )}
               />
             </div>
@@ -155,7 +139,7 @@ const FilterSelect = ({
                       "flex items-center justify-center size-4 rounded border-2 transition-colors shrink-0",
                       isSelected
                         ? "border-[#2964a0] bg-[#2964a0]"
-                        : "border-[#737272] bg-white"
+                        : "border-[#737272] bg-white",
                     )}
                   >
                     {isSelected && (
@@ -176,7 +160,9 @@ const FilterSelect = ({
                       </svg>
                     )}
                   </div>
-                  <span className="text-sm text-foreground">{option.label}</span>
+                  <span className="text-sm text-foreground">
+                    {option.label}
+                  </span>
                 </button>
               );
             })}

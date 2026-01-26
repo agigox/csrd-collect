@@ -14,7 +14,7 @@ const AdminUserInfo = () => {
     <>
       <div className="p-4 flex items-center gap-3">
         <Avatar className="size-8">
-          <AvatarFallback className="bg-sidebar-hover text-sidebar-text text-xs">
+          <AvatarFallback className="bg-sidebar-hover text-background-brand-unselected-default text-xs">
             {initials}
           </AvatarFallback>
         </Avatar>
