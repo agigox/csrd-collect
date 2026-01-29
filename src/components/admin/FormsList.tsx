@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/lib/ui/tabs";
 import { FormCard } from "./FormCard";
 import { useFormsStore } from "@/stores";
+import { Tab } from "@rte-ds/react";
 
 const categories = [
-  { value: "all", label: "Tous" },
-  { value: "E1-Pollution", label: "E1-Pollution" },
-  { value: "E2-Pollution", label: "E2-Pollution" },
-  { value: "E3-Pollution", label: "E3-Pollution" },
-  { value: "E4-Pollution", label: "E4-Pollution" },
+  { id: "all", label: "Tous", panelId: "panel-all" },
+  { id: "E1-Pollution", label: "E1-Pollution", panelId: "panel-e1" },
+  { id: "E2-Pollution", label: "E2-Pollution", panelId: "panel-e2" },
+  { id: "E3-Pollution", label: "E3-Pollution", panelId: "panel-e3" },
+  { id: "E4-Pollution", label: "E4-Pollution", panelId: "panel-e4" },
 ];
 
 export const FormsList = () => {
@@ -48,20 +48,14 @@ export const FormsList = () => {
   }
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="bg-primary h-8 p-0.5 rounded-full">
-        {categories.map((category) => (
-          <TabsTrigger
-            key={category.value}
-            value={category.value}
-            className="rounded-full px-3 py-1.5 h-7 text-sm text-primary-foreground data-[state=active]:bg-white data-[state=active]:text-primary"
-          >
-            {category.label}
-          </TabsTrigger>
-        ))}
-      </TabsList>
+    <div className="w-full">
+      <Tab
+        options={categories}
+        selectedTabId={activeTab}
+        onChange={(tabId) => setActiveTab(tabId)}
+      />
 
-      <TabsContent value={activeTab} className="mt-4">
+      <div className="mt-4">
         <div className="flex flex-col gap-2">
           {filteredForms.map((form) => (
             <FormCard
@@ -73,7 +67,7 @@ export const FormsList = () => {
             />
           ))}
         </div>
-      </TabsContent>
-    </Tabs>
+      </div>
+    </div>
   );
 };

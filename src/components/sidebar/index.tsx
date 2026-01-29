@@ -1,6 +1,5 @@
 "use client";
 
-import { Separator } from "@/lib/ui/separator";
 import Icon from "@/lib/Icons";
 import Header from "./Header";
 import UserInfo from "./UserInfo";
@@ -10,6 +9,7 @@ import NavItem from "./NavItem";
 import { useSidebarStore, useAuthStore } from "@/stores";
 import { usePathname } from "next/navigation";
 import { LogOutIcon } from "lucide-react";
+import { Divider } from "@rte-ds/react";
 
 interface SidebarProps {
   variant?: "admin" | "member";
@@ -32,7 +32,11 @@ export function Sidebar({ variant }: SidebarProps) {
     >
       <Header />
       <div className="px-2">
-        <Separator className="bg-sidebar-border" />
+        <Divider
+          appearance="default"
+          orientation="horizontal"
+          thickness="light"
+        />
       </div>
 
       {!isCollapsed && (showAdminUI ? <AdminUserInfo /> : <UserInfo />)}
@@ -42,7 +46,11 @@ export function Sidebar({ variant }: SidebarProps) {
 
         <div className="flex flex-col gap-1">
           <div className="px-2">
-            <Separator className="bg-sidebar-border" />
+            <Divider
+              appearance="default"
+              orientation="horizontal"
+              thickness="light"
+            />
           </div>
 
           <NavItem

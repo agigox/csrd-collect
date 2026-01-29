@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback } from "@/lib/ui/avatar";
-import { Separator } from "@/lib/ui/separator";
+import { Divider } from "@rte-ds/react";
 
 const ADMIN_NAME = "Julien Neuville";
 
@@ -21,7 +21,11 @@ const AdminUserInfo = () => {
         <span className="text-base font-semibold truncate">{ADMIN_NAME}</span>
       </div>
       <div className="px-2">
-        <Separator className="bg-sidebar-border" />
+        <Divider
+          appearance="default"
+          orientation="horizontal"
+          thickness="light"
+        />
       </div>
     </>
   );
