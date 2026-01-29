@@ -9,8 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@design-system-rte/core": "^1.2.0",
-    "@design-system-rte/react": "^1.2.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -24,6 +22,8 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@rte-ds/core": "^1.3.5",
+    "@rte-ds/react": "^1.3.5",
     "axios": "^1.13.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

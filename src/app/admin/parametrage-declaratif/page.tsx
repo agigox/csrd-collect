@@ -4,22 +4,18 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { DynamicForm, FormBuilder, FieldConfig } from "@/lib/form-fields";
 import { LabelField } from "@/lib/form-fields/field-configurator/common/LabelField";
-import { Button } from "@/lib/ui/button";
-import { Card, CardContent } from "@/lib/ui/card";
-import { Input } from "@/lib/ui/input";
-import { Label } from "@/lib/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/lib/ui/select";
 import { useFormsStore } from "@/stores";
 import { Divider } from "@/lib/Divider";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 import { ButtonBis } from "@/lib/ui/button-bis";
-import { Icon, IconButton } from "@design-system-rte/react";
+import {
+  Card,
+  Icon,
+  IconButton,
+  Select,
+  Textarea,
+  TextInput,
+} from "@rte-ds/react";
 
 const normeOptions = [
   { value: "E1-Pollution", label: "E1 - Pollution" },
@@ -128,10 +124,10 @@ export default function AdminParametrageDeclaratifPage() {
 
   return (
     <div className="p-6 h-[calc(100vh-0px)] flex flex-col">
-      <div className="flex gap-6 flex-1 min-h-0">
+      <div className="flex gap-6 flex-1 min-h-0 justify-between">
         {/* Configuration des données */}
         <div
-          className={`flex flex-col min-h-0 ${!showPreview ? "w-150.5 mx-auto" : ""}`}
+          className={`flex flex-col mx-auto min-h-0 ${!showPreview ? "w-150.5" : ""}`}
         >
           <div className="flex items-end justify-between gap-2.5 w-full h-8">
             <LabelField
@@ -184,63 +180,49 @@ export default function AdminParametrageDeclaratifPage() {
           <Divider className="mt-2 mb-8 bg-border-divider" />
           <ScrollableContainer className="flex-1">
             {/* Titre, Description et Norme du formulaire */}
-            <Card className="bg-background-brand-navigation-default">
-              <CardContent className="flex flex-col gap-4">
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-col gap-4.5">
-                    <div className="flex flex-col">
-                      <Label className="text-white">Description</Label>
-                      <Input
-                        value={formDescription}
-                        onChange={(e) => setFormDescription(e.target.value)}
-                        placeholder="Description du formulaire"
-                        className="h-8 text-sm bg-white"
-                      />
-                    </div>
 
-                    <div className="flex flex-col w-50">
-                      <Label className="text-white">Norme</Label>
-                      <Select value={formNorme} onValueChange={setFormNorme}>
-                        <SelectTrigger className="h-8 w-full bg-white">
-                          <SelectValue placeholder="Sélectionner une norme" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {normeOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
+            <Card style={{ background: "#233857", width: "100%" }}>
+              <div className="flex w-full flex-col gap-3.5 px-4 pb-4 pt-2">
+                <Select
+                  key={`norme-${currentForm?.id ?? "new"}-${formNorme}`}
+                  id="select-norme"
+                  assistiveAppearance="description"
+                  label="Norme"
+                  onChange={setFormNorme}
+                  options={normeOptions}
+                  showLabel
+                  width={280}
+                  value={formNorme}
+                  showResetButton={true}
+                />
+                <Textarea
+                  label="Description"
+                  onChange={(e) => setFormDescription(e.target.value)}
+                  labelId="form-description-label-id"
+                  rows={1}
+                />
+              </div>
             </Card>
 
             {/* Configuration des champs */}
-            <div className="pt-8">
+            <div className="pt-6 w-full">
               {schema.length === 0 ? (
-                <div className="text-center py-8 text-content-muted border border-dashed border-border-default rounded-lg px-2">
-                  Aucune donnée configurée. Utilisez le bouton ci-dessous pour
-                  ajouter une donnée à déclarer.
+                <div className="flex flex-col items-center gap-4 py-8 border border-dashed border-border-default rounded-lg px-2">
+                  <span className="text-content-muted text-center">
+                    Aucune donnée configurée. Utilisez le bouton ci-dessous pour
+                    ajouter une donnée à déclarer.
+                  </span>
+                  <FormBuilder
+                    schema={schema}
+                    onChange={setSchema}
+                    buttonOnly
+                  />
                 </div>
               ) : (
-                <FormBuilder schema={schema} onChange={setSchema} hideButton />
+                <FormBuilder schema={schema} onChange={setSchema} />
               )}
             </div>
           </ScrollableContainer>
-
-          {/* Bouton Ajouter un champ - hors de la zone scrollable */}
-          <div className="shrink-0 pt-4 pb-2 flex items-center gap-4">
-            <div className="flex-1">
-              <FormBuilder schema={schema} onChange={setSchema} buttonOnly />
-            </div>
-            <Button onClick={handleSave} disabled={isSaving}>
-              {/* <CustomIcon name="save" size={16} /> */}
-              {isSaving ? "Sauvegarde..." : "Sauvegarder"}
-            </Button>
-          </div>
         </div>
 
         {/* Pré visualisation */}

@@ -9,14 +9,17 @@ import { LabelField } from "../common/LabelField";
 export const TextConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<TextFieldConfig>) => {
   return (
-    <div className="flex gap-2.5">
+    <div className="flex flex-col gap-2.5">
       <LabelField
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
         className="flex-1 w-full"
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
       <div className="flex flex-col w-50">
         <Label>Valeur par défaut</Label>

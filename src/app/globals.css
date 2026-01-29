@@ -1,7 +1,7 @@
 @import "tailwindcss";
-@import "@design-system-rte/react/style.css";
-@import "@design-system-rte/core/css/rte-fonts.css";
-@import "@design-system-rte/core/css/rte-themes.css";
+@import "@rte-ds/react/style.css";
+@import "@rte-ds/core/css/rte-fonts.css";
+@import "@rte-ds/core/css/rte-themes.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -810,4 +810,15 @@ body {
 @theme {
   --animate-slide-in-from-right: slide-in-from-right 0.3s ease-out;
   --animate-slide-out-to-right: slide-out-to-right 1s ease-out;
+}
+
+#form-description-label-id {
+  color: white;
+}
+#select-norme {
+  background-color: white;
+  color: black;
+}
+#Norme {
+  color: white;
 }

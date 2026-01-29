@@ -1,9 +1,25 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Input } from "@/lib/ui/input";
-import { Label } from "@/lib/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/lib/ui/select";
 import { cn } from "@/lib/utils";
+import { IconButton, TextInput } from "@rte-ds/react";
+import type { FieldType } from "../../types";
+import { typeLabels } from "../types";
+
+export interface CollapsedActions {
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  onDuplicate: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
+}
 
 interface LabelFieldProps {
   value: string;
@@ -15,7 +31,23 @@ interface LabelFieldProps {
   showLabel?: boolean;
   displayClassName?: string;
   inputClassName?: string;
+  fieldType?: FieldType;
+  onFieldTypeChange?: (type: FieldType) => void;
+  collapsedActions?: CollapsedActions;
+  onOpen?: () => void;
 }
+
+// Field types available in the type selector (excludes deprecated "unit")
+const selectableTypes: FieldType[] = [
+  "text",
+  "number",
+  "select",
+  "radio",
+  "checkbox",
+  "switch",
+  "date",
+  "import",
+];
 
 export const LabelField = ({
   value,
@@ -27,6 +59,10 @@ export const LabelField = ({
   showLabel = true,
   displayClassName,
   inputClassName,
+  fieldType,
+  onFieldTypeChange,
+  collapsedActions,
+  onOpen,
 }: LabelFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
@@ -63,34 +99,67 @@ export const LabelField = ({
     }
   };
 
+  const typeSelector =
+    fieldType &&
+    (onFieldTypeChange ? (
+      <Select
+        value={fieldType}
+        onValueChange={(val) => onFieldTypeChange(val as FieldType)}
+      >
+        <SelectTrigger className="h-8 w-56 shrink-0">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {selectableTypes.map((t) => (
+            <SelectItem key={t} value={t}>
+              {typeLabels[t]}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    ) : (
+      <span className="h-8 w-56 shrink-0 flex items-center px-3 text-sm text-muted-foreground border border-input rounded-(--radius) bg-muted/50">
+        {typeLabels[fieldType]}
+      </span>
+    ));
+
   if (isEditing) {
     return (
-      <div className={cn("flex flex-col", className)}>
-        {showLabel && <Label>{label}</Label>}
-        <Input
-          ref={inputRef}
-          value={editValue}
-          onChange={(e) => {
-            setEditValue(e.target.value);
-            onChange(e.target.value);
-          }}
-          onBlur={handleValidate}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          className={cn("h-8 text-sm", inputClassName)}
-        />
+      <div className={cn("flex items-end gap-2", className)}>
+        <div className="flex flex-col flex-1">
+          <TextInput
+            ref={inputRef}
+            aria-required
+            assistiveAppearance="description"
+            autoComplete="off"
+            id="text-input-default"
+            label={label}
+            labelPosition="top"
+            maxLength={150}
+            onRightIconClick={() => {}}
+            placeholder={placeholder}
+            value={editValue}
+            onChange={(value) => {
+              setEditValue(value);
+              onChange(value);
+            }}
+            onBlur={handleValidate}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        {typeSelector}
       </div>
     );
   }
 
   return (
-    <div className={cn("flex flex-1 items-end gap-2", className)}>
+    <div className={cn("flex flex-1 items-end gap-2 w-full", className)}>
       <div
         className={cn(
-          "heading-s flex items-center bg-background-brand-unselected-default flex-1 rounded-(--radius) pl-2 h-8 cursor-pointer hover:bg-background-brand-unselected-hover transition-colors",
+          "heading-s flex items-center bg-background-hover flex-1 rounded-lg pl-2 h-8 cursor-pointer transition-colors",
           displayClassName,
         )}
-        onClick={handleClick}
+        onClick={collapsedActions ? onOpen : handleClick}
       >
         {value || placeholder}
         {isDuplicate && (
@@ -99,6 +168,41 @@ export const LabelField = ({
           </span>
         )}
       </div>
+      {typeSelector}
+      {collapsedActions && (
+        <div className="flex items-center gap-1 shrink-0">
+          {collapsedActions.onMoveUp && collapsedActions.onMoveDown && (
+            <>
+              <IconButton
+                appearance="outlined"
+                aria-label="Monter"
+                name="arrow-up"
+                onClick={collapsedActions.onMoveUp}
+                size="m"
+                variant="transparent"
+                disabled={!collapsedActions.canMoveUp}
+              />
+              <IconButton
+                appearance="outlined"
+                aria-label="Descendre"
+                name="arrow-down"
+                onClick={collapsedActions.onMoveDown}
+                size="m"
+                variant="transparent"
+                disabled={!collapsedActions.canMoveDown}
+              />
+            </>
+          )}
+          <IconButton
+            appearance="outlined"
+            aria-label="Dupliquer"
+            name="copy"
+            onClick={collapsedActions.onDuplicate}
+            size="m"
+            variant="transparent"
+          />
+        </div>
+      )}
     </div>
   );
 };

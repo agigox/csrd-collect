@@ -1,15 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Button as RteButton } from "@design-system-rte/react";
+import { Button as RteButton } from "@rte-ds/react";
 import { cn } from "@/lib/utils";
 
 type IconPosition = "left" | "right";
 
 type ButtonSize = "s" | "m" | "l";
 
-interface ButtonBisProps
-  extends React.ComponentProps<typeof RteButton> {
+interface ButtonBisProps extends React.ComponentProps<typeof RteButton> {
   icon?: React.ReactNode;
   iconPosition?: IconPosition;
 }
@@ -29,7 +28,10 @@ const ICON_PADDING: Record<ButtonSize, string> = {
 };
 
 const ButtonBis = React.forwardRef<HTMLButtonElement, ButtonBisProps>(
-  ({ icon, iconPosition = "right", className, size = "m", style, ...props }, ref) => {
+  (
+    { icon, iconPosition = "right", className, size = "m", style, ...props },
+    ref,
+  ) => {
     // If no icon, use the standard RTE Button
     if (!icon) {
       return (
@@ -65,16 +67,11 @@ const ButtonBis = React.forwardRef<HTMLButtonElement, ButtonBisProps>(
 
     return (
       <div className={cn("relative inline-flex", className)}>
-        <RteButton
-          ref={ref}
-          size={size}
-          style={paddingStyle}
-          {...props}
-        />
+        <RteButton ref={ref} size={size} style={paddingStyle} {...props} />
         <span style={iconStyle}>{icon}</span>
       </div>
     );
-  }
+  },
 );
 
 ButtonBis.displayName = "ButtonBis";

@@ -21,6 +21,7 @@ const defaultDateOptions = [
 export const DateConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<DateFieldConfig>) => {
   return (
     <div className="flex flex-col gap-4">
@@ -28,6 +29,8 @@ export const DateConfigurator = ({
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
       {/* Inclure l'heure */}
       <div className="flex items-center gap-3">

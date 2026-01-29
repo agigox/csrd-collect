@@ -1,6 +1,6 @@
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import type { FieldConfig } from "../types";
+import type { FieldConfig, FieldType } from "../types";
 
 export interface FieldConfiguratorProps {
   config: FieldConfig;
@@ -11,6 +11,8 @@ export interface FieldConfiguratorProps {
   onMoveDown?: () => void;
   canMoveUp?: boolean;
   canMoveDown?: boolean;
+  isOpen?: boolean;
+  onOpen?: () => void;
   dragHandleAttributes?: DraggableAttributes;
   dragHandleListeners?: SyntheticListenerMap;
 }
@@ -20,6 +22,7 @@ export interface SpecificConfiguratorProps<
 > {
   config: T;
   onChange: (config: T) => void;
+  onFieldTypeChange?: (type: FieldType) => void;
 }
 
 export const typeLabels: Record<string, string> = {

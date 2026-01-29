@@ -33,6 +33,7 @@ interface OptionsData {
 export const SelectConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<SelectFieldConfig>) => {
   const [optionsData, setOptionsData] = useState<OptionsData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -167,6 +168,8 @@ export const SelectConfigurator = ({
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
 
       {/* Chargement ou erreur */}

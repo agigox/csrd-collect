@@ -11,6 +11,7 @@ import { LabelField } from "../common/LabelField";
 export const CheckboxConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<CheckboxFieldConfig>) => {
   const handleOptionChange = (
     index: number,
@@ -77,6 +78,8 @@ export const CheckboxConfigurator = ({
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
       {options.map((option, index) => {
         const isLast = index === options.length - 1;

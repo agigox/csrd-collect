@@ -17,6 +17,7 @@ const formatOptions = [
 export const ImportConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<ImportFieldConfig>) => {
   const currentFormats = config.acceptedFormats ?? [];
 
@@ -48,6 +49,8 @@ export const ImportConfigurator = ({
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
       <div className="flex flex-col gap-2">
         <Label>Formats acceptés</Label>

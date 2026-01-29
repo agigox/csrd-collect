@@ -10,7 +10,7 @@ import type {
   FieldRegistration,
   ImportFieldConfig,
 } from "../types";
-import { IconButton } from "@design-system-rte/react";
+import { IconButton } from "@rte-ds/react";
 
 interface FileValue {
   name: string;

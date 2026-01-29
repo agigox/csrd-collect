@@ -5,7 +5,7 @@ import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
-import { Chip } from "@design-system-rte/react";
+import { Chip } from "@rte-ds/react";
 
 interface FilterOption {
   value: string;

@@ -26,6 +26,7 @@ const unitOptions = [
 export const UnitConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<UnitFieldConfig>) => {
   return (
     <div className="mt-2 pt-2 border-t flex flex-col gap-4">
@@ -33,6 +34,8 @@ export const UnitConfigurator = ({
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
       <div className="flex flex-col gap-1">
         <Label>Unité</Label>

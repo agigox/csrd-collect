@@ -18,7 +18,9 @@ interface FormsState {
   loading: boolean;
   error: string | null;
   currentForm: FormDefinition | null;
+  activeFieldName: string | null;
   setCurrentForm: (form: FormDefinition | null) => void;
+  setActiveFieldName: (name: string | null) => void;
   saveForm: (form: FormDefinition) => Promise<void>;
   createForm: (form: Omit<FormDefinition, "id" | "code" | "createdAt" | "updatedAt">) => Promise<FormDefinition>;
   deleteForm: (id: string) => Promise<void>;
@@ -32,6 +34,10 @@ export const useFormsStore = create<FormsState>()(
       loading: true,
       error: null,
       currentForm: null,
+      activeFieldName: null,
+
+      setActiveFieldName: (name: string | null) =>
+        set({ activeFieldName: name }, false, "FORMS/SET_ACTIVE_FIELD"),
 
       setCurrentForm: (form: FormDefinition | null) =>
         set(

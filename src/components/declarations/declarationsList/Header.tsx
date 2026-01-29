@@ -2,7 +2,7 @@
 
 import Icon from "@/lib/Icons";
 import { ButtonBis } from "@/lib/ui/button-bis";
-import { IconButton, IconButtonToggle } from "@design-system-rte/react";
+import { IconButton, IconButtonToggle } from "@rte-ds//react";
 
 interface HeaderProps {
   onSearch?: () => void;

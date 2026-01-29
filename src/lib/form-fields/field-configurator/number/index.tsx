@@ -27,6 +27,7 @@ const unitOptions = [
 export const NumberConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<NumberFieldConfig>) => {
   return (
     <>
@@ -34,6 +35,8 @@ export const NumberConfigurator = ({
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
       <div className="flex gap-4">
         <div className="flex flex-col gap-1">

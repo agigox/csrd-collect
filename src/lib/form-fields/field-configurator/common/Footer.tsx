@@ -13,7 +13,7 @@ import {
   DialogFooter,
 } from "@/lib/ui/dialog";
 import { Button } from "@/lib/ui/button";
-import { Divider, IconButton } from "@design-system-rte/react";
+import { Divider, IconButton } from "@rte-ds/react";
 
 interface FooterProps {
   required: boolean;
@@ -120,49 +120,38 @@ export const Footer = ({
             {/* Move up/down buttons */}
             {onMoveUp && onMoveDown && (
               <div className="flex items-center gap-1">
-                <button
-                  type="button"
+                <IconButton
+                  appearance="outlined"
+                  aria-label="icon button aria label"
+                  name="arrow-up"
                   onClick={onMoveUp}
+                  size="m"
+                  variant="transparent"
                   disabled={!canMoveUp}
-                  className={`p-1 rounded transition-colors ${
-                    canMoveUp
-                      ? "hover:bg-gray-100 text-gray-600"
-                      : "text-gray-300 cursor-not-allowed"
-                  }`}
-                  title="Déplacer vers le haut"
-                >
-                  <Icon name="chevronUp" size={16} />
-                </button>
-                <button
-                  type="button"
+                />
+
+                <IconButton
+                  appearance="outlined"
+                  aria-label="icon button aria label"
+                  name="arrow-down"
                   onClick={onMoveDown}
+                  size="m"
+                  variant="transparent"
                   disabled={!canMoveDown}
-                  className={`p-1 rounded transition-colors ${
-                    canMoveDown
-                      ? "hover:bg-gray-100 text-gray-600"
-                      : "text-gray-300 cursor-not-allowed"
-                  }`}
-                  title="Déplacer vers le bas"
-                >
-                  <Icon name="chevronDown" size={16} />
-                </button>
+                />
               </div>
             )}
 
             {/* Duplicate button */}
-            <button
-              type="button"
+
+            <IconButton
+              appearance="outlined"
+              aria-label="icon button aria label"
+              name="copy"
               onClick={onDuplicate}
-              className="p-2 rounded-full bg-white hover:bg-gray-100 transition-colors"
-              title="Dupliquer ce champ"
-            >
-              <Icon
-                name="duplicate"
-                height={20}
-                width={17}
-                color="var(--primary)"
-              />
-            </button>
+              size="m"
+              variant="transparent"
+            />
 
             {/* Delete button */}
             <IconButton
@@ -171,7 +160,7 @@ export const Footer = ({
               name="delete"
               onClick={() => setShowDeleteConfirm(true)}
               size="m"
-              variant="danger"
+              variant="transparent"
             />
           </div>
         </div>

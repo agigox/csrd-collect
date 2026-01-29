@@ -17,6 +17,7 @@ import { LabelField } from "../common/LabelField";
 export const RadioConfigurator = ({
   config,
   onChange,
+  onFieldTypeChange,
 }: SpecificConfiguratorProps<RadioFieldConfig>) => {
   const handleOptionChange = (
     index: number,
@@ -86,6 +87,8 @@ export const RadioConfigurator = ({
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
         isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
       />
       {options.map((option, index) => {
         const isLast = index === options.length - 1;

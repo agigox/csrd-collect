@@ -1,7 +1,6 @@
 "use client";
 
-import { Label } from "@/lib/ui/label";
-import { Textarea } from "@/lib/ui/textarea";
+import { Textarea } from "@rte-ds/react";
 
 interface DescriptionFieldProps {
   value: string;
@@ -12,16 +11,7 @@ export const DescriptionField = ({
   value,
   onChange,
 }: DescriptionFieldProps) => {
-  return (
-    <div className="flex flex-col">
-      <Label>Description</Label>
-      <Textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="min-h-15 resize-y"
-      />
-    </div>
-  );
+  return <Textarea onChange={(e) => onChange(e.target.value)} rows={3} />;
 };
 
 export default DescriptionField;
