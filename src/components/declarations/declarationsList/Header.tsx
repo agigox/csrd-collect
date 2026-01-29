@@ -1,8 +1,6 @@
 "use client";
 
-import Icon from "@/lib/Icons";
-import { ButtonBis } from "@/lib/ui/button-bis";
-import { IconButton, IconButtonToggle } from "@rte-ds//react";
+import { Button, IconButton, IconButtonToggle } from "@rte-ds//react";
 
 interface HeaderProps {
   onSearch?: () => void;
@@ -51,13 +49,13 @@ const Header = ({
 
         {/* Déclarer button */}
 
-        <ButtonBis
+        <Button
+          icon="campaign"
           iconPosition="right"
-          label="Déclarer"
+          iconAppearance="filled"
+          label="Pré visualisation"
           onClick={onDeclarer}
-          size="m"
           variant="primary"
-          icon={<Icon name="campaign" color="white" />}
         />
       </div>
 

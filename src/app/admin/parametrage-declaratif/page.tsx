@@ -7,14 +7,13 @@ import { LabelField } from "@/lib/form-fields/field-configurator/common/LabelFie
 import { useFormsStore } from "@/stores";
 import { Divider } from "@/lib/Divider";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
-import { ButtonBis } from "@/lib/ui/button-bis";
 import {
+  Button,
   Card,
   Icon,
   IconButton,
   Select,
   Textarea,
-  TextInput,
 } from "@rte-ds/react";
 
 const normeOptions = [
@@ -140,20 +139,13 @@ export default function AdminParametrageDeclaratifPage() {
               inputClassName="heading-m"
             />
             <div className="flex gap-2.5 shrink-0 items-center">
-              <ButtonBis
+              <Button
+                icon="save"
+                iconPosition="left"
+                iconAppearance="filled"
                 label={isSaving ? "Sauvegarde..." : "Enregistrer"}
                 onClick={handleSave}
                 variant="primary"
-                icon={
-                  <Icon
-                    appearance="filled"
-                    aria-label="save"
-                    color="var(--content-primary-inverse)"
-                    name="save"
-                    size={20}
-                  />
-                }
-                iconPosition="left"
               />
 
               {isEditMode && (
@@ -264,20 +256,13 @@ export default function AdminParametrageDeclaratifPage() {
           </div>
         ) : (
           <div className="h-8">
-            <ButtonBis
+            <Button
+              icon="save"
+              iconPosition="left"
+              iconAppearance="filled"
               label="Pré visualisation"
               onClick={() => setShowPreview(true)}
               variant="secondary"
-              icon={
-                <Icon
-                  appearance="filled"
-                  aria-label="save"
-                  color="var(--content-brand-default)"
-                  name={showPreview ? "visibility-show" : "visibility-hide"}
-                  size={20}
-                />
-              }
-              iconPosition="left"
             />
           </div>
         )}
