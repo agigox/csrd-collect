@@ -2,21 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { Reorder } from "motion/react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { useFormsStore } from "@/stores/formsStore";
@@ -59,18 +45,6 @@ export const FormBuilder = ({
   >(null);
   const [mounted, setMounted] = useState(false);
   const { activeFieldName, setActiveFieldName } = useFormsStore();
-
-  // Drag and drop sensors
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8, // 8px movement required before drag starts
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -225,20 +199,6 @@ export const FormBuilder = ({
     onChange(newSchema);
   };
 
-  // Handle drag end for reordering
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = schema.findIndex((f) => f.name === active.id);
-      const newIndex = schema.findIndex((f) => f.name === over.id);
-
-      if (oldIndex !== -1 && newIndex !== -1) {
-        onChange(arrayMove(schema, oldIndex, newIndex));
-      }
-    }
-  };
-
   const renderInsertButton = (
     insertIndex: number,
     position: "before" | "after",
@@ -279,9 +239,6 @@ export const FormBuilder = ({
       </PopoverContent>
     </Popover>
   );
-
-  // Get sortable item IDs
-  const sortableIds = schema.map((f) => f.name);
 
   const addButtonContent = (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -354,41 +311,34 @@ export const FormBuilder = ({
         )}
 
       <div className="flex flex-col gap-6">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+        <Reorder.Group
+          axis="y"
+          values={schema}
+          onReorder={onChange}
+          className="flex flex-col gap-4"
         >
-          <SortableContext
-            items={sortableIds}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="flex flex-col gap-4">
-              {schema.map((fieldConfig, index) => {
-                const isActive = activeFieldName === fieldConfig.name;
-                return (
-                  <div key={fieldConfig.name} className="flex flex-col gap-4">
-                    {isActive && renderInsertButton(index, "before")}
-                    <SortableFieldCard
-                      id={fieldConfig.name}
-                      fieldConfig={fieldConfig}
-                      index={index}
-                      totalFields={schema.length}
-                      isOpen={isActive}
-                      onOpen={() => setActiveFieldName(fieldConfig.name)}
-                      onUpdate={(config) => handleUpdateField(index, config)}
-                      onRemove={() => handleRemoveField(index)}
-                      onDuplicate={() => handleDuplicateField(index)}
-                      onMoveUp={() => handleMoveUp(index)}
-                      onMoveDown={() => handleMoveDown(index)}
-                    />
-                    {isActive && renderInsertButton(index + 1, "after")}
-                  </div>
-                );
-              })}
-            </div>
-          </SortableContext>
-        </DndContext>
+          {schema.map((fieldConfig, index) => {
+            const isActive = activeFieldName === fieldConfig.name;
+            return (
+              <div key={fieldConfig.name} className="flex flex-col gap-4">
+                {isActive && renderInsertButton(index, "before")}
+                <SortableFieldCard
+                  fieldConfig={fieldConfig}
+                  index={index}
+                  totalFields={schema.length}
+                  isOpen={isActive}
+                  onOpen={() => setActiveFieldName(fieldConfig.name)}
+                  onUpdate={(config) => handleUpdateField(index, config)}
+                  onRemove={() => handleRemoveField(index)}
+                  onDuplicate={() => handleDuplicateField(index)}
+                  onMoveUp={() => handleMoveUp(index)}
+                  onMoveDown={() => handleMoveDown(index)}
+                />
+                {isActive && renderInsertButton(index + 1, "after")}
+              </div>
+            );
+          })}
+        </Reorder.Group>
       </div>
     </>
   );

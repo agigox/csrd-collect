@@ -28,8 +28,7 @@ export const FieldConfigurator = ({
   canMoveDown,
   isOpen = true,
   onOpen,
-  dragHandleAttributes,
-  dragHandleListeners,
+  dragControls,
 }: FieldConfiguratorProps) => {
   // Remove isDuplicate flag when user modifies any field
   const handleChange = (newConfig: FieldConfig) => {
@@ -182,8 +181,7 @@ export const FieldConfigurator = ({
         onMoveDown={onMoveDown}
         canMoveUp={canMoveUp}
         canMoveDown={canMoveDown}
-        dragHandleAttributes={dragHandleAttributes}
-        dragHandleListeners={dragHandleListeners}
+        dragControls={dragControls}
       />
     </div>
   );

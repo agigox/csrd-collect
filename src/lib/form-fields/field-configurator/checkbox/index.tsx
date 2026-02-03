@@ -1,6 +1,6 @@
 "use client";
 
-import { IconButton, RadioButton, TextInput } from "@rte-ds/react";
+import { Checkbox, IconButton, TextInput } from "@rte-ds/react";
 import type { CheckboxFieldConfig, SelectOption } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
@@ -84,9 +84,9 @@ export const CheckboxConfigurator = ({
         const isLast = index === options.length - 1;
         return (
           <div key={index} className="flex gap-2 items-end">
-            <RadioButton
-              groupName="radio-group"
-              label="Radio Button"
+            <Checkbox
+              id={`checkbox-indicator-${index}`}
+              label="Checkbox"
               showLabel={false}
               checked={false}
               disabled={true}
@@ -105,7 +105,7 @@ export const CheckboxConfigurator = ({
                 name="add"
                 onClick={handleAddOption}
                 size="m"
-                variant="transparent"
+                variant="primary"
               />
             ) : (
               <IconButton

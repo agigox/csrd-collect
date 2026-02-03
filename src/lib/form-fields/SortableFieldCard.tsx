@@ -1,11 +1,10 @@
-import { useSortable } from "@dnd-kit/sortable";
 import type { FieldConfig } from "./types";
-import { CSS } from "@dnd-kit/utilities";
 import { Card } from "@rte-ds/react";
 import { FieldConfigurator } from "./field-configurator";
+import { Reorder, useDragControls } from "motion/react";
+
 // Sortable Field Card component
 interface SortableFieldCardProps {
-  id: string;
   fieldConfig: FieldConfig;
   index: number;
   totalFields: number;
@@ -19,7 +18,6 @@ interface SortableFieldCardProps {
 }
 
 export const SortableFieldCard = ({
-  id,
   fieldConfig,
   index,
   totalFields,
@@ -31,46 +29,50 @@ export const SortableFieldCard = ({
   onMoveUp,
   onMoveDown,
 }: SortableFieldCardProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 1000 : "auto",
-    borderTop: isOpen ? "4px solid #1465FC" : undefined,
-    backgroundColor: "white",
-  };
+  const dragControls = useDragControls();
 
   return (
-    <Card
-      ref={setNodeRef}
-      className="py-4 px-4"
-      cardType="outlined"
-      style={style}
-      size="full"
+    <Reorder.Item
+      value={fieldConfig}
+      dragListener={false}
+      dragControls={dragControls}
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 30,
+      }}
+      whileDrag={{
+        scale: 1.02,
+        boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.15)",
+        zIndex: 1000,
+      }}
+      style={{
+        position: "relative",
+      }}
     >
-      <FieldConfigurator
-        config={fieldConfig}
-        onChange={onUpdate}
-        onRemove={onRemove}
-        onDuplicate={onDuplicate}
-        onMoveUp={onMoveUp}
-        onMoveDown={onMoveDown}
-        canMoveUp={index > 0}
-        canMoveDown={index < totalFields - 1}
-        isOpen={isOpen}
-        onOpen={onOpen}
-        dragHandleAttributes={attributes}
-        dragHandleListeners={listeners}
-      />
-    </Card>
+      <Card
+        className="py-4 px-4"
+        cardType="outlined"
+        style={{
+          borderTop: isOpen ? "4px solid #1465FC" : undefined,
+          backgroundColor: "white",
+        }}
+        size="full"
+      >
+        <FieldConfigurator
+          config={fieldConfig}
+          onChange={onUpdate}
+          onRemove={onRemove}
+          onDuplicate={onDuplicate}
+          onMoveUp={onMoveUp}
+          onMoveDown={onMoveDown}
+          canMoveUp={index > 0}
+          canMoveDown={index < totalFields - 1}
+          isOpen={isOpen}
+          onOpen={onOpen}
+          dragControls={dragControls}
+        />
+      </Card>
+    </Reorder.Item>
   );
 };

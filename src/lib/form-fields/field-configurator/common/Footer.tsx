@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { DraggableAttributes } from "@dnd-kit/core";
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import type { DragControls } from "motion/react";
 import {
   Dialog,
   DialogContent,
@@ -22,8 +21,7 @@ interface FooterProps {
   onMoveDown?: () => void;
   canMoveUp?: boolean;
   canMoveDown?: boolean;
-  dragHandleAttributes?: DraggableAttributes;
-  dragHandleListeners?: SyntheticListenerMap;
+  dragControls?: DragControls;
 }
 
 export const Footer = ({
@@ -35,8 +33,7 @@ export const Footer = ({
   onMoveDown,
   canMoveUp = true,
   canMoveDown = true,
-  dragHandleAttributes,
-  dragHandleListeners,
+  dragControls,
 }: FooterProps) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -55,50 +52,6 @@ export const Footer = ({
           thickness="medium"
         />
         <div className="flex justify-between items-center h-10 pt-4">
-          {/* Required toggle */}
-          {/*<div className="flex items-center gap-3">
-            <button
-              type="button"
-              role="switch"
-              aria-checked={required}
-              onClick={() => onRequiredChange(!required)}
-              className={`relative flex items-center h-6 w-10 rounded-full px-1 transition-colors duration-200 ${
-                required
-                  ? "bg-[#2964a0] justify-end"
-                  : "bg-[#e1e1e0] border-2 border-[#737272] justify-start"
-              }`}
-            >
-              <span
-                className={`flex items-center justify-center size-4 rounded-full transition-all duration-200 ${
-                  required ? "bg-white" : "bg-white shadow-sm"
-                }`}
-              >
-                {required && (
-                  <svg
-                    width="10"
-                    height="8"
-                    viewBox="0 0 10 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1 4L3.5 6.5L9 1"
-                      stroke="#2964a0"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                )}
-              </span>
-            </button>
-            <Label
-              className="text-sm cursor-pointer"
-              onClick={() => onRequiredChange(!required)}
-            >
-              Champ obligatoire
-            </Label>
-          </div>*/}
           <Switch
             appearance="brand"
             label="Champ obligatoire"
@@ -108,11 +61,10 @@ export const Footer = ({
           />
           <div className="flex gap-1">
             {/* Drag handle */}
-            {dragHandleAttributes && dragHandleListeners && (
+            {dragControls && (
               <div
-                {...dragHandleAttributes}
-                {...dragHandleListeners}
-                className="cursor-grab active:cursor-grabbing"
+                onPointerDown={(e) => dragControls.start(e)}
+                className="cursor-grab active:cursor-grabbing touch-none"
               >
                 <IconButton
                   appearance="outlined"

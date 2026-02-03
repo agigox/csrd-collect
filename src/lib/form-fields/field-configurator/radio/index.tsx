@@ -101,7 +101,7 @@ export const RadioConfigurator = ({
                 name="add"
                 onClick={handleAddOption}
                 size="m"
-                variant="brand"
+                variant="primary"
               />
             ) : (
               <IconButton

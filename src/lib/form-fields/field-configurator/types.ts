@@ -1,5 +1,4 @@
-import type { DraggableAttributes } from "@dnd-kit/core";
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
+import type { DragControls } from "motion/react";
 import type { FieldConfig, FieldType } from "../types";
 
 export interface FieldConfiguratorProps {
@@ -13,8 +12,7 @@ export interface FieldConfiguratorProps {
   canMoveDown?: boolean;
   isOpen?: boolean;
   onOpen?: () => void;
-  dragHandleAttributes?: DraggableAttributes;
-  dragHandleListeners?: SyntheticListenerMap;
+  dragControls?: DragControls;
 }
 
 export interface SpecificConfiguratorProps<
