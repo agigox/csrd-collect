@@ -3,8 +3,6 @@
 import { useState } from "react";
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import Icon from "@/lib/Icons";
-import { Label } from "@/lib/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +11,7 @@ import {
   DialogFooter,
 } from "@/lib/ui/dialog";
 import { Button } from "@/lib/ui/button";
-import { Divider, IconButton } from "@rte-ds/react";
+import { Divider, Icon, IconButton, Switch } from "@rte-ds/react";
 
 interface FooterProps {
   required: boolean;
@@ -56,9 +54,9 @@ export const Footer = ({
           orientation="horizontal"
           thickness="medium"
         />
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center h-10 pt-4">
           {/* Required toggle */}
-          <div className="flex items-center gap-3">
+          {/*<div className="flex items-center gap-3">
             <button
               type="button"
               role="switch"
@@ -100,7 +98,14 @@ export const Footer = ({
             >
               Champ obligatoire
             </Label>
-          </div>
+          </div>*/}
+          <Switch
+  appearance="brand"
+  label="Champ obligatoire"
+  onChange={() => onRequiredChange(!required)}
+  showIcon
+  showLabel
+/>
 
           {/* Action icons */}
           <div className="flex items-center gap-2">
@@ -113,8 +118,9 @@ export const Footer = ({
                 {...dragHandleAttributes}
                 {...dragHandleListeners}
               >
-                <Icon name="gripVertical" size={16} />
+                <Icon name="drag-indicator" />
               </button>
+              
             )}
 
             {/* Move up/down buttons */}
@@ -139,9 +145,18 @@ export const Footer = ({
                   variant="transparent"
                   disabled={!canMoveDown}
                 />
+                
               </div>
             )}
-
+{/* Embranchement button */}
+            <IconButton
+                  appearance="outlined"
+                  aria-label="icon button aria label"
+                  name="alt-route"
+                  onClick={onMoveDown}
+                  size="m"
+                  variant="transparent"
+                />
             {/* Duplicate button */}
 
             <IconButton
@@ -160,6 +175,7 @@ export const Footer = ({
               name="delete"
               onClick={() => setShowDeleteConfirm(true)}
               size="m"
+              color="var(--background-danger-default)"
               variant="transparent"
             />
           </div>
