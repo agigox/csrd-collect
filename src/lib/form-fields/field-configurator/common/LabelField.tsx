@@ -28,7 +28,7 @@ interface LabelFieldProps {
   onOpen?: () => void;
 }
 
-// Field types available in the type selector (excludes deprecated "unit")
+// Field types available in the type selector
 const selectableTypes: FieldType[] = [
   "text",
   "number",
@@ -142,7 +142,7 @@ export const LabelField = ({
   }
 
   return (
-    <div className={cn("flex h-14 items-end gap-2 w-full", className)}>
+    <div className={cn("flex h-8 items-end gap-2 w-full", className)}>
       <div
         className={cn(
           "heading-s flex items-center bg-background-hover flex-1 rounded-lg pl-2 h-8 cursor-pointer transition-colors",

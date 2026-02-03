@@ -13,7 +13,6 @@ import { NumberConfigurator } from "./number";
 import { SelectConfigurator } from "./select";
 import { RadioConfigurator } from "./radio";
 import { CheckboxConfigurator } from "./checkbox";
-import { UnitConfigurator } from "./unit";
 import { SwitchConfigurator } from "./switch";
 import { DateConfigurator } from "./date";
 import { ImportConfigurator } from "./import";
@@ -64,7 +63,6 @@ export const FieldConfigurator = ({
       radio: { options: defaultOptions },
       checkbox: { options: defaultOptions },
       date: { includeTime: false, defaultDateValue: "none" },
-      unit: { unit: "" },
     };
 
     const newConfig = {
@@ -113,14 +111,6 @@ export const FieldConfigurator = ({
       case "checkbox":
         return (
           <CheckboxConfigurator
-            config={config}
-            onChange={(c) => handleChange(c)}
-            {...typeChangeProps}
-          />
-        );
-      case "unit":
-        return (
-          <UnitConfigurator
             config={config}
             onChange={(c) => handleChange(c)}
             {...typeChangeProps}

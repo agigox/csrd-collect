@@ -1,15 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MultiSelect } from "@/lib/ui/multi-select";
 import type { SelectFieldConfig, SelectOption } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
-import {
-  Checkbox,
-  SegmentedControl,
-  Select as SelectTest,
-} from "@rte-ds/react";
+import { DefaultValueSelector } from "../common/DefaultValueSelector";
+import { SegmentedControl, Select } from "@rte-ds/react";
 
 // Type pour la structure des options dans db.json
 interface DataSourceItem {
@@ -160,7 +156,7 @@ export const SelectConfigurator = ({
     .map((i) => options[i].value);
 
   return (
-    <div className="flex flex-col gap-3 border-2 border-red-400">
+    <div className="flex flex-col gap-3">
       <LabelField
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
@@ -193,7 +189,7 @@ export const SelectConfigurator = ({
       {!isLoading && !error && (
         <div className="flex items-end gap-4">
           <div className="flex flex-col gap-1">
-            <SelectTest
+            <Select
               id="select1"
               label="Type de donnée"
               onChange={handleDataTypeChange}
@@ -204,7 +200,7 @@ export const SelectConfigurator = ({
           </div>
 
           <div className="flex flex-col gap-1 flex-1">
-            <SelectTest
+            <Select
               id="select2"
               label="Source de donnée"
               onChange={handleDataSourceChange}
@@ -218,49 +214,18 @@ export const SelectConfigurator = ({
       )}
 
       {/* Définir une valeur par défaut */}
-      {options.length > 0 && (
-        <div className="flex flex-col gap-2">
-          {!hasDefaultValue ? (
-            <Checkbox
-              id="checkbox-default-value"
-              label="Définir une valeur par défaut"
-              showLabel
-              onChange={handleToggleDefaultValue}
-            />
-          ) : (
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="checkbox-default-value-checked"
-                label="Définir une valeur par défaut"
-                showLabel={false}
-                onChange={handleToggleDefaultValue}
-                checked
-              />
-              {selectionMode === "single" ? (
-                <SelectTest
-                  value={currentDefaultSingleValue}
-                  id="select3"
-                  label="Source de donnée"
-                  showLabel={false}
-                  onChange={handleDefaultSingleChange}
-                  options={options}
-                  disabled={!config.dataType}
-                  showResetButton={true}
-                  width={260}
-                />
-              ) : (
-                <MultiSelect
-                  options={options}
-                  value={currentDefaultMultipleValues}
-                  onChange={handleDefaultMultipleChange}
-                  placeholder="Sélectionner des valeurs par défaut..."
-                  className="flex-1"
-                />
-              )}
-            </div>
-          )}
-        </div>
-      )}
+      <DefaultValueSelector
+        mode={selectionMode}
+        options={options}
+        hasDefaultValue={hasDefaultValue}
+        onToggle={handleToggleDefaultValue}
+        currentSingleValue={currentDefaultSingleValue}
+        currentMultipleValues={currentDefaultMultipleValues}
+        onSingleChange={handleDefaultSingleChange}
+        onMultipleChange={handleDefaultMultipleChange}
+        id="select-config"
+        disabled={!config.dataType}
+      />
     </div>
   );
 };

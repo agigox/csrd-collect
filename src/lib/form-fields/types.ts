@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 
-export type FieldType = "text" | "number" | "select" | "unit" | "switch" | "date" | "radio" | "checkbox" | "import";
+export type FieldType = "text" | "number" | "select" | "switch" | "date" | "radio" | "checkbox" | "import";
 
 export interface ValidationRule {
   type: "required" | "min" | "max" | "pattern";
@@ -40,20 +40,11 @@ export interface SelectFieldConfig extends BaseFieldConfig {
 
 export interface NumberFieldConfig extends BaseFieldConfig {
   type: "number";
-  min?: number;
-  max?: number;
   unit?: string;
 }
 
 export interface TextFieldConfig extends BaseFieldConfig {
   type: "text";
-}
-
-export interface UnitFieldConfig extends BaseFieldConfig {
-  type: "unit";
-  unit: string;
-  min?: number;
-  max?: number;
 }
 
 export interface SwitchFieldConfig extends BaseFieldConfig {
@@ -86,7 +77,7 @@ export interface ImportFieldConfig extends BaseFieldConfig {
   maxFileSize?: number; // in MB
 }
 
-export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | UnitFieldConfig | SwitchFieldConfig | DateFieldConfig | RadioFieldConfig | CheckboxFieldConfig | ImportFieldConfig;
+export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | SwitchFieldConfig | DateFieldConfig | RadioFieldConfig | CheckboxFieldConfig | ImportFieldConfig;
 
 export interface FieldProps<T extends FieldConfig = FieldConfig> {
   config: T;

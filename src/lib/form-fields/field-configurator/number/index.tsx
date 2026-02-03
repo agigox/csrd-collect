@@ -1,14 +1,6 @@
 "use client";
 
-import { Input } from "@/lib/ui/input";
-import { Label } from "@/lib/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/lib/ui/select";
+import { Select, TextInput } from "@rte-ds/react";
 import type { NumberFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
@@ -39,73 +31,31 @@ export const NumberConfigurator = ({
         onFieldTypeChange={onFieldTypeChange}
       />
       <div className="flex gap-4">
-        <div className="flex flex-col gap-1">
-          <Label>Placeholder</Label>
-          <Input
-            value={config.placeholder ?? ""}
-            onChange={(e) =>
-              onChange({ ...config, placeholder: e.target.value })
-            }
-            placeholder="Texte d'aide dans le champ"
-            className="h-8 text-sm w-58.75"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label>Unité</Label>
-          <Select
-            value={config.unit ?? ""}
-            onValueChange={(value) =>
-              onChange({ ...config, unit: value || undefined })
-            }
-          >
-            <SelectTrigger className="h-8 w-40">
-              <SelectValue placeholder="Sans unité" />
-            </SelectTrigger>
-            <SelectContent>
-              {unitOptions.map((option) => (
-                <SelectItem
-                  key={option.value || "none"}
-                  value={option.value || "none"}
-                >
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div className="mt-2 pt-2 border-t grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1">
-          <Label>Minimum</Label>
-          <Input
-            type="number"
-            value={config.min ?? ""}
-            onChange={(e) =>
-              onChange({
-                ...config,
-                min: e.target.value ? Number(e.target.value) : undefined,
-              })
-            }
-            placeholder="Pas de minimum"
-            className="h-8 text-sm"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <Label>Maximum</Label>
-          <Input
-            type="number"
-            value={config.max ?? ""}
-            onChange={(e) =>
-              onChange({
-                ...config,
-                max: e.target.value ? Number(e.target.value) : undefined,
-              })
-            }
-            placeholder="Pas de maximum"
-            className="h-8 text-sm"
-          />
-        </div>
+        <TextInput
+          id="default-value"
+          label="Valeur par défaut"
+          type="number"
+          value={config.defaultValue?.toString() ?? ""}
+          onChange={(e) =>
+            onChange({
+              ...config,
+              defaultValue: e ? Number(e) : undefined,
+            })
+          }
+          width={235}
+        />
+        <Select
+          id="unit-select"
+          label="Unité"
+          showLabel
+          options={unitOptions}
+          value={config.unit ?? ""}
+          onChange={(value) =>
+            onChange({ ...config, unit: value || undefined })
+          }
+          width={160}
+          showResetButton
+        />
       </div>
     </>
   );

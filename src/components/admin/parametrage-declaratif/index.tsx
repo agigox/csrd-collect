@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useFormsStore, useCategoryCodesStore } from "@/stores";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
-import { Button, Grid, Link } from "@rte-ds/react";
+import { Button, Link } from "@rte-ds/react";
 
 import { FormHeader } from "./FormHeader";
 import { FormMetadata } from "./FormMetadata";

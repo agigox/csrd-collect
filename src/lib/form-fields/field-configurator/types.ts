@@ -31,7 +31,6 @@ export const typeLabels: Record<string, string> = {
   select: "Liste déroulante",
   radio: "Choix unique",
   checkbox: "Choix multiple",
-  unit: "Nombre", // Deprecated: redirige vers Nombre
   switch: "Switch",
   date: "Date",
   import: "Import de fichier",

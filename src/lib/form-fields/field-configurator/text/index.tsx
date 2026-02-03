@@ -1,10 +1,9 @@
 "use client";
 
-import { Input } from "@/lib/ui/input";
-import { Label } from "@/lib/ui/label";
 import type { TextFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
+import { TextInput } from "@rte-ds/react";
 
 export const TextConfigurator = ({
   config,
@@ -22,13 +21,15 @@ export const TextConfigurator = ({
         onFieldTypeChange={onFieldTypeChange}
       />
       <div className="flex flex-col w-50">
-        <Label>Valeur par défaut</Label>
-        <Input
+        <TextInput
+          aria-required
+          assistiveAppearance="description"
+          autoComplete="off"
+          id="text-input-default"
+          label="Valeur par défaut"
+          labelPosition="top"
+          onChange={(e) => onChange({ ...config, defaultValue: e })}
           value={(config.defaultValue as string) ?? ""}
-          onChange={(e) =>
-            onChange({ ...config, defaultValue: e.target.value })
-          }
-          className="h-8 text-sm"
         />
       </div>
     </div>

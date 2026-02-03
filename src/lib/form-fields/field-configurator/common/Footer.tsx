@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from "@/lib/ui/dialog";
 import { Button } from "@/lib/ui/button";
-import { Divider, Icon, IconButton, Switch } from "@rte-ds/react";
+import { Divider, IconButton, Switch } from "@rte-ds/react";
 
 interface FooterProps {
   required: boolean;
@@ -100,56 +100,61 @@ export const Footer = ({
             </Label>
           </div>*/}
           <Switch
-  appearance="brand"
-  label="Champ obligatoire"
-  onChange={() => onRequiredChange(!required)}
-  showIcon
-  showLabel
-/>
-
-          {/* Action icons */}
-          <div className="flex items-center gap-2">
+            appearance="brand"
+            label="Champ obligatoire"
+            onChange={() => onRequiredChange(!required)}
+            showIcon
+            showLabel
+          />
+          <div className="flex gap-1">
             {/* Drag handle */}
             {dragHandleAttributes && dragHandleListeners && (
-              <button
-                type="button"
-                className="p-1 rounded transition-colors cursor-grab active:cursor-grabbing hover:bg-gray-100 text-gray-400 hover:text-gray-600"
-                title="Glisser pour réorganiser"
+              <div
                 {...dragHandleAttributes}
                 {...dragHandleListeners}
+                className="cursor-grab active:cursor-grabbing"
               >
-                <Icon name="drag-indicator" />
-              </button>
-              
+                <IconButton
+                  appearance="outlined"
+                  aria-label="Glisser pour réorganiser"
+                  name="drag-indicator"
+                  size="m"
+                  variant="transparent"
+                  disabled={!canMoveUp && !canMoveDown}
+                />
+              </div>
             )}
 
             {/* Move up/down buttons */}
             {onMoveUp && onMoveDown && (
-              <div className="flex items-center gap-1">
-                <IconButton
-                  appearance="outlined"
-                  aria-label="icon button aria label"
-                  name="arrow-up"
-                  onClick={onMoveUp}
-                  size="m"
-                  variant="transparent"
-                  disabled={!canMoveUp}
-                />
-
-                <IconButton
-                  appearance="outlined"
-                  aria-label="icon button aria label"
-                  name="arrow-down"
-                  onClick={onMoveDown}
-                  size="m"
-                  variant="transparent"
-                  disabled={!canMoveDown}
-                />
-                
-              </div>
+              <IconButton
+                appearance="outlined"
+                aria-label="icon button aria label"
+                name="arrow-up"
+                onClick={onMoveUp}
+                size="m"
+                variant="transparent"
+                disabled={!canMoveUp}
+              />
             )}
-{/* Embranchement button */}
-            <IconButton
+            {onMoveUp && onMoveDown && (
+              <IconButton
+                appearance="outlined"
+                aria-label="icon button aria label"
+                name="arrow-down"
+                onClick={onMoveDown}
+                size="m"
+                variant="transparent"
+                disabled={!canMoveDown}
+              />
+            )}
+          </div>
+          {/* Action icons */}
+          <div className="flex items-center gap-2">
+            <div className="flex gap-8">
+              {/* Embranchement button */}
+              <div className="flex gap-1">
+                <IconButton
                   appearance="outlined"
                   aria-label="icon button aria label"
                   name="alt-route"
@@ -157,27 +162,29 @@ export const Footer = ({
                   size="m"
                   variant="transparent"
                 />
-            {/* Duplicate button */}
+                {/* Duplicate button */}
 
-            <IconButton
-              appearance="outlined"
-              aria-label="icon button aria label"
-              name="copy"
-              onClick={onDuplicate}
-              size="m"
-              variant="transparent"
-            />
+                <IconButton
+                  appearance="outlined"
+                  aria-label="icon button aria label"
+                  name="copy"
+                  onClick={onDuplicate}
+                  size="m"
+                  variant="transparent"
+                />
+              </div>
 
-            {/* Delete button */}
-            <IconButton
-              appearance="outlined"
-              aria-label="icon button aria label"
-              name="delete"
-              onClick={() => setShowDeleteConfirm(true)}
-              size="m"
-              color="var(--background-danger-default)"
-              variant="transparent"
-            />
+              {/* Delete button */}
+              <IconButton
+                appearance="outlined"
+                aria-label="icon button aria label"
+                name="delete"
+                onClick={() => setShowDeleteConfirm(true)}
+                size="m"
+                iconColor="var(--background-danger-default)"
+                variant="transparent"
+              />
+            </div>
           </div>
         </div>
       </div>

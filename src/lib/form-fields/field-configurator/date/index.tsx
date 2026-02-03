@@ -1,17 +1,9 @@
 "use client";
 
-import { Label } from "@/lib/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/lib/ui/select";
-import Icon from "@/lib/Icons";
 import type { DateFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
+import { Checkbox, Select } from "@rte-ds/react";
 
 const defaultDateOptions = [
   { value: "none", label: "Aucune" },
@@ -32,67 +24,32 @@ export const DateConfigurator = ({
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
       />
-      {/* Inclure l'heure */}
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() =>
-            onChange({ ...config, includeTime: !config.includeTime })
-          }
-          className={`flex items-center justify-center size-5 border-2 bg-white transition-colors rounded ${
-            config.includeTime
-              ? "border-[#2964a0]"
-              : "border-gray-300 hover:border-[#2964a0]"
-          }`}
-        >
-          {config.includeTime && (
-            <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-              <path
-                d="M1 5L4 8L11 1"
-                stroke="#2964a0"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          )}
-        </button>
-        <Label
-          className="text-sm cursor-pointer"
-          onClick={() =>
-            onChange({ ...config, includeTime: !config.includeTime })
-          }
-        >
-          Inclure l&apos;heure
-        </Label>
-      </div>
-
-      {/* Valeur par défaut */}
-      <div className="flex flex-col gap-1">
-        <Label>Valeur par défaut</Label>
+      <div className="flex gap-4 items-end">
+        {/* Valeur par défaut */}
         <Select
-          value={config.defaultDateValue ?? "none"}
-          onValueChange={(value) =>
+          id="select-date-default-value"
+          label="Valeur par défaut"
+          onChange={(value) =>
             onChange({
               ...config,
               defaultDateValue: value as "none" | "today",
             })
           }
-        >
-          <SelectTrigger className="h-8 text-sm w-58.75">
-            <div className="flex items-center gap-2">
-              <Icon name="calendar" size={16} color="#45494A" />
-              <SelectValue placeholder="Sélectionner..." />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            {defaultDateOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          options={defaultDateOptions}
+          showLabel
+          width={188}
+        />
+        {/* Inclure l'heure */}
+        <Checkbox
+          errorMessage=""
+          id="include-time-checkbox"
+          label="Inclure l'heure"
+          showLabel
+          onChange={() =>
+            onChange({ ...config, includeTime: !config.includeTime })
+          }
+          checked={config.includeTime}
+        />
       </div>
     </div>
   );

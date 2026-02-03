@@ -1,22 +1,49 @@
 "use client";
 
+import { Select } from "@rte-ds/react";
 import type { SwitchFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
+
+const defaultValueOptions = [
+  { value: "none", label: "Aucune" },
+  { value: "selected", label: "Sélectionné" },
+];
 
 export const SwitchConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
 }: SpecificConfiguratorProps<SwitchFieldConfig>) => {
+  const handleDefaultValueChange = (value: string) => {
+    onChange({
+      ...config,
+      defaultValue: value === "selected" ? true : undefined,
+    });
+  };
+
+  const currentValue = config.defaultValue === true ? "selected" : "none";
+
   return (
-    <LabelField
-      value={config.label}
-      onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
-      isDuplicate={config.isDuplicate}
-      fieldType={config.type}
-      onFieldTypeChange={onFieldTypeChange}
-    />
+    <div className="flex flex-col gap-2.5">
+      <LabelField
+        value={config.label}
+        onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
+        isDuplicate={config.isDuplicate}
+        fieldType={config.type}
+        onFieldTypeChange={onFieldTypeChange}
+      />
+      <Select
+        id="switch-default-value"
+        label="Valeur par défaut"
+        showLabel
+        options={defaultValueOptions}
+        value={currentValue}
+        onChange={handleDefaultValueChange}
+        width={188}
+        showResetButton
+      />
+    </div>
   );
 };
 
