@@ -1,18 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Label } from "@/lib/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/lib/ui/select";
 import { MultiSelect } from "@/lib/ui/multi-select";
 import type { SelectFieldConfig, SelectOption } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
+import {
+  Checkbox,
+  SegmentedControl,
+  Select as SelectTest,
+} from "@rte-ds/react";
 
 // Type pour la structure des options dans db.json
 interface DataSourceItem {
@@ -163,7 +160,7 @@ export const SelectConfigurator = ({
     .map((i) => options[i].value);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 border-2 border-red-400">
       <LabelField
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
@@ -177,169 +174,80 @@ export const SelectConfigurator = ({
         <div className="text-sm text-gray-500">Chargement des options...</div>
       )}
       {error && <div className="text-sm text-red-500">{error}</div>}
+      {/* Mode de sélection */}
+      <div className="w-64.5">
+        <SegmentedControl
+          onChange={(id) =>
+            onChange({ ...config, selectionMode: id as "single" | "multiple" })
+          }
+          options={[
+            { id: "single", label: "Choix unique" },
+            { id: "multiple", label: "Choix multiple" },
+          ]}
+          selectedSegment={selectionMode}
+          size="s"
+        />
+      </div>
 
       {/* Type de donnée et Source de donnée */}
       {!isLoading && !error && (
         <div className="flex items-end gap-4">
           <div className="flex flex-col gap-1">
-            <Label>Type de donnée</Label>
-            <Select
-              value={config.dataType ?? ""}
-              onValueChange={handleDataTypeChange}
-            >
-              <SelectTrigger
-                className="h-8 text-sm w-58.75"
-                clearable
-                hasValue={!!config.dataType}
-                onClear={() => handleDataTypeChange("")}
-              >
-                <SelectValue placeholder="Sélectionner un type..." />
-              </SelectTrigger>
-              <SelectContent>
-                {dataTypeOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SelectTest
+              id="select1"
+              label="Type de donnée"
+              onChange={handleDataTypeChange}
+              options={dataTypeOptions}
+              showResetButton={true}
+              width={188}
+            />
           </div>
 
           <div className="flex flex-col gap-1 flex-1">
-            <Label>Source de donnée</Label>
-            <Select
-              value={config.dataSource ?? ""}
-              onValueChange={handleDataSourceChange}
+            <SelectTest
+              id="select2"
+              label="Source de donnée"
+              onChange={handleDataSourceChange}
+              options={dataSourceOptions}
               disabled={!config.dataType}
-            >
-              <SelectTrigger
-                className="h-8 text-sm"
-                clearable
-                hasValue={!!config.dataSource}
-                onClear={() => handleDataSourceChange("")}
-              >
-                <SelectValue
-                  placeholder={
-                    config.dataType
-                      ? "Sélectionner une source..."
-                      : "Sélectionnez d'abord un type"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {dataSourceOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              showResetButton={true}
+              width={188}
+            />
           </div>
         </div>
       )}
-      {/* Mode de sélection */}
-      <div className="flex flex-col gap-2">
-        <Label>Mode de sélection</Label>
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <button
-              type="button"
-              role="radio"
-              aria-checked={selectionMode === "single"}
-              onClick={() => onChange({ ...config, selectionMode: "single" })}
-              className={`relative flex items-center justify-center size-4 rounded-full border-2 transition-colors ${
-                selectionMode === "single"
-                  ? "border-[#2964a0] bg-white"
-                  : "border-[#737272] bg-white hover:border-[#225082]"
-              }`}
-            >
-              {selectionMode === "single" && (
-                <span className="size-2.5 rounded-full bg-[#2964a0]" />
-              )}
-            </button>
-            <span className="text-sm">Choix unique</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <button
-              type="button"
-              role="radio"
-              aria-checked={selectionMode === "multiple"}
-              onClick={() => onChange({ ...config, selectionMode: "multiple" })}
-              className={`relative flex items-center justify-center size-4 rounded-full border-2 transition-colors ${
-                selectionMode === "multiple"
-                  ? "border-[#2964a0] bg-white"
-                  : "border-[#737272] bg-white hover:border-[#225082]"
-              }`}
-            >
-              {selectionMode === "multiple" && (
-                <span className="size-2.5 rounded-full bg-[#2964a0]" />
-              )}
-            </button>
-            <span className="text-sm">Choix multiple</span>
-          </label>
-        </div>
-      </div>
 
       {/* Définir une valeur par défaut */}
       {options.length > 0 && (
         <div className="flex flex-col gap-2">
           {!hasDefaultValue ? (
-            <label className="flex items-center gap-2 cursor-pointer">
-              <button
-                type="button"
-                role="checkbox"
-                aria-checked={false}
-                onClick={handleToggleDefaultValue}
-                className="flex items-center justify-center size-4 rounded border-2 border-[#737272] bg-white hover:border-[#225082] transition-colors"
-              />
-              <span className="text-sm">Définir une valeur par défaut</span>
-            </label>
+            <Checkbox
+              id="checkbox-default-value"
+              label="Définir une valeur par défaut"
+              showLabel
+              onChange={handleToggleDefaultValue}
+            />
           ) : (
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                role="checkbox"
-                aria-checked={true}
-                onClick={handleToggleDefaultValue}
-                className="flex items-center justify-center size-4 rounded border-2 border-[#2964a0] bg-[#2964a0] transition-colors shrink-0"
-              >
-                <svg
-                  width="10"
-                  height="8"
-                  viewBox="0 0 10 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1 4L3.5 6.5L9 1"
-                    stroke="white"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
+              <Checkbox
+                id="checkbox-default-value-checked"
+                label="Définir une valeur par défaut"
+                showLabel={false}
+                onChange={handleToggleDefaultValue}
+                checked
+              />
               {selectionMode === "single" ? (
-                <Select
+                <SelectTest
                   value={currentDefaultSingleValue}
-                  onValueChange={handleDefaultSingleChange}
-                >
-                  <SelectTrigger
-                    className="h-8 text-sm flex-1"
-                    clearable
-                    hasValue={!!currentDefaultSingleValue}
-                    onClear={() => handleDefaultSingleChange("")}
-                  >
-                    <SelectValue placeholder="Sélectionner une valeur par défaut..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {options.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  id="select3"
+                  label="Source de donnée"
+                  showLabel={false}
+                  onChange={handleDefaultSingleChange}
+                  options={options}
+                  disabled={!config.dataType}
+                  showResetButton={true}
+                  width={260}
+                />
               ) : (
                 <MultiSelect
                   options={options}

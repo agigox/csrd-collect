@@ -9,6 +9,7 @@ export interface ValidationRule {
 }
 
 export interface BaseFieldConfig {
+  id: string;
   name: string;
   type: FieldType;
   label: string;

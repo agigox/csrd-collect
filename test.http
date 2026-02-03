@@ -1,0 +1,327 @@
+@baseUrl = http://dev-csrd-load-balancer-1990765532.eu-west-3.elb.amazonaws.com/api
+
+###############################################################################
+# STEP 1: CREATE ORGANIZATIONAL HIERARCHY
+###############################################################################
+
+### 1.1 Create Direction
+# Expected: 201 Created
+POST {{baseUrl}}/organizational-units/directions
+Content-Type: application/json
+
+{
+  "code": "DIR-NORD5",
+  "name": "Direction Nord"
+}
+
+### 1.2 Create Maintenance Center (linked to Direction)
+# Expected: 201 Created
+# IMPORTANT: Replace {{directionId}} with the id from step 1.1 response
+@directionId = 7b071c25-c46b-4773-94bd-087594191394
+
+POST {{baseUrl}}/organizational-units/maintenance-centers
+Content-Type: application/json
+
+{
+  "code": "MC-LYON5",
+  "name": "Centre de Maintenance Lyon",
+  "directionId": "{{directionId}}"
+}
+
+### 1.3 Create GMR (linked to Maintenance Center)
+# Expected: 201 Created
+# IMPORTANT: Replace {{maintenanceCenterId}} with the id from step 1.2 response
+@maintenanceCenterId = b55f21b1-1916-4bff-a679-1f07cd5325c7
+
+POST {{baseUrl}}/organizational-units/gmrs
+Content-Type: application/json
+
+{
+  "code": "GMR-LYON-EST",
+  "name": "GMR Lyon Est",
+  "maintenanceCenterId": "{{maintenanceCenterId}}"
+}
+
+### 1.4 Create Team (linked to GMR)
+# Expected: 201 Created
+# IMPORTANT: Replace {{gmrId}} with the id from step 1.3 response
+@gmrId = 01faa66f-a7b8-40c9-8504-01dcac1f6604
+
+POST {{baseUrl}}/organizational-units/teams
+Content-Type: application/json
+
+{
+  "code": "TEAM-ALPHA",
+  "name": "Équipe Alpha",
+  "gmrId": "{{gmrId}}"
+}
+
+###############################################################################
+# STEP 2: CREATE AND PUBLISH FORM TEMPLATE
+###############################################################################
+
+### 2.1 Create Form Template (draft)
+# Expected: 201 Created
+POST {{baseUrl}}/form-templates
+Content-Type: application/json
+
+{
+  "code": "E2-4_fuite_huile_v1",
+  "name": "Déclaration Fuite d'Huile SF6",
+  "categoryCode": "E2-4",
+  "schema": {
+    "fields": [
+      {
+        "id": "date_incident",
+        "type": "date",
+        "label": "Date de l'incident",
+        "required": true
+      },
+      {
+        "id": "oil_spilled",
+        "type": "number",
+        "label": "Quantité d'huile déversée (litres)",
+        "required": true,
+        "validation": {
+          "min": 0
+        }
+      },
+      {
+        "id": "oil_recovered",
+        "type": "number",
+        "label": "Quantité d'huile récupérée (litres)",
+        "required": false,
+        "validation": {
+          "min": 0,
+          "customRule": "oil_recovered <= oil_spilled"
+        }
+      },
+      {
+        "id": "severety",
+        "type": "dropdown",
+        "label": "Niveau de gravité",
+        "required": true,
+        "options": [
+          { "value": "sue", "label": "SUE (Situation d'Urgence Environnementale)" },
+          { "value": "non_sue", "label": "Non SUE" }
+        ]
+      },
+      {
+        "id": "description",
+        "type": "textarea",
+        "label": "Description de l'incident",
+        "required": false
+      },
+      {
+        "id": "location",
+        "type": "text",
+        "label": "Localisation",
+        "required": true
+      }
+    ]
+  }
+}
+
+### 2.2 Validate Schema (optional)
+# Expected: 200 OK with { valid: true }
+POST {{baseUrl}}/form-templates/validate-schema
+Content-Type: application/json
+
+{
+  "fields": [
+    { "id": "test_field", "type": "text", "label": "Test", "required": true }
+  ]
+}
+
+### 2.3 Publish Form Template
+# Expected: 200 OK
+# IMPORTANT: Replace {{templateId}} with the id from step 2.1 response
+@templateId = e696d7b2-09f3-421c-a3fd-f22624c217c9
+
+POST {{baseUrl}}/form-templates/{{templateId}}/publish
+Content-Type: application/json
+
+{}
+
+###############################################################################
+# STEP 3: CREATE VALIDATION WORKFLOW
+###############################################################################
+
+### 3.1 Create Validation Workflow
+# Expected: 201 Created
+POST {{baseUrl}}/validation-workflows
+Content-Type: application/json
+
+{
+  "name": "Workflow Fuite Huile E2-4",
+  "description": "Workflow de validation pour les déclarations de fuite d'huile",
+  "categoryCode": "E2-4",
+  "priority": 10,
+  "workflowConfig": {
+    "steps": [
+      {
+        "order": 1,
+        "name": "Validation Chef d'Équipe",
+        "role": "team_leader",
+        "required": true
+      },
+      {
+        "order": 2,
+        "name": "Validation Manager",
+        "role": "manager",
+        "required": true
+      }
+    ],
+    "conditions": [
+      {
+        "field": "severety",
+        "operator": "equals",
+        "value": "sue",
+        "additionalStep": {
+          "order": 3,
+          "name": "Validation Directeur",
+          "role": "director",
+          "required": true
+        }
+      }
+    ]
+  }
+}
+
+### 3.2 Test Workflow Conditions (severety = SUE)
+# Expected: 200 OK with 3 steps
+# IMPORTANT: Replace {{workflowId}} with the id from step 3.1 response
+@workflowId = dc9d2f92-78bd-48dd-84f3-7be66d9a0531
+
+POST {{baseUrl}}/validation-workflows/test-conditions
+Content-Type: application/json
+
+{
+  "workflowId": "{{workflowId}}",
+  "formData": {
+    "severety": "sue"
+  }
+}
+
+### 3.3 Test Workflow Conditions (severety = non_sue)
+# Expected: 200 OK with 2 steps
+POST {{baseUrl}}/validation-workflows/test-conditions
+Content-Type: application/json
+
+{
+  "workflowId": "{{workflowId}}",
+  "formData": {
+    "severety": "non_sue"
+  }
+}
+
+###############################################################################
+# STEP 4: CREATE DECLARATION (DRAFT)
+###############################################################################
+
+### 4.1 Create Declaration
+# Expected: 201 Created
+# IMPORTANT: Replace {{teamId}} with the id from step 1.4 response
+@teamId = aefd34e5-157f-4def-b1ff-434ca5dfdf18
+@templateId = e696d7b2-09f3-421c-a3fd-f22624c217c9
+
+POST {{baseUrl}}/declarations
+Content-Type: application/json
+
+{
+  "formTemplateId": "{{templateId}}",
+  "location": "Poste électrique Châteauneuf-du-Rhône",
+  "authorId": "jdupont",
+  "authorName": "Jean Dupont",
+  "teamId": "{{teamId}}",
+  "formData": {
+    "date_incident": "2025-02-12",
+    "oil_spilled": 45.5,
+    "oil_recovered": 40.0,
+    "severety": "sue",
+    "description": "Fuite d'huile détectée sur transformateur T1. Intervention immédiate effectuée.",
+    "location": "Transformateur T1 - Zone Nord"
+  }
+}
+
+### 4.2 Get Declaration Details
+# Expected: 200 OK
+# IMPORTANT: Replace {{declarationId}} with the id from step 4.1 response
+@declarationId = f6a395e8-1997-4c8f-876d-0f7df71e9d38
+
+GET {{baseUrl}}/declarations/{{declarationId}}
+
+### 4.3 Update Declaration (while in draft)
+# Expected: 200 OK
+PATCH {{baseUrl}}/declarations/{{declarationId}}
+Content-Type: application/json
+
+{
+  "formData": {
+    "date_incident": "2025-02-12",
+    "oil_spilled": 45.5,
+    "oil_recovered": 42.0,
+    "severety": "sue",
+    "description": "Fuite d'huile détectée sur transformateur T1. Intervention immédiate effectuée. Mise à jour: récupération supplémentaire de 2L.",
+    "location": "Transformateur T1 - Zone Nord"
+  }
+}
+
+###############################################################################
+# STEP 5: SUBMIT DECLARATION
+###############################################################################
+
+### 5.1 Submit Declaration for Review
+# Expected: 200 OK, status changes to 'submitted'
+POST {{baseUrl}}/declarations/{{declarationId}}/submit
+Content-Type: application/json
+
+{
+  "submitterId": "jdupont"
+}
+
+### 5.2 Verify Modification is Blocked (after submit)
+# Expected: 400 Bad Request
+PATCH {{baseUrl}}/declarations/{{declarationId}}
+Content-Type: application/json
+
+{
+  "formData": {
+    "oil_recovered": 50.0
+  }
+}
+
+###############################################################################
+# STEP 6: VALIDATE DECLARATION
+###############################################################################
+
+### 6.1 Validate Declaration
+# Expected: 200 OK, status changes to 'validated'
+POST {{baseUrl}}/declarations/{{declarationId}}/validate
+Content-Type: application/json
+
+{
+  "decision": "validated",
+  "comment": "Données vérifiées et conformes. Intervention correctement documentée.",
+  "reviewerId": "mmartin"
+}
+
+### 6.2 Get Final Declaration State
+# Expected: 200 OK with status 'validated'
+GET {{baseUrl}}/declarations/{{declarationId}}
+
+###############################################################################
+# ADDITIONAL QUERIES
+###############################################################################
+
+### List All Declarations
+GET {{baseUrl}}/declarations
+
+### List Validated Declarations
+GET {{baseUrl}}/declarations?status=validated
+
+### List All Directions
+GET {{baseUrl}}/organizational-units/teams
+
+### List All Form Templates
+GET {{baseUrl}}/form-templates

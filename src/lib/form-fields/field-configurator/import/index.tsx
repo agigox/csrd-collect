@@ -1,17 +1,25 @@
 "use client";
 
-import { Input } from "@/lib/ui/input";
-import { Label } from "@/lib/ui/label";
+import { Checkbox, Select } from "@rte-ds/react";
 import type { ImportFieldConfig } from "../../types";
 import type { SpecificConfiguratorProps } from "../types";
 import { LabelField } from "../common/LabelField";
 
 const formatOptions = [
-  { value: ".pdf", label: "PDF" },
-  { value: ".doc,.docx", label: "Word" },
-  { value: ".xls,.xlsx", label: "Excel" },
-  { value: ".csv", label: "CSV" },
-  { value: ".jpg,.jpeg,.png", label: "Images" },
+  { value: ".docx", label: ".DOCX" },
+  { value: ".xls", label: ".XLS" },
+  { value: ".pdf", label: ".PDF" },
+  { value: ".svg", label: ".SVG" },
+  { value: ".png", label: ".PNG" },
+  { value: ".jpg", label: ".JPG" },
+];
+
+const maxFileSizeOptions = [
+  { value: "", label: "Aucune limite" },
+  { value: "5", label: "5 Mo" },
+  { value: "10", label: "10 Mo" },
+  { value: "15", label: "15 Mo" },
+  { value: "20", label: "20 Mo" },
 ];
 
 export const ImportConfigurator = ({
@@ -22,25 +30,24 @@ export const ImportConfigurator = ({
   const currentFormats = config.acceptedFormats ?? [];
 
   const handleFormatToggle = (format: string) => {
-    const formats = format.split(",");
-    const hasAnyFormat = formats.some((f) => currentFormats.includes(f));
-
-    if (hasAnyFormat) {
+    if (currentFormats.includes(format)) {
       onChange({
         ...config,
-        acceptedFormats: currentFormats.filter((f) => !formats.includes(f)),
+        acceptedFormats: currentFormats.filter((f) => f !== format),
       });
     } else {
       onChange({
         ...config,
-        acceptedFormats: [...currentFormats, ...formats],
+        acceptedFormats: [...currentFormats, format],
       });
     }
   };
 
-  const isFormatSelected = (format: string) => {
-    const formats = format.split(",");
-    return formats.some((f) => currentFormats.includes(f));
+  const handleMaxFileSizeChange = (value: string) => {
+    onChange({
+      ...config,
+      maxFileSize: value ? Number(value) : undefined,
+    });
   };
 
   return (
@@ -52,45 +59,33 @@ export const ImportConfigurator = ({
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
       />
-      <div className="flex flex-col gap-2">
-        <Label>Formats acceptés</Label>
-        <div className="flex flex-wrap gap-2">
-          {formatOptions.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => handleFormatToggle(option.value)}
-              className={`px-3 py-1.5 text-sm rounded-md border transition-colors ${
-                isFormatSelected(option.value)
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-white border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-        {currentFormats.length === 0 && (
-          <p className="text-xs text-muted-foreground">
-            Tous les formats seront acceptés si aucun n&apos;est sélectionné
-          </p>
-        )}
-      </div>
 
-      <div className="flex flex-col gap-1">
-        <Label>Taille maximale (Mo)</Label>
-        <Input
-          type="number"
-          value={config.maxFileSize ?? ""}
-          onChange={(e) =>
-            onChange({
-              ...config,
-              maxFileSize: e.target.value ? Number(e.target.value) : undefined,
-            })
-          }
-          placeholder="Pas de limite"
-          className="h-8 text-sm w-40"
-          min={1}
+      <div className="flex justify-between items-start">
+        <div className="flex flex-col gap-2">
+          <span className="text-sm text-[#3e3e3d]">Formats acceptés</span>
+          <div className="flex flex-wrap gap-2 w-82">
+            {formatOptions.map((option) => (
+              <div key={option.value} className="w-26">
+                <Checkbox
+                  id={`format-${option.value}`}
+                  label={option.label}
+                  showLabel
+                  checked={currentFormats.includes(option.value)}
+                  onChange={() => handleFormatToggle(option.value)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <Select
+          id="max-file-size"
+          label="Poid maximal (Mo)"
+          showLabel
+          options={maxFileSizeOptions}
+          value={config.maxFileSize?.toString() ?? ""}
+          onChange={handleMaxFileSizeChange}
+          width={188}
         />
       </div>
     </div>

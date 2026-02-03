@@ -1,4 +1,154 @@
 {
+  "category-codes": [
+    { "value": "E1-1", "label": "E1-1" },
+    { "value": "E1-2", "label": "E1-2" },
+    { "value": "E2-1", "label": "E2-1" },
+    { "value": "E2-2", "label": "E2-2" },
+    { "value": "E2-3", "label": "E2-3" },
+    { "value": "E2-4", "label": "E2-4" },
+    { "value": "E3-1", "label": "E3-1" },
+    { "value": "E4-1", "label": "E4-1" }
+  ],
+  "form-templates": [
+    {
+      "id": "1",
+      "code": "E2-4_vol_01",
+      "name": "Fuite d'huile (SF6)",
+      "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
+      "categoryCode": "E2-4",
+      "schema": {
+        "fields": [
+          {
+            "id": "titre",
+            "name": "titre",
+            "type": "text",
+            "label": "Titre de l'incident",
+            "placeholder": "Entrez un titre",
+            "required": true
+          },
+          {
+            "id": "quantite",
+            "name": "quantite",
+            "type": "number",
+            "label": "Quantité estimée (litres)"
+          },
+          {
+            "id": "gravite",
+            "name": "gravite",
+            "type": "select",
+            "label": "Niveau de gravité",
+            "options": [
+              {
+                "value": "faible",
+                "label": "Faible"
+              },
+              {
+                "value": "moyen",
+                "label": "Moyen"
+              },
+              {
+                "value": "eleve",
+                "label": "Élevé"
+              },
+              {
+                "value": "critique",
+                "label": "Critique"
+              }
+            ]
+          }
+        ]
+      },
+      "version": 1,
+      "isPublished": true,
+      "publishedAt": "2025-01-15T10:00:00.000Z",
+      "parentTemplateId": null,
+      "isActive": true,
+      "createdAt": "2025-01-15T10:00:00.000Z",
+      "updatedAt": "2026-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "code": "E2-4_vol_02",
+      "name": "Fuite de gaz",
+      "description": "Déclaration permettant la collecte liée aux données de type fuite de gaz",
+      "categoryCode": "E2-4",
+      "schema": {
+        "fields": [
+          {
+            "id": "titre",
+            "name": "titre",
+            "type": "text",
+            "label": "Titre de l'incident",
+            "placeholder": "Entrez un titre",
+            "required": true
+          },
+          {
+            "id": "secteur",
+            "name": "secteur",
+            "type": "text",
+            "label": "Secteur concerné",
+            "placeholder": "Ex: Secteur B"
+          }
+        ]
+      },
+      "version": 1,
+      "isPublished": true,
+      "publishedAt": "2025-01-20T10:00:00.000Z",
+      "parentTemplateId": null,
+      "isActive": true,
+      "createdAt": "2025-01-20T10:00:00.000Z",
+      "updatedAt": "2026-01-14T10:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "code": "E1-1_test_01",
+      "name": "Consommation énergétique",
+      "description": "Déclaration de consommation énergétique mensuelle",
+      "categoryCode": "E1-1",
+      "schema": {
+        "fields": [
+          {
+            "id": "mois",
+            "name": "mois",
+            "type": "date",
+            "label": "Mois de référence",
+            "required": true
+          },
+          {
+            "id": "consommation",
+            "name": "consommation",
+            "type": "number",
+            "label": "Consommation (kWh)"
+          }
+        ]
+      },
+      "version": 1,
+      "isPublished": true,
+      "publishedAt": "2025-02-01T10:00:00.000Z",
+      "parentTemplateId": null,
+      "isActive": true,
+      "createdAt": "2025-02-01T10:00:00.000Z",
+      "updatedAt": "2025-02-01T10:00:00.000Z"
+    },
+    {
+      "id": "2f5e",
+      "code": "E2-6977_41",
+      "name": "coucou",
+      "description": "sggsgsgsg",
+      "categoryCode": "E2-4",
+      "schema": {
+        "fields": [
+          {
+            "name": "text_1",
+            "type": "text",
+            "label": "Autre",
+            "placeholder": "",
+            "defaultValue": "Lorem"
+          }
+        ]
+      }
+    }
+  ],
   "declarations": [
     {
       "id": "1",
@@ -120,190 +270,6 @@
           "action": "a initié cette déclaration"
         }
       ]
-    },
-    {
-      "id": "temp_1768931119168",
-      "formId": "1",
-      "date": "20/01/2026",
-      "author": "Utilisateur actuel",
-      "title": "eeeee",
-      "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
-      "status": "pending",
-      "formValues": {
-        "titre": "eeeee",
-        "quantite": 4,
-        "gravite": "eleve"
-      }
-    }
-  ],
-  "forms": [
-    {
-      "id": "1",
-      "code": "E2-4_vol_01",
-      "title": "Fuite d'huile (SF6)",
-      "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
-      "norme": "E2-Pollution",
-      "createdAt": "2025-01-15",
-      "updatedAt": "2026-01-15",
-      "schema": [
-        {
-          "name": "titre",
-          "type": "text",
-          "label": "Titre de l'incident",
-          "placeholder": "Entrez un titre",
-          "required": true
-        },
-        {
-          "name": "quantite",
-          "type": "number",
-          "label": "Quantite estimee (litres)"
-        },
-        {
-          "name": "gravite",
-          "type": "select",
-          "label": "Niveau de gravite",
-          "options": [
-            {
-              "value": "faible",
-              "label": "Faible"
-            },
-            {
-              "value": "moyen",
-              "label": "Moyen"
-            },
-            {
-              "value": "eleve",
-              "label": "Eleve"
-            },
-            {
-              "value": "critique",
-              "label": "Critique"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "2",
-      "code": "E2-4_vol_02",
-      "title": "Fuite de gaz",
-      "description": "Déclaration permettant la collecte liée aux données de type fuite de gaz",
-      "norme": "E2-Pollution",
-      "createdAt": "2025-01-20",
-      "updatedAt": "2026-01-14",
-      "schema": [
-        {
-          "name": "titre",
-          "type": "text",
-          "label": "Titre de l'incident",
-          "placeholder": "Entrez un titre",
-          "required": true
-        },
-        {
-          "name": "secteur",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_13",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_12",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_11",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_10",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_9",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_8",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_7",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_6",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_5",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_4",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_3",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_2",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        },
-        {
-          "name": "text_1",
-          "type": "text",
-          "label": "Secteur concerne",
-          "placeholder": "Ex: Secteur B"
-        }
-      ]
-    },
-    {
-      "id": "1769447868735",
-      "title": "Test Save Direct",
-      "description": "",
-      "norme": "E4-Pollution",
-      "schema": [],
-      "code": "E2-8735_02",
-      "createdAt": "2026-01-26",
-      "updatedAt": "2026-01-27"
-    },
-    {
-      "id": "1769448429969",
-      "title": "1111",
-      "description": "",
-      "norme": "E3-Pollution",
-      "schema": [],
-      "code": "E2-9969_11",
-      "createdAt": "2026-01-26",
-      "updatedAt": "2026-01-27"
     }
   ],
   "options": {

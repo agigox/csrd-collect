@@ -77,8 +77,6 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  overflow: hidden;
 }
 
 @theme inline {
@@ -812,13 +810,16 @@ body {
   --animate-slide-out-to-right: slide-out-to-right 1s ease-out;
 }
 
-#form-description-label-id {
-  color: white;
+textarea[aria-labelledby="form-description-label-id"] {
+  background: white !important;
+  color: black !important;
 }
-#select-norme {
-  background-color: white;
-  color: black;
+#select-category-id {
+  background: white;
 }
 #Norme {
   color: white;
+}
+label[for="checkbox-default-value"] {
+  height: 32px;
 }

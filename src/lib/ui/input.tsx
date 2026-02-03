@@ -2,7 +2,13 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+function Input({ className, type, onKeyDown, ...props }: React.ComponentProps<"input">) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Stop propagation to prevent SideNav from capturing keyboard events
+    e.stopPropagation();
+    onKeyDown?.(e);
+  };
+
   return (
     <input
       type={type}
@@ -13,6 +19,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         className
       )}
+      onKeyDown={handleKeyDown}
       {...props}
     />
   );

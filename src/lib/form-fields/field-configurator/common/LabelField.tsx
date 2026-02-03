@@ -1,17 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/lib/ui/select";
 import { cn } from "@/lib/utils";
-import { IconButton, TextInput } from "@rte-ds/react";
+import { IconButton, Select, TextInput } from "@rte-ds/react";
 import type { FieldType } from "../../types";
-import { typeLabels } from "../types";
+import { typeLabels, typeIcons } from "../types";
 
 export interface CollapsedActions {
   onMoveUp?: () => void;
@@ -28,9 +21,7 @@ interface LabelFieldProps {
   className?: string;
   placeholder?: string;
   label?: string;
-  showLabel?: boolean;
   displayClassName?: string;
-  inputClassName?: string;
   fieldType?: FieldType;
   onFieldTypeChange?: (type: FieldType) => void;
   collapsedActions?: CollapsedActions;
@@ -56,9 +47,7 @@ export const LabelField = ({
   className,
   placeholder = "",
   label = "Entête",
-  showLabel = true,
   displayClassName,
-  inputClassName,
   fieldType,
   onFieldTypeChange,
   collapsedActions,
@@ -91,6 +80,8 @@ export const LabelField = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Stop propagation to prevent SideNav from capturing keyboard events
+    e.stopPropagation();
     if (e.key === "Enter") {
       handleValidate();
     } else if (e.key === "Escape") {
@@ -99,33 +90,30 @@ export const LabelField = ({
     }
   };
 
-  const typeSelector =
-    fieldType &&
-    (onFieldTypeChange ? (
-      <Select
-        value={fieldType}
-        onValueChange={(val) => onFieldTypeChange(val as FieldType)}
-      >
-        <SelectTrigger className="h-8 w-56 shrink-0">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {selectableTypes.map((t) => (
-            <SelectItem key={t} value={t}>
-              {typeLabels[t]}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    ) : (
-      <span className="h-8 w-56 shrink-0 flex items-center px-3 text-sm text-muted-foreground border border-input rounded-(--radius) bg-muted/50">
-        {typeLabels[fieldType]}
-      </span>
-    ));
+  const typeSelector = fieldType && (
+    <Select
+      id=""
+      label=""
+      value={fieldType}
+      onChange={
+        onFieldTypeChange
+          ? (val) => onFieldTypeChange(val as FieldType)
+          : undefined
+      }
+      options={selectableTypes.map((t) => ({
+        label: typeLabels[t],
+        value: t,
+        icon: typeIcons[t],
+      }))}
+      showLabel={false}
+      disabled={!onFieldTypeChange}
+      width={168}
+    />
+  );
 
   if (isEditing) {
     return (
-      <div className={cn("flex items-end gap-2", className)}>
+      <div className={cn("flex items-end gap-2 h-14", className)}>
         <div className="flex flex-col flex-1">
           <TextInput
             ref={inputRef}
@@ -145,6 +133,7 @@ export const LabelField = ({
             }}
             onBlur={handleValidate}
             onKeyDown={handleKeyDown}
+            width={"100%"}
           />
         </div>
         {typeSelector}
@@ -153,7 +142,7 @@ export const LabelField = ({
   }
 
   return (
-    <div className={cn("flex flex-1 items-end gap-2 w-full", className)}>
+    <div className={cn("flex h-14 items-end gap-2 w-full", className)}>
       <div
         className={cn(
           "heading-s flex items-center bg-background-hover flex-1 rounded-lg pl-2 h-8 cursor-pointer transition-colors",

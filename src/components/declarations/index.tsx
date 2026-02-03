@@ -176,7 +176,7 @@ const Declarations = () => {
   };
 
   return (
-    <div className="p-8 flex justify-start">
+    <div className="flex justify-start">
       <div className="w-full max-w-101.5">
         <DeclarationsList
           onDeclarer={handleOpenSelection}

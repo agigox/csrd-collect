@@ -18,7 +18,7 @@ export interface FieldConfiguratorProps {
 }
 
 export interface SpecificConfiguratorProps<
-  T extends FieldConfig = FieldConfig
+  T extends FieldConfig = FieldConfig,
 > {
   config: T;
   onChange: (config: T) => void;
@@ -35,4 +35,15 @@ export const typeLabels: Record<string, string> = {
   switch: "Switch",
   date: "Date",
   import: "Import de fichier",
+};
+
+export const typeIcons: Record<string, string> = {
+  text: "chat",
+  number: "chat",
+  select: "list-alt",
+  radio: "check-circle",
+  checkbox: "checkbox",
+  switch: "share",
+  date: "calendar-today",
+  import: "upload",
 };

@@ -15,15 +15,16 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { useFormsStore } from "@/stores/formsStore";
-import { FieldConfigurator } from "./FieldConfigurator";
+
 import type { FieldConfig, FieldType } from "./types";
-import { Button, Card, Icon } from "@rte-ds/react";
+import { typeLabels, typeIcons } from "./field-configurator/types";
+import { Button, Icon } from "@rte-ds/react";
+import { SortableFieldCard } from "./SortableFieldCard";
 
 interface FormBuilderProps {
   schema: FieldConfig[];
@@ -33,108 +34,19 @@ interface FormBuilderProps {
 
 interface FieldTypeOption {
   type: FieldType;
-  label: string;
-  icon: string;
   borderBottom?: boolean;
 }
 
 const fieldTypeOptions: FieldTypeOption[] = [
-  {
-    type: "date",
-    label: "Heure et Date",
-    icon: "calendar-today",
-    borderBottom: true,
-  },
-  { type: "text", label: "Champ libre", icon: "chat" },
-  { type: "number", label: "Nombre", icon: "chat", borderBottom: true },
-  { type: "radio", label: "Choix unique", icon: "check-circle" },
-  {
-    type: "checkbox",
-    label: "Choix multiple",
-    icon: "checkbox",
-    borderBottom: true,
-  },
-  {
-    type: "select",
-    label: "Liste déroulante",
-    icon: "list-alt",
-    borderBottom: true,
-  },
-  { type: "import", label: "Import de fichier", icon: "upload" },
-  { type: "switch", label: "Switch", icon: "share" },
+  { type: "date", borderBottom: true },
+  { type: "text" },
+  { type: "number", borderBottom: true },
+  { type: "radio" },
+  { type: "checkbox", borderBottom: true },
+  { type: "select", borderBottom: true },
+  { type: "import" },
+  { type: "switch" },
 ];
-
-// Sortable Field Card component
-interface SortableFieldCardProps {
-  id: string;
-  fieldConfig: FieldConfig;
-  index: number;
-  totalFields: number;
-  isOpen: boolean;
-  onOpen: () => void;
-  onUpdate: (config: FieldConfig) => void;
-  onRemove: () => void;
-  onDuplicate: () => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
-}
-
-const SortableFieldCard = ({
-  id,
-  fieldConfig,
-  index,
-  totalFields,
-  isOpen,
-  onOpen,
-  onUpdate,
-  onRemove,
-  onDuplicate,
-  onMoveUp,
-  onMoveDown,
-}: SortableFieldCardProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 1000 : "auto",
-    borderTop: isOpen ? "4px solid #1465FC" : undefined,
-    backgroundColor: "white",
-  };
-
-  return (
-    <Card
-      ref={setNodeRef}
-      className="w-full pt-6 pb-4 px-4"
-      cardType="outlined"
-      size="l"
-      style={style}
-    >
-      <FieldConfigurator
-        config={fieldConfig}
-        onChange={onUpdate}
-        onRemove={onRemove}
-        onDuplicate={onDuplicate}
-        onMoveUp={onMoveUp}
-        onMoveDown={onMoveDown}
-        canMoveUp={index > 0}
-        canMoveDown={index < totalFields - 1}
-        isOpen={isOpen}
-        onOpen={onOpen}
-        dragHandleAttributes={attributes}
-        dragHandleListeners={listeners}
-      />
-    </Card>
-  );
-};
 
 export const FormBuilder = ({
   schema,
@@ -182,6 +94,7 @@ export const FormBuilder = ({
 
     if (type === "select") {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "select",
         label: "E2 - Pollution",
@@ -190,6 +103,7 @@ export const FormBuilder = ({
       };
     } else if (type === "number") {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "number",
         label: "Nombre",
@@ -197,12 +111,14 @@ export const FormBuilder = ({
       };
     } else if (type === "switch") {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "switch",
         label: "Switch",
       };
     } else if (type === "radio") {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "radio",
         label: "Choix unique",
@@ -214,6 +130,7 @@ export const FormBuilder = ({
       };
     } else if (type === "checkbox") {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "checkbox",
         label: "Choix multiple",
@@ -225,6 +142,7 @@ export const FormBuilder = ({
       };
     } else if (type === "date") {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "date",
         label: "Heure et Date",
@@ -233,6 +151,7 @@ export const FormBuilder = ({
       };
     } else if (type === "import") {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "import",
         label: "Import de fichier",
@@ -240,6 +159,7 @@ export const FormBuilder = ({
       };
     } else {
       newField = {
+        id: fieldName,
         name: fieldName,
         type: "text",
         label: "Autre",
@@ -272,9 +192,11 @@ export const FormBuilder = ({
 
   const handleDuplicateField = (index: number) => {
     const fieldToDuplicate = schema[index];
+    const newName = generateFieldName(fieldToDuplicate.type);
     const duplicatedField = {
       ...fieldToDuplicate,
-      name: generateFieldName(fieldToDuplicate.type),
+      id: newName,
+      name: newName,
       isDuplicate: true,
     };
     const newSchema = [...schema];
@@ -349,8 +271,8 @@ export const FormBuilder = ({
                 option.borderBottom ? "border-b border-border" : ""
               }`}
             >
-              {/*<Icon name={option.icon} size={18} />*/}
-              <span>{option.label}</span>
+              <Icon name={typeIcons[option.type]} size={18} />
+              <span>{typeLabels[option.type]}</span>
             </button>
           ))}
         </div>
@@ -386,8 +308,8 @@ export const FormBuilder = ({
                 option.borderBottom ? "border-b border-border" : ""
               }`}
             >
-              <Icon name={option.icon} size={18} />
-              <span>{option.label}</span>
+              <Icon name={typeIcons[option.type]} size={18} />
+              <span>{typeLabels[option.type]}</span>
             </button>
           ))}
         </div>
@@ -432,48 +354,41 @@ export const FormBuilder = ({
         )}
 
       <div className="flex flex-col gap-6">
-        {schema.length === 0 ? (
-          <div className="text-center py-8 text-content-muted border border-dashed border-border-default rounded-lg">
-            Aucune donnée configurée. Utilisez le bouton ci-dessous pour ajouter
-            une donnée à déclarer.
-          </div>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={sortableIds}
+            strategy={verticalListSortingStrategy}
           >
-            <SortableContext
-              items={sortableIds}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="flex flex-col gap-4">
-                {schema.map((fieldConfig, index) => {
-                  const isActive = activeFieldName === fieldConfig.name;
-                  return (
-                    <div key={fieldConfig.name} className="flex flex-col gap-4">
-                      {isActive && renderInsertButton(index, "before")}
-                      <SortableFieldCard
-                        id={fieldConfig.name}
-                        fieldConfig={fieldConfig}
-                        index={index}
-                        totalFields={schema.length}
-                        isOpen={isActive}
-                        onOpen={() => setActiveFieldName(fieldConfig.name)}
-                        onUpdate={(config) => handleUpdateField(index, config)}
-                        onRemove={() => handleRemoveField(index)}
-                        onDuplicate={() => handleDuplicateField(index)}
-                        onMoveUp={() => handleMoveUp(index)}
-                        onMoveDown={() => handleMoveDown(index)}
-                      />
-                      {isActive && renderInsertButton(index + 1, "after")}
-                    </div>
-                  );
-                })}
-              </div>
-            </SortableContext>
-          </DndContext>
-        )}
+            <div className="flex flex-col gap-4">
+              {schema.map((fieldConfig, index) => {
+                const isActive = activeFieldName === fieldConfig.name;
+                return (
+                  <div key={fieldConfig.name} className="flex flex-col gap-4">
+                    {isActive && renderInsertButton(index, "before")}
+                    <SortableFieldCard
+                      id={fieldConfig.name}
+                      fieldConfig={fieldConfig}
+                      index={index}
+                      totalFields={schema.length}
+                      isOpen={isActive}
+                      onOpen={() => setActiveFieldName(fieldConfig.name)}
+                      onUpdate={(config) => handleUpdateField(index, config)}
+                      onRemove={() => handleRemoveField(index)}
+                      onDuplicate={() => handleDuplicateField(index)}
+                      onMoveUp={() => handleMoveUp(index)}
+                      onMoveDown={() => handleMoveDown(index)}
+                    />
+                    {isActive && renderInsertButton(index + 1, "after")}
+                  </div>
+                );
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
       </div>
     </>
   );

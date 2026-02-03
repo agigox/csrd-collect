@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import AppSideNav from "@/components/AppSideNav";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="fr" data-theme="bleu_iceberg" data-mode="light">
       <body className={`${nunito.className} antialiased`}>
-        <Providers>{children}</Providers>
+        <AppSideNav>
+          <Providers>{children}</Providers>
+        </AppSideNav>
       </body>
     </html>
   );

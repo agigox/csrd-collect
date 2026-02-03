@@ -120,6 +120,7 @@ const UnitField = ({
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onKeyDown={(e) => e.stopPropagation()}
           size={inputValue.length || 1}
           className="h-full text-sm text-content-primary bg-transparent outline-none text-left"
           style={{ width: `${Math.max((inputValue.length || 1) + 1, 2)}ch` }}

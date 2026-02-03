@@ -4,18 +4,18 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FormCard } from "./FormCard";
 import { useFormsStore } from "@/stores";
-import { Tab } from "@rte-ds/react";
+import { Grid, SegmentedControl } from "@rte-ds/react";
 
 const categories = [
-  { id: "all", label: "Tous", panelId: "panel-all" },
-  { id: "E1-Pollution", label: "E1-Pollution", panelId: "panel-e1" },
-  { id: "E2-Pollution", label: "E2-Pollution", panelId: "panel-e2" },
-  { id: "E3-Pollution", label: "E3-Pollution", panelId: "panel-e3" },
-  { id: "E4-Pollution", label: "E4-Pollution", panelId: "panel-e4" },
+  { id: "all", label: "Tous" },
+  { id: "E1-2", label: "E1-2" },
+  { id: "E2-4", label: "E2-4" },
+  { id: "E3-2", label: "E3-2" },
+  { id: "E4-2", label: "E4-2" },
 ];
 
 export const FormsList = () => {
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeSegment, setActiveSegment] = useState("all");
   const { forms, loading, setCurrentForm, fetchForms } = useFormsStore();
   const router = useRouter();
 
@@ -23,15 +23,14 @@ export const FormsList = () => {
     fetchForms();
   }, [fetchForms]);
 
-  // Clear currentForm when returning to the list
   useEffect(() => {
     setCurrentForm(null);
   }, [setCurrentForm]);
 
   const filteredForms =
-    activeTab === "all"
+    activeSegment === "all"
       ? forms
-      : forms.filter((form) => form.norme === activeTab);
+      : forms.filter((form) => form.categoryCode === activeSegment);
 
   const handleFormClick = (formId: string) => {
     const form = forms.find((f) => f.id === formId);
@@ -48,26 +47,28 @@ export const FormsList = () => {
   }
 
   return (
-    <div className="w-full">
-      <Tab
-        options={categories}
-        selectedTabId={activeTab}
-        onChange={(tabId) => setActiveTab(tabId)}
-      />
-
-      <div className="mt-4">
-        <div className="flex flex-col gap-2">
+    <Grid className="gap-6">
+      <Grid.Col xxs={6}>
+        <SegmentedControl
+          options={categories}
+          selectedSegment={activeSegment}
+          onChange={(id) => setActiveSegment(id)}
+          size="s"
+        />
+      </Grid.Col>
+      <Grid.Col xxs={7}>
+        <Grid className="gap-2">
           {filteredForms.map((form) => (
             <FormCard
               key={form.id}
               code={form.code}
-              title={form.title}
-              description={form.description}
+              title={form.name}
+              description={form.description ?? ""}
               onClick={() => handleFormClick(form.id)}
             />
           ))}
-        </div>
-      </div>
-    </div>
+        </Grid>
+      </Grid.Col>
+    </Grid>
   );
 };

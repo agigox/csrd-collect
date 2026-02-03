@@ -2,15 +2,17 @@
 // Access in console: window.stores.auth.getState()
 
 import { useAuthStore } from "./authStore";
-import { useSidebarStore } from "./sidebarStore";
+import { useCategoryCodesStore } from "./categoryCodesStore";
 import { useDeclarationsStore } from "./declarationsStore";
+import { useFormEditorStore } from "./formEditorStore";
 import { useFormsStore } from "./formsStore";
 
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
   (window as unknown as Record<string, unknown>).stores = {
     auth: useAuthStore,
-    sidebar: useSidebarStore,
+    categoryCodes: useCategoryCodesStore,
     declarations: useDeclarationsStore,
+    formEditor: useFormEditorStore,
     forms: useFormsStore,
   };
 }

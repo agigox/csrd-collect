@@ -1,11 +1,5 @@
-import { FormsList } from "@/components/admin/FormsList";
-import HeaderForms from "@/components/admin/FormsHeader";
+import AdminPageContent from "@/components/admin";
 
 export default function AdminPage() {
-  return (
-    <div className="px-12 py-5">
-      <HeaderForms />
-      <FormsList />
-    </div>
-  );
+  return <AdminPageContent />;
 }

@@ -11,7 +11,14 @@ export const DescriptionField = ({
   value,
   onChange,
 }: DescriptionFieldProps) => {
-  return <Textarea onChange={(e) => onChange(e.target.value)} rows={3} />;
+  return (
+    <Textarea
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => e.stopPropagation()}
+      rows={1}
+      defaultValue={value}
+    />
+  );
 };
 
 export default DescriptionField;

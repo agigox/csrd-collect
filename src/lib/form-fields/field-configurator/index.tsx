@@ -77,7 +77,6 @@ export const FieldConfigurator = ({
 
   const renderSpecificConfigurator = () => {
     const typeChangeProps = { onFieldTypeChange: handleFieldTypeChange };
-    console.log(config.type);
     switch (config.type) {
       case "text":
         return (
@@ -163,7 +162,6 @@ export const FieldConfigurator = ({
         onChange={() => {}}
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
-        showLabel={false}
         collapsedActions={{
           onMoveUp,
           onMoveDown,
