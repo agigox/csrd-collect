@@ -14,7 +14,7 @@ import {
 } from "@/lib/ui/tooltip";
 import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
-import type { FieldProps, FieldRegistration, DateFieldConfig } from "../types";
+import type { FieldProps, FieldRegistration, DateFieldConfig } from "@/models/FieldTypes";
 
 type DateValue = {
   date: string; // ISO date string

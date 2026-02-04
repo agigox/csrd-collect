@@ -1,13 +1,45 @@
 {
   "category-codes": [
-    { "value": "E1-1", "label": "E1-1" },
-    { "value": "E1-2", "label": "E1-2" },
-    { "value": "E2-1", "label": "E2-1" },
-    { "value": "E2-2", "label": "E2-2" },
-    { "value": "E2-3", "label": "E2-3" },
-    { "value": "E2-4", "label": "E2-4" },
-    { "value": "E3-1", "label": "E3-1" },
-    { "value": "E4-1", "label": "E4-1" }
+    {
+      "value": "E1-1",
+      "label": "E1-1",
+      "id": "8788"
+    },
+    {
+      "value": "E1-2",
+      "label": "E1-2",
+      "id": "76e6"
+    },
+    {
+      "value": "E2-1",
+      "label": "E2-1",
+      "id": "35b6"
+    },
+    {
+      "value": "E2-2",
+      "label": "E2-2",
+      "id": "f98d"
+    },
+    {
+      "value": "E2-3",
+      "label": "E2-3",
+      "id": "c3ba"
+    },
+    {
+      "value": "E2-4",
+      "label": "E2-4",
+      "id": "a60b"
+    },
+    {
+      "value": "E3-1",
+      "label": "E3-1",
+      "id": "24e3"
+    },
+    {
+      "value": "E4-1",
+      "label": "E4-1",
+      "id": "f970"
+    }
   ],
   "form-templates": [
     {
@@ -15,7 +47,7 @@
       "code": "E2-4_vol_01",
       "name": "Fuite d'huile (SF6)",
       "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
-      "categoryCode": "E2-4",
+      "categoryCode": "E2-3",
       "schema": {
         "fields": [
           {
@@ -100,50 +132,19 @@
       "updatedAt": "2026-01-14T10:00:00.000Z"
     },
     {
-      "id": "3",
-      "code": "E1-1_test_01",
-      "name": "Consommation énergétique",
-      "description": "Déclaration de consommation énergétique mensuelle",
-      "categoryCode": "E1-1",
-      "schema": {
-        "fields": [
-          {
-            "id": "mois",
-            "name": "mois",
-            "type": "date",
-            "label": "Mois de référence",
-            "required": true
-          },
-          {
-            "id": "consommation",
-            "name": "consommation",
-            "type": "number",
-            "label": "Consommation (kWh)"
-          }
-        ]
-      },
-      "version": 1,
-      "isPublished": true,
-      "publishedAt": "2025-02-01T10:00:00.000Z",
-      "parentTemplateId": null,
-      "isActive": true,
-      "createdAt": "2025-02-01T10:00:00.000Z",
-      "updatedAt": "2025-02-01T10:00:00.000Z"
-    },
-    {
-      "id": "2f5e",
-      "code": "E2-6977_41",
-      "name": "coucou",
-      "description": "sggsgsgsg",
+      "id": "5841",
+      "code": "E2-1786_02",
+      "name": "Test number",
+      "description": "Test du champs de type number",
       "categoryCode": "E2-4",
       "schema": {
         "fields": [
           {
-            "name": "text_1",
-            "type": "text",
-            "label": "Autre",
-            "placeholder": "",
-            "defaultValue": "Lorem"
+            "id": "number_1",
+            "name": "number_1",
+            "type": "number",
+            "label": "Nombre",
+            "placeholder": ""
           }
         ]
       }

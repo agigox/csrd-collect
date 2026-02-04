@@ -1,7 +1,6 @@
 "use client";
 
-import type { DateFieldConfig } from "../../types";
-import type { SpecificConfiguratorProps } from "../types";
+import type { DateFieldConfig, SpecificConfiguratorProps } from "@/models/FieldTypes";
 import { LabelField } from "../common/LabelField";
 import { Checkbox, Select } from "@rte-ds/react";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import type { FieldConfig, FieldType } from "../types";
+import { AnimatePresence, motion } from "motion/react";
+import type { FieldConfig, FieldType, FieldConfiguratorProps } from "@/models/FieldTypes";
 import { getField } from "../registry";
-import type { FieldConfiguratorProps } from "./types";
 
 import { DescriptionField } from "./common/DescriptionField";
 import { Footer } from "./common/Footer";
@@ -144,46 +144,64 @@ export const FieldConfigurator = ({
     }
   };
 
-  if (!isOpen) {
-    return (
-      <LabelField
-        value={config.label}
-        onChange={() => {}}
-        isDuplicate={config.isDuplicate}
-        fieldType={config.type}
-        collapsedActions={{
-          onMoveUp,
-          onMoveDown,
-          onDuplicate,
-          canMoveUp,
-          canMoveDown,
-        }}
-        onOpen={onOpen}
-      />
-    );
-  }
-
   return (
-    <div className="flex w-full flex-col gap-4">
-      {renderSpecificConfigurator()}
+    <AnimatePresence mode="wait" initial={false}>
+      {!isOpen ? (
+        <motion.div
+          key="collapsed"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="w-full"
+        >
+          <LabelField
+            value={config.label}
+            onChange={() => {}}
+            isDuplicate={config.isDuplicate}
+            fieldType={config.type}
+            collapsedActions={{
+              onMoveUp,
+              onMoveDown,
+              onDuplicate,
+              canMoveUp,
+              canMoveDown,
+            }}
+            onOpen={onOpen}
+          />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="expanded"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="flex w-full flex-col gap-4"
+        >
+          {renderSpecificConfigurator()}
 
-      <DescriptionField
-        value={config.description ?? ""}
-        onChange={(description) => handleChange({ ...config, description })}
-      />
+          <DescriptionField
+            value={config.description ?? ""}
+            onChange={(description) => handleChange({ ...config, description })}
+          />
 
-      <Footer
-        required={config.required ?? false}
-        onRequiredChange={(required) => handleChange({ ...config, required })}
-        onDuplicate={onDuplicate}
-        onRemove={onRemove}
-        onMoveUp={onMoveUp}
-        onMoveDown={onMoveDown}
-        canMoveUp={canMoveUp}
-        canMoveDown={canMoveDown}
-        dragControls={dragControls}
-      />
-    </div>
+          <Footer
+            required={config.required ?? false}
+            onRequiredChange={(required) =>
+              handleChange({ ...config, required })
+            }
+            onDuplicate={onDuplicate}
+            onRemove={onRemove}
+            onMoveUp={onMoveUp}
+            onMoveDown={onMoveDown}
+            canMoveUp={canMoveUp}
+            canMoveDown={canMoveDown}
+            dragControls={dragControls}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

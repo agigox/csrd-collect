@@ -7,10 +7,10 @@ import { Reorder } from "motion/react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { useFormsStore } from "@/stores/formsStore";
 
-import type { FieldConfig, FieldType } from "./types";
-import { typeLabels, typeIcons } from "./field-configurator/types";
+import type { FieldConfig, FieldType } from "@/models/FieldTypes";
+import { typeLabels, typeIcons } from "@/models/FieldTypes";
 import { Button, Icon } from "@rte-ds/react";
-import { SortableFieldCard } from "./SortableFieldCard";
+import { SortableFieldCard } from "./field-configurator/SortableFieldCard";
 
 interface FormBuilderProps {
   schema: FieldConfig[];
@@ -200,45 +200,51 @@ export const FormBuilder = ({
   };
 
   const renderInsertButton = (
-    insertIndex: number,
+    activeIndex: number,
     position: "before" | "after",
-  ) => (
-    <Popover
-      open={insertPopoverOpen === position}
-      onOpenChange={(open) => setInsertPopoverOpen(open ? position : null)}
-    >
-      <PopoverTrigger asChild>
-        <Button
-          label="Champ"
-          size="s"
-          variant="secondary"
-          icon="add"
-          className="w-fit self-center"
-        />
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-64 p-0 z-101"
-        side="top"
-        align="center"
-        sideOffset={8}
+  ) => {
+    // "before" (top button) = insert above active card
+    // "after" (bottom button) = insert below active card
+    const insertIndex = position === "before" ? activeIndex : activeIndex + 1;
+
+    return (
+      <Popover
+        open={insertPopoverOpen === position}
+        onOpenChange={(open) => setInsertPopoverOpen(open ? position : null)}
       >
-        <div className="flex flex-col">
-          {fieldTypeOptions.map((option) => (
-            <button
-              key={option.type}
-              onClick={() => handleAddField(option.type, insertIndex)}
-              className={`flex items-center gap-3 px-4 py-3 text-sm text-left hover:bg-muted transition-colors ${
-                option.borderBottom ? "border-b border-border" : ""
-              }`}
-            >
-              <Icon name={typeIcons[option.type]} size={18} />
-              <span>{typeLabels[option.type]}</span>
-            </button>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
+        <PopoverTrigger asChild>
+          <Button
+            label="Champ"
+            size="s"
+            variant="secondary"
+            icon="add"
+            className="w-fit self-center"
+          />
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-64 p-0 z-101"
+          side="top"
+          align="center"
+          sideOffset={8}
+        >
+          <div className="flex flex-col">
+            {fieldTypeOptions.map((option) => (
+              <button
+                key={option.type}
+                onClick={() => handleAddField(option.type, insertIndex)}
+                className={`flex items-center gap-3 px-4 py-3 text-sm text-left hover:bg-muted transition-colors ${
+                  option.borderBottom ? "border-b border-border" : ""
+                }`}
+              >
+                <Icon name={typeIcons[option.type]} size={18} />
+                <span>{typeLabels[option.type]}</span>
+              </button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  };
 
   const addButtonContent = (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -334,7 +340,7 @@ export const FormBuilder = ({
                   onMoveUp={() => handleMoveUp(index)}
                   onMoveDown={() => handleMoveDown(index)}
                 />
-                {isActive && renderInsertButton(index + 1, "after")}
+                {isActive && renderInsertButton(index, "after")}
               </div>
             );
           })}

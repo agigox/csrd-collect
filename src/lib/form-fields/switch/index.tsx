@@ -6,7 +6,7 @@ import type {
   FieldProps,
   FieldRegistration,
   SwitchFieldConfig,
-} from "../types";
+} from "@/models/FieldTypes";
 
 const SwitchField = ({
   config,

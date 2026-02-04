@@ -24,7 +24,7 @@
       "@/lib/*": ["lib/*"],
       "@/components/*": ["components/*"],
       "@/stores": ["stores"],
-      "@/modals/*": ["modals/*"],
+      "@/models/*": ["models/*"],
       "@/stores/*": ["stores/*"]
     }
   },

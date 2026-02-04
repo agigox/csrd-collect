@@ -1,8 +1,7 @@
 "use client";
 
 import { Select, TextInput } from "@rte-ds/react";
-import type { NumberFieldConfig } from "../../types";
-import type { SpecificConfiguratorProps } from "../types";
+import type { NumberFieldConfig, SpecificConfiguratorProps } from "@/models/FieldTypes";
 import { LabelField } from "../common/LabelField";
 
 const unitOptions = [
@@ -34,7 +33,6 @@ export const NumberConfigurator = ({
         <TextInput
           id="default-value"
           label="Valeur par défaut"
-          type="number"
           value={config.defaultValue?.toString() ?? ""}
           onChange={(e) =>
             onChange({
@@ -43,6 +41,8 @@ export const NumberConfigurator = ({
             })
           }
           width={235}
+          type="number"
+          {...(config.unit && { unit: config.unit })}
         />
         <Select
           id="unit-select"

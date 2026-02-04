@@ -1,6 +1,6 @@
-import type { FieldConfig } from "./types";
+import type { FieldConfig } from "@/models/FieldTypes";
 import { Card } from "@rte-ds/react";
-import { FieldConfigurator } from "./field-configurator";
+import { FieldConfigurator } from ".";
 import { Reorder, useDragControls } from "motion/react";
 
 // Sortable Field Card component
@@ -36,6 +36,7 @@ export const SortableFieldCard = ({
       value={fieldConfig}
       dragListener={false}
       dragControls={dragControls}
+      layout
       transition={{
         type: "spring",
         stiffness: 350,
@@ -54,7 +55,9 @@ export const SortableFieldCard = ({
         className="py-4 px-4"
         cardType="outlined"
         style={{
-          borderTop: isOpen ? "4px solid #1465FC" : undefined,
+          borderTop: isOpen
+            ? "4px solid var(--background-brand-default)"
+            : undefined,
           backgroundColor: "white",
         }}
         size="full"

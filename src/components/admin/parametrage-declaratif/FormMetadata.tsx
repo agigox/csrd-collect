@@ -17,14 +17,11 @@ export function FormMetadata() {
 
   return (
     <Card style={{ background: "#233857", width: "100%" }}>
-      <div
-        className="flex w-full flex-col gap-3.5 px-4 pb-4 pt-2"
-        data-theme="violet"
-        data-mode="dark"
-      >
+      <div className="flex w-full flex-col gap-3.5 px-4 pb-4 pt-2">
         <Select
           key={`category-${currentForm?.id ?? "new"}-${formCategoryCode}`}
           id="select-category-id"
+          labelId="select-category-label-id"
           assistiveAppearance="description"
           label="Catégorie"
           onChange={setFormCategoryCode}

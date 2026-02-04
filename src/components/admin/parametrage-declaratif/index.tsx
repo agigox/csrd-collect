@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useFormsStore, useCategoryCodesStore } from "@/stores";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
-import { Button, Link } from "@rte-ds/react";
+import { Button } from "@rte-ds/react";
 
 import { FormHeader } from "./FormHeader";
 import { FormMetadata } from "./FormMetadata";
@@ -107,13 +107,15 @@ export default function AdminParametrageDeclaratifPage() {
   return (
     <div className="h-full flex">
       <div className="flex-1 relative">
-        <Link
-          href="/admin"
+        <Button
           label="Retour"
           icon="arrow-left"
           iconPosition="left"
+          onClick={() => router.push("/admin")}
+          variant="transparent"
           className="h-6 top-2.25 left-2 absolute"
         />
+
         {!showPreview && (
           <Button
             icon="visibility-show"

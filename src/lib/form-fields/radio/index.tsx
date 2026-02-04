@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/lib/ui/tooltip";
-import type { FieldProps, FieldRegistration, RadioFieldConfig } from "../types";
+import type { FieldProps, FieldRegistration, RadioFieldConfig } from "@/models/FieldTypes";
 
 const RadioField = ({
   config,

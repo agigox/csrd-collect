@@ -10,7 +10,7 @@ import type {
   FieldProps,
   FieldRegistration,
   CheckboxFieldConfig,
-} from "../types";
+} from "@/models/FieldTypes";
 
 const CheckboxField = ({
   config,

@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/lib/ui/tooltip";
-import type { FieldProps, FieldRegistration, TextFieldConfig } from "../types";
+import type { FieldProps, FieldRegistration, TextFieldConfig } from "@/models/FieldTypes";
 
 const TextField = ({
   config,

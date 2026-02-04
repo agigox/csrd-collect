@@ -1,12 +1,25 @@
 import type { ComponentType } from "react";
+import type { DragControls } from "motion/react";
+
+// ========================
+// Field Types
+// ========================
 
 export type FieldType = "text" | "number" | "select" | "switch" | "date" | "radio" | "checkbox" | "import";
+
+// ========================
+// Validation
+// ========================
 
 export interface ValidationRule {
   type: "required" | "min" | "max" | "pattern";
   value?: number | string;
   message: string;
 }
+
+// ========================
+// Base Field Config
+// ========================
 
 export interface BaseFieldConfig {
   id: string;
@@ -21,12 +34,20 @@ export interface BaseFieldConfig {
   isDuplicate?: boolean;
 }
 
+// ========================
+// Options
+// ========================
+
 export interface SelectOption {
   value: string;
   label: string;
 }
 
 export type SelectionMode = "single" | "multiple";
+
+// ========================
+// Specific Field Configs
+// ========================
 
 export interface SelectFieldConfig extends BaseFieldConfig {
   type: "select";
@@ -79,6 +100,10 @@ export interface ImportFieldConfig extends BaseFieldConfig {
 
 export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | SwitchFieldConfig | DateFieldConfig | RadioFieldConfig | CheckboxFieldConfig | ImportFieldConfig;
 
+// ========================
+// Field Component Props
+// ========================
+
 export interface FieldProps<T extends FieldConfig = FieldConfig> {
   config: T;
   value: unknown;
@@ -92,3 +117,55 @@ export interface FieldRegistration {
   component: ComponentType<FieldProps<any>>;
   defaultConfig: Partial<BaseFieldConfig>;
 }
+
+// ========================
+// Field Configurator Props
+// ========================
+
+export interface FieldConfiguratorProps {
+  config: FieldConfig;
+  onChange: (config: FieldConfig) => void;
+  onRemove: () => void;
+  onDuplicate: () => void;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
+  isOpen?: boolean;
+  onOpen?: () => void;
+  dragControls?: DragControls;
+}
+
+export interface SpecificConfiguratorProps<
+  T extends FieldConfig = FieldConfig,
+> {
+  config: T;
+  onChange: (config: T) => void;
+  onFieldTypeChange?: (type: FieldType) => void;
+}
+
+// ========================
+// UI Labels & Icons
+// ========================
+
+export const typeLabels: Record<string, string> = {
+  text: "Champ libre",
+  number: "Nombre",
+  select: "Liste déroulante",
+  radio: "Choix unique",
+  checkbox: "Choix multiple",
+  switch: "Switch",
+  date: "Date",
+  import: "Import de fichier",
+};
+
+export const typeIcons: Record<string, string> = {
+  text: "chat",
+  number: "chat",
+  select: "list-alt",
+  radio: "check-circle",
+  checkbox: "checkbox",
+  switch: "switch",
+  date: "calendar-month",
+  import: "upload",
+};

@@ -109,7 +109,7 @@ export const Footer = ({
                 <IconButton
                   appearance="outlined"
                   aria-label="icon button aria label"
-                  name="alt-route"
+                  name="branch"
                   onClick={onMoveDown}
                   size="m"
                   variant="transparent"

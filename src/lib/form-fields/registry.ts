@@ -1,4 +1,4 @@
-import type { FieldRegistration, FieldType } from "./types";
+import type { FieldRegistration, FieldType } from "@/models/FieldTypes";
 
 import { fieldRegistration as textField } from "./text";
 import { fieldRegistration as numberField } from "./number";

@@ -810,16 +810,16 @@ body {
   --animate-slide-out-to-right: slide-out-to-right 1s ease-out;
 }
 
-textarea[aria-labelledby="form-description-label-id"] {
-  background: white !important;
-  color: black !important;
-}
-#select-category-id {
-  background: white;
-}
-#Norme {
-  color: white;
-}
 label[for="checkbox-default-value"] {
   height: 32px;
+}
+
+#form-description-label-id {
+  color: white;
+}
+#select-category-id {
+  background-color: white;
+}
+#select-category-label-id {
+  color: white;
 }

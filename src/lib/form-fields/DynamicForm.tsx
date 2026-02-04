@@ -1,7 +1,8 @@
 "use client";
 
+import { LayoutGroup, motion } from "motion/react";
 import { DynamicField } from "./DynamicField";
-import type { FieldConfig } from "./types";
+import type { FieldConfig } from "@/models/FieldTypes";
 
 interface DynamicFormProps {
   schema: FieldConfig[];
@@ -26,17 +27,30 @@ export const DynamicForm = ({
   };
 
   return (
-    <div className={className ?? "flex flex-col gap-4"}>
-      {schema.map((fieldConfig) => (
-        <DynamicField
-          key={fieldConfig.name}
-          config={fieldConfig}
-          value={values[fieldConfig.name]}
-          onChange={(value) => handleFieldChange(fieldConfig.name, value)}
-          error={errors?.[fieldConfig.name]}
-        />
-      ))}
-    </div>
+    <LayoutGroup>
+      <div
+        className={className ?? "flex flex-col gap-4 border-2 border-red-500"}
+      >
+        {schema.map((fieldConfig) => (
+          <motion.div
+            key={fieldConfig.name}
+            layout
+            transition={{
+              type: "spring",
+              stiffness: 350,
+              damping: 30,
+            }}
+          >
+            <DynamicField
+              config={fieldConfig}
+              value={values[fieldConfig.name]}
+              onChange={(value) => handleFieldChange(fieldConfig.name, value)}
+              error={errors?.[fieldConfig.name]}
+            />
+          </motion.div>
+        ))}
+      </div>
+    </LayoutGroup>
   );
 };
 

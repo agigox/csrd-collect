@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type { FieldConfig } from "@/lib/form-fields";
+import type { FieldConfig } from "@/models/FieldTypes";
 import type { FormTemplate } from "models/FormTemplate";
 
 interface FormEditorState {
   // Form metadata
+  formId: string | null;
   formName: string;
   formDescription: string;
   formCategoryCode: string;
@@ -34,6 +35,7 @@ interface FormEditorState {
 const DEFAULT_CATEGORY_CODE = "E2-4";
 
 const initialState = {
+  formId: null as string | null,
   formName: "",
   formDescription: "",
   formCategoryCode: DEFAULT_CATEGORY_CODE,
@@ -79,6 +81,7 @@ export const useFormEditorStore = create<FormEditorState>()(
       initializeFromForm: (form: FormTemplate | null) =>
         set(
           {
+            formId: form?.id ?? null,
             formName: form?.name ?? "",
             formDescription: form?.description ?? "",
             formCategoryCode: form?.categoryCode ?? DEFAULT_CATEGORY_CODE,

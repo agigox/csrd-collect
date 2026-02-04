@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { IconButton, Select, TextInput } from "@rte-ds/react";
-import type { FieldType } from "../../types";
-import { typeLabels, typeIcons } from "../types";
+import type { FieldType } from "@/models/FieldTypes";
+import { typeLabels, typeIcons } from "@/models/FieldTypes";
 
 export interface CollapsedActions {
   onMoveUp?: () => void;
@@ -30,14 +30,14 @@ interface LabelFieldProps {
 
 // Field types available in the type selector
 const selectableTypes: FieldType[] = [
+  "date",
   "text",
   "number",
-  "select",
   "radio",
   "checkbox",
-  "switch",
-  "date",
+  "select",
   "import",
+  "switch",
 ];
 
 export const LabelField = ({

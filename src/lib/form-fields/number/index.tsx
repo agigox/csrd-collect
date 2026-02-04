@@ -2,16 +2,12 @@
 
 import { Input } from "@/lib/ui/input";
 import { Label } from "@/lib/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/lib/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/ui/tooltip";
 import type {
   FieldProps,
   FieldRegistration,
   NumberFieldConfig,
-} from "../types";
+} from "@/models/FieldTypes";
 
 const NumberField = ({
   config,
@@ -51,8 +47,6 @@ const NumberField = ({
           placeholder={config.placeholder}
           value={value !== undefined ? String(value) : ""}
           onChange={handleChange}
-          min={config.min}
-          max={config.max}
           aria-invalid={!!error}
           className={error ? "border-red-500 flex-1" : "flex-1"}
         />

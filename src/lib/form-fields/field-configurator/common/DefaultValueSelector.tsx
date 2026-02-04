@@ -2,7 +2,7 @@
 
 import { Checkbox, Select } from "@rte-ds/react";
 import { MultiSelect } from "@/lib/ui/multi-select";
-import type { SelectOption } from "../../types";
+import type { SelectOption } from "@/models/FieldTypes";
 
 export type SelectionMode = "single" | "multiple";
 

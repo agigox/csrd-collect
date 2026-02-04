@@ -9,7 +9,7 @@ import type {
   FieldProps,
   FieldRegistration,
   ImportFieldConfig,
-} from "../types";
+} from "@/models/FieldTypes";
 import { IconButton } from "@rte-ds/react";
 
 interface FileValue {

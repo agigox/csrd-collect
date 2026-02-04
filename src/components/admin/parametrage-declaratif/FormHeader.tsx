@@ -27,6 +27,7 @@ export function FormHeader({
         placeholder="Titre du formulaire"
         label="Titre du formulaire"
         displayClassName="heading-m bg-background-hover"
+        className="w-full"
       />
       <div className="flex gap-2.5 shrink-0 items-center">
         <Button

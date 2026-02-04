@@ -1,4 +1,4 @@
-import type { FieldConfig } from "@/lib/form-fields";
+import type { FieldConfig } from "@/models/FieldTypes";
 
 export interface FormTemplateSchema {
   fields: FieldConfig[];

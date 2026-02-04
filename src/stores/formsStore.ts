@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import type { FieldConfig } from "@/lib/form-fields";
+import type { FieldConfig } from "@/models/FieldTypes";
 import { FormTemplate } from "models/FormTemplate";
 
 const API_BASE_URL = "http://localhost:4000";

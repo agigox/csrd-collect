@@ -18,7 +18,7 @@ import type {
   FieldProps,
   FieldRegistration,
   SelectFieldConfig,
-} from "../types";
+} from "@/models/FieldTypes";
 
 const SelectField = ({
   config,

@@ -1,7 +1,7 @@
 "use client";
 
 import { getField } from "./registry";
-import type { FieldConfig } from "./types";
+import type { FieldConfig } from "@/models/FieldTypes";
 
 interface DynamicFieldProps {
   config: FieldConfig;
