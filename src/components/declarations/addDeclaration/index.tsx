@@ -77,7 +77,7 @@ const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
           {selectedForm && (
             <div className="flex-1 overflow-y-auto py-4">
               <DynamicForm
-                schema={selectedForm.schema}
+                schema={selectedForm.schema.fields}
                 values={formValues}
                 onChange={setFormValues}
                 errors={formErrors}

@@ -1,13 +1,13 @@
 import type { FieldRegistration, FieldType } from "@/models/FieldTypes";
 
-import { fieldRegistration as textField } from "./text";
-import { fieldRegistration as numberField } from "./number";
-import { fieldRegistration as selectField } from "./select";
-import { fieldRegistration as switchField } from "./switch";
-import { fieldRegistration as dateField } from "./date";
-import { fieldRegistration as radioField } from "./radio";
-import { fieldRegistration as checkboxField } from "./checkbox";
-import { fieldRegistration as importField } from "./import";
+import { fieldRegistration as textField } from "../dynamic-field/text";
+import { fieldRegistration as numberField } from "../dynamic-field/number";
+import { fieldRegistration as selectField } from "../dynamic-field/select";
+import { fieldRegistration as switchField } from "../dynamic-field/switch";
+import { fieldRegistration as dateField } from "../dynamic-field/date";
+import { fieldRegistration as radioField } from "../dynamic-field/radio";
+import { fieldRegistration as checkboxField } from "../dynamic-field/checkbox";
+import { fieldRegistration as importField } from "../dynamic-field/import";
 
 const fieldRegistry = new Map<FieldType, FieldRegistration>();
 

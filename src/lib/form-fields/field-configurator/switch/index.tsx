@@ -5,8 +5,8 @@ import type { SwitchFieldConfig, SpecificConfiguratorProps } from "@/models/Fiel
 import { LabelField } from "../common/LabelField";
 
 const defaultValueOptions = [
-  { value: "none", label: "Aucune" },
-  { value: "selected", label: "Sélectionné" },
+  { value: "false", label: "Non sélectionné" },
+  { value: "true", label: "Sélectionné" },
 ];
 
 export const SwitchConfigurator = ({
@@ -17,11 +17,11 @@ export const SwitchConfigurator = ({
   const handleDefaultValueChange = (value: string) => {
     onChange({
       ...config,
-      defaultValue: value === "selected" ? true : undefined,
+      defaultValue: value === "true",
     });
   };
 
-  const currentValue = config.defaultValue === true ? "selected" : "none";
+  const currentValue = config.defaultValue === true ? "true" : "false";
 
   return (
     <div className="flex flex-col gap-2.5">
@@ -40,7 +40,6 @@ export const SwitchConfigurator = ({
         value={currentValue}
         onChange={handleDefaultValueChange}
         width={188}
-        showResetButton
       />
     </div>
   );

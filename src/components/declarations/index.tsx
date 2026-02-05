@@ -236,7 +236,7 @@ const Declarations = () => {
               {selectedForm && (
                 <ScrollableContainer className="flex-1 pt-4 pr-4" height="100%">
                   <DynamicForm
-                    schema={selectedForm.schema}
+                    schema={selectedForm.schema.fields}
                     values={formValues}
                     onChange={handleFormValuesChange}
                     errors={formErrors}

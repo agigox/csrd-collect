@@ -7,16 +7,6 @@ interface AppSideNavProps {
   children: React.ReactNode;
 }
 
-const memberMenuItems = [
-  { id: "declarations", icon: "folder", label: "Déclarations", link: "/" },
-  {
-    id: "parametrage",
-    icon: "download",
-    label: "Paramètrage déclaratif",
-    link: "/parametrage-declaratif",
-  },
-];
-
 const adminMenuItems = [
   {
     id: "admin-equipe",
@@ -42,7 +32,7 @@ const memberHeaderConfig = {
   icon: "home",
   identifier: "CC",
   link: "/",
-  title: "CSRD Collect",
+  title: "CSRD Collecte",
 };
 
 const adminHeaderConfig = {
@@ -56,11 +46,15 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
 
-  const items = isAdmin ? adminMenuItems : memberMenuItems;
   const headerConfig = isAdmin ? adminHeaderConfig : memberHeaderConfig;
 
   return (
-    <SideNav headerConfig={headerConfig} items={items} collapsible size="s">
+    <SideNav
+      headerConfig={headerConfig}
+      {...(isAdmin && { items: adminMenuItems })}
+      collapsible
+      size="s"
+    >
       {children}
     </SideNav>
   );

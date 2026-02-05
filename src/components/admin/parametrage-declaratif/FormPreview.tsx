@@ -39,10 +39,14 @@ export function FormPreview() {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col h-15.5">
-          {formName && <div className="heading-s">{formName}</div>}
+        <div className="flex flex-col">
+          {formName && (
+            <div className={`heading-s ${!formId ? "pb-6" : ""}`}>
+              {formName}
+            </div>
+          )}
           {formId && (
-            <div className="text-xs text-muted-foreground uppercase">
+            <div className="text-xs text-muted-foreground uppercase pb-6">
               ID {formId}
             </div>
           )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { getField } from "./registry";
+import { getField } from "../form-fields/registry";
 import type { FieldConfig } from "@/models/FieldTypes";
 
 interface DynamicFieldProps {
@@ -10,7 +10,12 @@ interface DynamicFieldProps {
   error?: string;
 }
 
-export const DynamicField = ({ config, value, onChange, error }: DynamicFieldProps) => {
+export const DynamicField = ({
+  config,
+  value,
+  onChange,
+  error,
+}: DynamicFieldProps) => {
   const registration = getField(config.type);
 
   if (!registration) {
@@ -26,7 +31,14 @@ export const DynamicField = ({ config, value, onChange, error }: DynamicFieldPro
   // Use defaultValue from config if value is undefined
   const effectiveValue = value !== undefined ? value : config.defaultValue;
 
-  return <FieldComponent config={config} value={effectiveValue} onChange={onChange} error={error} />;
+  return (
+    <FieldComponent
+      config={config}
+      value={effectiveValue}
+      onChange={onChange}
+      error={error}
+    />
+  );
 };
 
 export default DynamicField;

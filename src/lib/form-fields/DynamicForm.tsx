@@ -1,7 +1,7 @@
 "use client";
 
 import { LayoutGroup, motion } from "motion/react";
-import { DynamicField } from "./DynamicField";
+import { DynamicField } from "../dynamic-field/DynamicField";
 import type { FieldConfig } from "@/models/FieldTypes";
 
 interface DynamicFormProps {

@@ -8,15 +8,9 @@ interface FormHeaderProps {
   isEditMode: boolean;
   onSave: () => void;
   onDelete: () => void;
-  onCancel: () => void;
 }
 
-export function FormHeader({
-  isEditMode,
-  onSave,
-  onDelete,
-  onCancel,
-}: FormHeaderProps) {
+export function FormHeader({ isEditMode, onSave, onDelete }: FormHeaderProps) {
   const { formName, setFormName, isSaving } = useFormEditorStore();
 
   return (
@@ -33,7 +27,7 @@ export function FormHeader({
         <Button
           icon="save"
           iconPosition="left"
-          iconAppearance="filled"
+          iconAppearance="outlined"
           label={isSaving ? "Sauvegarde..." : "Enregistrer"}
           onClick={onSave}
           variant="primary"
@@ -49,15 +43,6 @@ export function FormHeader({
             variant="danger"
           />
         )}
-
-        <IconButton
-          appearance="outlined"
-          aria-label="Annuler"
-          name="close"
-          onClick={onCancel}
-          size="m"
-          variant="secondary"
-        />
       </div>
     </div>
   );

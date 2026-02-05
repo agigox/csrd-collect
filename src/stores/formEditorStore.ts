@@ -24,6 +24,7 @@ interface FormEditorState {
   setFormDescription: (description: string) => void;
   setFormCategoryCode: (code: string) => void;
   setSchema: (schema: FieldConfig[]) => void;
+  updateFieldConfig: (fieldName: string, config: FieldConfig) => void;
   setIsSaving: (saving: boolean) => void;
   setShowPreview: (show: boolean) => void;
   setPreviewValues: (values: Record<string, unknown>) => void;
@@ -62,6 +63,35 @@ export const useFormEditorStore = create<FormEditorState>()(
 
       setSchema: (schema) =>
         set({ schema }, false, "FORM_EDITOR/SET_SCHEMA"),
+
+      updateFieldConfig: (fieldName, newConfig) =>
+        set(
+          (state) => {
+            const oldField = state.schema.find((f) => f.name === fieldName);
+            const newSchema = state.schema.map((f) =>
+              f.name === fieldName ? newConfig : f
+            );
+
+            // Check if defaultValue changed - clear preview value if so
+            const oldDefault = oldField?.defaultValue;
+            const newDefault = newConfig.defaultValue;
+            const defaultValueChanged = oldDefault !== newDefault;
+
+            if (defaultValueChanged) {
+              const restPreviewValues = Object.fromEntries(
+                Object.entries(state.previewValues).filter(([key]) => key !== fieldName)
+              );
+              return {
+                schema: newSchema,
+                previewValues: restPreviewValues,
+              };
+            }
+
+            return { schema: newSchema };
+          },
+          false,
+          "FORM_EDITOR/UPDATE_FIELD_CONFIG"
+        ),
 
       setIsSaving: (saving) =>
         set({ isSaving: saving }, false, "FORM_EDITOR/SET_SAVING"),

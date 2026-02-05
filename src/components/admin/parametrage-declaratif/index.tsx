@@ -91,11 +91,6 @@ export default function AdminParametrageDeclaratifPage() {
     }
   };
 
-  const handleCancel = () => {
-    setCurrentForm(null);
-    router.push("/admin");
-  };
-
   if (loading) {
     return (
       <div className="p-6 flex items-center justify-center">
@@ -132,7 +127,6 @@ export default function AdminParametrageDeclaratifPage() {
             isEditMode={isEditMode}
             onSave={handleSave}
             onDelete={handleDelete}
-            onCancel={handleCancel}
           />
           <ScrollableContainer>
             <div className="flex flex-col gap-6">
