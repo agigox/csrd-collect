@@ -33,6 +33,7 @@ const memberHeaderConfig = {
   identifier: "CC",
   link: "/",
   title: "CSRD Collecte",
+  version: "V1.0.0",
 };
 
 const adminHeaderConfig = {
@@ -40,6 +41,7 @@ const adminHeaderConfig = {
   identifier: "AD",
   link: "/admin",
   title: "Administration",
+  version: "V1.0.0",
 };
 
 export default function AppSideNav({ children }: AppSideNavProps) {
