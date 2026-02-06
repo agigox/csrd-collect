@@ -25,7 +25,7 @@ const SwitchField = ({
       showLabel
       checked={isChecked}
       onChange={() => !readOnly && onChange(!isChecked)}
-      disabled={readOnly}
+      readOnly={readOnly}
     />
   );
 };

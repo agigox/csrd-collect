@@ -1,8 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import type { FieldConfig, FieldType, FieldConfiguratorProps } from "@/models/FieldTypes";
-import { getField } from "../registry";
+import type {
+  FieldConfig,
+  FieldType,
+  FieldConfiguratorProps,
+} from "@/models/FieldTypes";
+import { getField } from "../../utils/registry";
 
 import { DescriptionField } from "./common/DescriptionField";
 import { Footer } from "./common/Footer";

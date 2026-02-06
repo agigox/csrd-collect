@@ -38,8 +38,10 @@ const RadioField = ({
         groupName="radio-group"
         items={options.map((option) => option.label)}
         value={options.find((o) => o.value === currentValue)?.label}
+        groupTitle={config.label}
         showItemsLabel
         onChange={handleChange}
+        showGroupTitle={true}
         readOnly={readOnly}
         tooltipTextLabel={config.description}
       />

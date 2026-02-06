@@ -1,6 +1,7 @@
 "use client";
 
-import { Checkbox } from "@rte-ds/react";
+import { useEffect, useRef } from "react";
+import { CheckboxGroup } from "@rte-ds/react";
 import type {
   FieldProps,
   FieldRegistration,
@@ -15,6 +16,8 @@ const CheckboxField = ({
   readOnly = false,
 }: FieldProps<CheckboxFieldConfig>) => {
   const options = config.options ?? [];
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const getDefaultValues = (): string[] => {
     if (config.defaultIndices && config.defaultIndices.length > 0) {
       return config.defaultIndices
@@ -36,28 +39,43 @@ const CheckboxField = ({
     }
   };
 
+  const items = options.map((option) => option.label);
+
+  // Sync controlled state with uncontrolled CheckboxGroup inputs
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const checkboxes = containerRef.current.querySelectorAll<HTMLInputElement>(
+      'input[type="checkbox"]',
+    );
+    checkboxes.forEach((checkbox, index) => {
+      if (options[index]) {
+        checkbox.checked = currentValues.includes(options[index].value);
+      }
+    });
+  }, [currentValues, options]);
+
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium">
-        {config.label}
-        {config.required && <span className="text-red-500 ml-1">*</span>}
-      </span>
-      <div className="flex flex-col gap-3">
-        {options.map((option) => (
-          <Checkbox
-            key={option.value}
-            id={`${config.name}-${option.value}`}
-            label={option.label}
-            showLabel
-            checked={currentValues.includes(option.value)}
-            onChange={() => handleToggle(option.value)}
-            readOnly={readOnly}
-            error={!!error}
-          />
-        ))}
-      </div>
-      {error && <span className="text-sm text-red-500">{error}</span>}
-    </div>
+    <CheckboxGroup
+      ref={containerRef}
+      items={items}
+      groupTitle={config.label}
+      showGroupTitle
+      groupHelpText={config.description}
+      showHelpText={!!config.description}
+      direction="vertical"
+      error={!!error}
+      errorMessage={error || ""}
+      readOnly={readOnly}
+      onChange={(e) => {
+        const target = e.target as HTMLInputElement;
+        const index = items.findIndex(
+          (item, idx) => target.id === `${item}-${idx}`,
+        );
+        if (index !== -1) {
+          handleToggle(options[index].value);
+        }
+      }}
+    />
   );
 };
 
