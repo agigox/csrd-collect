@@ -1,7 +1,6 @@
 "use client";
 
 import { Checkbox, Select } from "@rte-ds/react";
-import { MultiSelect } from "@/lib/ui/multi-select";
 import type { SelectOption } from "@/models/FieldTypes";
 
 export type SelectionMode = "single" | "multiple";
@@ -74,12 +73,17 @@ export const DefaultValueSelector = ({
               width={260}
             />
           ) : (
-            <MultiSelect
+            <Select
+              id={`${id}-select-default-value-multiple`}
+              label="Valeurs par défaut"
+              showLabel={false}
+              multiple={true}
+              multipleValue={currentMultipleValues}
+              onMultipleChange={onMultipleChange ?? (() => {})}
               options={options}
-              value={currentMultipleValues}
-              onChange={onMultipleChange ?? (() => {})}
-              placeholder="Sélectionner des valeurs par défaut..."
-              className="flex-1"
+              disabled={disabled}
+              showResetButton={true}
+              width={260}
             />
           )}
         </div>

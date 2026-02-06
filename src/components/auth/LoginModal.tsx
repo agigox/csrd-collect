@@ -8,15 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/lib/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/lib/ui/select";
-import { Button } from "@/lib/ui/button";
-import { Label } from "@/lib/ui/label";
+import { Button, Select } from "@rte-ds/react";
 import { useAuthStore, type TeamInfo } from "@/stores";
 
 // Mock data - à remplacer par des données API
@@ -24,6 +16,9 @@ const DIRECTIONS = ["Maintenance", "Production", "Qualité", "Logistique"];
 const CENTRES = ["Aura", "Île-de-France", "Occitanie", "Bretagne"];
 const GMRS = ["lorem", "ipsum", "dolor", "sit"];
 const EQUIPES = ["Emasi", "Alpha", "Beta", "Gamma"];
+
+const toOptions = (items: string[]) =>
+  items.map((item) => ({ value: item, label: item }));
 
 interface LoginModalProps {
   open: boolean;
@@ -66,105 +61,52 @@ const LoginModal = ({ open }: LoginModalProps) => {
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="direction">Direction</Label>
-            <Select
-              value={formData.direction}
-              onValueChange={(value) => handleChange("direction", value)}
-            >
-              <SelectTrigger id="direction" className="w-full">
-                <SelectValue placeholder="Sélectionner une direction" />
-              </SelectTrigger>
-              <SelectContent>
-                {DIRECTIONS.map((dir) => (
-                  <SelectItem key={dir} value={dir}>
-                    {dir}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            id="direction"
+            label="Direction"
+            value={formData.direction}
+            onChange={(value) => handleChange("direction", value)}
+            options={toOptions(DIRECTIONS)}
+            required
+          />
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="centre">Centre maintenance</Label>
-            <Select
-              value={formData.centre}
-              onValueChange={(value) => handleChange("centre", value)}
-            >
-              <SelectTrigger id="centre" className="w-full">
-                <SelectValue placeholder="Sélectionner un centre" />
-              </SelectTrigger>
-              <SelectContent>
-                {CENTRES.map((centre) => (
-                  <SelectItem key={centre} value={centre}>
-                    {centre}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            id="centre"
+            label="Centre maintenance"
+            value={formData.centre}
+            onChange={(value) => handleChange("centre", value)}
+            options={toOptions(CENTRES)}
+            required
+          />
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="gmr">
-              GMR{" "}
-              <span className="text-muted-foreground text-xs">(optionnel)</span>
-            </Label>
-            <Select
-              value={formData.gmr}
-              onValueChange={(value) => handleChange("gmr", value)}
-            >
-              <SelectTrigger
-                id="gmr"
-                className="w-full"
-                clearable
-                hasValue={!!formData.gmr}
-                onClear={() => handleChange("gmr", "")}
-              >
-                <SelectValue placeholder="Sélectionner un GMR" />
-              </SelectTrigger>
-              <SelectContent>
-                {GMRS.map((gmr) => (
-                  <SelectItem key={gmr} value={gmr}>
-                    {gmr}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            id="gmr"
+            label="GMR (optionnel)"
+            value={formData.gmr}
+            onChange={(value) => handleChange("gmr", value)}
+            options={toOptions(GMRS)}
+            showResetButton
+            onClear={() => handleChange("gmr", "")}
+          />
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="equipe">
-              Equipe{" "}
-              <span className="text-muted-foreground text-xs">(optionnel)</span>
-            </Label>
-            <Select
-              value={formData.equipe}
-              onValueChange={(value) => handleChange("equipe", value)}
-            >
-              <SelectTrigger
-                id="equipe"
-                className="w-full"
-                clearable
-                hasValue={!!formData.equipe}
-                onClear={() => handleChange("equipe", "")}
-              >
-                <SelectValue placeholder="Sélectionner une équipe" />
-              </SelectTrigger>
-              <SelectContent>
-                {EQUIPES.map((equipe) => (
-                  <SelectItem key={equipe} value={equipe}>
-                    {equipe}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select
+            id="equipe"
+            label="Equipe (optionnel)"
+            value={formData.equipe}
+            onChange={(value) => handleChange("equipe", value)}
+            options={toOptions(EQUIPES)}
+            showResetButton
+            onClear={() => handleChange("equipe", "")}
+          />
         </div>
 
         <div className="flex justify-end mt-4">
-          <Button onClick={handleSubmit} disabled={!isFormValid}>
-            Valider
-          </Button>
+          <Button
+            label="Valider"
+            onClick={handleSubmit}
+            disabled={!isFormValid}
+            variant="primary"
+          />
         </div>
       </DialogContent>
     </Dialog>

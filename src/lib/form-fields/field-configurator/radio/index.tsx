@@ -1,7 +1,11 @@
 "use client";
 
-import { IconButton, TextInput } from "@rte-ds/react";
-import type { RadioFieldConfig, SelectOption, SpecificConfiguratorProps } from "@/models/FieldTypes";
+import { IconButton, RadioButton, TextInput } from "@rte-ds/react";
+import type {
+  RadioFieldConfig,
+  SelectOption,
+  SpecificConfiguratorProps,
+} from "@/models/FieldTypes";
 import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
 
@@ -86,6 +90,11 @@ export const RadioConfigurator = ({
         return (
           <div key={index} className="flex gap-2 items-end">
             <span className="flex items-center justify-center size-5 border-2 bg-white rounded-full border-gray-300 mb-1.5" />
+            <RadioButton
+              groupName="radio-group"
+              label="Radio Button"
+              showLabel={false}
+            />
             <TextInput
               id={`option-${index}`}
               label={`Choix ${index + 1}`}

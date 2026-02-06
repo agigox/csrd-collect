@@ -1,13 +1,11 @@
 "use client";
 
-import { Input } from "@/lib/ui/input";
-import { Label } from "@/lib/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/lib/ui/tooltip";
-import type { FieldProps, FieldRegistration, TextFieldConfig } from "@/models/FieldTypes";
+import type {
+  FieldProps,
+  FieldRegistration,
+  TextFieldConfig,
+} from "@/models/FieldTypes";
+import { TextInput } from "@rte-ds/react";
 
 const TextField = ({
   config,
@@ -18,41 +16,28 @@ const TextField = ({
 }: FieldProps<TextFieldConfig>) => {
   // Use default value from config if no value is set
   const defaultValue = (config.defaultValue as string) ?? "";
-  const currentValue = value !== undefined && value !== "" ? (value as string) : defaultValue;
+  const currentValue =
+    value !== undefined && value !== "" ? (value as string) : defaultValue;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+  const handleChange = (value: string) => {
+    onChange(value);
   };
-
-  const labelContent = (
-    <Label htmlFor={config.name}>
-      {config.label}
-      {config.required && <span className="text-red-500 ml-1">*</span>}
-    </Label>
-  );
 
   return (
     <div className="flex flex-col gap-2">
-      {config.description ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="w-fit cursor-help">{labelContent}</span>
-          </TooltipTrigger>
-          <TooltipContent>{config.description}</TooltipContent>
-        </Tooltip>
-      ) : (
-        labelContent
-      )}
-      <Input
+      <TextInput
         id={config.name}
         name={config.name}
-        type="text"
-        value={currentValue}
+        label={config.label}
+        labelPosition="top"
         onChange={handleChange}
+        value={currentValue}
+        required={config.required}
         readOnly={readOnly}
-        aria-invalid={!!error}
-        className={error ? "border-red-500" : ""}
+        width={"100%"}
+        tooltipTextLabel={config.description}
       />
+
       {error && <span className="text-sm text-red-500">{error}</span>}
     </div>
   );

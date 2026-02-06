@@ -3,18 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Label } from "@/lib/ui/label";
 import { Button } from "@/lib/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { Calendar } from "@/lib/ui/calendar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/lib/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/ui/tooltip";
 import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
-import type { FieldProps, FieldRegistration, DateFieldConfig } from "@/models/FieldTypes";
+import type {
+  FieldProps,
+  FieldRegistration,
+  DateFieldConfig,
+} from "@/models/FieldTypes";
 
 type DateValue = {
   date: string; // ISO date string
@@ -105,7 +104,7 @@ const DateField = ({
 
   // Parse time
   const parseTime = (
-    timeStr?: string
+    timeStr?: string,
   ): { hours: number; minutes: number } | null => {
     if (!timeStr) return null;
     const [hours, minutes] = timeStr.split(":").map(Number);
@@ -134,10 +133,10 @@ const DateField = ({
   const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
 
   const labelContent = (
-    <Label htmlFor={config.name}>
+    <label htmlFor={config.name}>
       {config.label}
       {config.required && <span className="text-red-500 ml-1">*</span>}
-    </Label>
+    </label>
   );
 
   return (
@@ -159,7 +158,7 @@ const DateField = ({
             className={cn(
               "flex h-8 w-full items-center justify-between rounded-md border px-3 py-1 text-sm shadow-inner cursor-pointer",
               error ? "border-red-500" : "border-gray-300",
-              "hover:border-gray-400 transition-colors"
+              "hover:border-gray-400 transition-colors",
             )}
           >
             <span className={cn(dateObj ? "text-gray-900" : "text-gray-500")}>
@@ -212,13 +211,14 @@ const DateField = ({
                             type="button"
                             disabled={readOnly}
                             onClick={() =>
-                              !readOnly && handleTimeChange(h, timeValue?.minutes ?? 0)
+                              !readOnly &&
+                              handleTimeChange(h, timeValue?.minutes ?? 0)
                             }
                             className={cn(
                               "px-4 py-1.5 text-sm transition-colors",
                               readOnly ? "cursor-default" : "hover:bg-gray-100",
                               timeValue?.hours === h &&
-                                "bg-[#2964a0] text-white hover:bg-[#225082]"
+                                "bg-[#2964a0] text-white hover:bg-[#225082]",
                             )}
                           >
                             {h.toString().padStart(2, "0")}
@@ -241,13 +241,14 @@ const DateField = ({
                             type="button"
                             disabled={readOnly}
                             onClick={() =>
-                              !readOnly && handleTimeChange(timeValue?.hours ?? 0, m)
+                              !readOnly &&
+                              handleTimeChange(timeValue?.hours ?? 0, m)
                             }
                             className={cn(
                               "px-4 py-1.5 text-sm transition-colors",
                               readOnly ? "cursor-default" : "hover:bg-gray-100",
                               timeValue?.minutes === m &&
-                                "bg-[#2964a0] text-white hover:bg-[#225082]"
+                                "bg-[#2964a0] text-white hover:bg-[#225082]",
                             )}
                           >
                             {m.toString().padStart(2, "0")}

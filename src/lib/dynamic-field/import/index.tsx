@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import { Label } from "@/lib/ui/label";
 import { Button } from "@/lib/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/ui/tooltip";
 import Icon from "@/lib/Icons";
@@ -60,10 +59,10 @@ const ImportField = ({
   };
 
   const labelContent = (
-    <Label htmlFor={config.name}>
+    <label htmlFor={config.name}>
       {config.label}
       {config.required && <span className="text-red-500 ml-1">*</span>}
-    </Label>
+    </label>
   );
 
   return (
@@ -122,7 +121,9 @@ const ImportField = ({
           <div className="flex flex-col items-center gap-1">
             <Icon name="upload" size={24} className="text-gray-400" />
             <span className="text-sm text-gray-600">
-              {readOnly ? "Aucun fichier importé" : "Cliquez pour importer un fichier"}
+              {readOnly
+                ? "Aucun fichier importé"
+                : "Cliquez pour importer un fichier"}
             </span>
             {!readOnly && config.maxFileSize && (
               <span className="text-xs text-gray-400">
