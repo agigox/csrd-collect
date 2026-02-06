@@ -7,9 +7,10 @@ import type { FieldConfig } from "@/models/FieldTypes";
 interface DynamicFormProps {
   schema: FieldConfig[];
   values: Record<string, unknown>;
-  onChange: (values: Record<string, unknown>) => void;
+  onChange?: (values: Record<string, unknown>) => void;
   errors?: Record<string, string>;
   className?: string;
+  readOnly?: boolean;
 }
 
 export const DynamicForm = ({
@@ -18,12 +19,15 @@ export const DynamicForm = ({
   onChange,
   errors,
   className,
+  readOnly = false,
 }: DynamicFormProps) => {
   const handleFieldChange = (fieldName: string, fieldValue: unknown) => {
-    onChange({
-      ...values,
-      [fieldName]: fieldValue,
-    });
+    if (onChange && !readOnly) {
+      onChange({
+        ...values,
+        [fieldName]: fieldValue,
+      });
+    }
   };
 
   return (
@@ -46,6 +50,7 @@ export const DynamicForm = ({
               value={values[fieldConfig.name]}
               onChange={(value) => handleFieldChange(fieldConfig.name, value)}
               error={errors?.[fieldConfig.name]}
+              readOnly={readOnly}
             />
           </motion.div>
         ))}

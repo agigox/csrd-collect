@@ -11,6 +11,7 @@ const SwitchField = ({
   config,
   value,
   onChange,
+  readOnly = false,
 }: FieldProps<SwitchFieldConfig>) => {
   // Use defaultValue from config if value is undefined
   const isChecked =
@@ -23,7 +24,8 @@ const SwitchField = ({
       label={config.label}
       showLabel
       checked={isChecked}
-      onChange={() => onChange(!isChecked)}
+      onChange={() => !readOnly && onChange(!isChecked)}
+      disabled={readOnly}
     />
   );
 };

@@ -25,6 +25,7 @@ const SelectField = ({
   value,
   onChange,
   error,
+  readOnly = false,
 }: FieldProps<SelectFieldConfig>) => {
   const isMultiple = config.selectionMode === "multiple";
   const options = config.options ?? [];
@@ -98,6 +99,7 @@ const SelectField = ({
           placeholder={config.placeholder ?? "Sélectionner..."}
           clearable={!config.required}
           error={!!error}
+          disabled={readOnly}
         />
         {error && <span className="text-sm text-red-500">{error}</span>}
       </div>
@@ -108,7 +110,7 @@ const SelectField = ({
   return (
     <div className="flex flex-col gap-2">
       {labelElement}
-      <Select value={singleValue} onValueChange={handleSingleChange}>
+      <Select value={singleValue} onValueChange={handleSingleChange} disabled={readOnly}>
         <SelectTrigger
           id={config.name}
           aria-invalid={!!error}

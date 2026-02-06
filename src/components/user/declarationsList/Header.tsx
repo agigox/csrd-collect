@@ -53,7 +53,7 @@ const Header = ({
           icon="campaign"
           iconPosition="right"
           iconAppearance="filled"
-          label="Pré visualisation"
+          label="Déclarer"
           onClick={onDeclarer}
           variant="primary"
         />

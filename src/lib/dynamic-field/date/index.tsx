@@ -26,6 +26,7 @@ const DateField = ({
   value,
   onChange,
   error,
+  readOnly = false,
 }: FieldProps<DateFieldConfig>) => {
   const [open, setOpen] = useState(false);
 
@@ -166,7 +167,7 @@ const DateField = ({
             </span>
 
             <div className="flex items-center gap-1">
-              {dateObj && (
+              {dateObj && !readOnly && (
                 <Button
                   type="button"
                   variant="ghost"
@@ -186,17 +187,18 @@ const DateField = ({
             <Calendar
               mode="single"
               selected={dateObj}
-              onSelect={handleSelectDate}
+              onSelect={readOnly ? undefined : handleSelectDate}
               defaultMonth={dateObj || getDefaultDate()}
               locale={fr}
               initialFocus
+              disabled={readOnly}
             />
 
             {/* Time selector - only shown if includeTime is true */}
             {config.includeTime && (
               <div className="border-t p-4">
                 <div className="text-sm font-medium text-center mb-3">
-                  Sélectionner l&apos;heure
+                  {readOnly ? "Heure incluse" : "Sélectionner l'heure"}
                 </div>
                 <div className="flex gap-4 items-center justify-center">
                   {/* Hours selector */}
@@ -208,11 +210,13 @@ const DateField = ({
                           <button
                             key={h}
                             type="button"
+                            disabled={readOnly}
                             onClick={() =>
-                              handleTimeChange(h, timeValue?.minutes ?? 0)
+                              !readOnly && handleTimeChange(h, timeValue?.minutes ?? 0)
                             }
                             className={cn(
-                              "px-4 py-1.5 text-sm hover:bg-gray-100 transition-colors",
+                              "px-4 py-1.5 text-sm transition-colors",
+                              readOnly ? "cursor-default" : "hover:bg-gray-100",
                               timeValue?.hours === h &&
                                 "bg-[#2964a0] text-white hover:bg-[#225082]"
                             )}
@@ -235,11 +239,13 @@ const DateField = ({
                           <button
                             key={m}
                             type="button"
+                            disabled={readOnly}
                             onClick={() =>
-                              handleTimeChange(timeValue?.hours ?? 0, m)
+                              !readOnly && handleTimeChange(timeValue?.hours ?? 0, m)
                             }
                             className={cn(
-                              "px-4 py-1.5 text-sm hover:bg-gray-100 transition-colors",
+                              "px-4 py-1.5 text-sm transition-colors",
+                              readOnly ? "cursor-default" : "hover:bg-gray-100",
                               timeValue?.minutes === m &&
                                 "bg-[#2964a0] text-white hover:bg-[#225082]"
                             )}
@@ -252,14 +258,16 @@ const DateField = ({
                   </div>
                 </div>
 
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => setOpen(false)}
-                  className="w-full mt-3"
-                >
-                  Confirmer
-                </Button>
+                {!readOnly && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => setOpen(false)}
+                    className="w-full mt-3"
+                  >
+                    Confirmer
+                  </Button>
+                )}
               </div>
             )}
           </div>

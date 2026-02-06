@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { EmptyState } from "@/components/common";
 import { DynamicForm } from "@/lib/form-fields/DynamicForm";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
@@ -7,15 +8,20 @@ import { useFormEditorStore } from "@/stores/formEditorStore";
 import { Divider, Icon } from "@rte-ds/react";
 
 export function FormPreview() {
-  const {
-    formId,
-    formName,
-    schema,
-    previewValues,
-    setPreviewValues,
-    previewErrors,
-    setShowPreview,
-  } = useFormEditorStore();
+  const { formId, formName, schema, setShowPreview } = useFormEditorStore();
+
+  // Derive preview values from schema's defaultValue
+  const previewValues = useMemo(() => {
+    return schema.reduce(
+      (acc, field) => {
+        if (field.defaultValue !== undefined) {
+          acc[field.name] = field.defaultValue;
+        }
+        return acc;
+      },
+      {} as Record<string, unknown>
+    );
+  }, [schema]);
 
   return (
     <div className="w-81 shrink-0 flex flex-col gap-4 p-6 bg-white shadow-[0px_4px_8px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)]">
@@ -55,12 +61,7 @@ export function FormPreview() {
           {schema.length === 0 ? (
             <EmptyState text="Ajoutez des champs pour voir l'aperçu" />
           ) : (
-            <DynamicForm
-              schema={schema}
-              values={previewValues}
-              onChange={setPreviewValues}
-              errors={previewErrors}
-            />
+            <DynamicForm schema={schema} values={previewValues} readOnly />
           )}
         </ScrollableContainer>
       </div>

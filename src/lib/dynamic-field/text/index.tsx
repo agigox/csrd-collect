@@ -14,6 +14,7 @@ const TextField = ({
   value,
   onChange,
   error,
+  readOnly = false,
 }: FieldProps<TextFieldConfig>) => {
   // Use default value from config if no value is set
   const defaultValue = (config.defaultValue as string) ?? "";
@@ -48,6 +49,7 @@ const TextField = ({
         type="text"
         value={currentValue}
         onChange={handleChange}
+        readOnly={readOnly}
         aria-invalid={!!error}
         className={error ? "border-red-500" : ""}
       />

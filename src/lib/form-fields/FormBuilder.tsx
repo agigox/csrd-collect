@@ -6,7 +6,6 @@ import { Reorder } from "motion/react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { useFormsStore } from "@/stores/formsStore";
-import { useFormEditorStore } from "@/stores/formEditorStore";
 
 import type { FieldConfig, FieldType } from "@/models/FieldTypes";
 import { typeLabels, typeIcons } from "@/models/FieldTypes";
@@ -46,7 +45,6 @@ export const FormBuilder = ({
   >(null);
   const [mounted, setMounted] = useState(false);
   const { activeFieldName, setActiveFieldName } = useFormsStore();
-  const { updateFieldConfig } = useFormEditorStore();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -157,9 +155,9 @@ export const FormBuilder = ({
   };
 
   const handleUpdateField = (index: number, config: FieldConfig) => {
-    const oldFieldName = schema[index].name;
-    // Use updateFieldConfig to handle defaultValue sync with preview
-    updateFieldConfig(oldFieldName, config);
+    const newSchema = [...schema];
+    newSchema[index] = config;
+    onChange(newSchema);
   };
 
   const handleRemoveField = (index: number) => {

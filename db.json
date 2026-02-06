@@ -148,6 +148,109 @@
           }
         ]
       }
+    },
+    {
+      "id": "997e",
+      "code": "E2-2659_97",
+      "name": "Un formulaire quelconque",
+      "description": "",
+      "categoryCode": "E2-4",
+      "schema": {
+        "fields": [
+          {
+            "id": "switch_1",
+            "name": "switch_1",
+            "type": "switch",
+            "label": "Switch",
+            "defaultValue": true
+          },
+          {
+            "id": "text_1",
+            "name": "text_1",
+            "type": "text",
+            "label": "Autre",
+            "placeholder": "",
+            "defaultValue": "Lorem"
+          },
+          {
+            "id": "radio_1",
+            "name": "radio_1",
+            "type": "radio",
+            "label": "Choix unique",
+            "options": [
+              {
+                "value": "option_1",
+                "label": "Choix 1"
+              },
+              {
+                "value": "option_2",
+                "label": "Choix 2"
+              },
+              {
+                "value": "option_3",
+                "label": "Choix 3"
+              }
+            ],
+            "defaultIndex": 0
+          },
+          {
+            "id": "date_1",
+            "name": "date_1",
+            "type": "date",
+            "label": "Heure et Date",
+            "includeTime": false,
+            "defaultDateValue": "today",
+            "isDuplicate": false,
+            "defaultValue": {
+              "date": "2026-02-05T16:33:10.136Z"
+            }
+          },
+          {
+            "id": "number_1",
+            "name": "number_1",
+            "type": "number",
+            "label": "Nombre",
+            "placeholder": "",
+            "defaultValue": 42
+          },
+          {
+            "id": "select_1",
+            "name": "select_1",
+            "type": "select",
+            "label": "E2 - Pollution",
+            "options": [],
+            "selectionMode": "single"
+          },
+          {
+            "id": "checkbox_1",
+            "name": "checkbox_1",
+            "type": "checkbox",
+            "label": "Choix multiple",
+            "options": [
+              {
+                "value": "option_1",
+                "label": "Choix 1"
+              },
+              {
+                "value": "option_2",
+                "label": "Choix 2"
+              },
+              {
+                "value": "option_3",
+                "label": "Choix 3"
+              }
+            ],
+            "defaultIndices": []
+          },
+          {
+            "id": "import_1",
+            "name": "import_1",
+            "type": "import",
+            "label": "Import de fichier",
+            "acceptedFormats": []
+          }
+        ]
+      }
     }
   ],
   "declarations": [

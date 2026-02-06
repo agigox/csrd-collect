@@ -109,6 +109,7 @@ export interface FieldProps<T extends FieldConfig = FieldConfig> {
   value: unknown;
   onChange: (value: unknown) => void;
   error?: string;
+  readOnly?: boolean;
 }
 
 export interface FieldRegistration {

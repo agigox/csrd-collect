@@ -28,14 +28,22 @@ export const DateConfigurator = ({
         <Select
           id="select-date-default-value"
           label="Valeur par défaut"
-          onChange={(value) =>
+          onChange={(value) => {
+            const defaultDateValue = value as "none" | "today";
+            // Set defaultValue based on selection for preview sync
+            const defaultValue =
+              defaultDateValue === "today"
+                ? { date: new Date().toISOString() }
+                : undefined;
             onChange({
               ...config,
-              defaultDateValue: value as "none" | "today",
-            })
-          }
+              defaultDateValue,
+              defaultValue,
+            });
+          }}
           options={defaultDateOptions}
           showLabel
+          value={config.defaultDateValue ?? "none"}
           width={188}
         />
         {/* Inclure l'heure */}

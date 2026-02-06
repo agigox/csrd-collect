@@ -14,6 +14,7 @@ const NumberField = ({
   value,
   onChange,
   error,
+  readOnly = false,
 }: FieldProps<NumberFieldConfig>) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numValue = e.target.value === "" ? undefined : Number(e.target.value);
@@ -47,6 +48,7 @@ const NumberField = ({
           placeholder={config.placeholder}
           value={value !== undefined ? String(value) : ""}
           onChange={handleChange}
+          readOnly={readOnly}
           aria-invalid={!!error}
           className={error ? "border-red-500 flex-1" : "flex-1"}
         />

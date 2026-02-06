@@ -17,6 +17,7 @@ const CheckboxField = ({
   value,
   onChange,
   error,
+  readOnly = false,
 }: FieldProps<CheckboxFieldConfig>) => {
   // Use default values from config if no value is set
   const options = config.options ?? [];
@@ -68,15 +69,20 @@ const CheckboxField = ({
           return (
             <label
               key={option.value}
-              className="flex items-center gap-3 cursor-pointer group"
+              className={`flex items-center gap-3 group ${readOnly ? "cursor-default" : "cursor-pointer"}`}
             >
               {/* Checkbox */}
               <button
                 type="button"
                 role="checkbox"
                 aria-checked={isSelected}
-                onClick={() => handleToggle(option.value)}
+                onClick={() => !readOnly && handleToggle(option.value)}
+                disabled={readOnly}
                 className={`relative flex items-center justify-center size-4 rounded border-2 transition-colors duration-200 ${
+                  readOnly
+                    ? "cursor-default"
+                    : ""
+                } ${
                   isSelected
                     ? "border-[#2964a0] bg-[#2964a0]"
                     : error

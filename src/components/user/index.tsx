@@ -72,7 +72,7 @@ const Declarations = () => {
       formId: form.id,
       date: dateStr,
       author: "Utilisateur actuel",
-      title: form.title || "Nouvelle déclaration",
+      title: form.name || "Nouvelle déclaration",
       description: form.description || "",
       status: "pending",
       formValues: {},

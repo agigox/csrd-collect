@@ -23,6 +23,7 @@ const ImportField = ({
   value,
   onChange,
   error,
+  readOnly = false,
 }: FieldProps<ImportFieldConfig>) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileValue = value as FileValue | undefined;
@@ -99,28 +100,31 @@ const ImportField = ({
             </p>
           </div>
 
-          <IconButton
-            appearance="outlined"
-            aria-label="icon button aria label"
-            name="delete"
-            onClick={handleRemoveFile}
-            size="m"
-            variant="danger"
-          />
+          {!readOnly && (
+            <IconButton
+              appearance="outlined"
+              aria-label="icon button aria label"
+              name="delete"
+              onClick={handleRemoveFile}
+              size="m"
+              variant="danger"
+            />
+          )}
         </div>
       ) : (
         <Button
           type="button"
           variant="outline"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => !readOnly && fileInputRef.current?.click()}
+          disabled={readOnly}
           className={`w-full h-20 border-dashed ${error ? "border-red-500" : ""}`}
         >
           <div className="flex flex-col items-center gap-1">
             <Icon name="upload" size={24} className="text-gray-400" />
             <span className="text-sm text-gray-600">
-              Cliquez pour importer un fichier
+              {readOnly ? "Aucun fichier importé" : "Cliquez pour importer un fichier"}
             </span>
-            {config.maxFileSize && (
+            {!readOnly && config.maxFileSize && (
               <span className="text-xs text-gray-400">
                 Max: {config.maxFileSize} Mo
               </span>

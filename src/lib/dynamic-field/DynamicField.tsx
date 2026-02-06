@@ -8,6 +8,7 @@ interface DynamicFieldProps {
   value: unknown;
   onChange: (value: unknown) => void;
   error?: string;
+  readOnly?: boolean;
 }
 
 export const DynamicField = ({
@@ -15,6 +16,7 @@ export const DynamicField = ({
   value,
   onChange,
   error,
+  readOnly = false,
 }: DynamicFieldProps) => {
   const registration = getField(config.type);
 
@@ -37,6 +39,7 @@ export const DynamicField = ({
       value={effectiveValue}
       onChange={onChange}
       error={error}
+      readOnly={readOnly}
     />
   );
 };
