@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { CheckboxGroup } from "@rte-ds/react";
 import type {
   FieldProps,
@@ -15,7 +15,7 @@ const CheckboxField = ({
   error,
   readOnly = false,
 }: FieldProps<CheckboxFieldConfig>) => {
-  const options = config.options ?? [];
+  const options = useMemo(() => config.options ?? [], [config.options]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const getDefaultValues = (): string[] => {

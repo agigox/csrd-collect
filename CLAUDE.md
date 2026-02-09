@@ -13,6 +13,7 @@ pnpm run dev      # Démarrer le serveur dev sur http://localhost:3000 (Turbopac
 pnpm run build    # Build de production
 pnpm run start    # Démarrer le serveur de production
 pnpm run lint     # Exécuter ESLint
+pnpm test:e2e     # Exécuter les tests E2E Playwright
 ```
 
 ## Exigences obligatoires
@@ -23,7 +24,6 @@ pnpm run lint     # Exécuter ESLint
 - Stocker le code applicatif dans le dossier `src/`
 - Garder `src/app/` uniquement pour le routage (layouts, pages)
 - Les assets statiques vont dans `public/`
-- Mettre les icones svg dans `src/lib/Icons.tsx`
 
 ## Conventions de code
 
@@ -47,19 +47,9 @@ interface FormCardProps {         // Interface en anglais
 <Button>Ajouter un formulaire</Button>  // UI en français
 ```
 
-### Composants UI (shadcn/ui)
+### Composants UI (@rte-ds/core & @rte-ds/react)
 
-Utiliser les composants shadcn/ui et les adapter si nécessaire :
-
-- `Card` - cartes et conteneurs
-- `Avatar` - avatars utilisateur
-- `Tabs` - onglets et filtres
-- `Button` - boutons d'action
-- `Separator` - séparateurs visuels
-- `Badge` - tags et badges
-- `Dialog` - modales
-
-Installation : `pnpm dlx shadcn@latest add <composant>`
+Avant de développer un composant vérifie s'il existe dans design system rte: @rte-ds/react
 
 ## Acteurs
 
@@ -69,7 +59,8 @@ L'application a deux types d'utilisateurs :
 
 - Appartient à une équipe (Direction, Centre, GMR, Équipe)
 - Fait des déclarations via les formulaires créés par l'admin
-- Accède à la liste de ses déclarations
+- Accède à la liste de ses déclarations de son équipe
+- Pas d'infos d'équipe si l'utilisateur n'a pas encore choisi son équipe
 - Sidebar affiche ses informations d'équipe
 
 ### Administrateur (interface `/admin`)
@@ -82,10 +73,11 @@ L'application a deux types d'utilisateurs :
 ## Routes
 
 ```
-/                    → Interface membre (déclarations)
-/admin               → Dashboard admin (formulaires)
-/admin/formulaires   → Gestion des formulaires (futur)
-/admin/equipes       → Administration d'équipe (futur)
+/                              → Interface membre (déclarations)
+/admin                         → Dashboard admin (formulaires)
+/admin/parametrage-declaratif  → Éditeur de formulaire
+/admin/gestion-donnees         → Gestion des données (en développement)
+/admin/parametres              → Paramètres (en développement)
 ```
 
 ## Architecture
@@ -96,7 +88,8 @@ L'application a deux types d'utilisateurs :
 - `src/app/admin/` - Pages de l'interface admin
 - `src/components/` - Composants UI réutilisables
 - `src/components/admin/` - Composants spécifiques admin
-- `src/context/` - Contextes React (Sidebar, User, Declarations)
+- `src/components/user/` - Composants spécifiques utilisateur
+- `src/stores/` - redux stores
 - `src/lib/` - Composants utilitaires et code partagé
 
 ### Alias de chemins
@@ -104,14 +97,6 @@ L'application a deux types d'utilisateurs :
 - `@/components/*` → `src/components/*`
 - `@/context/*` → `src/context/*`
 - `@/lib/*` → `src/lib/*`
-
-### Styles
-
-Tailwind CSS 4 avec variables de thème personnalisées dans `src/app/globals.css` via le bloc `@theme`. Espaces de noms de couleurs :
-
-- `sidebar-*` - Couleurs de la sidebar (bg, text, muted, border, hover)
-- `primary-*` - Couleurs d'action principale
-- `content-*` - Couleurs de la zone de contenu principale
 
 ### Patterns de composants
 
@@ -128,23 +113,7 @@ Pour distinguer admin et membre sans authentification :
 2. Les composants utilisent `useUser()` pour adapter leur affichage
 3. La sidebar et la navigation sont configurables via props `variant`
 
-## Champs de formulaire dynamiques
-
-Le système de champs dynamiques permet de créer des formulaires configurés via JSON.
-
-### Structure
-
-```
-src/lib/form-fields/
-├── types.ts              # Types communs
-├── registry.ts           # Registre des champs
-├── DynamicField.tsx      # Renderer de champ unique
-├── DynamicForm.tsx       # Formulaire complet
-├── index.ts              # Exports centralisés
-├── text/index.tsx        # Champ texte
-├── number/index.tsx      # Champ numérique
-└── select/index.tsx      # Champ sélection
-```
+````
 
 ### Utilisation
 
@@ -158,13 +127,14 @@ const schema: FieldConfig[] = [
 ];
 
 <DynamicForm schema={schema} values={values} onChange={setValues} errors={errors} />
-```
+````
 
 ### Ajouter un nouveau type de champ
 
 1. **Créer le dossier** : `src/lib/form-fields/<type>/`
 
 2. **Créer le composant** dans `index.tsx` :
+
    ```typescript
    "use client";
    import { Label } from "@/lib/components/ui/label";
@@ -184,6 +154,7 @@ const schema: FieldConfig[] = [
    ```
 
 3. **Enregistrer dans le registry** (`registry.ts`) :
+
    ```typescript
    import { fieldRegistration as myField } from "./<type>";
    registerField(myField);
@@ -194,3 +165,52 @@ const schema: FieldConfig[] = [
    - Créer l'interface `MyFieldConfig` si besoin
 
 Le champ devient automatiquement disponible pour `DynamicForm`.
+
+## Tests E2E (Playwright)
+
+### Structure
+
+```
+e2e-tests/
+├── helpers/
+│   ├── mock-data.ts          # Données mockées partagées (formulaires, déclarations)
+│   └── auth.ts               # Helpers pour contourner/configurer l'authentification
+├── member/
+│   ├── login.spec.ts          # Flow de connexion membre
+│   ├── declarations.spec.ts   # Page des déclarations
+│   └── new-declaration.spec.ts # Création d'une nouvelle déclaration
+└── admin/
+    ├── navigation.spec.ts     # Sidebar et navigation admin
+    ├── forms-list.spec.ts     # Liste et filtrage des formulaires
+    └── form-editor.spec.ts    # Éditeur de formulaire
+```
+
+### Stratégie de mocking API
+
+Les tests utilisent `page.route()` de Playwright pour intercepter les appels API vers `http://localhost:4000` :
+- `GET /form-templates` → formulaires mockés
+- `GET /declarations` → déclarations mockées
+- `GET /category-codes` → codes catégorie mockés
+- `POST /form-templates` → retourne le formulaire créé
+- `PATCH /form-templates/:id` → retourne le formulaire mis à jour
+- `DELETE /form-templates/:id` → retourne succès
+
+### Helpers
+
+- `loginAsMember(page, teamInfo?)` — Injecte l'état auth dans localStorage pour contourner le modal de connexion
+- `clearAuth(page)` — Efface l'état auth pour que le modal de connexion apparaisse
+
+### Exécution
+
+```bash
+pnpm test:e2e                     # Tous les tests, tous les navigateurs
+pnpm test:e2e --project=chromium  # Chromium uniquement
+pnpm test:e2e e2e-tests/member/   # Tests membre uniquement
+pnpm test:e2e e2e-tests/admin/    # Tests admin uniquement
+```
+
+### Configuration
+
+- `playwright.config.ts` — baseURL: `http://localhost:3000`, webServer lance `pnpm run dev`
+- Navigateurs : Chromium, Firefox, WebKit
+- Traces activées en premier retry

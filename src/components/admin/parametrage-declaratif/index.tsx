@@ -12,7 +12,7 @@ import { FormMetadata } from "./FormMetadata";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { FormPreview } from "./FormPreview";
 
-export default function AdminParametrageDeclaratifPage() {
+export default function FormCreation() {
   const router = useRouter();
   const {
     loading,
@@ -100,7 +100,7 @@ export default function AdminParametrageDeclaratifPage() {
   }
 
   return (
-    <div className="h-full flex">
+    <div className="h-full flex" id="test-brea">
       <div className="flex-1 relative">
         <Button
           label="Retour"

@@ -71,6 +71,13 @@
   /* Background colors */
   --color-bg-default: #ffffff;
   --color-bg-brand: #2964a0;
+
+  /* Breakpoints */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 768px;   /* $breakpoints-s */
+  --breakpoint-md: 1024px;  /* $breakpoints-m */
+  --breakpoint-lg: 1440px;  /* $breakpoints-l */
+  --breakpoint-xl: 1768px;  /* $breakpoints-xl */
 }
 
 html,
@@ -823,3 +830,9 @@ label[for="checkbox-default-value"] {
 #select-category-label-id {
   color: white;
 }
+
+@media (min-width: var(--breakpoint-sm)) { 
+    #test-brea {
+  border: 10px solid red;
+}
+  }

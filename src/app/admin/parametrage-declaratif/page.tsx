@@ -1,5 +1,5 @@
-import AdminParametrageDeclaratifPage from "@/components/admin/parametrage-declaratif";
+import FormCreation from "@/components/admin/parametrage-declaratif";
 
 export default function Page() {
-  return <AdminParametrageDeclaratifPage />;
+  return <FormCreation />;
 }
