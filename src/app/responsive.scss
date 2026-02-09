@@ -1,0 +1,4 @@
+// Import design tokens for SCSS @media queries.
+// For JS-side breakpoint detection, use the useBreakpoint() hook
+// which reads from the CSS custom properties in globals.css @theme.
+@use "@rte-ds/core/design-tokens/main" as tokens;

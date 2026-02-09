@@ -6,6 +6,7 @@ import { useFormsStore, useCategoryCodesStore } from "@/stores";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 import { Button } from "@rte-ds/react";
+import { useBreakpoint } from "@/lib/hooks/useBreakpoint";
 
 import { FormHeader } from "./FormHeader";
 import { FormMetadata } from "./FormMetadata";
@@ -36,6 +37,8 @@ export default function FormCreation() {
     setIsSaving,
     initializeFromForm,
   } = useFormEditorStore();
+
+  const isLargeScreen = useBreakpoint("--breakpoint-lg");
 
   useEffect(() => {
     fetchForms();
@@ -100,7 +103,7 @@ export default function FormCreation() {
   }
 
   return (
-    <div className="h-full flex" id="test-brea">
+    <div className="h-full flex">
       <div className="flex-1 relative">
         <Button
           label="Retour"
@@ -122,7 +125,7 @@ export default function FormCreation() {
             className="right-8 top-11 absolute"
           />
         )}
-        <div className="pt-5 mx-auto h-full w-150.5">
+        <div className={`pt-5 mx-auto h-full ${isLargeScreen ? "w-200" : "w-150.5"}`}>
           <FormHeader
             isEditMode={isEditMode}
             onSave={handleSave}

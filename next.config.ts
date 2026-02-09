@@ -1,8 +1,11 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
-  /* config options here */
+  sassOptions: {
+    includePaths: [path.join(__dirname, "src")],
+  },
 };
 
 export default nextConfig;

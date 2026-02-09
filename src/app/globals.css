@@ -6,54 +6,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* ===== RTE Design System - Typography Primitives ===== */
-
-  /* Font families */
-  --font-family-nunito: "Nunito", system-ui, sans-serif;
-  --font-family-arial: "Arial", sans-serif;
-  --font-family-inter: var(--font-inter), system-ui, sans-serif;
-
-  /* Font sizes (RTE scale) */
-  --font-size-rte-s: 10px;
-  --font-size-rte-m: 12px;
-  --font-size-rte-l: 14px;
-  --font-size-rte-xl: 16px;
-  --font-size-rte-2xl: 20px;
-  --font-size-rte-3xl: 24px;
-  --font-size-rte-4xl: 28px;
-  --font-size-rte-5xl: 32px;
-  --font-size-rte-6xl: 40px;
-  --font-size-rte-7xl: 48px;
-  --font-size-rte-8xl: 56px;
-  --font-size-rte-9xl: 68px;
-  --font-size-rte-10xl: 80px;
-
-  /* Line heights (RTE scale) */
-  --line-height-rte-s: 14px;
-  --line-height-rte-m: 16px;
-  --line-height-rte-l: 20px;
-  --line-height-rte-xl: 24px;
-  --line-height-rte-2xl: 28px;
-  --line-height-rte-3xl: 32px;
-  --line-height-rte-4xl: 36px;
-  --line-height-rte-5xl: 40px;
-  --line-height-rte-6xl: 48px;
-  --line-height-rte-7xl: 56px;
-  --line-height-rte-8xl: 64px;
-  --line-height-rte-9xl: 80px;
-  --line-height-rte-10xl: 92px;
-
-  /* Letter spacing */
-  --letter-spacing-none: 0px;
-  --letter-spacing-s: -0.5px;
-  --letter-spacing-xs: -1px;
-
-  /* Font weights */
-  --font-weight-light: 300;
-  --font-weight-regular: 400;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
   /* Sidebar colors */
   --color-sidebar-muted: #456b95;
   --color-sidebar-hover: #456b95;
@@ -72,12 +24,12 @@
   --color-bg-default: #ffffff;
   --color-bg-brand: #2964a0;
 
-  /* Breakpoints */
+  /* Breakpoints — sourced from @rte-ds/core $breakpoints-* tokens */
   --breakpoint-xs: 480px;
-  --breakpoint-sm: 768px;   /* $breakpoints-s */
-  --breakpoint-md: 1024px;  /* $breakpoints-m */
-  --breakpoint-lg: 1440px;  /* $breakpoints-l */
-  --breakpoint-xl: 1768px;  /* $breakpoints-xl */
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1440px;
+  --breakpoint-xl: 1768px;
 }
 
 html,
@@ -621,175 +573,6 @@ body {
   }
 }
 
-/* ===== RTE Design System - Typography Utilities ===== */
-@layer utilities {
-  /* Headings (Nunito, SemiBold) */
-  .heading-5xl {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-10xl);
-    line-height: var(--line-height-rte-10xl);
-    letter-spacing: var(--letter-spacing-xs);
-  }
-  .heading-4xl {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-9xl);
-    line-height: var(--line-height-rte-9xl);
-    letter-spacing: var(--letter-spacing-xs);
-  }
-  .heading-3xl {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-8xl);
-    line-height: var(--line-height-rte-8xl);
-    letter-spacing: var(--letter-spacing-xs);
-  }
-  .heading-2xl {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-7xl);
-    line-height: var(--line-height-rte-7xl);
-    letter-spacing: var(--letter-spacing-xs);
-  }
-  .heading-xl {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-6xl);
-    line-height: var(--line-height-rte-6xl);
-    letter-spacing: var(--letter-spacing-xs);
-  }
-  .heading-l {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-5xl);
-    line-height: var(--line-height-rte-5xl);
-    letter-spacing: var(--letter-spacing-xs);
-  }
-  .heading-m {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-3xl);
-    line-height: var(--line-height-rte-3xl);
-    letter-spacing: var(--letter-spacing-s);
-  }
-  .heading-s {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-2xl);
-    line-height: var(--line-height-rte-2xl);
-    letter-spacing: var(--letter-spacing-s);
-  }
-  .heading-xs {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-xl);
-    line-height: var(--line-height-rte-xl);
-    letter-spacing: var(--letter-spacing-s);
-  }
-  .heading-2xs {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-l);
-    line-height: var(--line-height-rte-l);
-    letter-spacing: var(--letter-spacing-none);
-  }
-
-  /* Text styles (Arial) */
-  .text-xl-regular {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-rte-2xl);
-    line-height: var(--line-height-rte-2xl);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-xl-bold {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-rte-2xl);
-    line-height: var(--line-height-rte-2xl);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-l-regular {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-rte-xl);
-    line-height: var(--line-height-rte-xl);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-l-bold {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-rte-xl);
-    line-height: var(--line-height-rte-xl);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-m-regular {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-rte-l);
-    line-height: var(--line-height-rte-l);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-m-bold {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-rte-l);
-    line-height: var(--line-height-rte-l);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-s-regular {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-rte-m);
-    line-height: var(--line-height-rte-m);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-s-bold {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-rte-m);
-    line-height: var(--line-height-rte-m);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-xs-regular {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-rte-s);
-    line-height: var(--line-height-rte-s);
-    letter-spacing: var(--letter-spacing-none);
-  }
-  .text-xs-bold {
-    font-family: var(--font-family-arial);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-rte-s);
-    line-height: var(--line-height-rte-s);
-    letter-spacing: var(--letter-spacing-none);
-  }
-
-  /* Button text styles (Nunito, SemiBold) */
-  .button-text-s {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-l);
-    line-height: var(--line-height-rte-l);
-    letter-spacing: var(--letter-spacing-s);
-  }
-  .button-text-m {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-xl);
-    line-height: var(--line-height-rte-xl);
-    letter-spacing: var(--letter-spacing-s);
-  }
-  .button-text-l {
-    font-family: var(--font-family-nunito);
-    font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-rte-2xl);
-    line-height: var(--line-height-rte-2xl);
-    letter-spacing: var(--letter-spacing-s);
-  }
-}
 
 /* Custom slide animations for dialog */
 @keyframes slide-in-from-right {
@@ -830,9 +613,3 @@ label[for="checkbox-default-value"] {
 #select-category-label-id {
   color: white;
 }
-
-@media (min-width: var(--breakpoint-sm)) { 
-    #test-brea {
-  border: 10px solid red;
-}
-  }

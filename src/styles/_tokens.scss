@@ -1,0 +1,8 @@
+// Re-export all @rte-ds/core design tokens for use in SCSS files.
+//
+// Usage in any .scss or .module.scss file:
+//   @use "@/styles/tokens" as tokens;
+//   .my-class { gap: tokens.$positive-spacing_200; }
+//   @media (min-width: tokens.$breakpoints-s) { ... }
+
+@forward "@rte-ds/core/design-tokens/main";

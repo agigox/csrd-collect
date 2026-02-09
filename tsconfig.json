@@ -25,7 +25,8 @@
       "@/components/*": ["components/*"],
       "@/stores": ["stores"],
       "@/models/*": ["models/*"],
-      "@/stores/*": ["stores/*"]
+      "@/stores/*": ["stores/*"],
+      "@/styles/*": ["styles/*"]
     }
   },
   "include": [

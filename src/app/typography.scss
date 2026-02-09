@@ -1,0 +1,31 @@
+@use "@rte-ds/core/design-tokens/main" as tokens;
+@use "@rte-ds/core/design-tokens/abstract/mixins/typography" as typo;
+
+// Headings
+.heading-5xl { @include typo.typography-heading; @include typo.typography-heading-xl; font-size: tokens.$heading-5xl-semibold-font-size; line-height: tokens.$heading-5xl-semibold-line-height; }
+.heading-4xl { @include typo.typography-heading; font-family: tokens.$heading-4xl-semibold-font-family; font-weight: tokens.$heading-4xl-semibold-font-weight; font-size: tokens.$heading-4xl-semibold-font-size; line-height: tokens.$heading-4xl-semibold-line-height; letter-spacing: tokens.$heading-4xl-semibold-letter-spacing; }
+.heading-3xl { @include typo.typography-heading; font-family: tokens.$heading-3xl-semibold-font-family; font-weight: tokens.$heading-3xl-semibold-font-weight; font-size: tokens.$heading-3xl-semibold-font-size; line-height: tokens.$heading-3xl-semibold-line-height; letter-spacing: tokens.$heading-3xl-semibold-letter-spacing; }
+.heading-2xl { @include typo.typography-heading; font-family: tokens.$heading-2xl-semibold-font-family; font-weight: tokens.$heading-2xl-semibold-font-weight; font-size: tokens.$heading-2xl-semibold-font-size; line-height: tokens.$heading-2xl-semibold-line-height; letter-spacing: tokens.$heading-2xl-semibold-letter-spacing; }
+.heading-xl  { @include typo.typography-heading-xl; }
+.heading-l   { @include typo.typography-heading-l; }
+.heading-m   { @include typo.typography-heading-m; }
+.heading-s   { @include typo.typography-heading-s; }
+.heading-xs  { @include typo.typography-heading-xs; }
+.heading-2xs { @include typo.typography-heading; font-family: tokens.$heading-2xs-semibold-font-family; font-weight: tokens.$heading-2xs-semibold-font-weight; font-size: tokens.$heading-2xs-semibold-font-size; line-height: tokens.$heading-2xs-semibold-line-height; letter-spacing: tokens.$heading-2xs-semibold-letter-spacing; }
+
+// Text
+.text-xl-regular { @include typo.typography-text-l; font-size: tokens.$text-xl-regular-font-size; line-height: tokens.$text-xl-regular-line-height; font-weight: tokens.$text-xl-regular-font-weight; }
+.text-xl-bold    { @include typo.typography-text-l; font-size: tokens.$text-xl-bold-font-size; line-height: tokens.$text-xl-bold-line-height; font-weight: tokens.$text-xl-bold-font-weight; }
+.text-l-regular  { @include typo.typography-text-l; }
+.text-l-bold     { @include typo.typography-text-l-bold; }
+.text-m-regular  { @include typo.typography-text-m; }
+.text-m-bold     { @include typo.typography-text-m-bold; }
+.text-s-regular  { @include typo.typography-text-s; }
+.text-s-bold     { @include typo.typography-text-s-bold; }
+.text-xs-regular { @include typo.typography-text-xs; }
+.text-xs-bold    { @include typo.typography-text-xs; font-weight: tokens.$text-xs-bold-font-weight; }
+
+// Button text
+.button-text-s { @include typo.typography-button-s; }
+.button-text-m { @include typo.typography-button-m; }
+.button-text-l { @include typo.typography-button-l; }

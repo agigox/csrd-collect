@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
+import "./typography.scss";
+import "./responsive.scss";
 import Providers from "@/components/Providers";
 import AppSideNav from "@/components/AppSideNav";
 
