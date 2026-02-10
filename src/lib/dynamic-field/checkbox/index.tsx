@@ -60,8 +60,9 @@ const CheckboxField = ({
       items={items}
       groupTitle={config.label}
       showGroupTitle
-      groupHelpText={config.description}
+      tooltipTextLabel={config.description}
       showHelpText={!!config.description}
+      required={config.required}
       direction="vertical"
       error={!!error}
       errorMessage={error || ""}

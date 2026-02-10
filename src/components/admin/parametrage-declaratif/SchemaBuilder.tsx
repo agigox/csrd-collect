@@ -1,7 +1,7 @@
 "use client";
 
 import { EmptyState } from "@/components/common";
-import { FormBuilder } from "@/lib/form-fields/FormBuilder";
+import { FormBuilder } from "@/lib/form-creation/FormBuilder";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 
 export function SchemaBuilder() {

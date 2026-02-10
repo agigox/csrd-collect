@@ -1,6 +1,6 @@
 "use client";
 
-import { Switch } from "@rte-ds/react";
+import { Switch, Tooltip } from "@rte-ds/react";
 import type {
   FieldProps,
   FieldRegistration,
@@ -17,7 +17,7 @@ const SwitchField = ({
   const isChecked =
     value !== undefined ? Boolean(value) : Boolean(config.defaultValue);
 
-  return (
+  const switchContent = (
     <Switch
       key={`${config.name}-${isChecked}`}
       id={config.name}
@@ -26,7 +26,21 @@ const SwitchField = ({
       checked={isChecked}
       onChange={() => !readOnly && onChange(!isChecked)}
       readOnly={readOnly}
+      required={config.required}
     />
+  );
+
+  return config.description ? (
+    <Tooltip
+      alignment="start"
+      arrow
+      label={config.description}
+      position="bottom"
+    >
+      {switchContent}
+    </Tooltip>
+  ) : (
+    switchContent
   );
 };
 

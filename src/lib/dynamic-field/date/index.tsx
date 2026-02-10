@@ -6,7 +6,6 @@ import { fr } from "date-fns/locale";
 import { Button } from "@/lib/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { Calendar } from "@/lib/ui/calendar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/ui/tooltip";
 import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
 import type {
@@ -14,6 +13,7 @@ import type {
   FieldRegistration,
   DateFieldConfig,
 } from "@/models/FieldTypes";
+import { Tooltip } from "@rte-ds/react";
 
 type DateValue = {
   date: string; // ISO date string
@@ -133,25 +133,14 @@ const DateField = ({
   const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
 
   const labelContent = (
-    <label htmlFor={config.name}>
-      {config.label}
+    <label htmlFor={config.name} className="py-0.5 px-2">
+      <span className="inputLabel">{config.label}</span>
       {config.required && <span className="text-red-500 ml-1">*</span>}
     </label>
   );
 
-  return (
-    <div className="flex flex-col gap-2">
-      {config.description ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="w-fit cursor-help">{labelContent}</span>
-          </TooltipTrigger>
-          <TooltipContent>{config.description}</TooltipContent>
-        </Tooltip>
-      ) : (
-        labelContent
-      )}
-
+  const popoverContent = (
+    <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <div
@@ -276,6 +265,24 @@ const DateField = ({
       </Popover>
 
       {error && <span className="text-sm text-red-500">{error}</span>}
+    </>
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      {labelContent}
+      {config.description ? (
+        <Tooltip
+          alignment="start"
+          arrow
+          label={config.description}
+          position="bottom"
+        >
+          {popoverContent}
+        </Tooltip>
+      ) : (
+        popoverContent
+      )}
     </div>
   );
 };

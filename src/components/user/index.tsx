@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/lib/ui/dialog";
 import { Button } from "@/lib/ui/button";
-import { DynamicForm } from "@/lib/form-fields/DynamicForm";
+import { DynamicForm } from "@/lib/form-creation/DynamicForm";
 import Icon from "@/lib/Icons";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 import ModificationHistory from "./ModificationHistory";

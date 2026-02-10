@@ -89,7 +89,6 @@ export const RadioConfigurator = ({
         const isLast = index === options.length - 1;
         return (
           <div key={index} className="flex gap-2 items-end">
-            <span className="flex items-center justify-center size-5 border-2 bg-white rounded-full border-gray-300 mb-1.5" />
             <RadioButton
               groupName="radio-group"
               label="Radio Button"

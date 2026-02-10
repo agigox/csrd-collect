@@ -16,6 +16,18 @@ pnpm run lint     # Exécuter ESLint
 pnpm test:e2e     # Exécuter les tests E2E Playwright
 ```
 
+### API Mock (développement)
+
+```bash
+npx json-server db.json --port 4000   # Lancer le serveur API mock
+```
+
+Le fichier `db.json` à la racine alimente les endpoints :
+- `GET /category-codes` — Codes catégorie pour les formulaires
+- `GET /form-templates` — Modèles de formulaires
+- `GET /declarations` — Déclarations existantes
+- `GET /options` — Sources de données pour les champs select
+
 ## Exigences obligatoires
 
 - Utiliser pnpm comme gestionnaire de paquets
@@ -89,14 +101,17 @@ L'application a deux types d'utilisateurs :
 - `src/components/` - Composants UI réutilisables
 - `src/components/admin/` - Composants spécifiques admin
 - `src/components/user/` - Composants spécifiques utilisateur
-- `src/stores/` - redux stores
+- `src/stores/` - State management (Zustand)
+- `src/models/` - Types et interfaces métier (FieldTypes, FormTemplate, Declaration)
 - `src/lib/` - Composants utilitaires et code partagé
 
 ### Alias de chemins
 
 - `@/components/*` → `src/components/*`
-- `@/context/*` → `src/context/*`
 - `@/lib/*` → `src/lib/*`
+- `@/models/*` → `src/models/*`
+- `@/stores/*` → `src/stores/*`
+- `@/styles/*` → `src/styles/*`
 
 ### Patterns de composants
 
@@ -104,6 +119,14 @@ L'application a deux types d'utilisateurs :
 - Le layout racine est un composant serveur
 - La sidebar supporte collapse/expand avec transitions fluides
 - La sidebar accepte un `variant` pour différencier admin/membre
+
+### State management (Zustand)
+
+- `formEditorStore.ts` — État de l'éditeur de formulaire (schema, formName, formDescription, showPreview)
+- `formsStore.ts` — Liste des formulaires
+- `declarationsStore.ts` — Liste des déclarations
+- `categoryCodesStore.ts` — Codes catégorie
+- `authStore.ts` — Authentification
 
 ### Pattern de distinction des rôles
 
@@ -113,35 +136,86 @@ Pour distinguer admin et membre sans authentification :
 2. Les composants utilisent `useUser()` pour adapter leur affichage
 3. La sidebar et la navigation sont configurables via props `variant`
 
-````
+## Système de champs dynamiques
+
+### Architecture (3 couches)
+
+```
+src/lib/dynamic-field/       → Rendu des champs (côté utilisateur)
+├── DynamicField.tsx          → Résolveur dynamique via registry
+├── text/index.tsx
+├── number/index.tsx
+├── select/index.tsx
+├── radio/index.tsx
+├── checkbox/index.tsx
+├── switch/index.tsx
+├── date/index.tsx
+└── import/index.tsx
+
+src/lib/field-configurator/  → Configuration des champs (côté admin)
+├── index.tsx                 → FieldConfigurator principal
+├── SortableFieldCard.tsx     → Carte drag-and-drop
+├── common/                   → Composants partagés (LabelField, DescriptionField, Footer, DefaultValueSelector)
+├── text/index.tsx
+├── number/index.tsx
+├── select/index.tsx
+├── radio/index.tsx
+├── checkbox/index.tsx
+├── switch/index.tsx
+├── date/index.tsx
+└── import/index.tsx
+
+src/lib/form-creation/       → Composants de formulaire
+├── FormBuilder.tsx           → Builder drag-and-drop avec ajout/suppression/duplication
+└── DynamicForm.tsx           → Rendu d'un formulaire complet depuis un schema
+
+src/lib/utils/registry.ts    → Enregistrement des types de champs
+src/models/FieldTypes.ts     → Tous les types/interfaces (FieldConfig, FieldType, etc.)
+```
+
+### Types de champs disponibles (8)
+
+| Type       | Label FR            | Icône           | Config spécifique                              |
+|------------|---------------------|-----------------|------------------------------------------------|
+| `text`     | Champ libre         | `chat`          | —                                              |
+| `number`   | Nombre              | `chat`          | `unit`                                         |
+| `select`   | Liste déroulante    | `list-alt`      | `options`, `selectionMode`, `dataType/Source`   |
+| `radio`    | Choix unique        | `check-circle`  | `options`, `defaultIndex`                      |
+| `checkbox` | Choix multiple      | `checkbox`      | `options`, `defaultIndices`                    |
+| `switch`   | Switch              | `switch`        | —                                              |
+| `date`     | Date                | `calendar-month`| `includeTime`, `defaultDateValue`              |
+| `import`   | Import de fichier   | `upload`        | `acceptedFormats`, `maxFileSize`               |
 
 ### Utilisation
 
 ```typescript
-import { DynamicForm, FieldConfig } from "@/lib/form-fields";
+import DynamicForm from "@/lib/form-creation/DynamicForm";
+import type { FieldConfig } from "@/models/FieldTypes";
 
 const schema: FieldConfig[] = [
-  { name: "titre", type: "text", label: "Titre", required: true },
-  { name: "annee", type: "number", label: "Année" },
-  { name: "categorie", type: "select", label: "Catégorie", options: [...] }
+  { id: "1", name: "titre", type: "text", label: "Titre", required: true },
+  { id: "2", name: "annee", type: "number", label: "Année" },
+  { id: "3", name: "categorie", type: "select", label: "Catégorie", options: [...], selectionMode: "single" }
 ];
 
 <DynamicForm schema={schema} values={values} onChange={setValues} errors={errors} />
-````
+```
 
 ### Ajouter un nouveau type de champ
 
-1. **Créer le dossier** : `src/lib/form-fields/<type>/`
+1. **Ajouter le type** dans `src/models/FieldTypes.ts` :
+   - Ajouter à `FieldType`
+   - Créer l'interface `MyFieldConfig extends BaseFieldConfig`
+   - Ajouter à l'union `FieldConfig`
 
-2. **Créer le composant** dans `index.tsx` :
+2. **Créer le rendu** : `src/lib/dynamic-field/<type>/index.tsx`
 
    ```typescript
    "use client";
-   import { Label } from "@/lib/components/ui/label";
-   import type { FieldProps, FieldRegistration } from "../types";
+   import type { FieldProps, FieldRegistration } from "@/models/FieldTypes";
 
    const MyField = ({ config, value, onChange, error }: FieldProps) => {
-     // Implémentation du champ
+     // Implémentation du rendu
    };
 
    export const fieldRegistration: FieldRegistration = {
@@ -153,18 +227,19 @@ const schema: FieldConfig[] = [
    export default MyField;
    ```
 
-3. **Enregistrer dans le registry** (`registry.ts`) :
+3. **Enregistrer dans le registry** (`src/lib/utils/registry.ts`) :
 
    ```typescript
-   import { fieldRegistration as myField } from "./<type>";
+   import { fieldRegistration as myField } from "../dynamic-field/<type>";
    registerField(myField);
    ```
 
-4. **Ajouter le type** dans `types.ts` :
-   - Ajouter à `FieldType`
-   - Créer l'interface `MyFieldConfig` si besoin
+4. **Créer le configurateur** : `src/lib/field-configurator/<type>/index.tsx`
 
-Le champ devient automatiquement disponible pour `DynamicForm`.
+5. **Mettre à jour le FormBuilder** (`src/lib/form-creation/FormBuilder.tsx`) :
+   - Ajouter le cas dans `handleAddField` pour la config par défaut
+
+Le champ devient automatiquement disponible dans le FormBuilder et le DynamicForm.
 
 ## Tests E2E (Playwright)
 
@@ -188,6 +263,7 @@ e2e-tests/
 ### Stratégie de mocking API
 
 Les tests utilisent `page.route()` de Playwright pour intercepter les appels API vers `http://localhost:4000` :
+
 - `GET /form-templates` → formulaires mockés
 - `GET /declarations` → déclarations mockées
 - `GET /category-codes` → codes catégorie mockés
@@ -212,5 +288,5 @@ pnpm test:e2e e2e-tests/admin/    # Tests admin uniquement
 ### Configuration
 
 - `playwright.config.ts` — baseURL: `http://localhost:3000`, webServer lance `pnpm run dev`
-- Navigateurs : Chromium, Firefox, WebKit
+- Navigateurs : Chromium
 - Traces activées en premier retry

@@ -2,14 +2,13 @@
 
 import { useRef } from "react";
 import { Button } from "@/lib/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/lib/ui/tooltip";
 import Icon from "@/lib/Icons";
 import type {
   FieldProps,
   FieldRegistration,
   ImportFieldConfig,
 } from "@/models/FieldTypes";
-import { IconButton } from "@rte-ds/react";
+import { IconButton, Tooltip } from "@rte-ds/react";
 
 interface FileValue {
   name: string;
@@ -65,19 +64,8 @@ const ImportField = ({
     </label>
   );
 
-  return (
-    <div className="flex flex-col gap-2">
-      {config.description ? (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="w-fit cursor-help">{labelContent}</span>
-          </TooltipTrigger>
-          <TooltipContent>{config.description}</TooltipContent>
-        </Tooltip>
-      ) : (
-        labelContent
-      )}
-
+  const fieldContent = (
+    <>
       <input
         ref={fileInputRef}
         id={config.name}
@@ -135,6 +123,24 @@ const ImportField = ({
       )}
 
       {error && <span className="text-sm text-red-500">{error}</span>}
+    </>
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      {labelContent}
+      {config.description ? (
+        <Tooltip
+          alignment="start"
+          arrow
+          label={config.description}
+          position="bottom"
+        >
+          {fieldContent}
+        </Tooltip>
+      ) : (
+        fieldContent
+      )}
     </div>
   );
 };

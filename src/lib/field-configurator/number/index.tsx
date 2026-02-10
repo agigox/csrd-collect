@@ -1,19 +1,11 @@
 "use client";
 
-import { Select, TextInput } from "@rte-ds/react";
-import type { NumberFieldConfig, SpecificConfiguratorProps } from "@/models/FieldTypes";
+import { TextInput } from "@rte-ds/react";
+import type {
+  NumberFieldConfig,
+  SpecificConfiguratorProps,
+} from "@/models/FieldTypes";
 import { LabelField } from "../common/LabelField";
-
-const unitOptions = [
-  { value: "", label: "Sans unité" },
-  { value: "L", label: "Litres (L)" },
-  { value: "kg", label: "Kilogrammes (kg)" },
-  { value: "m", label: "Mètres (m)" },
-  { value: "m²", label: "Mètres carrés (m²)" },
-  { value: "m³", label: "Mètres cubes (m³)" },
-  { value: "t", label: "Tonnes (t)" },
-  { value: "kWh", label: "Kilowattheures (kWh)" },
-];
 
 export const NumberConfigurator = ({
   config,
@@ -44,17 +36,14 @@ export const NumberConfigurator = ({
           type="number"
           {...(config.unit && { unit: config.unit })}
         />
-        <Select
-          id="unit-select"
+        <TextInput
+          id="unit-value"
           label="Unité"
-          showLabel
-          options={unitOptions}
           value={config.unit ?? ""}
           onChange={(value) =>
             onChange({ ...config, unit: value || undefined })
           }
           width={160}
-          showResetButton
         />
       </div>
     </>

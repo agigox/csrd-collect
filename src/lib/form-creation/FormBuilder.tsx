@@ -10,7 +10,7 @@ import { useFormsStore } from "@/stores/formsStore";
 import type { FieldConfig, FieldType } from "@/models/FieldTypes";
 import { typeLabels, typeIcons } from "@/models/FieldTypes";
 import { Button, Icon } from "@rte-ds/react";
-import { SortableFieldCard } from "./field-configurator/SortableFieldCard";
+import { SortableFieldCard } from "../field-configurator/SortableFieldCard";
 
 interface FormBuilderProps {
   schema: FieldConfig[];

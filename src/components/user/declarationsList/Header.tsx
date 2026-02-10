@@ -60,7 +60,7 @@ const Header = ({
       </div>
 
       {/* Divider */}
-      <div className="w-full h-px bg-border-default" />
+      <div className="w-full h-px" />
     </div>
   );
 };

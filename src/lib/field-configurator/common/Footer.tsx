@@ -104,8 +104,8 @@ export const Footer = ({
           {/* Action icons */}
           <div className="flex items-center gap-2">
             <div className="flex gap-8">
-              {/* Embranchement button */}
               <div className="flex gap-1">
+                {/* TODO Embranchement button */}
                 <IconButton
                   appearance="outlined"
                   aria-label="icon button aria label"

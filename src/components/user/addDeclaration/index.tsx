@@ -12,7 +12,7 @@ import { Button } from "@/lib/ui/button";
 import Icon from "@/lib/Icons";
 import FormSelectionDialog from "../FormSelectionDialog";
 import { type FormDefinition } from "@/stores";
-import { DynamicForm } from "@/lib/form-fields/DynamicForm";
+import { DynamicForm } from "@/lib/form-creation/DynamicForm";
 
 interface AddDeclarationProps {
   triggerButton?: boolean;

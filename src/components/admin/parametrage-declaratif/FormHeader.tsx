@@ -1,6 +1,6 @@
 "use client";
 
-import { LabelField } from "@/lib/form-fields/field-configurator/common/LabelField";
+import { LabelField } from "@/lib/field-configurator/common/LabelField";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { Button, IconButton } from "@rte-ds/react";
 

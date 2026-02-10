@@ -5,33 +5,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
-  /* Sidebar colors */
-  --color-sidebar-muted: #456b95;
-  --color-sidebar-hover: #456b95;
-
-  /* Primary/Brand colors */
-  --color-primary: #4a90c2;
-  --color-primary-hover: #3a7db0;
-  --color-brand: #2964a0;
-  --color-brand-hover: #1e4f7a;
-
-  /* Border colors */
-  --color-border-default: #cdcccb;
-  --color-border-brand: #2964a0;
-
-  /* Background colors */
-  --color-bg-default: #ffffff;
-  --color-bg-brand: #2964a0;
-
-  /* Breakpoints — sourced from @rte-ds/core $breakpoints-* tokens */
-  --breakpoint-xs: 480px;
-  --breakpoint-sm: 768px;
-  --breakpoint-md: 1024px;
-  --breakpoint-lg: 1440px;
-  --breakpoint-xl: 1768px;
-}
-
 html,
 body {
   margin: 0;
@@ -572,7 +545,6 @@ body {
     font-weight: bold;
   }
 }
-
 
 /* Custom slide animations for dialog */
 @keyframes slide-in-from-right {
