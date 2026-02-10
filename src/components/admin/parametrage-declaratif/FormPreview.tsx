@@ -2,8 +2,7 @@
 
 import { useMemo } from "react";
 import { EmptyState } from "@/components/common";
-import { DynamicForm } from "@/lib/form-fields/DynamicForm";
-import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
+import { DynamicForm } from "@/lib/form-creation/DynamicForm";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { Divider, Icon } from "@rte-ds/react";
 
@@ -19,7 +18,7 @@ export function FormPreview() {
         }
         return acc;
       },
-      {} as Record<string, unknown>
+      {} as Record<string, unknown>,
     );
   }, [schema]);
 
@@ -57,13 +56,11 @@ export function FormPreview() {
             </div>
           )}
         </div>
-        <ScrollableContainer className="flex-1 space-y-6">
-          {schema.length === 0 ? (
-            <EmptyState text="Ajoutez des champs pour voir l'aperçu" />
-          ) : (
-            <DynamicForm schema={schema} values={previewValues} readOnly />
-          )}
-        </ScrollableContainer>
+        {schema.length === 0 ? (
+          <EmptyState text="Ajoutez des champs pour voir l'aperçu" />
+        ) : (
+          <DynamicForm schema={schema} values={previewValues} readOnly />
+        )}
       </div>
     </div>
   );

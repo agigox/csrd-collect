@@ -6,7 +6,7 @@ import type {
   FieldType,
   FieldConfiguratorProps,
 } from "@/models/FieldTypes";
-import { getField } from "../../utils/registry";
+import { getField } from "../utils/registry";
 
 import { DescriptionField } from "./common/DescriptionField";
 import { Footer } from "./common/Footer";

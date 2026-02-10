@@ -39,6 +39,7 @@ const RadioField = ({
         items={options.map((option) => option.label)}
         value={options.find((o) => o.value === currentValue)?.label}
         groupTitle={config.label}
+        required={config.required}
         showItemsLabel
         onChange={handleChange}
         showGroupTitle={true}

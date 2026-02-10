@@ -53,7 +53,7 @@ export const SortableFieldCard = ({
     >
       <Card
         className="py-4 px-4"
-        cardType="outlined"
+        cardType="default"
         style={{
           borderTop: isOpen
             ? "4px solid var(--background-brand-default)"
