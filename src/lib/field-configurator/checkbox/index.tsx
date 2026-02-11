@@ -4,11 +4,13 @@ import { Checkbox, IconButton, TextInput } from "@rte-ds/react";
 import type { CheckboxFieldConfig, SelectOption, SpecificConfiguratorProps } from "@/models/FieldTypes";
 import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
+import { BranchingSelect } from "../common/BranchingSelect";
 
 export const CheckboxConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  schema = [],
 }: SpecificConfiguratorProps<CheckboxFieldConfig>) => {
   const handleOptionChange = (
     index: number,
@@ -40,8 +42,54 @@ export const CheckboxConfigurator = ({
       .filter((i) => i !== index)
       .map((i) => (i > index ? i - 1 : i));
 
+    // Clean up branching for the removed option
+    const removedOption = newOptions[index];
+    const newBranching = { ...(config.branching ?? {}) };
+    const newBranchingColors = { ...(config.branchingColors ?? {}) };
+    delete newBranching[removedOption.value];
+    delete newBranchingColors[removedOption.value];
+
     newOptions.splice(index, 1);
-    onChange({ ...config, options: newOptions, defaultIndices: newDefaults });
+    onChange({
+      ...config,
+      options: newOptions,
+      defaultIndices: newDefaults,
+      branching: newBranching,
+      branchingColors: newBranchingColors,
+    });
+  };
+
+  const handleBranchingChange = (optionValue: string, fieldTypes: string[]) => {
+    const currentBranching = config.branching ?? {};
+    const currentLinkedIds = currentBranching[optionValue] ?? [];
+
+    // Preserve existing field IDs for types that remain selected,
+    // only add raw type names for newly selected types (FormBuilder will convert them)
+    const usedIds = new Set<string>();
+    const newLinked: string[] = [];
+
+    for (const type of fieldTypes) {
+      const existingId = currentLinkedIds.find((id) => {
+        if (usedIds.has(id)) return false;
+        const field = schema.find((f) => f.id === id);
+        return field?.type === type;
+      });
+
+      if (existingId) {
+        newLinked.push(existingId);
+        usedIds.add(existingId);
+      } else {
+        newLinked.push(type);
+      }
+    }
+
+    const newBranching = { ...currentBranching };
+    if (newLinked.length > 0) {
+      newBranching[optionValue] = newLinked;
+    } else {
+      delete newBranching[optionValue];
+    }
+    onChange({ ...config, branching: newBranching });
   };
 
   const options = config.options ?? [];
@@ -81,6 +129,8 @@ export const CheckboxConfigurator = ({
 
       {options.map((option, index) => {
         const isLast = index === options.length - 1;
+        const linkedFieldIds = config.branching?.[option.value] ?? [];
+        const branchingColor = config.branchingColors?.[option.value];
         return (
           <div key={index} className="flex gap-2 items-end">
             <Checkbox
@@ -95,8 +145,17 @@ export const CheckboxConfigurator = ({
               label={`Choix ${index + 1}`}
               value={option.label}
               onChange={(value) => handleOptionChange(index, "label", value)}
-              width={"100%"}
+              width={config.branchingEnabled ? 140 : "100%"}
             />
+            {config.branchingEnabled && (
+              <BranchingSelect
+                optionValue={option.value}
+                linkedFieldIds={linkedFieldIds}
+                schema={schema}
+                branchingColor={branchingColor}
+                onChange={handleBranchingChange}
+              />
+            )}
             {isLast ? (
               <IconButton
                 appearance="filled"

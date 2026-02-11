@@ -5,6 +5,8 @@ import type {
   FieldConfig,
   FieldType,
   FieldConfiguratorProps,
+  RadioFieldConfig,
+  CheckboxFieldConfig,
 } from "@/models/FieldTypes";
 import { getField } from "../utils/registry";
 
@@ -33,6 +35,8 @@ export const FieldConfigurator = ({
   isOpen = true,
   onOpen,
   dragControls,
+  schema,
+  onBranchingCleanup,
 }: FieldConfiguratorProps) => {
   // Remove isDuplicate flag when user modifies any field
   const handleChange = (newConfig: FieldConfig) => {
@@ -46,12 +50,25 @@ export const FieldConfigurator = ({
 
   const handleFieldTypeChange = (newType: FieldType) => {
     if (newType === config.type) return;
+
+    // If changing away from a branching type, clean up children
+    const hadBranching =
+      (config.type === "radio" || config.type === "checkbox") &&
+      (config as RadioFieldConfig | CheckboxFieldConfig).branchingEnabled;
+    if (hadBranching && onBranchingCleanup) {
+      onBranchingCleanup();
+    }
+
     const registration = getField(newType);
     const base = {
+      id: config.id,
       name: config.name,
       label: config.label,
       required: config.required,
       description: config.description,
+      parentFieldId: config.parentFieldId,
+      parentOptionValue: config.parentOptionValue,
+      branchingColor: config.branchingColor,
       ...registration?.defaultConfig,
     };
 
@@ -74,6 +91,26 @@ export const FieldConfigurator = ({
       ...(typeDefaults[newType] ?? {}),
     } as FieldConfig;
     onChange(newConfig);
+  };
+
+  const supportsBranching = config.type === "radio" || config.type === "checkbox";
+
+  const branchingEnabled = supportsBranching
+    ? (config as RadioFieldConfig | CheckboxFieldConfig).branchingEnabled ?? false
+    : false;
+
+  const handleToggleBranching = () => {
+    if (!supportsBranching) return;
+    const current = config as RadioFieldConfig | CheckboxFieldConfig;
+    const newEnabled = !current.branchingEnabled;
+    if (!newEnabled && onBranchingCleanup) {
+      onBranchingCleanup();
+    }
+    handleChange({
+      ...config,
+      branchingEnabled: newEnabled,
+      ...(!newEnabled ? { branching: undefined, branchingColors: undefined } : {}),
+    } as FieldConfig);
   };
 
   const renderSpecificConfigurator = () => {
@@ -109,6 +146,7 @@ export const FieldConfigurator = ({
             config={config}
             onChange={(c) => handleChange(c)}
             {...typeChangeProps}
+            schema={schema}
           />
         );
       case "checkbox":
@@ -117,6 +155,7 @@ export const FieldConfigurator = ({
             config={config}
             onChange={(c) => handleChange(c)}
             {...typeChangeProps}
+            schema={schema}
           />
         );
       case "switch":
@@ -202,6 +241,9 @@ export const FieldConfigurator = ({
             canMoveUp={canMoveUp}
             canMoveDown={canMoveDown}
             dragControls={dragControls}
+            showBranchingButton={supportsBranching}
+            onBranching={handleToggleBranching}
+            branchingEnabled={branchingEnabled}
           />
         </motion.div>
       )}
