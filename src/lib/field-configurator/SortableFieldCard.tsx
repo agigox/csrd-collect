@@ -2,6 +2,7 @@ import type { FieldConfig } from "@/models/FieldTypes";
 import { Card } from "@rte-ds/react";
 import { FieldConfigurator } from ".";
 import { Reorder, useDragControls } from "motion/react";
+import { BranchingTag } from "./common/BranchingTag";
 
 // Sortable Field Card component
 interface SortableFieldCardProps {
@@ -15,6 +16,11 @@ interface SortableFieldCardProps {
   onDuplicate: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
+  schema?: FieldConfig[];
+  onBranchingCleanup?: () => void;
+  isChildField?: boolean;
+  branchingColor?: string;
+  branchingNumber?: number;
 }
 
 export const SortableFieldCard = ({
@@ -28,6 +34,11 @@ export const SortableFieldCard = ({
   onDuplicate,
   onMoveUp,
   onMoveDown,
+  schema,
+  onBranchingCleanup,
+  isChildField = false,
+  branchingColor,
+  branchingNumber,
 }: SortableFieldCardProps) => {
   const dragControls = useDragControls();
 
@@ -35,28 +46,42 @@ export const SortableFieldCard = ({
     <Reorder.Item
       value={fieldConfig}
       dragListener={false}
-      dragControls={dragControls}
+      dragControls={isChildField ? undefined : dragControls}
       layout
       transition={{
         type: "spring",
         stiffness: 350,
         damping: 30,
       }}
-      whileDrag={{
-        scale: 1.02,
-        boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.15)",
-        zIndex: 1000,
-      }}
+      whileDrag={
+        isChildField
+          ? undefined
+          : {
+              scale: 1.02,
+              boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.15)",
+              zIndex: 1000,
+            }
+      }
       style={{
         position: "relative",
+        marginLeft: isChildField ? "24px" : undefined,
       }}
     >
+      {isChildField && branchingColor && branchingNumber !== undefined && (
+        <BranchingTag
+          branchingColor={branchingColor}
+          branchingNumber={branchingNumber}
+        />
+      )}
       <Card
         className="py-4 px-4"
         cardType="default"
         style={{
           borderTop: isOpen
             ? "4px solid var(--background-brand-default)"
+            : undefined,
+          borderLeft: isChildField && branchingColor
+            ? `3px solid ${branchingColor}`
             : undefined,
           backgroundColor: "white",
         }}
@@ -73,7 +98,9 @@ export const SortableFieldCard = ({
           canMoveDown={index < totalFields - 1}
           isOpen={isOpen}
           onOpen={onOpen}
-          dragControls={dragControls}
+          dragControls={isChildField ? undefined : dragControls}
+          schema={schema}
+          onBranchingCleanup={onBranchingCleanup}
         />
       </Card>
     </Reorder.Item>

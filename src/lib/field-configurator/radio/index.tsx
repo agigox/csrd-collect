@@ -8,11 +8,13 @@ import type {
 } from "@/models/FieldTypes";
 import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
+import { BranchingSelect } from "../common/BranchingSelect";
 
 export const RadioConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  schema = [],
 }: SpecificConfiguratorProps<RadioFieldConfig>) => {
   const handleOptionChange = (
     index: number,
@@ -48,8 +50,54 @@ export const RadioConfigurator = ({
       }
     }
 
+    // Clean up branching for the removed option
+    const removedOption = newOptions[index];
+    const newBranching = { ...(config.branching ?? {}) };
+    const newBranchingColors = { ...(config.branchingColors ?? {}) };
+    delete newBranching[removedOption.value];
+    delete newBranchingColors[removedOption.value];
+
     newOptions.splice(index, 1);
-    onChange({ ...config, options: newOptions, defaultIndex: newDefaultIndex });
+    onChange({
+      ...config,
+      options: newOptions,
+      defaultIndex: newDefaultIndex,
+      branching: newBranching,
+      branchingColors: newBranchingColors,
+    });
+  };
+
+  const handleBranchingChange = (optionValue: string, fieldTypes: string[]) => {
+    const currentBranching = config.branching ?? {};
+    const currentLinkedIds = currentBranching[optionValue] ?? [];
+
+    // Preserve existing field IDs for types that remain selected,
+    // only add raw type names for newly selected types (FormBuilder will convert them)
+    const usedIds = new Set<string>();
+    const newLinked: string[] = [];
+
+    for (const type of fieldTypes) {
+      const existingId = currentLinkedIds.find((id) => {
+        if (usedIds.has(id)) return false;
+        const field = schema.find((f) => f.id === id);
+        return field?.type === type;
+      });
+
+      if (existingId) {
+        newLinked.push(existingId);
+        usedIds.add(existingId);
+      } else {
+        newLinked.push(type);
+      }
+    }
+
+    const newBranching = { ...currentBranching };
+    if (newLinked.length > 0) {
+      newBranching[optionValue] = newLinked;
+    } else {
+      delete newBranching[optionValue];
+    }
+    onChange({ ...config, branching: newBranching });
   };
 
   const options = config.options ?? [];
@@ -87,6 +135,8 @@ export const RadioConfigurator = ({
       />
       {options.map((option, index) => {
         const isLast = index === options.length - 1;
+        const linkedFieldIds = config.branching?.[option.value] ?? [];
+        const branchingColor = config.branchingColors?.[option.value];
         return (
           <div key={index} className="flex gap-2 items-end">
             <RadioButton
@@ -99,8 +149,17 @@ export const RadioConfigurator = ({
               label={`Choix ${index + 1}`}
               value={option.label}
               onChange={(value) => handleOptionChange(index, "label", value)}
-              width={200}
+              width={config.branchingEnabled ? 140 : 200}
             />
+            {config.branchingEnabled && (
+              <BranchingSelect
+                optionValue={option.value}
+                linkedFieldIds={linkedFieldIds}
+                schema={schema}
+                branchingColor={branchingColor}
+                onChange={handleBranchingChange}
+              />
+            )}
             {isLast ? (
               <IconButton
                 appearance="filled"

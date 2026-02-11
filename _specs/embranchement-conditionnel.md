@@ -102,9 +102,9 @@ Ajouter une fonctionnalité d'**embranchement conditionnel** aux champs **radio*
 
 ## Acceptance Criteria
 
-- [ ] Le bouton embranchement n'apparaît que dans le footer des champs radio et checkbox (et de leurs sous-champs radio/checkbox pour l'imbrication).
-- [ ] Au clic sur le bouton embranchement, des sélecteurs multi-select "Embranchement" apparaissent à côté de chaque option.
-- [ ] Le sélecteur multi-select propose "Aucun" + tous les types de champs disponibles.
+- [x] Le bouton embranchement n'apparaît que dans le footer des champs radio et checkbox (et de leurs sous-champs radio/checkbox pour l'imbrication).
+- [x] Au clic sur le bouton embranchement, des sélecteurs multi-select "Embranchement" apparaissent à côté de chaque option.
+- [x] Le sélecteur multi-select propose "Aucun" + tous les types de champs disponibles.
 - [ ] Sélectionner un ou plusieurs types crée autant de sous-champs conditionnels dans le schema, visibles en dessous du parent dans le FormBuilder.
 - [ ] La carte parente et toutes ses cartes enfants sont ouvertes (actives) simultanément dans le FormBuilder.
 - [ ] Fermer la carte parente ferme automatiquement toutes ses cartes enfants.

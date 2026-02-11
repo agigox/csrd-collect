@@ -1,13 +1,40 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/common";
 import { DynamicForm } from "@/lib/form-creation/DynamicForm";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { Divider, Icon } from "@rte-ds/react";
+import type { FieldConfig, RadioFieldConfig, CheckboxFieldConfig } from "@/models/FieldTypes";
+
+function InteractivePreview({ schema, previewValues }: { schema: FieldConfig[]; previewValues: Record<string, unknown> }) {
+  const [interactiveValues, setInteractiveValues] = useState<Record<string, unknown>>({});
+
+  const mergedValues = useMemo(() => {
+    return { ...previewValues, ...interactiveValues };
+  }, [previewValues, interactiveValues]);
+
+  return (
+    <DynamicForm
+      schema={schema}
+      values={mergedValues}
+      readOnly={false}
+      onChange={setInteractiveValues}
+    />
+  );
+}
 
 export function FormPreview() {
   const { formId, formName, schema, setShowPreview } = useFormEditorStore();
+
+  // Detect if any field has branching enabled
+  const hasBranching = useMemo(() => {
+    return schema.some(
+      (f) =>
+        (f.type === "radio" || f.type === "checkbox") &&
+        (f as RadioFieldConfig | CheckboxFieldConfig).branchingEnabled,
+    );
+  }, [schema]);
 
   // Derive preview values from schema's defaultValue
   const previewValues = useMemo(() => {
@@ -20,6 +47,11 @@ export function FormPreview() {
       },
       {} as Record<string, unknown>,
     );
+  }, [schema]);
+
+  // Generate a key that changes when schema changes to reset interactive state
+  const schemaKey = useMemo(() => {
+    return schema.map((f) => f.id).join(",");
   }, [schema]);
 
   return (
@@ -58,6 +90,8 @@ export function FormPreview() {
         </div>
         {schema.length === 0 ? (
           <EmptyState text="Ajoutez des champs pour voir l'aperçu" />
+        ) : hasBranching ? (
+          <InteractivePreview key={schemaKey} schema={schema} previewValues={previewValues} />
         ) : (
           <DynamicForm schema={schema} values={previewValues} readOnly />
         )}

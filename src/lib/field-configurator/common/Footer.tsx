@@ -22,6 +22,9 @@ interface FooterProps {
   canMoveUp?: boolean;
   canMoveDown?: boolean;
   dragControls?: DragControls;
+  showBranchingButton?: boolean;
+  onBranching?: () => void;
+  branchingEnabled?: boolean;
 }
 
 export const Footer = ({
@@ -34,6 +37,9 @@ export const Footer = ({
   canMoveUp = true,
   canMoveDown = true,
   dragControls,
+  showBranchingButton = false,
+  onBranching,
+  branchingEnabled = false,
 }: FooterProps) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -105,15 +111,16 @@ export const Footer = ({
           <div className="flex items-center gap-2">
             <div className="flex gap-8">
               <div className="flex gap-1">
-                {/* TODO Embranchement button */}
-                <IconButton
-                  appearance="outlined"
-                  aria-label="icon button aria label"
-                  name="branch"
-                  onClick={onMoveDown}
-                  size="m"
-                  variant="transparent"
-                />
+                {showBranchingButton && (
+                  <IconButton
+                    appearance="outlined"
+                    aria-label="Embranchement conditionnel"
+                    name="branch"
+                    onClick={onBranching}
+                    size="m"
+                    variant={branchingEnabled ? "primary" : "transparent"}
+                  />
+                )}
                 {/* Duplicate button */}
 
                 <IconButton
