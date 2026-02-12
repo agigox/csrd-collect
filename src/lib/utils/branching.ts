@@ -60,6 +60,25 @@ export function getFieldGroupIndices(fieldId: string, schema: FieldConfig[]): nu
 }
 
 /**
+ * Calculate the depth of a field (number of parent levels).
+ * Returns 0 for root fields, 1 for direct children, 2 for grandchildren, etc.
+ */
+export function getFieldDepth(
+  fieldId: string,
+  schema: FieldConfig[],
+  visited: Set<string> = new Set(),
+): number {
+  const field = schema.find((f) => f.id === fieldId);
+  if (!field || !field.parentFieldId) return 0;
+
+  // Prevent infinite recursion
+  if (visited.has(fieldId)) return 0;
+  visited.add(fieldId);
+
+  return 1 + getFieldDepth(field.parentFieldId, schema, visited);
+}
+
+/**
  * Check if a child field should be visible based on the parent's current value.
  */
 export function isChildFieldVisible(

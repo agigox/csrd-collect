@@ -117,9 +117,52 @@
           {
             "id": "secteur",
             "name": "secteur",
-            "type": "text",
-            "label": "Secteur concerné",
-            "placeholder": "Ex: Secteur B"
+            "label": "Le secteur concerné",
+            "type": "text"
+          },
+          {
+            "id": "number_1",
+            "name": "number_1",
+            "type": "number",
+            "label": "Nombre",
+            "placeholder": "",
+            "parentFieldId": "secteur",
+            "parentOptionValue": "option_1",
+            "branchingColor": "#7C3AED"
+          },
+          {
+            "id": "select_1",
+            "name": "select_1",
+            "type": "select",
+            "label": "Liste déroulante",
+            "options": [],
+            "selectionMode": "single",
+            "parentFieldId": "secteur",
+            "parentOptionValue": "option_1",
+            "branchingColor": "#7C3AED"
+          },
+          {
+            "id": "radio_1",
+            "name": "radio_1",
+            "type": "radio",
+            "label": "Choix unique",
+            "options": [
+              {
+                "value": "option_1",
+                "label": "Choix 1"
+              },
+              {
+                "value": "option_2",
+                "label": "Choix 2"
+              },
+              {
+                "value": "option_3",
+                "label": "Choix 3"
+              }
+            ],
+            "parentFieldId": "secteur",
+            "parentOptionValue": "option_1",
+            "branchingColor": "#7C3AED"
           }
         ]
       },

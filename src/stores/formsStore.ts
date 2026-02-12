@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { FieldConfig } from "@/models/FieldTypes";
 import { FormTemplate } from "models/FormTemplate";
-import { getChildFieldIds } from "@/lib/utils/branching";
+import { getAllDescendantIds } from "@/lib/utils/branching";
 
 const API_BASE_URL = "http://localhost:4000";
 
@@ -38,7 +38,11 @@ export const useFormsStore = create<FormsState>()(
 
       setActiveFieldName: (name: string | null, schema?: FieldConfig[]) => {
         if (!name) {
-          set({ activeFieldNames: [], primaryActiveFieldName: null }, false, "FORMS/SET_ACTIVE_FIELD");
+          set(
+            { activeFieldNames: [], primaryActiveFieldName: null },
+            false,
+            "FORMS/SET_ACTIVE_FIELD",
+          );
           return;
         }
 
@@ -54,18 +58,22 @@ export const useFormsStore = create<FormsState>()(
                 names.push(parent.name);
               }
             }
-            // Open all direct children
-            const childIds = getChildFieldIds(field.id, schema);
-            for (const childId of childIds) {
-              const child = schema.find((f) => f.id === childId);
-              if (child && !names.includes(child.name)) {
-                names.push(child.name);
+            // Open all descendants (children, grandchildren, etc.)
+            const descendantIds = getAllDescendantIds(field.id, schema);
+            for (const descendantId of descendantIds) {
+              const descendant = schema.find((f) => f.id === descendantId);
+              if (descendant && !names.includes(descendant.name)) {
+                names.push(descendant.name);
               }
             }
           }
         }
 
-        set({ activeFieldNames: names, primaryActiveFieldName: name }, false, "FORMS/SET_ACTIVE_FIELD");
+        set(
+          { activeFieldNames: names, primaryActiveFieldName: name },
+          false,
+          "FORMS/SET_ACTIVE_FIELD",
+        );
       },
 
       setCurrentForm: (form: FormTemplate | null) =>

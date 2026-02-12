@@ -31,6 +31,7 @@ npx json-server db.json --port 4000   # Lancer le serveur API mock
 ```
 
 Le fichier `db.json` à la racine alimente les endpoints :
+
 - `GET /category-codes` — Codes catégorie pour les formulaires
 - `GET /form-templates` — Modèles de formulaires
 - `GET /declarations` — Déclarations existantes
@@ -105,17 +106,31 @@ L'application a deux types d'utilisateurs :
 ### Structure des dossiers
 
 - `src/app/` - Next.js App Router (routage uniquement)
-- `src/app/admin/` - Pages de l'interface admin
-- `src/components/` - Composants UI réutilisables
-- `src/components/admin/` - Composants spécifiques admin
-- `src/components/user/` - Composants spécifiques utilisateur
+  - `src/app/admin/` - Pages de l'interface admin
+- `src/components/` - **Composants UI réutilisables uniquement**
+  - `src/components/auth/` - UI d'authentification (LoginModal, AuthGuard)
+  - `src/components/common/` - Composants partagés (EmptyState, etc.)
+  - `src/components/AppSideNav.tsx` - Navigation principale
+  - `src/components/Providers.tsx` - React providers
+- `src/features/` - **Modules métier (fonctionnalités principales)**
+  - `src/features/field-configurator/` - Configuration des champs (admin)
+  - `src/features/form-builder/` - Construction et rendu de formulaires
+  - `src/features/preview/` - Prévisualisation des champs
+  - `src/features/form-editor/` - Éditeur de formulaire complet (parametrage-declaratif)
+  - `src/features/forms-management/` - Gestion de la liste des formulaires (admin)
+  - `src/features/declarations/` - Gestion des déclarations (utilisateur)
+- `src/lib/` - **Utilitaires et code partagé uniquement**
+  - `src/lib/ui/` - Composants UI de base (dialog, button, popover)
+  - `src/lib/utils/` - Fonctions utilitaires (branching, registry, etc.)
+  - `src/lib/hooks/` - Custom React hooks
 - `src/stores/` - State management (Zustand)
 - `src/models/` - Types et interfaces métier (FieldTypes, FormTemplate, Declaration)
-- `src/lib/` - Composants utilitaires et code partagé
+- `src/styles/` - Styles globaux
 
 ### Alias de chemins
 
 - `@/components/*` → `src/components/*`
+- `@/features/*` → `src/features/*`
 - `@/lib/*` → `src/lib/*`
 - `@/models/*` → `src/models/*`
 - `@/stores/*` → `src/stores/*`
@@ -148,8 +163,8 @@ Pour distinguer admin et membre :
 ### Architecture (3 couches)
 
 ```
-src/lib/dynamic-field/       → Rendu des champs (côté utilisateur)
-├── DynamicField.tsx          → Résolveur dynamique via registry
+src/features/preview/              → Rendu des champs (côté utilisateur)
+├── DynamicField.tsx               → Résolveur dynamique via registry
 ├── text/index.tsx
 ├── number/index.tsx
 ├── select/index.tsx
@@ -159,10 +174,10 @@ src/lib/dynamic-field/       → Rendu des champs (côté utilisateur)
 ├── date/index.tsx
 └── import/index.tsx
 
-src/lib/field-configurator/  → Configuration des champs (côté admin)
-├── index.tsx                 → FieldConfigurator principal
-├── SortableFieldCard.tsx     → Carte drag-and-drop
-├── common/                   → Composants partagés (LabelField, DescriptionField, Footer, DefaultValueSelector, BranchingSelect, BranchingTag)
+src/features/field-configurator/  → Configuration des champs (côté admin)
+├── index.tsx                      → FieldConfigurator principal
+├── SortableFieldCard.tsx          → Carte drag-and-drop
+├── common/                        → Composants partagés (LabelField, DescriptionField, Footer, DefaultValueSelector, BranchingSelect, BranchingTag)
 ├── text/index.tsx
 ├── number/index.tsx
 ├── select/index.tsx
@@ -172,29 +187,59 @@ src/lib/field-configurator/  → Configuration des champs (côté admin)
 ├── date/index.tsx
 └── import/index.tsx
 
-src/lib/form-creation/       → Composants de formulaire
-├── FormBuilder.tsx           → Builder drag-and-drop avec ajout/suppression/duplication
-└── DynamicForm.tsx           → Rendu d'un formulaire complet depuis un schema
+src/features/form-builder/         → Construction et rendu de formulaires
+├── FormBuilder.tsx                → Builder drag-and-drop avec ajout/suppression/duplication
+└── DynamicForm.tsx                → Rendu d'un formulaire complet depuis un schema
 
-src/lib/utils/
-├── registry.ts               → Enregistrement des types de champs
-└── branching.ts              → Utilitaires pour embranchement conditionnel
+src/lib/utils/                     → Utilitaires partagés
+├── registry.ts                    → Enregistrement des types de champs
+└── branching.ts                   → Utilitaires pour embranchement conditionnel
 
-src/models/FieldTypes.ts     → Tous les types/interfaces (FieldConfig, FieldType, etc.)
+src/models/FieldTypes.ts           → Tous les types/interfaces (FieldConfig, FieldType, etc.)
+```
+
+### Modules features complets
+
+En plus du système de champs dynamiques, l'application inclut des features complètes :
+
+```
+src/features/form-editor/          → Éditeur de formulaire (parametrage-declaratif)
+├── index.tsx                      → Page principale éditeur
+├── FormHeader.tsx                 → Édition du titre/métadonnées
+├── FormMetadata.tsx               → Gestion métadonnées (catégorie, description)
+├── SchemaBuilder.tsx              → Zone de construction du schema (utilise FormBuilder)
+└── FormPreview.tsx                → Prévisualisation temps réel (utilise DynamicForm)
+
+src/features/forms-management/     → Gestion liste formulaires admin
+├── FormsManagementPage.tsx        → Page liste des formulaires
+├── FormsList.tsx                  → Liste avec filtres et recherche
+└── FormCard.tsx                   → Carte individuelle de formulaire
+
+src/features/declarations/         → Gestion déclarations utilisateur
+├── Declarations.tsx               → Page principale déclarations
+├── Dashboard.tsx                  → Dashboard utilisateur
+├── DeclarationCard.tsx            → Carte de déclaration
+├── FormSelectionDialog.tsx        → Dialog sélection de formulaire
+├── ModificationHistory.tsx        → Historique des modifications
+├── addDeclaration/                → Création de déclaration
+└── declarationsList/              → Liste avec filtres
+    ├── Header.tsx
+    ├── Filters.tsx
+    └── List.tsx
 ```
 
 ### Types de champs disponibles (8)
 
-| Type       | Label FR            | Icône           | Config spécifique                              |
-|------------|---------------------|-----------------|------------------------------------------------|
-| `text`     | Champ libre         | `chat`          | —                                              |
-| `number`   | Nombre              | `chat`          | `unit`                                         |
-| `select`   | Liste déroulante    | `list-alt`      | `options`, `selectionMode`, `dataType/Source`   |
-| `radio`    | Choix unique        | `check-circle`  | `options`, `defaultIndex`, `branchingEnabled`  |
-| `checkbox` | Choix multiple      | `checkbox`      | `options`, `defaultIndices`, `branchingEnabled`|
-| `switch`   | Switch              | `switch`        | —                                              |
-| `date`     | Date                | `calendar-month`| `includeTime`, `defaultDateValue`              |
-| `import`   | Import de fichier   | `upload`        | `acceptedFormats`, `maxFileSize`               |
+| Type       | Label FR          | Icône            | Config spécifique                               |
+| ---------- | ----------------- | ---------------- | ----------------------------------------------- |
+| `text`     | Champ libre       | `chat`           | —                                               |
+| `number`   | Nombre            | `chat`           | `unit`                                          |
+| `select`   | Liste déroulante  | `list-alt`       | `options`, `selectionMode`, `dataType/Source`   |
+| `radio`    | Choix unique      | `check-circle`   | `options`, `defaultIndex`, `branchingEnabled`   |
+| `checkbox` | Choix multiple    | `checkbox`       | `options`, `defaultIndices`, `branchingEnabled` |
+| `switch`   | Switch            | `switch`         | —                                               |
+| `date`     | Date              | `calendar-month` | `includeTime`, `defaultDateValue`               |
+| `import`   | Import de fichier | `upload`         | `acceptedFormats`, `maxFileSize`                |
 
 ### Embranchement conditionnel (radio/checkbox)
 
@@ -230,7 +275,7 @@ const schema: FieldConfig[] = [
    - Créer l'interface `MyFieldConfig extends BaseFieldConfig`
    - Ajouter à l'union `FieldConfig`
 
-2. **Créer le rendu** : `src/lib/dynamic-field/<type>/index.tsx`
+2. **Créer le rendu** : `src/lib/preview/<type>/index.tsx`
 
    ```typescript
    "use client";
@@ -252,7 +297,7 @@ const schema: FieldConfig[] = [
 3. **Enregistrer dans le registry** (`src/lib/utils/registry.ts`) :
 
    ```typescript
-   import { fieldRegistration as myField } from "../dynamic-field/<type>";
+   import { fieldRegistration as myField } from "../preview/<type>";
    registerField(myField);
    ```
 

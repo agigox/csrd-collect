@@ -149,6 +149,9 @@ export interface FieldConfiguratorProps {
   dragControls?: DragControls;
   schema?: FieldConfig[];
   onBranchingCleanup?: () => void;
+  isChildField?: boolean;
+  branchingColor?: string;
+  branchingNumber?: number;
 }
 
 export interface SpecificConfiguratorProps<
