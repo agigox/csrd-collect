@@ -32,6 +32,10 @@ export interface BaseFieldConfig {
   validation?: ValidationRule[];
   description?: string;
   isDuplicate?: boolean;
+  // Branching: child-side properties
+  parentFieldId?: string;
+  parentOptionValue?: string;
+  branchingColor?: string;
 }
 
 // ========================
@@ -84,12 +88,20 @@ export interface RadioFieldConfig extends BaseFieldConfig {
   type: "radio";
   options: SelectOption[];
   defaultIndex?: number;
+  // Branching: parent-side properties
+  branchingEnabled?: boolean;
+  branching?: Record<string, string[]>;
+  branchingColors?: Record<string, string>;
 }
 
 export interface CheckboxFieldConfig extends BaseFieldConfig {
   type: "checkbox";
   options: SelectOption[];
   defaultIndices?: number[];
+  // Branching: parent-side properties
+  branchingEnabled?: boolean;
+  branching?: Record<string, string[]>;
+  branchingColors?: Record<string, string>;
 }
 
 export interface ImportFieldConfig extends BaseFieldConfig {
@@ -135,6 +147,11 @@ export interface FieldConfiguratorProps {
   isOpen?: boolean;
   onOpen?: () => void;
   dragControls?: DragControls;
+  schema?: FieldConfig[];
+  onBranchingCleanup?: () => void;
+  isChildField?: boolean;
+  branchingColor?: string;
+  branchingNumber?: number;
 }
 
 export interface SpecificConfiguratorProps<
@@ -143,6 +160,7 @@ export interface SpecificConfiguratorProps<
   config: T;
   onChange: (config: T) => void;
   onFieldTypeChange?: (type: FieldType) => void;
+  schema?: FieldConfig[];
 }
 
 // ========================

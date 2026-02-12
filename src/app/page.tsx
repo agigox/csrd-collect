@@ -1,6 +1,6 @@
 "use client";
 
-import Declarations from "@/components/user";
+import Declarations from "@/features/declarations/Declarations";
 
 export default function Home() {
   return <Declarations />;

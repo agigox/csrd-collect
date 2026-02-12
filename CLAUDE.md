@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Ce fichier guide Claude Code (claude.ai/code) pour travailler sur ce dépôt.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Vue d'ensemble du projet
 
@@ -15,6 +15,27 @@ pnpm run start    # Démarrer le serveur de production
 pnpm run lint     # Exécuter ESLint
 pnpm test:e2e     # Exécuter les tests E2E Playwright
 ```
+
+### Tests E2E spécifiques
+
+```bash
+pnpm test:e2e --project=chromium                          # Chromium uniquement
+pnpm test:e2e e2e-tests/admin/branching.spec.ts          # Test spécifique
+pnpm test:e2e --project=chromium e2e-tests/admin/        # Tests admin uniquement
+```
+
+### API Mock (développement)
+
+```bash
+npx json-server db.json --port 4000   # Lancer le serveur API mock
+```
+
+Le fichier `db.json` à la racine alimente les endpoints :
+
+- `GET /category-codes` — Codes catégorie pour les formulaires
+- `GET /form-templates` — Modèles de formulaires
+- `GET /declarations` — Déclarations existantes
+- `GET /options` — Sources de données pour les champs select
 
 ## Exigences obligatoires
 
@@ -85,63 +106,183 @@ L'application a deux types d'utilisateurs :
 ### Structure des dossiers
 
 - `src/app/` - Next.js App Router (routage uniquement)
-- `src/app/admin/` - Pages de l'interface admin
-- `src/components/` - Composants UI réutilisables
-- `src/components/admin/` - Composants spécifiques admin
-- `src/components/user/` - Composants spécifiques utilisateur
-- `src/stores/` - redux stores
-- `src/lib/` - Composants utilitaires et code partagé
+  - `src/app/admin/` - Pages de l'interface admin
+- `src/components/` - **Composants UI réutilisables uniquement**
+  - `src/components/auth/` - UI d'authentification (LoginModal, AuthGuard)
+  - `src/components/common/` - Composants partagés (EmptyState, etc.)
+  - `src/components/AppSideNav.tsx` - Navigation principale
+  - `src/components/Providers.tsx` - React providers
+- `src/features/` - **Modules métier (fonctionnalités principales)**
+  - `src/features/field-configurator/` - Configuration des champs (admin)
+  - `src/features/form-builder/` - Construction et rendu de formulaires
+  - `src/features/preview/` - Prévisualisation des champs
+  - `src/features/form-editor/` - Éditeur de formulaire complet (parametrage-declaratif)
+  - `src/features/forms-management/` - Gestion de la liste des formulaires (admin)
+  - `src/features/declarations/` - Gestion des déclarations (utilisateur)
+- `src/lib/` - **Utilitaires et code partagé uniquement**
+  - `src/lib/ui/` - Composants UI de base (dialog, button, popover)
+  - `src/lib/utils/` - Fonctions utilitaires (branching, registry, etc.)
+  - `src/lib/hooks/` - Custom React hooks
+- `src/stores/` - State management (Zustand)
+- `src/models/` - Types et interfaces métier (FieldTypes, FormTemplate, Declaration)
+- `src/styles/` - Styles globaux
 
 ### Alias de chemins
 
 - `@/components/*` → `src/components/*`
-- `@/context/*` → `src/context/*`
+- `@/features/*` → `src/features/*`
 - `@/lib/*` → `src/lib/*`
+- `@/models/*` → `src/models/*`
+- `@/stores/*` → `src/stores/*`
+- `@/styles/*` → `src/styles/*`
 
 ### Patterns de composants
 
 - Les composants client utilisent la directive `"use client"` pour l'interactivité
 - Le layout racine est un composant serveur
 - La sidebar supporte collapse/expand avec transitions fluides
-- La sidebar accepte un `variant` pour différencier admin/membre
+
+### State management (Zustand)
+
+- `formEditorStore.ts` — État de l'éditeur de formulaire (schema, formName, formDescription, showPreview)
+- `formsStore.ts` — Liste des formulaires + multi-active field groups (`activeFieldNames`, `primaryActiveFieldName`)
+- `declarationsStore.ts` — Liste des déclarations
+- `categoryCodesStore.ts` — Codes catégorie
+- `authStore.ts` — Authentification membre (persisted avec clé `csrd_auth`)
 
 ### Pattern de distinction des rôles
 
-Pour distinguer admin et membre sans authentification :
+Pour distinguer admin et membre :
 
-1. Le `UserContext` détermine le rôle selon la route courante
-2. Les composants utilisent `useUser()` pour adapter leur affichage
-3. La sidebar et la navigation sont configurables via props `variant`
+1. Le rôle est déterminé par la route : `pathname.startsWith("/admin")` dans `AppSideNav`
+2. Les composants utilisent `useAuthStore()` (Zustand) pour l'authentification membre
+3. La sidebar affiche dynamiquement différents menus selon `isAdmin`
 
-````
+## Système de champs dynamiques
+
+### Architecture (3 couches)
+
+```
+src/features/preview/              → Rendu des champs (côté utilisateur)
+├── DynamicField.tsx               → Résolveur dynamique via registry
+├── text/index.tsx
+├── number/index.tsx
+├── select/index.tsx
+├── radio/index.tsx
+├── checkbox/index.tsx
+├── switch/index.tsx
+├── date/index.tsx
+└── import/index.tsx
+
+src/features/field-configurator/  → Configuration des champs (côté admin)
+├── index.tsx                      → FieldConfigurator principal
+├── SortableFieldCard.tsx          → Carte drag-and-drop
+├── common/                        → Composants partagés (LabelField, DescriptionField, Footer, DefaultValueSelector, BranchingSelect, BranchingTag)
+├── text/index.tsx
+├── number/index.tsx
+├── select/index.tsx
+├── radio/index.tsx
+├── checkbox/index.tsx
+├── switch/index.tsx
+├── date/index.tsx
+└── import/index.tsx
+
+src/features/form-builder/         → Construction et rendu de formulaires
+├── FormBuilder.tsx                → Builder drag-and-drop avec ajout/suppression/duplication
+└── DynamicForm.tsx                → Rendu d'un formulaire complet depuis un schema
+
+src/lib/utils/                     → Utilitaires partagés
+├── registry.ts                    → Enregistrement des types de champs
+└── branching.ts                   → Utilitaires pour embranchement conditionnel
+
+src/models/FieldTypes.ts           → Tous les types/interfaces (FieldConfig, FieldType, etc.)
+```
+
+### Modules features complets
+
+En plus du système de champs dynamiques, l'application inclut des features complètes :
+
+```
+src/features/form-editor/          → Éditeur de formulaire (parametrage-declaratif)
+├── index.tsx                      → Page principale éditeur
+├── FormHeader.tsx                 → Édition du titre/métadonnées
+├── FormMetadata.tsx               → Gestion métadonnées (catégorie, description)
+├── SchemaBuilder.tsx              → Zone de construction du schema (utilise FormBuilder)
+└── FormPreview.tsx                → Prévisualisation temps réel (utilise DynamicForm)
+
+src/features/forms-management/     → Gestion liste formulaires admin
+├── FormsManagementPage.tsx        → Page liste des formulaires
+├── FormsList.tsx                  → Liste avec filtres et recherche
+└── FormCard.tsx                   → Carte individuelle de formulaire
+
+src/features/declarations/         → Gestion déclarations utilisateur
+├── Declarations.tsx               → Page principale déclarations
+├── Dashboard.tsx                  → Dashboard utilisateur
+├── DeclarationCard.tsx            → Carte de déclaration
+├── FormSelectionDialog.tsx        → Dialog sélection de formulaire
+├── ModificationHistory.tsx        → Historique des modifications
+├── addDeclaration/                → Création de déclaration
+└── declarationsList/              → Liste avec filtres
+    ├── Header.tsx
+    ├── Filters.tsx
+    └── List.tsx
+```
+
+### Types de champs disponibles (8)
+
+| Type       | Label FR          | Icône            | Config spécifique                               |
+| ---------- | ----------------- | ---------------- | ----------------------------------------------- |
+| `text`     | Champ libre       | `chat`           | —                                               |
+| `number`   | Nombre            | `chat`           | `unit`                                          |
+| `select`   | Liste déroulante  | `list-alt`       | `options`, `selectionMode`, `dataType/Source`   |
+| `radio`    | Choix unique      | `check-circle`   | `options`, `defaultIndex`, `branchingEnabled`   |
+| `checkbox` | Choix multiple    | `checkbox`       | `options`, `defaultIndices`, `branchingEnabled` |
+| `switch`   | Switch            | `switch`         | —                                               |
+| `date`     | Date              | `calendar-month` | `includeTime`, `defaultDateValue`               |
+| `import`   | Import de fichier | `upload`         | `acceptedFormats`, `maxFileSize`                |
+
+### Embranchement conditionnel (radio/checkbox)
+
+Les champs radio et checkbox supportent des sous-champs conditionnels :
+
+- **Config parent** : `branchingEnabled`, `branching: Record<optionValue, fieldId[]>`, `branchingColors`
+- **Config enfant** : `parentFieldId`, `parentOptionValue`, `branchingColor`
+- **Utilitaires** (`src/lib/utils/branching.ts`) :
+  - `getAllDescendantIds(parentId, schema)` — Récupère tous les descendants (avec guard contre cycles)
+  - `isChildFieldVisible(field, values, schema)` — Détermine la visibilité côté rendu
+  - `regroupChildrenAfterReorder(schema)` — Regroupe les enfants après drag-and-drop
+  - `createDefaultFieldConfig(type, generateName)` — Crée un champ par défaut
 
 ### Utilisation
 
 ```typescript
-import { DynamicForm, FieldConfig } from "@/lib/form-fields";
+import DynamicForm from "@/lib/form-creation/DynamicForm";
+import type { FieldConfig } from "@/models/FieldTypes";
 
 const schema: FieldConfig[] = [
-  { name: "titre", type: "text", label: "Titre", required: true },
-  { name: "annee", type: "number", label: "Année" },
-  { name: "categorie", type: "select", label: "Catégorie", options: [...] }
+  { id: "1", name: "titre", type: "text", label: "Titre", required: true },
+  { id: "2", name: "annee", type: "number", label: "Année" },
+  { id: "3", name: "categorie", type: "select", label: "Catégorie", options: [...], selectionMode: "single" }
 ];
 
 <DynamicForm schema={schema} values={values} onChange={setValues} errors={errors} />
-````
+```
 
 ### Ajouter un nouveau type de champ
 
-1. **Créer le dossier** : `src/lib/form-fields/<type>/`
+1. **Ajouter le type** dans `src/models/FieldTypes.ts` :
+   - Ajouter à `FieldType`
+   - Créer l'interface `MyFieldConfig extends BaseFieldConfig`
+   - Ajouter à l'union `FieldConfig`
 
-2. **Créer le composant** dans `index.tsx` :
+2. **Créer le rendu** : `src/lib/preview/<type>/index.tsx`
 
    ```typescript
    "use client";
-   import { Label } from "@/lib/components/ui/label";
-   import type { FieldProps, FieldRegistration } from "../types";
+   import type { FieldProps, FieldRegistration } from "@/models/FieldTypes";
 
    const MyField = ({ config, value, onChange, error }: FieldProps) => {
-     // Implémentation du champ
+     // Implémentation du rendu
    };
 
    export const fieldRegistration: FieldRegistration = {
@@ -153,18 +294,19 @@ const schema: FieldConfig[] = [
    export default MyField;
    ```
 
-3. **Enregistrer dans le registry** (`registry.ts`) :
+3. **Enregistrer dans le registry** (`src/lib/utils/registry.ts`) :
 
    ```typescript
-   import { fieldRegistration as myField } from "./<type>";
+   import { fieldRegistration as myField } from "../preview/<type>";
    registerField(myField);
    ```
 
-4. **Ajouter le type** dans `types.ts` :
-   - Ajouter à `FieldType`
-   - Créer l'interface `MyFieldConfig` si besoin
+4. **Créer le configurateur** : `src/lib/field-configurator/<type>/index.tsx`
 
-Le champ devient automatiquement disponible pour `DynamicForm`.
+5. **Mettre à jour le FormBuilder** (`src/lib/form-creation/FormBuilder.tsx`) :
+   - Ajouter le cas dans `createDefaultFieldConfig` (ou utiliser l'utilitaire de `branching.ts`)
+
+Le champ devient automatiquement disponible dans le FormBuilder et le DynamicForm.
 
 ## Tests E2E (Playwright)
 
@@ -182,12 +324,14 @@ e2e-tests/
 └── admin/
     ├── navigation.spec.ts     # Sidebar et navigation admin
     ├── forms-list.spec.ts     # Liste et filtrage des formulaires
-    └── form-editor.spec.ts    # Éditeur de formulaire
+    ├── form-editor.spec.ts    # Éditeur de formulaire
+    └── branching.spec.ts      # Embranchement conditionnel (9 tests)
 ```
 
 ### Stratégie de mocking API
 
 Les tests utilisent `page.route()` de Playwright pour intercepter les appels API vers `http://localhost:4000` :
+
 - `GET /form-templates` → formulaires mockés
 - `GET /declarations` → déclarations mockées
 - `GET /category-codes` → codes catégorie mockés
@@ -212,5 +356,6 @@ pnpm test:e2e e2e-tests/admin/    # Tests admin uniquement
 ### Configuration
 
 - `playwright.config.ts` — baseURL: `http://localhost:3000`, webServer lance `pnpm run dev`
-- Navigateurs : Chromium, Firefox, WebKit
+- Navigateurs : Chromium, Firefox, Webkit
 - Traces activées en premier retry
+- Chromium utilise `slowMo: 1500` pour la stabilité

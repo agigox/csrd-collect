@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { FieldConfig } from "@/models/FieldTypes";
 import { FormTemplate } from "models/FormTemplate";
+import { getAllDescendantIds } from "@/lib/utils/branching";
 
 const API_BASE_URL = "http://localhost:4000";
 
@@ -10,9 +11,10 @@ interface FormsState {
   loading: boolean;
   error: string | null;
   currentForm: FormTemplate | null;
-  activeFieldName: string | null;
+  activeFieldNames: string[];
+  primaryActiveFieldName: string | null;
   setCurrentForm: (form: FormTemplate | null) => void;
-  setActiveFieldName: (name: string | null) => void;
+  setActiveFieldName: (name: string | null, schema?: FieldConfig[]) => void;
   saveForm: (form: FormTemplate) => Promise<void>;
   createForm: (form: {
     name: string;
@@ -31,10 +33,48 @@ export const useFormsStore = create<FormsState>()(
       loading: true,
       error: null,
       currentForm: null,
-      activeFieldName: null,
+      activeFieldNames: [],
+      primaryActiveFieldName: null,
 
-      setActiveFieldName: (name: string | null) =>
-        set({ activeFieldName: name }, false, "FORMS/SET_ACTIVE_FIELD"),
+      setActiveFieldName: (name: string | null, schema?: FieldConfig[]) => {
+        if (!name) {
+          set(
+            { activeFieldNames: [], primaryActiveFieldName: null },
+            false,
+            "FORMS/SET_ACTIVE_FIELD",
+          );
+          return;
+        }
+
+        const names: string[] = [name];
+
+        if (schema) {
+          const field = schema.find((f) => f.name === name);
+          if (field) {
+            // If it's a child, also open the parent
+            if (field.parentFieldId) {
+              const parent = schema.find((f) => f.id === field.parentFieldId);
+              if (parent && !names.includes(parent.name)) {
+                names.push(parent.name);
+              }
+            }
+            // Open all descendants (children, grandchildren, etc.)
+            const descendantIds = getAllDescendantIds(field.id, schema);
+            for (const descendantId of descendantIds) {
+              const descendant = schema.find((f) => f.id === descendantId);
+              if (descendant && !names.includes(descendant.name)) {
+                names.push(descendant.name);
+              }
+            }
+          }
+        }
+
+        set(
+          { activeFieldNames: names, primaryActiveFieldName: name },
+          false,
+          "FORMS/SET_ACTIVE_FIELD",
+        );
+      },
 
       setCurrentForm: (form: FormTemplate | null) =>
         set(
