@@ -36,7 +36,8 @@ const FormSelectionDialog = ({
     if (selectedForm) {
       onFormSelect(selectedForm);
       setSelectedFormId(null);
-      onOpenChange(false);
+      // Don't call onOpenChange(false) here - the modal state is derived from URL
+      // and will close automatically when the URL changes
     }
   };
 

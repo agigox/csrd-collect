@@ -16,16 +16,13 @@ const categories = [
 
 export const FormsList = () => {
   const [activeSegment, setActiveSegment] = useState("all");
-  const { forms, loading, setCurrentForm, fetchForms } = useFormsStore();
+  const { forms, loading, fetchForms } = useFormsStore();
   const router = useRouter();
 
   useEffect(() => {
     fetchForms();
   }, [fetchForms]);
 
-  useEffect(() => {
-    setCurrentForm(null);
-  }, [setCurrentForm]);
 
   const filteredForms =
     activeSegment === "all"
@@ -33,11 +30,7 @@ export const FormsList = () => {
       : forms.filter((form) => form.categoryCode === activeSegment);
 
   const handleFormClick = (formId: string) => {
-    const form = forms.find((f) => f.id === formId);
-    if (form) {
-      setCurrentForm(form);
-      router.push("/admin/parametrage-declaratif");
-    }
+    router.push(`/admin/${formId}`);
   };
 
   if (loading) {

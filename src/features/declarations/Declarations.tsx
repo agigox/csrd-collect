@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import DeclarationsList from "./declarationsList";
 import FormSelectionDialog from "./FormSelectionDialog";
 import { useAuthStore, useFormsStore } from "@/stores";
@@ -20,8 +21,13 @@ import { useDeclarationsStore } from "@/stores";
 import type { Declaration } from "@/models/Declaration";
 
 const Declarations = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const {
+    declarations,
     updateDeclaration,
     addTempDeclaration,
     updateTempDeclaration,
@@ -29,22 +35,100 @@ const Declarations = () => {
     confirmTempDeclaration,
   } = useDeclarationsStore();
   const { forms, fetchForms } = useFormsStore();
-  const [selectionDialogOpen, setSelectionDialogOpen] = useState(false);
-  const [declarationDialogOpen, setDeclarationDialogOpen] = useState(false);
-  const [selectedForm, setSelectedForm] = useState<FormTemplate | null>(null);
-  const [selectedDeclaration, setSelectedDeclaration] =
-    useState<Declaration | null>(null);
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showHistory, setShowHistory] = useState(false);
-  const [tempDeclarationId, setTempDeclarationId] = useState<string | null>(
-    null,
-  );
+  const [tempDeclarations, setTempDeclarations] = useState<Map<string, Declaration>>(new Map());
 
   // Load forms when component mounts
   useEffect(() => {
     fetchForms();
   }, [fetchForms]);
+
+  // Derive modal state from URL
+  const formId = searchParams.get("formId");
+  const isOnNewPage = pathname === "/declarations/new";
+  const declarationId = pathname.startsWith("/declarations/") && pathname !== "/declarations/new"
+    ? pathname.replace("/declarations/", "")
+    : null;
+
+  // Determine which modals should be open based on URL
+  const selectionDialogOpen = isOnNewPage && !formId;
+  const declarationDialogOpen = (isOnNewPage && !!formId) || !!declarationId;
+
+  // Get the selected declaration based on URL
+  const selectedDeclaration = declarationId
+    ? declarations.find((d) => d.id === declarationId) || tempDeclarations.get(declarationId) || null
+    : null;
+
+  // Get the selected form based on URL or declaration
+  const selectedForm = formId
+    ? forms.find((f) => f.id === formId) || null
+    : selectedDeclaration
+    ? forms.find((f) => f.id === selectedDeclaration.formTemplateId) || null
+    : null;
+
+  // Track current temp declaration ID for the selected form
+  const [currentTempId, setCurrentTempId] = useState<string | null>(null);
+
+  // For new declarations, get temp declaration by current ID
+  const tempDeclaration = currentTempId ? tempDeclarations.get(currentTempId) || null : null;
+
+  // Final selected declaration (either existing or temp)
+  const finalSelectedDeclaration = selectedDeclaration || tempDeclaration;
+
+  // Create temp declaration when needed
+  useEffect(() => {
+    if (selectedForm && !selectedDeclaration && !currentTempId) {
+      // Use timestamp for unique ID
+      const tempId = `temp_${Date.now()}_${selectedForm.id}`;
+      const now = new Date().toISOString();
+
+      const tempDeclaration: Declaration = {
+        id: tempId,
+        formTemplateId: selectedForm.id,
+        reference: `DECL-TEMP-${Date.now()}`,
+        location: "",
+        authorId: "current-user",
+        authorName: "Utilisateur actuel",
+        teamId: "current-team",
+        description: selectedForm.description || "",
+        status: "draft",
+        formData: {
+          name: selectedForm.name || "Nouvelle déclaration",
+        },
+        submitedBy: "",
+        reviewedBy: "",
+        reviewComment: "",
+        createdAt: now,
+        updatedAt: now,
+        submittedAt: "",
+        reviewedAt: "",
+        isActive: true,
+        isNew: true,
+      };
+
+      setTempDeclarations(prev => new Map(prev).set(tempId, tempDeclaration));
+      addTempDeclaration(tempDeclaration);
+      setCurrentTempId(tempId);
+    }
+  }, [selectedForm, selectedDeclaration, currentTempId, addTempDeclaration]);
+
+  // Clean up temp ID when URL changes away from new declaration
+  useEffect(() => {
+    if (!isOnNewPage || !formId) {
+      setCurrentTempId(null);
+    }
+  }, [isOnNewPage, formId]);
+
+  // Load form values when declaration changes
+  useEffect(() => {
+    if (finalSelectedDeclaration) {
+      setFormValues(finalSelectedDeclaration.formData || {});
+    } else {
+      setFormValues({});
+    }
+  }, [finalSelectedDeclaration]);
 
   // Don't render declarations if user is not authenticated
   if (!isAuthenticated) {
@@ -52,58 +136,31 @@ const Declarations = () => {
   }
 
   const handleOpenSelection = () => {
-    setSelectionDialogOpen(true);
+    router.push("/declarations/new");
   };
 
   const handleFormSelect = (form: FormTemplate) => {
-    setSelectedForm(form);
-    setFormValues({});
-    setFormErrors({});
-
-    // Create temporary declaration
-    const tempId = `temp_${Date.now()}`;
-    const now = new Date().toISOString();
-
-    const tempDeclaration: Declaration = {
-      id: tempId,
-      formTemplateId: form.id,
-      reference: `DECL-TEMP-${Date.now()}`,
-      location: "",
-      authorId: "current-user",
-      authorName: "Utilisateur actuel",
-      teamId: "current-team",
-      description: form.description || "",
-      status: "draft",
-      formData: {
-        name: form.name || "Nouvelle déclaration",
-      },
-      submitedBy: "",
-      reviewedBy: "",
-      reviewComment: "",
-      createdAt: now,
-      updatedAt: now,
-      submittedAt: "",
-      reviewedAt: "",
-      isActive: true,
-      isNew: true,
-    };
-
-    addTempDeclaration(tempDeclaration);
-    setTempDeclarationId(tempId);
-    setSelectedDeclaration(tempDeclaration);
-    setDeclarationDialogOpen(true);
+    // Navigate to new declaration with form ID
+    // Modal state is derived from URL
+    router.push(`/declarations/new?formId=${form.id}`);
   };
 
   const handleCloseDeclaration = (open: boolean) => {
-    setDeclarationDialogOpen(open);
     if (!open) {
-      // If closing with a temp declaration, remove it
-      if (tempDeclarationId) {
-        removeTempDeclaration(tempDeclarationId);
-        setTempDeclarationId(null);
+      // Navigate back to declarations list
+      router.push("/declarations");
+
+      // Clean up temp declarations
+      if (finalSelectedDeclaration?.isNew) {
+        removeTempDeclaration(finalSelectedDeclaration.id);
+        setTempDeclarations(prev => {
+          const next = new Map(prev);
+          next.delete(finalSelectedDeclaration.id);
+          return next;
+        });
       }
-      setSelectedForm(null);
-      setSelectedDeclaration(null);
+
+      setCurrentTempId(null);
       setFormValues({});
       setFormErrors({});
     }
@@ -111,32 +168,9 @@ const Declarations = () => {
 
   // Handler for editing an existing declaration
   const handleEditDeclaration = (declaration: Declaration) => {
-    // If switching from a temp declaration to another, remove the temp
-    if (tempDeclarationId && declaration.id !== tempDeclarationId) {
-      removeTempDeclaration(tempDeclarationId);
-      setTempDeclarationId(null);
-    }
-
-    // If this is the temp declaration, keep track of it
-    if (declaration.isNew) {
-      setTempDeclarationId(declaration.id);
-    } else {
-      setTempDeclarationId(null);
-    }
-
-    setSelectedDeclaration(declaration);
-    // Load the form associated with this declaration
-    const declarationForm = forms.find((f) => f.id === declaration.formTemplateId);
-    if (declarationForm) {
-      setSelectedForm(declarationForm);
-      // Pre-fill form values from the declaration
-      setFormValues(declaration.formData || {});
-    }
-    setFormErrors({});
-    // Only open if not already open
-    if (!declarationDialogOpen) {
-      setDeclarationDialogOpen(true);
-    }
+    // Navigate to the declaration URL
+    // The useEffect will handle opening the modal
+    router.push(`/declarations/${declaration.id}`);
   };
 
   // Handler for form value changes - sync with temp declaration
@@ -145,46 +179,61 @@ const Declarations = () => {
       setFormValues(newValues);
 
       // Sync with temp declaration in real-time
-      if (tempDeclarationId) {
-        // Ensure formData has a name field
+      if (finalSelectedDeclaration?.isNew) {
         const updatedFormData = {
           ...newValues,
           name: (newValues.name as string) || "Nouvelle déclaration",
         };
 
-        updateTempDeclaration(tempDeclarationId, {
+        updateTempDeclaration(finalSelectedDeclaration.id, {
           formData: updatedFormData,
           updatedAt: new Date().toISOString(),
         });
+
+        // Update local temp declarations map
+        setTempDeclarations(prev => {
+          const next = new Map(prev);
+          const existing = next.get(finalSelectedDeclaration.id);
+          if (existing) {
+            next.set(finalSelectedDeclaration.id, {
+              ...existing,
+              formData: updatedFormData,
+              updatedAt: new Date().toISOString(),
+            });
+          }
+          return next;
+        });
       }
     },
-    [tempDeclarationId, updateTempDeclaration],
+    [finalSelectedDeclaration, updateTempDeclaration],
   );
 
   // Handler for submitting the form
   const handleSubmit = async () => {
-    if (selectedDeclaration) {
-      if (tempDeclarationId && selectedDeclaration.id === tempDeclarationId) {
+    if (finalSelectedDeclaration) {
+      if (finalSelectedDeclaration.isNew) {
         // Confirm temp declaration (create new)
-        await confirmTempDeclaration(tempDeclarationId);
-        setTempDeclarationId(null);
+        await confirmTempDeclaration(finalSelectedDeclaration.id);
+        setTempDeclarations(prev => {
+          const next = new Map(prev);
+          next.delete(finalSelectedDeclaration.id);
+          return next;
+        });
       } else {
         // Update existing declaration
-        // Ensure formValues has a name field
         const updatedFormData = {
           ...formValues,
-          name: (formValues.name as string) || selectedDeclaration.formData.name,
+          name: (formValues.name as string) || finalSelectedDeclaration.formData.name,
         };
-        await updateDeclaration(selectedDeclaration.id, updatedFormData);
+        await updateDeclaration(finalSelectedDeclaration.id, updatedFormData);
       }
     }
-    // Close without removing temp (it's been confirmed or it's an existing declaration)
-    setDeclarationDialogOpen(false);
-    setSelectedForm(null);
-    setSelectedDeclaration(null);
+
+    // Navigate back to declarations list
+    router.push("/declarations");
+    setCurrentTempId(null);
     setFormValues({});
     setFormErrors({});
-    setTempDeclarationId(null);
   };
 
   return (
@@ -192,13 +241,17 @@ const Declarations = () => {
       <DeclarationsList
         onDeclarer={handleOpenSelection}
         onEditDeclaration={handleEditDeclaration}
-        selectedDeclarationId={selectedDeclaration?.id}
+        selectedDeclarationId={finalSelectedDeclaration?.id}
       />
 
       {/* Modal de sélection du type de formulaire */}
       <FormSelectionDialog
         open={selectionDialogOpen}
-        onOpenChange={setSelectionDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            router.push("/declarations");
+          }
+        }}
         onFormSelect={handleFormSelect}
       />
 
@@ -219,19 +272,19 @@ const Declarations = () => {
               <DialogTitle>
                 <div className="flex flex-col">
                   <div>
-                    {selectedDeclaration?.isNew
+                    {finalSelectedDeclaration?.isNew
                       ? "Nouvelle déclaration"
                       : "Modifier la déclaration"}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    ID {selectedDeclaration?.id || selectedForm?.id || ""}
+                    ID {finalSelectedDeclaration?.id || selectedForm?.id || ""}
                   </div>
                 </div>
               </DialogTitle>
-              {selectedDeclaration &&
+              {finalSelectedDeclaration &&
                !showHistory &&
-               selectedDeclaration.history &&
-               selectedDeclaration.history.length > 0 && (
+               finalSelectedDeclaration.history &&
+               finalSelectedDeclaration.history.length > 0 && (
                 <Icon
                   name="listAlt"
                   size={24}
@@ -244,7 +297,7 @@ const Declarations = () => {
 
           <div className="h-px w-full bg-border" />
 
-          {(selectedForm || selectedDeclaration) && (
+          {(selectedForm || finalSelectedDeclaration) && (
             <div className="flex flex-1 min-h-0">
               {selectedForm && (
                 <ScrollableContainer className="flex-1 pt-4 pr-4" height="100%">
@@ -256,17 +309,17 @@ const Declarations = () => {
                   />
                 </ScrollableContainer>
               )}
-              {!selectedForm && selectedDeclaration && (
+              {!selectedForm && finalSelectedDeclaration && (
                 <div className="flex-1 p-4 text-center text-muted-foreground">
                   <p className="mb-2 font-semibold">
-                    {selectedDeclaration.formData.name}
+                    {finalSelectedDeclaration.formData.name}
                   </p>
-                  <p>{selectedDeclaration.description}</p>
+                  <p>{finalSelectedDeclaration.description}</p>
                 </div>
               )}
-              {selectedDeclaration && showHistory && (
+              {finalSelectedDeclaration && showHistory && (
                 <ModificationHistory
-                  entries={selectedDeclaration.history || []}
+                  entries={finalSelectedDeclaration.history || []}
                   onClose={() => setShowHistory(false)}
                 />
               )}
