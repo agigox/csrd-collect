@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, IconButton, IconButtonToggle } from "@rte-ds//react";
+import { Button, Divider, IconButton, IconButtonToggle } from "@rte-ds/react";
 
 interface HeaderProps {
   onSearch?: () => void;
@@ -16,7 +16,7 @@ const Header = ({
   isFilterOpen = false,
 }: HeaderProps) => {
   return (
-    <div className="flex flex-col gap-2 py-2.5">
+    <div className="flex flex-col gap-2 pb-2.5 pt-2.75">
       {/* Header row */}
       <div className="flex items-center gap-2">
         {/* Title */}
@@ -60,7 +60,11 @@ const Header = ({
       </div>
 
       {/* Divider */}
-      <div className="w-full h-px" />
+      <Divider
+        appearance="default"
+        orientation="horizontal"
+        thickness="light"
+      />
     </div>
   );
 };

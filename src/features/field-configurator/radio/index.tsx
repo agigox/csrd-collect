@@ -14,6 +14,7 @@ export const RadioConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
   schema = [],
 }: SpecificConfiguratorProps<RadioFieldConfig>) => {
   const handleOptionChange = (
@@ -132,6 +133,7 @@ export const RadioConfigurator = ({
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
       {options.map((option, index) => {
         const isLast = index === options.length - 1;

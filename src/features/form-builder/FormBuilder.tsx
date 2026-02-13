@@ -23,6 +23,7 @@ import {
   generateBranchingColor,
   regroupChildrenAfterReorder,
   getFieldDepth,
+  getFieldIdentifier,
 } from "@/lib/utils/branching";
 
 interface FormBuilderProps {
@@ -567,6 +568,7 @@ export const FormBuilder = ({
               const isActive = activeFieldNames.includes(fieldConfig.name);
               const isChildField = !!fieldConfig.parentFieldId;
               const depth = getFieldDepth(fieldConfig.id, schema);
+              const fieldIdentifier = getFieldIdentifier(fieldConfig.id, schema);
 
               // "before" button: on the parent card only
               const showInsertBefore =
@@ -595,6 +597,7 @@ export const FormBuilder = ({
                     isChildField={isChildField}
                     branchingColor={fieldConfig.branchingColor}
                     branchingNumber={getBranchingNumber(fieldConfig)}
+                    fieldIdentifier={fieldIdentifier}
                     depth={depth}
                   />
                   {showInsertAfter && renderInsertButton(index, "after")}

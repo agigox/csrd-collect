@@ -8,6 +8,7 @@ export const TextConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
 }: SpecificConfiguratorProps<TextFieldConfig>) => {
   return (
     <div className="flex flex-col gap-2.5">
@@ -18,6 +19,7 @@ export const TextConfigurator = ({
         className="flex-1 w-full"
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
       <div className="flex flex-col w-50">
         <TextInput

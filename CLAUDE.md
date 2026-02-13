@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Comportement de Claude
+
+**Toujours utiliser Context7 MCP** pour accéder à la documentation des bibliothèques, générer du code, ou obtenir des étapes de configuration/setup, sans attendre qu'on le demande explicitement. Cela garantit d'utiliser la documentation la plus récente et les meilleures pratiques actuelles.
+
+**Démarrage du serveur de développement** : Quand il est demandé de lancer le serveur dev, toujours :
+
+1. Démarrer d'abord le serveur API mock : `npx json-server db.json --port 4000`
+2. Ensuite démarrer le serveur Next.js : `pnpm run dev`
+3. Ouvrir l'application dans un navigateur contrôlé (Playwright/Chrome DevTools)
+
 ## Vue d'ensemble du projet
 
 CSRD-COLLECT est une application Next.js 16.1.0 en français pour la collecte de données CSRD. Utilise React 19.2.3, Tailwind CSS 4 et TypeScript.
@@ -71,6 +81,16 @@ interface FormCardProps {         // Interface en anglais
 ### Composants UI (@rte-ds/core & @rte-ds/react)
 
 Avant de développer un composant vérifie s'il existe dans design system rte: @rte-ds/react
+
+**Important** : Le développeur est également le mainteneur de `@rte-ds/react` et `@rte-ds/core`. Le code source est disponible localement à `/Users/aminetabou/Work/design-system-rte`.
+
+**Protocole de modification du design system** :
+1. Tu peux librement lire le code source du design system pour comprendre les composants et tokens
+2. Si tu identifies un besoin de modification (bug fix, amélioration, nouveau composant), tu dois :
+   - Indiquer clairement le(s) fichier(s) que tu souhaites modifier
+   - Expliquer la raison et l'impact de la modification
+   - Attendre l'approbation explicite avant d'effectuer la modification
+3. Ne jamais modifier le design system sans approbation préalable
 
 ## Acteurs
 

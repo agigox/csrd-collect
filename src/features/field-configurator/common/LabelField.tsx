@@ -30,6 +30,7 @@ interface LabelFieldProps {
   isChildField?: boolean;
   branchingColor?: string;
   branchingNumber?: number;
+  fieldIdentifier?: string;
 }
 
 // Field types available in the type selector
@@ -59,6 +60,7 @@ export const LabelField = ({
   isChildField,
   branchingColor,
   branchingNumber,
+  fieldIdentifier,
 }: LabelFieldProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
@@ -119,6 +121,8 @@ export const LabelField = ({
   );
 
   if (isEditing) {
+    const displayValue = fieldIdentifier ? `${fieldIdentifier} ${editValue}` : editValue;
+
     return (
       <div className={cn("flex items-end gap-2 h-14", className)}>
         <div className="flex flex-col flex-1">
@@ -133,10 +137,14 @@ export const LabelField = ({
             maxLength={150}
             onRightIconClick={() => {}}
             placeholder={placeholder}
-            value={editValue}
+            value={displayValue}
             onChange={(value) => {
-              setEditValue(value);
-              onChange(value);
+              // Remove the identifier prefix when editing
+              const newValue = fieldIdentifier && value.startsWith(`${fieldIdentifier} `)
+                ? value.substring(`${fieldIdentifier} `.length)
+                : value;
+              setEditValue(newValue);
+              onChange(newValue);
             }}
             onBlur={handleValidate}
             onKeyDown={handleKeyDown}
@@ -147,6 +155,8 @@ export const LabelField = ({
       </div>
     );
   }
+
+  const displayValue = fieldIdentifier ? `${fieldIdentifier} ${value}` : value;
 
   return (
     <div className={cn("flex items-center gap-2 w-full", className)}>
@@ -165,7 +175,7 @@ export const LabelField = ({
           )}
           onClick={collapsedActions ? onOpen : handleClick}
         >
-          {value || placeholder}
+          {displayValue || placeholder}
           {isDuplicate && (
             <span className="ml-2 text-xs font-normal text-muted-foreground">
               (copie)

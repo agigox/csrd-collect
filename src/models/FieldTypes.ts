@@ -152,6 +152,7 @@ export interface FieldConfiguratorProps {
   isChildField?: boolean;
   branchingColor?: string;
   branchingNumber?: number;
+  fieldIdentifier?: string;
 }
 
 export interface SpecificConfiguratorProps<
@@ -161,6 +162,7 @@ export interface SpecificConfiguratorProps<
   onChange: (config: T) => void;
   onFieldTypeChange?: (type: FieldType) => void;
   schema?: FieldConfig[];
+  fieldIdentifier?: string;
 }
 
 // ========================

@@ -25,6 +25,7 @@ export const ImportConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
 }: SpecificConfiguratorProps<ImportFieldConfig>) => {
   const currentFormats = config.acceptedFormats ?? [];
 
@@ -57,6 +58,7 @@ export const ImportConfigurator = ({
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
 
       <div className="flex justify-between items-start">

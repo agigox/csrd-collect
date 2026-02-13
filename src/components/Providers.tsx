@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthGuard } from "@/components/auth";
+import { ToastQueueProvider } from "@rte-ds/react";
 import { ReactNode } from "react";
 
 interface ProvidersProps {
@@ -8,5 +9,9 @@ interface ProvidersProps {
 }
 
 export default function Providers({ children }: ProvidersProps) {
-  return <AuthGuard>{children}</AuthGuard>;
+  return (
+    <ToastQueueProvider>
+      <AuthGuard>{children}</AuthGuard>
+    </ToastQueueProvider>
+  );
 }
