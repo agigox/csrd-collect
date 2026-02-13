@@ -13,6 +13,7 @@ export const SwitchConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
 }: SpecificConfiguratorProps<SwitchFieldConfig>) => {
   const handleDefaultValueChange = (value: string) => {
     onChange({
@@ -31,6 +32,7 @@ export const SwitchConfigurator = ({
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
       <Select
         id="switch-default-value"

@@ -10,6 +10,7 @@ export const CheckboxConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
   schema = [],
 }: SpecificConfiguratorProps<CheckboxFieldConfig>) => {
   const handleOptionChange = (
@@ -125,6 +126,7 @@ export const CheckboxConfigurator = ({
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
 
       {options.map((option, index) => {

@@ -65,7 +65,7 @@ const DeclarationsList = ({
   }
 
   return (
-    <>
+    <div className="w-full max-w-101.5">
       <Header
         onDeclarer={onDeclarer}
         onFilter={handleFilterToggle}
@@ -83,7 +83,7 @@ const DeclarationsList = ({
         onEditDeclaration={onEditDeclaration}
         selectedDeclarationId={selectedDeclarationId}
       />
-    </>
+    </div>
   );
 };
 

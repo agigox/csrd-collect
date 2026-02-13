@@ -26,6 +26,7 @@ export const SelectConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
 }: SpecificConfiguratorProps<SelectFieldConfig>) => {
   const [optionsData, setOptionsData] = useState<OptionsData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -162,6 +163,7 @@ export const SelectConfigurator = ({
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
 
       {/* Chargement ou erreur */}

@@ -79,6 +79,49 @@ export function getFieldDepth(
 }
 
 /**
+ * Calculate the hierarchical identifier for a field (e.g., "1", "1.4", "1.4.3").
+ * Root fields are numbered based on their position among other root fields.
+ * Child fields append the option index to their parent's identifier.
+ */
+export function getFieldIdentifier(
+  fieldId: string,
+  schema: FieldConfig[],
+  visited: Set<string> = new Set(),
+): string {
+  const field = schema.find((f) => f.id === fieldId);
+  if (!field) return "";
+
+  // Prevent infinite recursion
+  if (visited.has(fieldId)) return "";
+  visited.add(fieldId);
+
+  // Root field: calculate position among other root fields
+  if (!field.parentFieldId) {
+    const rootFields = schema.filter((f) => !f.parentFieldId);
+    const position = rootFields.findIndex((f) => f.id === fieldId) + 1;
+    return String(position);
+  }
+
+  // Child field: get parent identifier and append option index
+  const parent = schema.find((f) => f.id === field.parentFieldId);
+  if (!parent || (parent.type !== "radio" && parent.type !== "checkbox")) {
+    return "";
+  }
+
+  const parentIdentifier = getFieldIdentifier(field.parentFieldId, schema, visited);
+  if (!parentIdentifier) return "";
+
+  // Find the option index
+  const parentConfig = parent as { options?: { value: string }[] };
+  const options = parentConfig.options ?? [];
+  const optionIndex = options.findIndex((o) => o.value === field.parentOptionValue);
+
+  if (optionIndex === -1) return parentIdentifier;
+
+  return `${parentIdentifier}.${optionIndex + 1}`;
+}
+
+/**
  * Check if a child field should be visible based on the parent's current value.
  */
 export function isChildFieldVisible(

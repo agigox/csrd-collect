@@ -13,6 +13,7 @@ export const DateConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
 }: SpecificConfiguratorProps<DateFieldConfig>) => {
   return (
     <div className="flex flex-col gap-4">
@@ -22,6 +23,7 @@ export const DateConfigurator = ({
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
       <div className="flex gap-4 items-end">
         {/* Valeur par défaut */}

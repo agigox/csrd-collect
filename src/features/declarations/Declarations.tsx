@@ -176,14 +176,12 @@ const Declarations = () => {
   };
 
   return (
-    <div className="flex justify-start p-6">
-      <div className="w-full max-w-101.5">
-        <DeclarationsList
-          onDeclarer={handleOpenSelection}
-          onEditDeclaration={handleEditDeclaration}
-          selectedDeclarationId={selectedDeclaration?.id}
-        />
-      </div>
+    <div className="flex justify-start px-8">
+      <DeclarationsList
+        onDeclarer={handleOpenSelection}
+        onEditDeclaration={handleEditDeclaration}
+        selectedDeclarationId={selectedDeclaration?.id}
+      />
 
       {/* Modal de sélection du type de formulaire */}
       <FormSelectionDialog

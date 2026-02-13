@@ -21,6 +21,7 @@ interface SortableFieldCardProps {
   isChildField?: boolean;
   branchingColor?: string;
   branchingNumber?: number;
+  fieldIdentifier?: string;
   depth?: number;
 }
 
@@ -40,6 +41,7 @@ export const SortableFieldCard = ({
   isChildField = false,
   branchingColor,
   branchingNumber,
+  fieldIdentifier,
   depth = 0,
 }: SortableFieldCardProps) => {
   const dragControls = useDragControls();
@@ -111,6 +113,7 @@ export const SortableFieldCard = ({
           isChildField={isChildField}
           branchingColor={branchingColor}
           branchingNumber={branchingNumber}
+          fieldIdentifier={fieldIdentifier}
         />
       </Card>
     </Reorder.Item>

@@ -11,6 +11,7 @@ export const NumberConfigurator = ({
   config,
   onChange,
   onFieldTypeChange,
+  fieldIdentifier,
 }: SpecificConfiguratorProps<NumberFieldConfig>) => {
   return (
     <>
@@ -20,6 +21,7 @@ export const NumberConfigurator = ({
         isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
+        fieldIdentifier={fieldIdentifier}
       />
       <div className="flex gap-4">
         <TextInput

@@ -40,6 +40,7 @@ export const FieldConfigurator = ({
   isChildField,
   branchingColor,
   branchingNumber,
+  fieldIdentifier,
 }: FieldConfiguratorProps) => {
   // Remove isDuplicate flag when user modifies any field
   const handleChange = (newConfig: FieldConfig) => {
@@ -117,7 +118,7 @@ export const FieldConfigurator = ({
   };
 
   const renderSpecificConfigurator = () => {
-    const typeChangeProps = { onFieldTypeChange: handleFieldTypeChange };
+    const typeChangeProps = { onFieldTypeChange: handleFieldTypeChange, fieldIdentifier };
     switch (config.type) {
       case "text":
         return (
@@ -217,6 +218,7 @@ export const FieldConfigurator = ({
             isChildField={isChildField}
             branchingColor={branchingColor}
             branchingNumber={branchingNumber}
+            fieldIdentifier={fieldIdentifier}
           />
         </motion.div>
       ) : (
