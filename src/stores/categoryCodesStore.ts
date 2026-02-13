@@ -1,12 +1,8 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import type { CategoryCode } from "@/models/CategoryCode";
 
 const API_BASE_URL = "http://localhost:4000";
-
-export interface CategoryCode {
-  value: string;
-  label: string;
-}
 
 interface CategoryCodesState {
   categoryCodes: CategoryCode[];

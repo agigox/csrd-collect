@@ -1,14 +1,9 @@
-export { useAuthStore, type TeamInfo } from "./authStore";
-export { useCategoryCodesStore, type CategoryCode } from "./categoryCodesStore";
-export {
-  useDeclarationsStore,
-  type Declaration,
-  type ModificationEntry,
-  type ModificationDetail,
-} from "./declarationsStore";
+// Store hooks only - import types from @/models
+export { useAuthStore } from "./authStore";
+export { useCategoryCodesStore } from "./categoryCodesStore";
+export { useDeclarationsStore } from "./declarationsStore";
 export { useFormEditorStore } from "./formEditorStore";
-export { useFormsStore, type FormTemplate } from "./formsStore";
-export type { FormTemplate as FormDefinition } from "./formsStore";
+export { useFormsStore } from "./formsStore";
 
 // Expose stores in dev mode for debugging
 import "./devtools";

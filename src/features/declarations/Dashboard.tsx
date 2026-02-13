@@ -59,7 +59,18 @@ interface DashboardProps {
 }
 
 const Dashboard = ({ onDeclarer }: DashboardProps) => {
-  const { stats, loading } = useDeclarationsStore();
+  const { declarations, loading } = useDeclarationsStore();
+
+  // Compute stats from declarations
+  const stats = {
+    declarationsAFaire: declarations.filter((d) => d.status === "draft").length,
+    declarationsEffectuees: declarations.filter(
+      (d) => d.status === "pending" || d.status === "validated"
+    ).length,
+    declarationsModifiees: declarations.filter(
+      (d) => d.updatedAt !== d.createdAt
+    ).length,
+  };
 
   return (
     <div className="flex flex-col gap-4 w-full">

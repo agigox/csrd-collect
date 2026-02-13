@@ -12,13 +12,24 @@ export interface ModificationEntry {
 
 export interface Declaration {
   id: string;
-  formId: string;
-  date: string;
-  author: string;
-  title: string;
+  formTemplateId: string;
+  reference: string;
+  location: string;
+  authorId: string;
+  authorName: string;
+  teamId: string;
   description: string;
-  status: "pending" | "completed" | "modified";
-  formValues?: Record<string, unknown>;
+  status: "draft" | "pending" | "validated";
+  /** Form data must always contain a 'name' field */
+  formData: Record<string, unknown> & { name: string };
+  submitedBy: string;
+  reviewedBy: string;
+  reviewComment: string;
+  createdAt: string;
+  updatedAt: string;
+  submittedAt: string;
+  reviewedAt: string;
+  isActive: boolean;
   history?: ModificationEntry[];
   isNew?: boolean;
 }

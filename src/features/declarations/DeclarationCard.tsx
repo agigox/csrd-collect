@@ -5,7 +5,7 @@ import Chip from "@/lib/Chip";
 interface DeclarationCardProps {
   createdAt: string;
   authorName: string;
-  title: string;
+  name: string;
   description: string;
   onClick?: () => void;
   isSelected?: boolean;
@@ -15,7 +15,7 @@ interface DeclarationCardProps {
 const DeclarationCard = ({
   createdAt,
   authorName,
-  title,
+  name,
   description,
   onClick,
   isSelected = false,
@@ -65,7 +65,7 @@ const DeclarationCard = ({
 
         {/* Title */}
         <h3 className="text-xl font-semibold text-[#201f1f] tracking-tight leading-7">
-          {title}
+          {name}
         </h3>
 
         {/* Description */}

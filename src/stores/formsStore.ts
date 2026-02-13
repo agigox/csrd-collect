@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { FieldConfig } from "@/models/FieldTypes";
-import { FormTemplate } from "models/FormTemplate";
+import type { FormTemplate } from "@/models/FormTemplate";
 import { getAllDescendantIds } from "@/lib/utils/branching";
 
 const API_BASE_URL = "http://localhost:4000";
@@ -227,5 +227,3 @@ export const useFormsStore = create<FormsState>()(
     { name: "forms-store" },
   ),
 );
-
-export type { FormTemplate };

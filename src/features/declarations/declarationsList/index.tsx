@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useEffect, useState } from "react";
-import { useDeclarationsStore, type Declaration } from "@/stores";
+import { useDeclarationsStore } from "@/stores";
+import type { Declaration } from "@/models/Declaration";
 import Header from "./Header";
 import Filters, { type FiltersState } from "./Filters";
 import List from "./List";

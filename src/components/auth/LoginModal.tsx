@@ -9,7 +9,8 @@ import {
   DialogDescription,
 } from "@/lib/ui/dialog";
 import { Button, Select } from "@rte-ds/react";
-import { useAuthStore, type TeamInfo } from "@/stores";
+import { useAuthStore } from "@/stores";
+import type { TeamInfo } from "@/models/TeamInfo";
 
 // Mock data - à remplacer par des données API
 const DIRECTIONS = ["Maintenance", "Production", "Qualité", "Logistique"];

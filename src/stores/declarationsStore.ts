@@ -1,41 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-
-export interface ModificationDetail {
-  label: string;
-}
-
-export interface ModificationEntry {
-  id: string;
-  userName: string;
-  timestamp: string;
-  action: string;
-  details?: ModificationDetail[];
-}
-
-export interface Declaration {
-  id: string;
-  formTemplateId: string;
-  reference: string;
-  location: string;
-  authorId: string;
-  authorName: string;
-  teamId: string;
-  title: string;
-  description: string;
-  status: "draft" | "pending" | "validated";
-  formData?: Record<string, unknown>;
-  submitedBy: string;
-  reviewedBy: string;
-  reviewComment: string;
-  createdAt: string;
-  updatedAt: string;
-  submittedAt: string;
-  reviewedAt: string;
-  isActive: boolean;
-  history?: ModificationEntry[];
-  isNew?: boolean;
-}
+import type { Declaration } from "@/models/Declaration";
 
 interface DeclarationsState {
   declarations: Declaration[];
@@ -44,7 +9,7 @@ interface DeclarationsState {
   fetchDeclarations: () => Promise<void>;
   updateDeclaration: (
     id: string,
-    formData: Record<string, unknown>,
+    formData: Record<string, unknown> & { name: string },
   ) => Promise<void>;
   addTempDeclaration: (declaration: Declaration) => void;
   updateTempDeclaration: (id: string, updates: Partial<Declaration>) => void;
@@ -97,7 +62,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
 
       updateDeclaration: async (
         id: string,
-        formData: Record<string, unknown>,
+        formData: Record<string, unknown> & { name: string },
       ) => {
         try {
           // Get current declaration

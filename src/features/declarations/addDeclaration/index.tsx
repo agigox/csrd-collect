@@ -11,7 +11,7 @@ import {
 import { Button } from "@/lib/ui/button";
 import Icon from "@/lib/Icons";
 import FormSelectionDialog from "../FormSelectionDialog";
-import { type FormDefinition } from "@/stores";
+import type { FormTemplate } from "@/models/FormTemplate";
 import { DynamicForm } from "@/features/form-builder/DynamicForm";
 
 interface AddDeclarationProps {
@@ -21,7 +21,7 @@ interface AddDeclarationProps {
 const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
   const [selectionDialogOpen, setSelectionDialogOpen] = useState(false);
   const [declarationDialogOpen, setDeclarationDialogOpen] = useState(false);
-  const [selectedForm, setSelectedForm] = useState<FormDefinition | null>(null);
+  const [selectedForm, setSelectedForm] = useState<FormTemplate | null>(null);
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -29,7 +29,7 @@ const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
     setSelectionDialogOpen(true);
   };
 
-  const handleFormSelect = (form: FormDefinition) => {
+  const handleFormSelect = (form: FormTemplate) => {
     setSelectedForm(form);
     setFormValues({});
     setFormErrors({});
