@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import DeclarationsList from "./declarationsList";
 import FormSelectionDialog from "./FormSelectionDialog";
@@ -19,6 +19,7 @@ import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 import ModificationHistory from "./ModificationHistory";
 import { useDeclarationsStore } from "@/stores";
 import type { Declaration } from "@/models/Declaration";
+import type { FieldConfig, RadioFieldConfig, CheckboxFieldConfig } from "@/models/FieldTypes";
 
 const Declarations = () => {
   const router = useRouter();
@@ -84,6 +85,18 @@ const Declarations = () => {
       const tempId = `temp_${Date.now()}_${selectedForm.id}`;
       const now = new Date().toISOString();
 
+      // Initialize formData with default values from schema
+      const initialFormData: Record<string, unknown> & { name: string } = {
+        name: selectedForm.name || "Nouvelle déclaration",
+      };
+
+      // Add default values for all fields that have them
+      selectedForm.schema.fields.forEach((field) => {
+        if (field.defaultValue !== undefined) {
+          initialFormData[field.name] = field.defaultValue;
+        }
+      });
+
       const tempDeclaration: Declaration = {
         id: tempId,
         formTemplateId: selectedForm.id,
@@ -94,9 +107,7 @@ const Declarations = () => {
         teamId: "current-team",
         description: selectedForm.description || "",
         status: "draft",
-        formData: {
-          name: selectedForm.name || "Nouvelle déclaration",
-        },
+        formData: initialFormData,
         submitedBy: "",
         reviewedBy: "",
         reviewComment: "",
@@ -121,14 +132,95 @@ const Declarations = () => {
     }
   }, [isOnNewPage, formId]);
 
+  // Check if a field has a configured default value
+  const fieldHasDefault = useCallback((field: FieldConfig) => {
+    if (field.defaultValue !== undefined && field.defaultValue !== '') return true;
+    if (field.type === 'radio') return (field as RadioFieldConfig).defaultIndex !== undefined;
+    if (field.type === 'checkbox') {
+      const indices = (field as CheckboxFieldConfig).defaultIndices;
+      return indices !== undefined && indices.length > 0;
+    }
+    return false;
+  }, []);
+
+  // Validation function for required fields
+  const validateForm = useCallback((values: Record<string, unknown>) => {
+    if (!selectedForm) return {};
+
+    const errors: Record<string, string> = {};
+
+    for (const field of selectedForm.schema.fields) {
+      if (field.required) {
+        const value = values[field.name];
+        const isEmpty = value === undefined || value === null || value === '';
+        // Skip error if field has a configured default (preview component uses it as fallback)
+        if (isEmpty && !fieldHasDefault(field)) {
+          errors[field.name] = 'Ce champ est requis';
+        }
+      }
+    }
+
+    return errors;
+  }, [selectedForm, fieldHasDefault]);
+
   // Load form values when declaration changes
   useEffect(() => {
     if (finalSelectedDeclaration) {
-      setFormValues(finalSelectedDeclaration.formData || {});
+      const values = finalSelectedDeclaration.formData || {};
+      setFormValues(values);
+
+      // Validate on load to detect errors immediately
+      const validationErrors = validateForm(values);
+      setFormErrors(validationErrors);
     } else {
       setFormValues({});
+      setFormErrors({});
     }
-  }, [finalSelectedDeclaration]);
+  }, [finalSelectedDeclaration, validateForm]);
+
+  // Handler for form value changes - sync with temp declaration
+  const handleFormValuesChange = useCallback(
+    (newValues: Record<string, unknown>) => {
+      setFormValues(newValues);
+
+      // Validate form and update errors
+      const validationErrors = validateForm(newValues);
+      setFormErrors(validationErrors);
+
+      // Sync with temp declaration in real-time
+      if (finalSelectedDeclaration?.isNew) {
+        const updatedFormData = {
+          ...newValues,
+          name: (newValues.name as string) || "Nouvelle déclaration",
+        };
+
+        updateTempDeclaration(finalSelectedDeclaration.id, {
+          formData: updatedFormData,
+          updatedAt: new Date().toISOString(),
+        });
+
+        // Update local temp declarations map
+        setTempDeclarations(prev => {
+          const next = new Map(prev);
+          const existing = next.get(finalSelectedDeclaration.id);
+          if (existing) {
+            next.set(finalSelectedDeclaration.id, {
+              ...existing,
+              formData: updatedFormData,
+              updatedAt: new Date().toISOString(),
+            });
+          }
+          return next;
+        });
+      }
+    },
+    [finalSelectedDeclaration, updateTempDeclaration, validateForm],
+  );
+
+  // Check if form is valid (no errors)
+  const isFormValid = useMemo(() => {
+    return Object.keys(formErrors).length === 0;
+  }, [formErrors]);
 
   // Don't render declarations if user is not authenticated
   if (!isAuthenticated) {
@@ -172,41 +264,6 @@ const Declarations = () => {
     // The useEffect will handle opening the modal
     router.push(`/declarations/${declaration.id}`);
   };
-
-  // Handler for form value changes - sync with temp declaration
-  const handleFormValuesChange = useCallback(
-    (newValues: Record<string, unknown>) => {
-      setFormValues(newValues);
-
-      // Sync with temp declaration in real-time
-      if (finalSelectedDeclaration?.isNew) {
-        const updatedFormData = {
-          ...newValues,
-          name: (newValues.name as string) || "Nouvelle déclaration",
-        };
-
-        updateTempDeclaration(finalSelectedDeclaration.id, {
-          formData: updatedFormData,
-          updatedAt: new Date().toISOString(),
-        });
-
-        // Update local temp declarations map
-        setTempDeclarations(prev => {
-          const next = new Map(prev);
-          const existing = next.get(finalSelectedDeclaration.id);
-          if (existing) {
-            next.set(finalSelectedDeclaration.id, {
-              ...existing,
-              formData: updatedFormData,
-              updatedAt: new Date().toISOString(),
-            });
-          }
-          return next;
-        });
-      }
-    },
-    [finalSelectedDeclaration, updateTempDeclaration],
-  );
 
   // Handler for submitting the form
   const handleSubmit = async () => {
@@ -333,7 +390,9 @@ const Declarations = () => {
             >
               Annuler
             </Button>
-            <Button onClick={handleSubmit}>Soumettre</Button>
+            <Button onClick={handleSubmit} disabled={!isFormValid}>
+              Soumettre
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

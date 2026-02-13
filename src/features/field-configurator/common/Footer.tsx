@@ -25,6 +25,7 @@ interface FooterProps {
   showBranchingButton?: boolean;
   onBranching?: () => void;
   branchingEnabled?: boolean;
+  requiredDisabled?: boolean;
 }
 
 export const Footer = ({
@@ -40,6 +41,7 @@ export const Footer = ({
   showBranchingButton = false,
   onBranching,
   branchingEnabled = false,
+  requiredDisabled = false,
 }: FooterProps) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -62,8 +64,10 @@ export const Footer = ({
             appearance="brand"
             label="Champ obligatoire"
             onChange={() => onRequiredChange(!required)}
+            checked={required || requiredDisabled}
             showIcon
             showLabel
+            disabled={requiredDisabled}
           />
           <div className="flex gap-1">
             {/* Drag handle */}

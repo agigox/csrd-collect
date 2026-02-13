@@ -310,9 +310,19 @@
             "label": "First name",
             "placeholder": "",
             "isDuplicate": false,
-            "defaultValue": "Valeur par default",
+            "defaultValue": "",
             "description": "Le description",
-            "required": true
+            "required": false
+          },
+          {
+            "id": "number_1",
+            "name": "number_1",
+            "type": "number",
+            "label": "Nombre",
+            "placeholder": "",
+            "defaultValue": 11,
+            "required": true,
+            "unit": "Kg"
           }
         ]
       }
@@ -328,16 +338,16 @@
       "authorName": "Utilisateur actuel",
       "teamId": "current-team",
       "description": "ce formulaire est de test des differents champs",
-      "status": "draft",
+      "status": "pending",
       "formData": {
         "name": "Formulaire de test",
-        "text_1": "dddfffgg"
+        "text_1": ""
       },
       "submitedBy": "",
       "reviewedBy": "",
       "reviewComment": "",
       "createdAt": "2026-02-13T14:51:43.741Z",
-      "updatedAt": "2026-02-13T14:51:54.359Z",
+      "updatedAt": "2026-02-13T16:27:13.417Z",
       "submittedAt": "",
       "reviewedAt": "",
       "isActive": true

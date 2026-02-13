@@ -44,11 +44,33 @@ export const FieldConfigurator = ({
 }: FieldConfiguratorProps) => {
   // Remove isDuplicate flag when user modifies any field
   const handleChange = (newConfig: FieldConfig) => {
-    if (newConfig.isDuplicate) {
-      const { ...configWithoutDuplicate } = newConfig;
+    // Check if new config has a default value
+    const hasDefault = (() => {
+      if (newConfig.defaultValue !== undefined && newConfig.defaultValue !== '') {
+        return true;
+      }
+      if (newConfig.type === 'radio') {
+        const radioConfig = newConfig as RadioFieldConfig;
+        return radioConfig.defaultIndex !== undefined;
+      }
+      if (newConfig.type === 'checkbox') {
+        const checkboxConfig = newConfig as CheckboxFieldConfig;
+        return checkboxConfig.defaultIndices !== undefined && checkboxConfig.defaultIndices.length > 0;
+      }
+      return false;
+    })();
+
+    // Force required to true if field has default value
+    let finalConfig = newConfig;
+    if (hasDefault && !finalConfig.required) {
+      finalConfig = { ...finalConfig, required: true };
+    }
+
+    if (finalConfig.isDuplicate) {
+      const { ...configWithoutDuplicate } = finalConfig;
       onChange(configWithoutDuplicate as FieldConfig);
     } else {
-      onChange(newConfig);
+      onChange(finalConfig);
     }
   };
 
@@ -116,6 +138,22 @@ export const FieldConfigurator = ({
       ...(!newEnabled ? { branching: undefined, branchingColors: undefined } : {}),
     } as FieldConfig);
   };
+
+  // Check if field has a default value
+  const hasDefaultValue = (() => {
+    if (config.defaultValue !== undefined && config.defaultValue !== '') {
+      return true;
+    }
+    if (config.type === 'radio') {
+      const radioConfig = config as RadioFieldConfig;
+      return radioConfig.defaultIndex !== undefined;
+    }
+    if (config.type === 'checkbox') {
+      const checkboxConfig = config as CheckboxFieldConfig;
+      return checkboxConfig.defaultIndices !== undefined && checkboxConfig.defaultIndices.length > 0;
+    }
+    return false;
+  })();
 
   const renderSpecificConfigurator = () => {
     const typeChangeProps = { onFieldTypeChange: handleFieldTypeChange, fieldIdentifier };
@@ -238,10 +276,13 @@ export const FieldConfigurator = ({
           />
 
           <Footer
-            required={config.required ?? false}
-            onRequiredChange={(required) =>
-              handleChange({ ...config, required })
-            }
+            required={hasDefaultValue || config.required || false}
+            onRequiredChange={(required) => {
+              // If field has default value, keep required as true
+              if (!hasDefaultValue) {
+                handleChange({ ...config, required });
+              }
+            }}
             onDuplicate={onDuplicate}
             onRemove={onRemove}
             onMoveUp={onMoveUp}
@@ -252,6 +293,7 @@ export const FieldConfigurator = ({
             showBranchingButton={supportsBranching}
             onBranching={handleToggleBranching}
             branchingEnabled={branchingEnabled}
+            requiredDisabled={hasDefaultValue}
           />
         </motion.div>
       )}

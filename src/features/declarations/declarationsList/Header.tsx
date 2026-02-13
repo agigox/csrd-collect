@@ -42,7 +42,7 @@ const Header = ({
           variant={isSearchActive ? "primary" : "secondary"}
         />
 
-        {/* Filter button */}
+        {/* Filter button - disabled when search active */}
         <IconButtonToggle
           aria-label="Afficher/masquer les filtres"
           name="filter-alt"
@@ -50,6 +50,7 @@ const Header = ({
           size="m"
           variant="secondary"
           selected={isFilterOpen}
+          disabled={isSearchActive}
         />
 
         {/* Déclarer button */}
