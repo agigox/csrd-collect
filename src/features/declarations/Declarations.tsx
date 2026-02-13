@@ -60,22 +60,28 @@ const Declarations = () => {
 
     // Create temporary declaration
     const tempId = `temp_${Date.now()}`;
-    const today = new Date();
-    const dateStr = today.toLocaleDateString("fr-FR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
+    const now = new Date().toISOString();
 
     const tempDeclaration: Declaration = {
       id: tempId,
-      formId: form.id,
-      date: dateStr,
-      author: "Utilisateur actuel",
+      formTemplateId: form.id,
+      reference: `DECL-TEMP-${Date.now()}`,
+      location: "",
+      authorId: "current-user",
+      authorName: "Utilisateur actuel",
+      teamId: "current-team",
       title: form.name || "Nouvelle déclaration",
       description: form.description || "",
-      status: "pending",
-      formValues: {},
+      status: "draft",
+      formData: {},
+      submitedBy: "",
+      reviewedBy: "",
+      reviewComment: "",
+      createdAt: now,
+      updatedAt: now,
+      submittedAt: "",
+      reviewedAt: "",
+      isActive: true,
       isNew: true,
     };
 
@@ -117,11 +123,11 @@ const Declarations = () => {
 
     setSelectedDeclaration(declaration);
     // Load the form associated with this declaration
-    const declarationForm = forms.find((f) => f.id === declaration.formId);
+    const declarationForm = forms.find((f) => f.id === declaration.formTemplateId);
     if (declarationForm) {
       setSelectedForm(declarationForm);
       // Pre-fill form values from the declaration
-      setFormValues(declaration.formValues || {});
+      setFormValues(declaration.formData || {});
     }
     setFormErrors({});
     // Only open if not already open
@@ -146,7 +152,8 @@ const Declarations = () => {
         const title = titleField ? String(titleField[1] || "") : undefined;
 
         updateTempDeclaration(tempDeclarationId, {
-          formValues: newValues,
+          formData: newValues,
+          updatedAt: new Date().toISOString(),
           ...(title && { title }),
         });
       }

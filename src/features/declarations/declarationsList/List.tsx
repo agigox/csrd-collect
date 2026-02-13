@@ -34,8 +34,8 @@ const List = ({
             {dateDeclarations.map((declaration) => (
               <DeclarationCard
                 key={declaration.id}
-                date={declaration.date}
-                author={declaration.author}
+                createdAt={declaration.createdAt}
+                authorName={declaration.authorName}
                 title={declaration.title}
                 description={declaration.description}
                 onClick={() => onEditDeclaration?.(declaration)}

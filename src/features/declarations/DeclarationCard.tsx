@@ -3,8 +3,8 @@
 import Chip from "@/lib/Chip";
 
 interface DeclarationCardProps {
-  date: string;
-  author: string;
+  createdAt: string;
+  authorName: string;
   title: string;
   description: string;
   onClick?: () => void;
@@ -13,14 +13,19 @@ interface DeclarationCardProps {
 }
 
 const DeclarationCard = ({
-  date,
-  author,
+  createdAt,
+  authorName,
   title,
   description,
   onClick,
   isSelected = false,
   isNew = false,
 }: DeclarationCardProps) => {
+  // Format date from ISO string to display format
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    return date.toLocaleDateString('fr-FR');
+  };
   const getBackground = () => {
     if (isNew) {
       return "linear-gradient(to left, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.12)), linear-gradient(to left, #ffffff, #ffffff)";
@@ -53,9 +58,9 @@ const DeclarationCard = ({
         {/* Header row: date + author badge */}
         <div className="flex items-center justify-between mb-0.5">
           <span className="text-sm font-semibold text-[#201f1f] tracking-tight">
-            {date}
+            {formatDate(createdAt)}
           </span>
-          <Chip>{author}</Chip>
+          <Chip>{authorName}</Chip>
         </div>
 
         {/* Title */}

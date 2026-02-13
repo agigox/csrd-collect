@@ -15,13 +15,24 @@ export interface ModificationEntry {
 
 export interface Declaration {
   id: string;
-  formId: string;
-  date: string;
-  author: string;
+  formTemplateId: string;
+  reference: string;
+  location: string;
+  authorId: string;
+  authorName: string;
+  teamId: string;
   title: string;
   description: string;
-  status: "pending" | "completed" | "modified";
-  formValues?: Record<string, unknown>;
+  status: "draft" | "pending" | "validated";
+  formData?: Record<string, unknown>;
+  submitedBy: string;
+  reviewedBy: string;
+  reviewComment: string;
+  createdAt: string;
+  updatedAt: string;
+  submittedAt: string;
+  reviewedAt: string;
+  isActive: boolean;
   history?: ModificationEntry[];
   isNew?: boolean;
 }
@@ -33,7 +44,7 @@ interface DeclarationsState {
   fetchDeclarations: () => Promise<void>;
   updateDeclaration: (
     id: string,
-    formValues: Record<string, unknown>,
+    formData: Record<string, unknown>,
   ) => Promise<void>;
   addTempDeclaration: (declaration: Declaration) => void;
   updateTempDeclaration: (id: string, updates: Partial<Declaration>) => void;
@@ -86,7 +97,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
 
       updateDeclaration: async (
         id: string,
-        formValues: Record<string, unknown>,
+        formData: Record<string, unknown>,
       ) => {
         try {
           // Get current declaration
@@ -97,11 +108,12 @@ export const useDeclarationsStore = create<DeclarationsState>()(
             throw new Error("Déclaration non trouvée");
           }
 
-          // Update declaration with new form values
+          // Update declaration with new form data
           const updatedDeclaration: Declaration = {
             ...declaration,
-            formValues,
-            status: "modified",
+            formData,
+            status: "pending",
+            updatedAt: new Date().toISOString(),
           };
 
           const response = await fetch(
@@ -181,7 +193,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
           }
 
           // Remove isNew flag for the API call
-          const { isNew, ...declarationToSave } = declaration;
+          const { isNew: _isNew, ...declarationToSave } = declaration;
 
           const response = await fetch("http://localhost:4000/declarations", {
             method: "POST",

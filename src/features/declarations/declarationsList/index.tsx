@@ -38,11 +38,13 @@ const DeclarationsList = ({
     const groups: Record<string, typeof declarations> = {};
 
     declarations.forEach((declaration) => {
-      const date = declaration.date;
-      if (!groups[date]) {
-        groups[date] = [];
+      // Format createdAt to display date
+      const date = new Date(declaration.createdAt);
+      const dateKey = date.toLocaleDateString('fr-FR');
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
       }
-      groups[date].push(declaration);
+      groups[dateKey].push(declaration);
     });
 
     return groups;

@@ -299,18 +299,29 @@
   "declarations": [
     {
       "id": "1",
-      "formId": "1",
-      "date": "12/02/2025",
-      "author": "Jérome Menard",
+      "formTemplateId": "1",
+      "reference": "DECL-2025-001",
+      "location": "Châteauneuf-du-Rhône départ Boudeyre",
+      "authorId": "user-001",
+      "authorName": "Jérome Menard",
+      "teamId": "team-001",
       "title": "Fuite d'huile",
       "description": "Châteauneuf-du-Rhône départ Boudeyre",
-      "status": "modified",
-      "formValues": {
+      "status": "pending",
+      "formData": {
         "titre": "Fuite d'huile",
         "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
         "quantite": 47.52,
         "gravite": "faible"
       },
+      "submitedBy": "user-001",
+      "reviewedBy": "",
+      "reviewComment": "",
+      "createdAt": "2025-01-06T11:15:00.000Z",
+      "updatedAt": "2025-02-12T16:48:00.000Z",
+      "submittedAt": "2025-02-12T16:50:00.000Z",
+      "reviewedAt": "",
+      "isActive": true,
       "history": [
         {
           "id": "h1-1",
@@ -356,18 +367,29 @@
     },
     {
       "id": "1111",
-      "formId": "1",
-      "date": "12/02/2025",
-      "author": "Jérome Menard",
+      "formTemplateId": "1",
+      "reference": "DECL-2025-002",
+      "location": "Châteauneuf-du-Rhône départ Boudeyre",
+      "authorId": "user-001",
+      "authorName": "Jérome Menard",
+      "teamId": "team-001",
       "title": "Fuite d'huile",
       "description": "Châteauneuf-du-Rhône départ Boudeyre",
-      "status": "pending",
-      "formValues": {
+      "status": "draft",
+      "formData": {
         "titre": "Fuite d'huile",
         "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
         "quantite": 15,
         "gravite": "faible"
       },
+      "submitedBy": "",
+      "reviewedBy": "",
+      "reviewComment": "",
+      "createdAt": "2025-02-12T10:00:00.000Z",
+      "updatedAt": "2025-02-12T10:00:00.000Z",
+      "submittedAt": "",
+      "reviewedAt": "",
+      "isActive": true,
       "history": [
         {
           "id": "h1111-1",
@@ -379,16 +401,27 @@
     },
     {
       "id": "2",
-      "formId": "2",
-      "date": "10/02/2025",
-      "author": "Marie Dupont",
+      "formTemplateId": "2",
+      "reference": "DECL-2025-003",
+      "location": "Centrale de Tricastin - Secteur B",
+      "authorId": "user-002",
+      "authorName": "Marie Dupont",
+      "teamId": "team-002",
       "title": "Incident électrique",
       "description": "Centrale de Tricastin - Secteur B",
-      "status": "completed",
-      "formValues": {
+      "status": "validated",
+      "formData": {
         "titre": "Incident électrique",
         "secteur": "Secteur B"
       },
+      "submitedBy": "user-002",
+      "reviewedBy": "user-003",
+      "reviewComment": "Déclaration validée après vérification",
+      "createdAt": "2025-02-10T09:15:00.000Z",
+      "updatedAt": "2025-02-10T14:00:00.000Z",
+      "submittedAt": "2025-02-10T14:30:00.000Z",
+      "reviewedAt": "2025-02-10T15:30:00.000Z",
+      "isActive": true,
       "history": [
         {
           "id": "h2-1",
