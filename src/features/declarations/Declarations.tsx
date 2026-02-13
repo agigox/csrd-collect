@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import DeclarationsList from "./declarationsList";
 import FormSelectionDialog from "./FormSelectionDialog";
-import { useAuthStore, useFormsStore, type FormDefinition } from "@/stores";
+import { useAuthStore, useFormsStore } from "@/stores";
+import type { FormTemplate } from "@/models/FormTemplate";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,8 @@ import { DynamicForm } from "@/features/form-builder/DynamicForm";
 import Icon from "@/lib/Icons";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 import ModificationHistory from "./ModificationHistory";
-import { useDeclarationsStore, type Declaration } from "@/stores";
+import { useDeclarationsStore } from "@/stores";
+import type { Declaration } from "@/models/Declaration";
 
 const Declarations = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -29,7 +31,7 @@ const Declarations = () => {
   const { forms, fetchForms } = useFormsStore();
   const [selectionDialogOpen, setSelectionDialogOpen] = useState(false);
   const [declarationDialogOpen, setDeclarationDialogOpen] = useState(false);
-  const [selectedForm, setSelectedForm] = useState<FormDefinition | null>(null);
+  const [selectedForm, setSelectedForm] = useState<FormTemplate | null>(null);
   const [selectedDeclaration, setSelectedDeclaration] =
     useState<Declaration | null>(null);
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
@@ -53,7 +55,7 @@ const Declarations = () => {
     setSelectionDialogOpen(true);
   };
 
-  const handleFormSelect = (form: FormDefinition) => {
+  const handleFormSelect = (form: FormTemplate) => {
     setSelectedForm(form);
     setFormValues({});
     setFormErrors({});
@@ -70,10 +72,11 @@ const Declarations = () => {
       authorId: "current-user",
       authorName: "Utilisateur actuel",
       teamId: "current-team",
-      title: form.name || "Nouvelle déclaration",
       description: form.description || "",
       status: "draft",
-      formData: {},
+      formData: {
+        name: form.name || "Nouvelle déclaration",
+      },
       submitedBy: "",
       reviewedBy: "",
       reviewComment: "",
@@ -143,18 +146,15 @@ const Declarations = () => {
 
       // Sync with temp declaration in real-time
       if (tempDeclarationId) {
-        // Extract title from form values if available
-        const titleField = Object.entries(newValues).find(
-          ([key]) =>
-            key.toLowerCase().includes("titre") ||
-            key.toLowerCase().includes("title"),
-        );
-        const title = titleField ? String(titleField[1] || "") : undefined;
+        // Ensure formData has a name field
+        const updatedFormData = {
+          ...newValues,
+          name: (newValues.name as string) || "Nouvelle déclaration",
+        };
 
         updateTempDeclaration(tempDeclarationId, {
-          formData: newValues,
+          formData: updatedFormData,
           updatedAt: new Date().toISOString(),
-          ...(title && { title }),
         });
       }
     },
@@ -170,7 +170,12 @@ const Declarations = () => {
         setTempDeclarationId(null);
       } else {
         // Update existing declaration
-        await updateDeclaration(selectedDeclaration.id, formValues);
+        // Ensure formValues has a name field
+        const updatedFormData = {
+          ...formValues,
+          name: (formValues.name as string) || selectedDeclaration.formData.name,
+        };
+        await updateDeclaration(selectedDeclaration.id, updatedFormData);
       }
     }
     // Close without removing temp (it's been confirmed or it's an existing declaration)
@@ -251,7 +256,7 @@ const Declarations = () => {
               {!selectedForm && selectedDeclaration && (
                 <div className="flex-1 p-4 text-center text-muted-foreground">
                   <p className="mb-2 font-semibold">
-                    {selectedDeclaration.title}
+                    {selectedDeclaration.formData.name}
                   </p>
                   <p>{selectedDeclaration.description}</p>
                 </div>

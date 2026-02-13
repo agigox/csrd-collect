@@ -1,12 +1,6 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-
-export interface TeamInfo {
-  direction: string;
-  centre: string;
-  gmr: string;
-  equipe: string;
-}
+import type { TeamInfo } from "@/models/TeamInfo";
 
 interface AuthState {
   isAuthenticated: boolean;

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Icon from "@/lib/Icons";
 import { Divider } from "@/lib/Divider";
-import type { ModificationEntry } from "@/stores";
+import type { ModificationEntry } from "@/models/Declaration";
 
 interface ModificationHistoryProps {
   entries: ModificationEntry[];

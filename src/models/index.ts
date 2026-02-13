@@ -9,3 +9,7 @@ export type {
   ModificationDetail,
   ModificationEntry,
 } from "./Declaration";
+
+export type { TeamInfo } from "./TeamInfo";
+
+export type { CategoryCode } from "./CategoryCode";

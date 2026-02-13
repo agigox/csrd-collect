@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Modal, Button, Card, Toast } from "@rte-ds/react";
-import { useFormsStore, type FormDefinition } from "@/stores";
+import { useFormsStore } from "@/stores";
+import type { FormTemplate } from "@/models/FormTemplate";
 
 interface FormSelectionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onFormSelect: (form: FormDefinition) => void;
+  onFormSelect: (form: FormTemplate) => void;
 }
 
 const FormSelectionDialog = ({

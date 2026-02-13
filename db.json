@@ -305,11 +305,10 @@
       "authorId": "user-001",
       "authorName": "Jérome Menard",
       "teamId": "team-001",
-      "title": "Fuite d'huile",
       "description": "Châteauneuf-du-Rhône départ Boudeyre",
       "status": "pending",
       "formData": {
-        "titre": "Fuite d'huile",
+        "name": "Fuite d'huile - Châteauneuf-du-Rhône",
         "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
         "quantite": 47.52,
         "gravite": "faible"
@@ -373,11 +372,10 @@
       "authorId": "user-001",
       "authorName": "Jérome Menard",
       "teamId": "team-001",
-      "title": "Fuite d'huile",
       "description": "Châteauneuf-du-Rhône départ Boudeyre",
       "status": "draft",
       "formData": {
-        "titre": "Fuite d'huile",
+        "name": "Fuite d'huile - Brouillon",
         "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
         "quantite": 15,
         "gravite": "faible"
@@ -407,11 +405,10 @@
       "authorId": "user-002",
       "authorName": "Marie Dupont",
       "teamId": "team-002",
-      "title": "Incident électrique",
       "description": "Centrale de Tricastin - Secteur B",
       "status": "validated",
       "formData": {
-        "titre": "Incident électrique",
+        "name": "Incident électrique - Tricastin",
         "secteur": "Secteur B"
       },
       "submitedBy": "user-002",
@@ -450,6 +447,28 @@
           "action": "a initié cette déclaration"
         }
       ]
+    },
+    {
+      "id": "temp_1770975575633",
+      "formTemplateId": "1",
+      "reference": "DECL-TEMP-1770975575633",
+      "location": "",
+      "authorId": "current-user",
+      "authorName": "Utilisateur actuel",
+      "teamId": "current-team",
+      "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
+      "status": "draft",
+      "formData": {
+        "name": "Fuite d'huile (SF6)"
+      },
+      "submitedBy": "",
+      "reviewedBy": "",
+      "reviewComment": "",
+      "createdAt": "2026-02-13T09:39:35.633Z",
+      "updatedAt": "2026-02-13T09:39:35.633Z",
+      "submittedAt": "",
+      "reviewedAt": "",
+      "isActive": true
     }
   ],
   "options": {

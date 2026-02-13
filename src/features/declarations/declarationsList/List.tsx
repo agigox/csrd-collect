@@ -1,6 +1,6 @@
 "use client";
 
-import { type Declaration } from "@/stores";
+import type { Declaration } from "@/models/Declaration";
 import DeclarationCard from "../DeclarationCard";
 
 interface ListProps {
@@ -36,7 +36,7 @@ const List = ({
                 key={declaration.id}
                 createdAt={declaration.createdAt}
                 authorName={declaration.authorName}
-                title={declaration.title}
+                name={declaration.formData.name}
                 description={declaration.description}
                 onClick={() => onEditDeclaration?.(declaration)}
                 isSelected={declaration.id === selectedDeclarationId}
