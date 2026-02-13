@@ -6,7 +6,6 @@ export type {
 
 export type {
   Declaration,
-  DeclarationStats,
   ModificationDetail,
   ModificationEntry,
 } from "./Declaration";

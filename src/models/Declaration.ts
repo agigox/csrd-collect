@@ -22,9 +22,3 @@ export interface Declaration {
   history?: ModificationEntry[];
   isNew?: boolean;
 }
-
-export interface DeclarationStats {
-  declarationsAFaire: number;
-  declarationsEffectuees: number;
-  declarationsModifiees: number;
-}
