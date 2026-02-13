@@ -24,22 +24,22 @@ const TextField = ({
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <TextInput
-        id={config.name}
-        name={config.name}
-        label={config.label}
-        labelPosition="top"
-        onChange={handleChange}
-        value={currentValue}
-        required={config.required}
-        readOnly={readOnly}
-        width={"100%"}
-        tooltipTextLabel={config.description}
-      />
-
-      {error && <span className="text-sm text-red-500">{error}</span>}
-    </div>
+    <TextInput
+      id={config.name}
+      name={config.name}
+      label={config.label}
+      labelPosition="top"
+      onChange={handleChange}
+      value={currentValue}
+      required={config.required}
+      readOnly={readOnly}
+      width={"100%"}
+      tooltipTextLabel={config.description}
+      error={error !== undefined}
+      assistiveTextLabel={error}
+      assistiveAppearance={error !== undefined ? "error" : undefined}
+      showAssistiveIcon={error !== undefined}
+    />
   );
 };
 
