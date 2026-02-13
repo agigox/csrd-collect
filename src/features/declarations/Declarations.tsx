@@ -36,7 +36,7 @@ const Declarations = () => {
     useState<Declaration | null>(null);
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [showHistory, setShowHistory] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
   const [tempDeclarationId, setTempDeclarationId] = useState<string | null>(
     null,
   );
@@ -228,7 +228,10 @@ const Declarations = () => {
                   </div>
                 </div>
               </DialogTitle>
-              {selectedDeclaration && !showHistory && (
+              {selectedDeclaration &&
+               !showHistory &&
+               selectedDeclaration.history &&
+               selectedDeclaration.history.length > 0 && (
                 <Icon
                   name="listAlt"
                   size={24}

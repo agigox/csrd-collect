@@ -7,6 +7,8 @@ interface ListProps {
   groupedDeclarations: Record<string, Declaration[]>;
   onEditDeclaration?: (declaration: Declaration) => void;
   selectedDeclarationId?: string;
+  isSearchActive?: boolean;
+  searchQuery?: string;
 }
 
 interface DateSeparatorProps {
@@ -24,7 +26,23 @@ const List = ({
   groupedDeclarations,
   onEditDeclaration,
   selectedDeclarationId,
+  isSearchActive = false,
+  searchQuery = "",
 }: ListProps) => {
+  const hasDeclarations = Object.keys(groupedDeclarations).length > 0;
+
+  if (!hasDeclarations) {
+    const message = isSearchActive && searchQuery
+      ? `Aucune déclaration trouvée pour "${searchQuery}"`
+      : "Aucune déclaration ne correspond aux filtres sélectionnés";
+
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-gray-500">{message}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {Object.entries(groupedDeclarations).map(([date, dateDeclarations]) => (
