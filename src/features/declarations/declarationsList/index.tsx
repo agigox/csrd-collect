@@ -68,6 +68,14 @@ const DeclarationsList = ({
     fetchDeclarations();
   }, [fetchDeclarations]);
 
+  // Check if filters are active
+  const hasActiveFilters = useMemo(() =>
+    filters.status.length > 0 ||
+    filters.authorName.length > 0 ||
+    filters.teamId.length > 0,
+    [filters]
+  );
+
   const filteredDeclarations = useMemo(() => {
     let result = declarations;
 
@@ -80,11 +88,6 @@ const DeclarationsList = ({
     }
 
     // Apply filters if any are selected (only when search not active)
-    const hasActiveFilters =
-      filters.status.length > 0 ||
-      filters.authorName.length > 0 ||
-      filters.teamId.length > 0;
-
     if (hasActiveFilters && !isSearchActive) {
       result = result.filter((declaration) => {
         const matchesStatus =
@@ -100,7 +103,7 @@ const DeclarationsList = ({
     }
 
     return result;
-  }, [declarations, isSearchActive, searchQuery, filters]);
+  }, [declarations, isSearchActive, searchQuery, filters, hasActiveFilters]);
 
   const groupedDeclarations = useMemo(() => {
     const groups: Record<string, typeof filteredDeclarations> = {};
@@ -161,6 +164,7 @@ const DeclarationsList = ({
         selectedDeclarationId={selectedDeclarationId}
         isSearchActive={isSearchActive}
         searchQuery={searchQuery}
+        hasActiveFilters={hasActiveFilters}
       />
     </div>
   );

@@ -113,13 +113,28 @@ L'application a deux types d'utilisateurs :
 
 ## Routes
 
+### Routes Membre
+
 ```
-/                              → Interface membre (déclarations)
-/admin                         → Dashboard admin (formulaires)
-/admin/parametrage-declaratif  → Éditeur de formulaire
+/                              → Landing page (redirige vers /declarations si authentifié)
+/declarations                  → Liste des déclarations
+/declarations/new              → Modal de sélection de formulaire
+/declarations/new?formId=X     → Modal de création de déclaration avec formulaire X
+/declarations/[id]             → Modal d'édition de déclaration existante
+```
+
+### Routes Admin
+
+```
+/admin                         → Liste des formulaires de déclaration
+/admin/new                     → Créer un nouveau formulaire
+/admin/[id]                    → Éditer un formulaire existant
+/admin/parametrage-declaratif  → (Déprécié) Redirige vers /admin/new
 /admin/gestion-donnees         → Gestion des données (en développement)
 /admin/parametres              → Paramètres (en développement)
 ```
+
+**Pattern de routage URL-driven** : Les routes utilisent l'URL comme source unique de vérité pour l'état de navigation. Les modaux et éditeurs dérivent leur état depuis les paramètres d'URL plutôt que depuis le state management Zustand.
 
 ## Architecture
 
@@ -165,10 +180,12 @@ L'application a deux types d'utilisateurs :
 ### State management (Zustand)
 
 - `formEditorStore.ts` — État de l'éditeur de formulaire (schema, formName, formDescription, showPreview)
-- `formsStore.ts` — Liste des formulaires + multi-active field groups (`activeFieldNames`, `primaryActiveFieldName`)
-- `declarationsStore.ts` — Liste des déclarations
+- `formsStore.ts` — Liste des formulaires + multi-active field groups (`activeFieldNames`, `primaryActiveFieldName`). **Note** : `currentForm` n'est plus utilisé pour le routage depuis Février 2026, l'URL est la source de vérité
+- `declarationsStore.ts` — Liste des déclarations + gestion des déclarations temporaires (`tempDeclarations`)
 - `categoryCodesStore.ts` — Codes catégorie
 - `authStore.ts` — Authentification membre (persisted avec clé `csrd_auth`)
+
+**Important** : Pour la navigation et la sélection d'entités (formulaires, déclarations), privilégier le pattern URL-driven plutôt que le state Zustand. Le state Zustand est utilisé pour les données de liste et l'état UI, pas pour la navigation.
 
 ### Pattern de distinction des rôles
 
@@ -177,6 +194,46 @@ Pour distinguer admin et membre :
 1. Le rôle est déterminé par la route : `pathname.startsWith("/admin")` dans `AppSideNav`
 2. Les composants utilisent `useAuthStore()` (Zustand) pour l'authentification membre
 3. La sidebar affiche dynamiquement différents menus selon `isAdmin`
+
+### Pattern de routage URL-driven (Février 2026)
+
+**Principe** : L'URL est la source unique de vérité pour l'état de navigation. Les composants dérivent leur état depuis les paramètres d'URL au lieu du state management Zustand.
+
+**Avantages** :
+- ✅ Liens directs partageables (ex: `/admin/1` pour éditer le formulaire #1)
+- ✅ Rafraîchissement de page sans perte de contexte
+- ✅ Navigation navigateur (back/forward) fonctionne correctement
+- ✅ Pas de synchronisation état/URL nécessaire
+- ✅ Architecture plus simple et prévisible
+
+**Implémentation** :
+
+```typescript
+// Exemple : Dériver l'ID depuis l'URL
+import { usePathname } from "next/navigation";
+
+const pathname = usePathname();
+const formId = pathname.startsWith("/admin/") && pathname !== "/admin"
+  ? pathname.replace("/admin/", "")
+  : null;
+
+// Récupérer l'entité depuis la liste basée sur l'ID de l'URL
+const currentForm = formId
+  ? forms.find(f => f.id === formId)
+  : null;
+```
+
+**Gestion des IDs temporaires** : Pour les nouvelles entités (ex: nouvelles déclarations), utiliser des IDs uniques basés sur timestamp :
+
+```typescript
+const tempId = `temp_${Date.now()}_${formId}`;
+```
+
+Cela évite les erreurs de clés React dupliquées lors de créations successives depuis le même template.
+
+**Features utilisant ce pattern** :
+- `src/features/declarations/Declarations.tsx` - Gestion des déclarations
+- `src/features/form-editor/index.tsx` - Éditeur de formulaire admin
 
 ## Système de champs dynamiques
 
@@ -379,3 +436,44 @@ pnpm test:e2e e2e-tests/admin/    # Tests admin uniquement
 - Navigateurs : Chromium, Firefox, Webkit
 - Traces activées en premier retry
 - Chromium utilise `slowMo: 1500` pour la stabilité
+
+## Changements récents (Février 2026)
+
+### Refactorisation vers routage URL-driven
+
+**Problème résolu** : Les features déclarations et admin utilisaient le state Zustand pour la navigation, causant :
+- Perte de contexte au rafraîchissement de page
+- Impossibilité de partager des liens directs
+- Navigation navigateur non fonctionnelle
+- Erreurs de clés React dupliquées lors de créations multiples
+
+**Solution implémentée** :
+1. **Déclarations** (`src/features/declarations/Declarations.tsx`) :
+   - Ajout de routes `/declarations/new`, `/declarations/new?formId=X`, `/declarations/[id]`
+   - Dérivation de l'état des modaux depuis l'URL
+   - IDs temporaires uniques basés sur timestamp : `temp_${Date.now()}_${formId}`
+   - Suppression de la dépendance au state `selectedDeclaration` de Zustand
+
+2. **Admin formulaires** (`src/features/form-editor/index.tsx`) :
+   - Ajout de routes `/admin/new`, `/admin/[id]`
+   - Dépréciation de `/admin/parametrage-declaratif` avec redirection
+   - Dérivation de `currentForm` depuis l'URL au lieu du state Zustand
+   - Navigation simplifiée dans `FormsList.tsx`
+
+**Fichiers modifiés** :
+- `src/features/declarations/Declarations.tsx` - Logique URL-driven
+- `src/features/form-editor/index.tsx` - Sélection de formulaire depuis URL
+- `src/features/forms-management/FormsList.tsx` - Navigation URL
+- `src/app/declarations/[id]/page.tsx` - Nouvelle route dynamique
+- `src/app/declarations/new/page.tsx` - Nouvelle route création
+- `src/app/admin/[id]/page.tsx` - Nouvelle route édition admin
+- `src/app/admin/new/page.tsx` - Nouvelle route création admin
+- `src/app/admin/parametrage-declaratif/page.tsx` - Redirection
+- `src/lib/ui/page-title.tsx` - Lien mis à jour
+
+**Tests effectués** :
+- ✅ Création et édition de déclarations
+- ✅ Créations multiples successives sans erreur de clé
+- ✅ Création et édition de formulaires admin
+- ✅ Navigation back/forward
+- ✅ Redirection route dépréciée

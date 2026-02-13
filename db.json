@@ -294,178 +294,50 @@
           }
         ]
       }
+    },
+    {
+      "id": "47c0",
+      "code": "E2-7804_20",
+      "name": "Formulaire de test",
+      "description": "ce formulaire est de test des differents champs",
+      "categoryCode": "E2-4",
+      "schema": {
+        "fields": [
+          {
+            "id": "text_1",
+            "name": "text_1",
+            "type": "text",
+            "label": "First name",
+            "placeholder": "",
+            "isDuplicate": false,
+            "defaultValue": "Valeur par default",
+            "description": "Le description",
+            "required": true
+          }
+        ]
+      }
     }
   ],
   "declarations": [
     {
-      "id": "1",
-      "formTemplateId": "1",
-      "reference": "DECL-2025-001",
-      "location": "Châteauneuf-du-Rhône départ Boudeyre",
-      "authorId": "user-001",
-      "authorName": "Jérome Menard",
-      "teamId": "team-001",
-      "description": "Châteauneuf-du-Rhône départ Boudeyre",
-      "status": "pending",
-      "formData": {
-        "name": "Fuite d'huile - Châteauneuf-du-Rhône",
-        "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
-        "quantite": 47.52,
-        "gravite": "faible"
-      },
-      "submitedBy": "user-001",
-      "reviewedBy": "",
-      "reviewComment": "",
-      "createdAt": "2025-01-06T11:15:00.000Z",
-      "updatedAt": "2025-02-12T16:48:00.000Z",
-      "submittedAt": "2025-02-12T16:50:00.000Z",
-      "reviewedAt": "",
-      "isActive": true,
-      "history": [
-        {
-          "id": "h1-1",
-          "userName": "Jérome Menard",
-          "timestamp": "il y a 20 minutes",
-          "action": "a modifié le formulaire",
-          "details": [
-            {
-              "label": "Huile déversée : 47,52 L"
-            },
-            {
-              "label": "a modifié cela"
-            },
-            {
-              "label": "a modifié ceci"
-            }
-          ]
-        },
-        {
-          "id": "h1-2",
-          "userName": "Jérome Menard",
-          "timestamp": "Aujourd'hui, 16h48",
-          "action": "a modifié le formulaire",
-          "details": [
-            {
-              "label": "Changement de valeur"
-            }
-          ]
-        },
-        {
-          "id": "h1-3",
-          "userName": "Jérome Menard",
-          "timestamp": "Hier, 9:34",
-          "action": "a mis à jours le titre"
-        },
-        {
-          "id": "h1-4",
-          "userName": "Jérome Menard",
-          "timestamp": "06/01/2025, 11:15",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "1111",
-      "formTemplateId": "1",
-      "reference": "DECL-2025-002",
-      "location": "Châteauneuf-du-Rhône départ Boudeyre",
-      "authorId": "user-001",
-      "authorName": "Jérome Menard",
-      "teamId": "team-001",
-      "description": "Châteauneuf-du-Rhône départ Boudeyre",
-      "status": "draft",
-      "formData": {
-        "name": "Fuite d'huile - Brouillon",
-        "localisation": "Châteauneuf-du-Rhône départ Boudeyre",
-        "quantite": 15,
-        "gravite": "faible"
-      },
-      "submitedBy": "",
-      "reviewedBy": "",
-      "reviewComment": "",
-      "createdAt": "2025-02-12T10:00:00.000Z",
-      "updatedAt": "2025-02-12T10:00:00.000Z",
-      "submittedAt": "",
-      "reviewedAt": "",
-      "isActive": true,
-      "history": [
-        {
-          "id": "h1111-1",
-          "userName": "Jérome Menard",
-          "timestamp": "12/02/2025, 10:00",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "2",
-      "formTemplateId": "2",
-      "reference": "DECL-2025-003",
-      "location": "Centrale de Tricastin - Secteur B",
-      "authorId": "user-002",
-      "authorName": "Marie Dupont",
-      "teamId": "team-002",
-      "description": "Centrale de Tricastin - Secteur B",
-      "status": "validated",
-      "formData": {
-        "name": "Incident électrique - Tricastin",
-        "secteur": "Secteur B"
-      },
-      "submitedBy": "user-002",
-      "reviewedBy": "user-003",
-      "reviewComment": "Déclaration validée après vérification",
-      "createdAt": "2025-02-10T09:15:00.000Z",
-      "updatedAt": "2025-02-10T14:00:00.000Z",
-      "submittedAt": "2025-02-10T14:30:00.000Z",
-      "reviewedAt": "2025-02-10T15:30:00.000Z",
-      "isActive": true,
-      "history": [
-        {
-          "id": "h2-1",
-          "userName": "Marie Dupont",
-          "timestamp": "10/02/2025, 15:30",
-          "action": "a validé la déclaration"
-        },
-        {
-          "id": "h2-2",
-          "userName": "Marie Dupont",
-          "timestamp": "10/02/2025, 14:00",
-          "action": "a modifié le formulaire",
-          "details": [
-            {
-              "label": "Tension mesurée : 220V"
-            },
-            {
-              "label": "Zone affectée : Secteur B"
-            }
-          ]
-        },
-        {
-          "id": "h2-3",
-          "userName": "Marie Dupont",
-          "timestamp": "10/02/2025, 09:15",
-          "action": "a initié cette déclaration"
-        }
-      ]
-    },
-    {
-      "id": "temp_1770975575633",
-      "formTemplateId": "1",
-      "reference": "DECL-TEMP-1770975575633",
+      "id": "temp_1770994303741_47c0",
+      "formTemplateId": "47c0",
+      "reference": "DECL-TEMP-1770994303741",
       "location": "",
       "authorId": "current-user",
       "authorName": "Utilisateur actuel",
       "teamId": "current-team",
-      "description": "Déclaration permettant la collecte liée aux données de type fuite d'huile",
+      "description": "ce formulaire est de test des differents champs",
       "status": "draft",
       "formData": {
-        "name": "Fuite d'huile (SF6)"
+        "name": "Formulaire de test",
+        "text_1": "dddfffgg"
       },
       "submitedBy": "",
       "reviewedBy": "",
       "reviewComment": "",
-      "createdAt": "2026-02-13T09:39:35.633Z",
-      "updatedAt": "2026-02-13T09:39:35.633Z",
+      "createdAt": "2026-02-13T14:51:43.741Z",
+      "updatedAt": "2026-02-13T14:51:54.359Z",
       "submittedAt": "",
       "reviewedAt": "",
       "isActive": true

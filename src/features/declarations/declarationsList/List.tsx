@@ -9,6 +9,7 @@ interface ListProps {
   selectedDeclarationId?: string;
   isSearchActive?: boolean;
   searchQuery?: string;
+  hasActiveFilters?: boolean;
 }
 
 interface DateSeparatorProps {
@@ -28,13 +29,18 @@ const List = ({
   selectedDeclarationId,
   isSearchActive = false,
   searchQuery = "",
+  hasActiveFilters = false,
 }: ListProps) => {
   const hasDeclarations = Object.keys(groupedDeclarations).length > 0;
 
   if (!hasDeclarations) {
-    const message = isSearchActive && searchQuery
-      ? `Aucune déclaration trouvée pour "${searchQuery}"`
-      : "Aucune déclaration ne correspond aux filtres sélectionnés";
+    let message = "Aucune déclaration pour le moment";
+
+    if (isSearchActive && searchQuery) {
+      message = `Aucune déclaration trouvée pour "${searchQuery}"`;
+    } else if (hasActiveFilters) {
+      message = "Aucune déclaration ne correspond aux filtres sélectionnés";
+    }
 
     return (
       <div className="flex items-center justify-center p-8">

@@ -23,7 +23,7 @@ const PageTitle = ({ title, action }: PageTitleProps) => {
           thickness="medium"
         />
       </div>
-      <Link href="/admin/parametrage-declaratif">
+      <Link href="/admin/new">
         <Button
           icon="add"
           label="Ajouter un formulaire"
