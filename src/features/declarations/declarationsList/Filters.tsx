@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import type { Declaration } from "@/models/Declaration";
 import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
@@ -174,60 +175,100 @@ const FilterSelect = ({
 };
 
 export interface FiltersState {
-  declarationType: string[];
-  users: string[];
+  status: string[];
+  authorName: string[];
+  teamId: string[];
 }
 
 interface FiltersProps {
   isOpen: boolean;
   filters: FiltersState;
   onFiltersChange: (filters: FiltersState) => void;
+  declarations: Declaration[];
+  onClose?: () => void;
 }
 
-// Mock data - à remplacer par les vraies données
-const declarationTypeOptions: FilterOption[] = [
-  { value: "fuite-huile", label: "Fuite d'huile" },
-  { value: "incident", label: "Incident" },
-  { value: "maintenance", label: "Maintenance" },
-  { value: "inspection", label: "Inspection" },
-  { value: "autre", label: "Autre" },
-];
-
-const userOptions: FilterOption[] = [
-  { value: "user1", label: "Jean Dupont" },
-  { value: "user2", label: "Marie Martin" },
-  { value: "user3", label: "Pierre Bernard" },
-  { value: "user4", label: "Sophie Petit" },
-  { value: "user5", label: "Lucas Durand" },
-];
-
-const Filters = ({ isOpen, filters, onFiltersChange }: FiltersProps) => {
+const Filters = ({ isOpen, filters, onFiltersChange, declarations, onClose }: FiltersProps) => {
   if (!isOpen) {
     return null;
   }
 
+  // Status options - hardcoded with French labels
+  const statusOptions: FilterOption[] = [
+    { value: "draft", label: "Brouillon" },
+    { value: "pending", label: "En attente" },
+    { value: "validated", label: "Validé" },
+  ];
+
+  // Extract unique author names from declarations
+  const authorNameOptions: FilterOption[] = useMemo(() => {
+    const uniqueAuthors = Array.from(
+      new Set(declarations.map((d) => d.authorName))
+    ).sort();
+    return uniqueAuthors.map((name) => ({
+      value: name,
+      label: name,
+    }));
+  }, [declarations]);
+
+  // Extract unique team IDs from declarations
+  const teamIdOptions: FilterOption[] = useMemo(() => {
+    const uniqueTeams = Array.from(
+      new Set(declarations.map((d) => d.teamId))
+    ).sort();
+    return uniqueTeams.map((id) => ({
+      value: id,
+      label: `Équipe ${id}`,
+    }));
+  }, [declarations]);
+
   return (
     <div className="flex flex-col gap-2 pb-2">
-      {/* Title */}
-      <h2 className="text-xl font-semibold text-black tracking-tight">
-        Filtres
-      </h2>
+      {/* Title row with close icon */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-black tracking-tight">
+          Filtres
+        </h2>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-black/5 rounded transition-colors"
+            aria-label="Fermer les filtres"
+          >
+            <Icon name="close" size={20} color="#201f1f" />
+          </button>
+        )}
+      </div>
 
       {/* Filter rows */}
       <FilterSelect
-        label="Type de déclaration"
-        options={declarationTypeOptions}
-        value={filters.declarationType}
+        label="Statut"
+        options={statusOptions}
+        value={filters.status}
         onChange={(value) =>
-          onFiltersChange({ ...filters, declarationType: value })
+          onFiltersChange({ ...filters, status: value })
         }
+        placeholder="Tous les statuts"
       />
 
       <FilterSelect
-        label="Utilisateurs"
-        options={userOptions}
-        value={filters.users}
-        onChange={(value) => onFiltersChange({ ...filters, users: value })}
+        label="Auteur"
+        options={authorNameOptions}
+        value={filters.authorName}
+        onChange={(value) =>
+          onFiltersChange({ ...filters, authorName: value })
+        }
+        placeholder="Tous les auteurs"
+      />
+
+      <FilterSelect
+        label="Équipe"
+        options={teamIdOptions}
+        value={filters.teamId}
+        onChange={(value) =>
+          onFiltersChange({ ...filters, teamId: value })
+        }
+        placeholder="Toutes les équipes"
       />
 
       {/* Divider */}
