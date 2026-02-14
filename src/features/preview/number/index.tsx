@@ -5,7 +5,7 @@ import type {
   FieldRegistration,
   NumberFieldConfig,
 } from "@/models/FieldTypes";
-import { TextInput, Tooltip } from "@rte-ds/react";
+import { TextInput } from "@rte-ds/react";
 
 const NumberField = ({
   config,
@@ -15,7 +15,7 @@ const NumberField = ({
   readOnly = false,
 }: FieldProps<NumberFieldConfig>) => {
   const handleChange = (value: string) => {
-    const numValue = value === "" ? undefined : Number(value);
+    const numValue = value === "" ? 0 : Number(value);
     onChange(numValue);
   };
 
@@ -33,6 +33,10 @@ const NumberField = ({
         {...(config.unit && { unit: config.unit })}
         width={"100%"}
         tooltipTextLabel={config.description}
+        error={error !== undefined}
+        assistiveTextLabel={error}
+        assistiveAppearance={error !== undefined ? "error" : undefined}
+        showAssistiveIcon={error !== undefined}
       />
     </div>
   );

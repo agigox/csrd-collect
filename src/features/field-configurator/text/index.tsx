@@ -1,6 +1,9 @@
 "use client";
 
-import type { TextFieldConfig, SpecificConfiguratorProps } from "@/models/FieldTypes";
+import type {
+  TextFieldConfig,
+  SpecificConfiguratorProps,
+} from "@/models/FieldTypes";
 import { LabelField } from "../common/LabelField";
 import { TextInput } from "@rte-ds/react";
 
@@ -21,7 +24,7 @@ export const TextConfigurator = ({
         onFieldTypeChange={onFieldTypeChange}
         fieldIdentifier={fieldIdentifier}
       />
-      <div className="flex flex-col w-50">
+      <div className="flex flex-col w-50 border-2">
         <TextInput
           aria-required
           assistiveAppearance="description"
