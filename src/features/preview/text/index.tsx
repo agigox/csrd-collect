@@ -15,6 +15,7 @@ const TextField = ({
   readOnly = false,
 }: FieldProps<TextFieldConfig>) => {
   // Use default value from config if no value is set
+
   const defaultValue = (config.defaultValue as string) ?? "";
   const currentValue =
     value !== undefined && value !== "" ? (value as string) : defaultValue;

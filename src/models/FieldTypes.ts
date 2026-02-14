@@ -5,7 +5,15 @@ import type { DragControls } from "motion/react";
 // Field Types
 // ========================
 
-export type FieldType = "text" | "number" | "select" | "switch" | "date" | "radio" | "checkbox" | "import";
+export type FieldType =
+  | "text"
+  | "number"
+  | "select"
+  | "switch"
+  | "date"
+  | "radio"
+  | "checkbox"
+  | "import";
 
 // ========================
 // Validation
@@ -28,7 +36,7 @@ export interface BaseFieldConfig {
   label: string;
   placeholder?: string;
   required?: boolean;
-  defaultValue?: unknown;
+  defaultValue?: string | number | boolean | string[] | number[] | Date;
   validation?: ValidationRule[];
   description?: string;
   isDuplicate?: boolean;
@@ -110,7 +118,15 @@ export interface ImportFieldConfig extends BaseFieldConfig {
   maxFileSize?: number; // in MB
 }
 
-export type FieldConfig = TextFieldConfig | NumberFieldConfig | SelectFieldConfig | SwitchFieldConfig | DateFieldConfig | RadioFieldConfig | CheckboxFieldConfig | ImportFieldConfig;
+export type FieldConfig =
+  | TextFieldConfig
+  | NumberFieldConfig
+  | SelectFieldConfig
+  | SwitchFieldConfig
+  | DateFieldConfig
+  | RadioFieldConfig
+  | CheckboxFieldConfig
+  | ImportFieldConfig;
 
 // ========================
 // Field Component Props
