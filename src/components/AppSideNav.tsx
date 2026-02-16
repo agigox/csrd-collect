@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { SideNav } from "@rte-ds/react";
 
@@ -47,8 +48,19 @@ const adminHeaderConfig = {
 export default function AppSideNav({ children }: AppSideNavProps) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const headerConfig = isAdmin ? adminHeaderConfig : memberHeaderConfig;
+
+  // Avoid hydration mismatch: SideNav uses window.innerWidth to choose
+  // between mobile/desktop layout, which differs from SSR (width=0 → mobile)
+  if (!mounted) {
+    return <div>{children}</div>;
+  }
 
   return (
     <SideNav
