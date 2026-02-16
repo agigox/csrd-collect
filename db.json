@@ -314,7 +314,7 @@
             "isDuplicate": false,
             "defaultValue": "",
             "description": "Le description",
-            "required": true
+            "required": false
           },
           {
             "id": "number_1",
@@ -331,10 +331,7 @@
             "type": "date",
             "label": "Heure et Date",
             "includeTime": false,
-            "defaultDateValue": "today",
-            "defaultValue": {
-              "date": "2026-02-14T17:00:18.409Z"
-            },
+            "defaultDateValue": "none",
             "required": true
           }
         ]
