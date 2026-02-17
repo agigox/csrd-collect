@@ -35,7 +35,7 @@ export const DateConfigurator = ({
             // Set defaultValue based on selection for preview sync
             const defaultValue =
               defaultDateValue === "today"
-                ? { date: new Date().toISOString() }
+                ? new Date().toISOString()
                 : undefined;
             onChange({
               ...config,

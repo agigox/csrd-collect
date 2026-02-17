@@ -3,8 +3,12 @@ import { devtools } from "zustand/middleware";
 import type { FieldConfig } from "@/models/FieldTypes";
 import type { FormTemplate } from "@/models/FormTemplate";
 import { getAllDescendantIds } from "@/lib/utils/branching";
-
-const API_BASE_URL = "http://localhost:4000";
+import {
+  fetchFormTemplates,
+  saveFormTemplate,
+  createFormTemplate as createFormTemplateApi,
+  deleteFormTemplate,
+} from "@/api/forms";
 
 interface FormsState {
   forms: FormTemplate[];
@@ -85,25 +89,7 @@ export const useFormsStore = create<FormsState>()(
 
       saveForm: async (updatedForm: FormTemplate) => {
         try {
-          const response = await fetch(
-            `${API_BASE_URL}/form-templates/${updatedForm.id}`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name: updatedForm.name,
-                description: updatedForm.description,
-                categoryCode: updatedForm.categoryCode,
-                schema: updatedForm.schema,
-              }),
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
-
-          const savedForm = (await response.json()) as FormTemplate;
+          const savedForm = await saveFormTemplate(updatedForm);
 
           set(
             (state) => {
@@ -132,32 +118,8 @@ export const useFormsStore = create<FormsState>()(
       },
 
       createForm: async (formData) => {
-        const categoryPrefix = formData.categoryCode.split("-")[0] || "E1";
-        const randomSuffix = Math.floor(Math.random() * 100)
-          .toString()
-          .padStart(2, "0");
-        const generatedCode = `${categoryPrefix}-${Date.now().toString().slice(-4)}_${randomSuffix}`;
-
-        const newFormPayload = {
-          code: generatedCode,
-          name: formData.name,
-          description: formData.description,
-          categoryCode: formData.categoryCode,
-          schema: formData.schema,
-        };
-
         try {
-          const response = await fetch(`${API_BASE_URL}/form-templates`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newFormPayload),
-          });
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
-
-          const createdForm = (await response.json()) as FormTemplate;
+          const createdForm = await createFormTemplateApi(formData);
 
           set(
             (state) => ({ forms: [...state.forms, createdForm] }),
@@ -174,13 +136,7 @@ export const useFormsStore = create<FormsState>()(
 
       deleteForm: async (id: string) => {
         try {
-          const response = await fetch(`${API_BASE_URL}/form-templates/${id}`, {
-            method: "DELETE",
-          });
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
+          await deleteFormTemplate(id);
 
           set(
             (state) => ({
@@ -200,13 +156,7 @@ export const useFormsStore = create<FormsState>()(
         set({ loading: true, error: null }, false, "FORMS/FETCH_START");
 
         try {
-          const response = await fetch(`${API_BASE_URL}/form-templates`);
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
-
-          const forms = (await response.json()) as FormTemplate[];
+          const forms = await fetchFormTemplates();
           set({ forms, loading: false }, false, "FORMS/FETCH_SUCCESS");
         } catch (err) {
           set(

@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { Declaration } from "@/models/Declaration";
+import {
+  fetchDeclarations as fetchDeclarationsApi,
+  updateDeclaration as updateDeclarationApi,
+  createDeclaration as createDeclarationApi,
+} from "@/api/declarations";
 
 interface DeclarationsState {
   declarations: Declaration[];
@@ -28,13 +33,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
         set({ loading: true, error: null }, false, "DECLARATIONS/FETCH_START");
 
         try {
-          const response = await fetch("http://localhost:4000/declarations");
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
-
-          const data: Declaration[] = await response.json();
+          const data = await fetchDeclarationsApi();
 
           set(
             {
@@ -81,18 +80,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
             updatedAt: new Date().toISOString(),
           };
 
-          const response = await fetch(
-            `http://localhost:4000/declarations/${id}`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(updatedDeclaration),
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
+          await updateDeclarationApi(id, updatedDeclaration);
 
           // Update local state
           set(
@@ -160,15 +148,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
           // Remove isNew flag for the API call
           const { isNew: _isNew, ...declarationToSave } = declaration;
 
-          const response = await fetch("http://localhost:4000/declarations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(declarationToSave),
-          });
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
+          await createDeclarationApi(declarationToSave);
 
           // Update local state - remove isNew flag
           set(

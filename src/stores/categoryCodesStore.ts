@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { CategoryCode } from "@/models/CategoryCode";
-
-const API_BASE_URL = "http://localhost:4000";
+import { fetchCategoryCodes as fetchCategoryCodesApi } from "@/api/categoryCodes";
 
 interface CategoryCodesState {
   categoryCodes: CategoryCode[];
@@ -27,13 +26,7 @@ export const useCategoryCodesStore = create<CategoryCodesState>()(
         set({ loading: true, error: null }, false, "CATEGORY_CODES/FETCH_START");
 
         try {
-          const response = await fetch(`${API_BASE_URL}/category-codes`);
-
-          if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-          }
-
-          const categoryCodes = (await response.json()) as CategoryCode[];
+          const categoryCodes = await fetchCategoryCodesApi();
           set(
             { categoryCodes, loading: false },
             false,

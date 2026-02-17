@@ -66,7 +66,7 @@ POST {{baseUrl}}/form-templates
 Content-Type: application/json
 
 {
-  "code": "E2-4_fuite_huile_v1",
+  "code": "E2-4_fuite_huile_v2",
   "name": "Déclaration Fuite d'Huile SF6",
   "categoryCode": "E2-4",
   "schema": {

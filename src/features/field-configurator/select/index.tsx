@@ -5,6 +5,7 @@ import type { SelectFieldConfig, SelectOption, SpecificConfiguratorProps } from 
 import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
 import { SegmentedControl, Select } from "@rte-ds/react";
+import { fetchOptions as fetchOptionsApi } from "@/api/options";
 
 // Type pour la structure des options dans db.json
 interface DataSourceItem {
@@ -38,11 +39,7 @@ export const SelectConfigurator = ({
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch("http://localhost:4000/options");
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-        const data = await response.json();
+        const data = await fetchOptionsApi<OptionsData>();
         setOptionsData(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erreur de chargement");
