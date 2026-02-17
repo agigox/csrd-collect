@@ -48,3 +48,12 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 /.playwright-mcp/
+/CLAUDE.md
+_draft/
+_plans/
+_specs/
+.claude/
+.github/
+.vscoe/
+docs/
+e2e-tests/

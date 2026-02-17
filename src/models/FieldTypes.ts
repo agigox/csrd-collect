@@ -169,6 +169,7 @@ export interface FieldConfiguratorProps {
   branchingColor?: string;
   branchingNumber?: number;
   fieldIdentifier?: string;
+  onDetach?: () => void;
 }
 
 export interface SpecificConfiguratorProps<

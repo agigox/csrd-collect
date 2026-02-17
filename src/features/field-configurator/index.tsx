@@ -41,6 +41,7 @@ export const FieldConfigurator = ({
   branchingColor,
   branchingNumber,
   fieldIdentifier,
+  onDetach,
 }: FieldConfiguratorProps) => {
   // Remove isDuplicate flag when user modifies any field
   const handleChange = (newConfig: FieldConfig) => {
@@ -154,6 +155,19 @@ export const FieldConfigurator = ({
     }
     return false;
   })();
+
+  // Compute detach button visibility and context
+  const hasChildren =
+    !!schema && schema.some((f) => f.parentFieldId === config.id);
+  const showDetachButton =
+    !!isChildField || (branchingEnabled && hasChildren);
+  const isDetachingParent = !isChildField;
+  const detachParentLabel = isChildField
+    ? schema?.find((f) => f.id === config.parentFieldId)?.label
+    : undefined;
+  const detachChildCount = isDetachingParent
+    ? schema?.filter((f) => f.parentFieldId === config.id).length
+    : undefined;
 
   const renderSpecificConfigurator = () => {
     const typeChangeProps = { onFieldTypeChange: handleFieldTypeChange, fieldIdentifier };
@@ -294,6 +308,11 @@ export const FieldConfigurator = ({
             onBranching={handleToggleBranching}
             branchingEnabled={branchingEnabled}
             requiredDisabled={hasDefaultValue}
+            onDetach={onDetach}
+            showDetachButton={showDetachButton}
+            isDetachingParent={isDetachingParent}
+            detachParentLabel={detachParentLabel}
+            detachChildCount={detachChildCount}
           />
         </motion.div>
       )}

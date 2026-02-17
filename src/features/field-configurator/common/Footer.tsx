@@ -26,6 +26,11 @@ interface FooterProps {
   onBranching?: () => void;
   branchingEnabled?: boolean;
   requiredDisabled?: boolean;
+  onDetach?: () => void;
+  showDetachButton?: boolean;
+  isDetachingParent?: boolean;
+  detachParentLabel?: string;
+  detachChildCount?: number;
 }
 
 export const Footer = ({
@@ -42,8 +47,14 @@ export const Footer = ({
   onBranching,
   branchingEnabled = false,
   requiredDisabled = false,
+  onDetach,
+  showDetachButton = false,
+  isDetachingParent = false,
+  detachParentLabel,
+  detachChildCount,
 }: FooterProps) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showDetachConfirm, setShowDetachConfirm] = useState(false);
 
   const handleConfirmDelete = () => {
     onRemove();
@@ -115,15 +126,16 @@ export const Footer = ({
           <div className="flex items-center gap-2">
             <div className="flex gap-8">
               <div className="flex gap-1">
-                {/* TODO: Detach button */}
-                <IconButton
-                  appearance="outlined"
-                  aria-label="Detachement"
-                  name="detach"
-                  onClick={onDetach}
-                  size="m"
-                  variant="transparent"
-                />
+                {showDetachButton && (
+                  <IconButton
+                    appearance="outlined"
+                    aria-label="Détacher ce champ"
+                    name="detach"
+                    onClick={() => setShowDetachConfirm(true)}
+                    size="m"
+                    variant="transparent"
+                  />
+                )}
                 {showBranchingButton && (
                   <IconButton
                     appearance="outlined"
@@ -178,6 +190,39 @@ export const Footer = ({
               Annuler
             </Button>
             <Button variant="destructive" onClick={handleConfirmDelete}>
+              Confirmer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showDetachConfirm} onOpenChange={setShowDetachConfirm}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>
+              {isDetachingParent
+                ? "Détacher ce champ de ses enfants ?"
+                : "Détacher ce champ ?"}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {isDetachingParent
+              ? `Ce champ sera détaché de ses ${detachChildCount} sous-champ(s). Les sous-champs deviendront indépendants.`
+              : `Ce champ deviendra indépendant et ne sera plus conditionné par «\u00A0${detachParentLabel}\u00A0».`}
+          </p>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowDetachConfirm(false)}
+            >
+              Annuler
+            </Button>
+            <Button
+              onClick={() => {
+                onDetach?.();
+                setShowDetachConfirm(false);
+              }}
+            >
               Confirmer
             </Button>
           </DialogFooter>
