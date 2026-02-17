@@ -47,7 +47,7 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-/.playwright-mcp/
+.playwright-mcp/
 /CLAUDE.md
 _draft/
 _plans/
@@ -57,3 +57,4 @@ _specs/
 .vscode/
 docs/
 e2e-tests/
+playwright.config.ts
