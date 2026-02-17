@@ -67,7 +67,7 @@ export function FormPreview() {
   }, [schema]);
 
   return (
-    <div className="w-81 shrink-0 flex flex-col gap-4 p-6 bg-white shadow-[0px_4px_8px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)]">
+    <div className="w-92 h-full absolute shrink-0 right-0 top-0 flex flex-col gap-4 p-6 bg-white shadow-[0px_4px_8px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)]">
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between h-6">
           <div className="heading-xs text-background-neutral-bold-default">

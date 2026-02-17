@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { SideNav } from "@rte-ds/react";
+import { SideNav, useBreakpoint } from "@rte-ds/react";
 
 interface AppSideNavProps {
   children: React.ReactNode;
@@ -49,6 +49,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   const pathname = usePathname();
   const isAdmin = pathname.startsWith("/admin");
   const [mounted, setMounted] = useState(false);
+  const { width } = useBreakpoint();
 
   useEffect(() => {
     setMounted(true);
@@ -68,6 +69,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       {...(isAdmin && { items: adminMenuItems })}
       collapsible
       size="s"
+      collapsed={width <= 1050}
     >
       {children}
     </SideNav>

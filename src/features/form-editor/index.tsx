@@ -4,8 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useFormsStore, useCategoryCodesStore } from "@/stores";
 import { useFormEditorStore } from "@/stores/formEditorStore";
-import { Button, useBreakpoint } from "@rte-ds/react";
-// import { useBreakpoint } from "@/lib/hooks/useBreakpoint";
+import { Button, IconButton, useBreakpoint } from "@rte-ds/react";
 
 import { FormHeader } from "./FormHeader";
 import { FormMetadata } from "./FormMetadata";
@@ -32,8 +31,7 @@ export default function FormCreation() {
     initializeFromForm,
   } = useFormEditorStore();
 
-  // const isLargeScreen = useBreakpoint("--breakpoint-lg");
-  const { breakpoint } = useBreakpoint();
+  const { breakpoint, width } = useBreakpoint();
 
   // Derive form ID from URL
   const formId = useMemo(() => {
@@ -85,7 +83,8 @@ export default function FormCreation() {
           categoryCode: formCategoryCode,
           schema: { fields: schema },
         });
-        setCurrentForm(newForm);
+        router.push(`/admin/${newForm.id}`);
+        return;
       }
       alert("Formulaire sauvegardé avec succès !");
       router.push("/admin");
@@ -114,7 +113,7 @@ export default function FormCreation() {
 
   return (
     <div className="h-full flex">
-      <div className="flex-1 relative">
+      <div className={`flex-1 relative ${showPreview ? "pr-92" : ""}`}>
         <Button
           label="Retour"
           icon="arrow-left"
@@ -124,17 +123,6 @@ export default function FormCreation() {
           className="h-6 top-2.25 left-2 absolute"
         />
 
-        {!showPreview && (
-          <Button
-            icon="visibility-show"
-            iconPosition="left"
-            iconAppearance="filled"
-            label="Prévisualiser"
-            onClick={() => setShowPreview(true)}
-            variant="secondary"
-            className="right-8 top-11 absolute"
-          />
-        )}
         <div
           className={`py-5 mx-auto h-full ${breakpoint === "l" ? "w-200" : "w-150.5"}`}
         >
@@ -149,7 +137,29 @@ export default function FormCreation() {
           </div>
         </div>
       </div>
-      {showPreview && <FormPreview />}
+      {showPreview ? (
+        <FormPreview />
+      ) : width <= 1190 ? (
+        <IconButton
+          appearance="filled"
+          aria-label="Prévisualiser"
+          name="visibility-show"
+          onClick={() => setShowPreview(true)}
+          size="m"
+          variant="secondary"
+          className="right-8 top-11 relative"
+        />
+      ) : (
+        <Button
+          icon="visibility-show"
+          iconPosition="left"
+          iconAppearance="filled"
+          label="Prévisualiser"
+          onClick={() => setShowPreview(true)}
+          variant="secondary"
+          className="right-8 top-11 absolute"
+        />
+      )}
     </div>
   );
 }

@@ -24,7 +24,7 @@ export const TextConfigurator = ({
         onFieldTypeChange={onFieldTypeChange}
         fieldIdentifier={fieldIdentifier}
       />
-      <div className="flex flex-col w-50 border-2">
+      <div className="flex flex-col w-50">
         <TextInput
           aria-required
           assistiveAppearance="description"

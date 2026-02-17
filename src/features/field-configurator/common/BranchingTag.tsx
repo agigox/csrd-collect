@@ -13,7 +13,7 @@ export const BranchingTag = ({
 }: BranchingTagProps) => {
   return (
     <div
-      className="flex items-center gap-1 px-2 py-1 rounded-full text-xs text-white w-fit"
+      className="flex items-center gap-1 px-2 h-5 rounded-lg text-xs text-white w-fit"
       style={{ backgroundColor: branchingColor }}
     >
       <Icon name="branch" size={14} color="white" />

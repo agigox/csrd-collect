@@ -156,6 +156,7 @@ export const CheckboxConfigurator = ({
                   linkedFieldIds={linkedFieldIds}
                   schema={schema}
                   branchingColor={branchingColor}
+                  branchingNumber={index + 1}
                   onChange={handleBranchingChange}
                 />
               )}
