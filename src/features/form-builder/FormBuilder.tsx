@@ -24,6 +24,8 @@ import {
   regroupChildrenAfterReorder,
   getFieldDepth,
   getFieldIdentifier,
+  detachChildFromSchema,
+  detachParentFromSchema,
 } from "@/lib/utils/branching";
 
 interface FormBuilderProps {
@@ -409,6 +411,23 @@ export const FormBuilder = ({
     onChange(newSchema);
   };
 
+  const handleDetachField = (fieldId: string) => {
+    const field = schema.find((f) => f.id === fieldId);
+    if (!field) return;
+
+    const isChild = !!field.parentFieldId;
+    let newSchema: FieldConfig[];
+
+    if (isChild) {
+      newSchema = detachChildFromSchema(fieldId, schema);
+    } else {
+      newSchema = detachParentFromSchema(fieldId, schema);
+    }
+
+    onChange(newSchema);
+    setActiveFieldName(field.name, newSchema);
+  };
+
   const renderInsertButton = (
     activeIndex: number,
     position: "before" | "after",
@@ -599,6 +618,7 @@ export const FormBuilder = ({
                     branchingNumber={getBranchingNumber(fieldConfig)}
                     fieldIdentifier={fieldIdentifier}
                     depth={depth}
+                    onDetach={() => handleDetachField(fieldConfig.id)}
                   />
                   {showInsertAfter && renderInsertButton(index, "after")}
                 </div>

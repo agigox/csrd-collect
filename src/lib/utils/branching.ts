@@ -1,4 +1,4 @@
-import type { FieldConfig, FieldType } from "@/models/FieldTypes";
+import type { FieldConfig, FieldType, RadioFieldConfig, CheckboxFieldConfig } from "@/models/FieldTypes";
 
 /**
  * Generate a unique branching color (pastel hex) that doesn't conflict with existing ones.
@@ -172,6 +172,139 @@ export function regroupChildrenAfterReorder(schema: FieldConfig[]): FieldConfig[
   }
 
   return result;
+}
+
+/**
+ * Detach a child field from its parent, making it (and its own sub-tree) a root field.
+ * - Strips parent link props from the field
+ * - Cleans the parent's branching map (removes field reference; prunes empty keys)
+ * - Repositions the sub-tree right after the parent's last descendant
+ */
+export function detachChildFromSchema(
+  fieldId: string,
+  schema: FieldConfig[],
+): FieldConfig[] {
+  const field = schema.find((f) => f.id === fieldId);
+  if (!field || !field.parentFieldId) return schema;
+
+  const parentId = field.parentFieldId;
+  const parentOptionValue = field.parentOptionValue;
+
+  // Collect the field + its own descendants (its sub-tree)
+  const ownDescendantIds = getAllDescendantIds(fieldId, schema);
+  const subTreeIds = new Set([fieldId, ...ownDescendantIds]);
+
+  const newSchema = schema.map((f) => {
+    if (f.id === fieldId) {
+      // Strip branching child props
+      const clone = { ...f };
+      delete clone.parentFieldId;
+      delete clone.parentOptionValue;
+      delete clone.branchingColor;
+      return clone;
+    }
+    return { ...f };
+  });
+
+  // Clean the parent's branching map
+  const parentIdx = newSchema.findIndex((f) => f.id === parentId);
+  if (parentIdx >= 0 && parentOptionValue) {
+    const parent = newSchema[parentIdx] as RadioFieldConfig | CheckboxFieldConfig;
+
+    if (parent.branching) {
+      const newBranching = { ...parent.branching };
+      const optionFields = (newBranching[parentOptionValue] ?? []).filter(
+        (id) => id !== fieldId,
+      );
+
+      if (optionFields.length === 0) {
+        delete newBranching[parentOptionValue];
+        const newBranchingColors = { ...(parent.branchingColors ?? {}) };
+        delete newBranchingColors[parentOptionValue];
+
+        if (Object.keys(newBranching).length === 0) {
+          // No more branching at all — disable it
+          const cleanedParent = { ...newSchema[parentIdx] };
+          delete (cleanedParent as RadioFieldConfig | CheckboxFieldConfig).branching;
+          delete (cleanedParent as RadioFieldConfig | CheckboxFieldConfig).branchingColors;
+          delete (cleanedParent as RadioFieldConfig | CheckboxFieldConfig).branchingEnabled;
+          newSchema[parentIdx] = cleanedParent;
+        } else {
+          newSchema[parentIdx] = {
+            ...newSchema[parentIdx],
+            branching: newBranching,
+            branchingColors: newBranchingColors,
+          } as FieldConfig;
+        }
+      } else {
+        newBranching[parentOptionValue] = optionFields;
+        newSchema[parentIdx] = {
+          ...newSchema[parentIdx],
+          branching: newBranching,
+        } as FieldConfig;
+      }
+    }
+  }
+
+  // Reposition the sub-tree right after the parent's last descendant
+  const parentDescendantIds = getAllDescendantIds(parentId, newSchema);
+  const parentGroupIds = new Set([parentId, ...parentDescendantIds]);
+
+  // Extract sub-tree fields and remaining fields
+  const subTreeFields = newSchema.filter((f) => subTreeIds.has(f.id));
+  const withoutSubTree = newSchema.filter((f) => !subTreeIds.has(f.id));
+
+  // Find insertion point: after the last field that belongs to the parent group
+  let insertAfterIdx = -1;
+  for (let i = 0; i < withoutSubTree.length; i++) {
+    if (parentGroupIds.has(withoutSubTree[i].id)) {
+      insertAfterIdx = i;
+    }
+  }
+
+  // Insert sub-tree after the parent group
+  const result = [...withoutSubTree];
+  result.splice(insertAfterIdx + 1, 0, ...subTreeFields);
+  return result;
+}
+
+/**
+ * Detach a parent field from all its direct children.
+ * - Removes branchingEnabled, branching, branchingColors from parent
+ * - Strips parentFieldId, parentOptionValue, branchingColor from direct children only
+ * - Grandchildren keep their links to their own direct parents (sub-trees stay intact)
+ * - Schema order is preserved
+ */
+export function detachParentFromSchema(
+  fieldId: string,
+  schema: FieldConfig[],
+): FieldConfig[] {
+  const field = schema.find((f) => f.id === fieldId);
+  if (!field) return schema;
+
+  // Find direct children
+  const directChildIds = new Set(getChildFieldIds(fieldId, schema));
+  if (directChildIds.size === 0) return schema;
+
+  return schema.map((f) => {
+    if (f.id === fieldId) {
+      // Remove branching props from parent
+      const clone = { ...f } as RadioFieldConfig | CheckboxFieldConfig;
+      delete clone.branchingEnabled;
+      delete clone.branching;
+      delete clone.branchingColors;
+      return clone as FieldConfig;
+    }
+    if (directChildIds.has(f.id)) {
+      // Strip parent link from direct children only
+      const clone = { ...f };
+      delete clone.parentFieldId;
+      delete clone.parentOptionValue;
+      delete clone.branchingColor;
+      return clone;
+    }
+    return f;
+  });
 }
 
 /**

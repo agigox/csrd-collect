@@ -23,6 +23,7 @@ interface SortableFieldCardProps {
   branchingNumber?: number;
   fieldIdentifier?: string;
   depth?: number;
+  onDetach?: () => void;
 }
 
 export const SortableFieldCard = ({
@@ -43,6 +44,7 @@ export const SortableFieldCard = ({
   branchingNumber,
   fieldIdentifier,
   depth = 0,
+  onDetach,
 }: SortableFieldCardProps) => {
   const dragControls = useDragControls();
 
@@ -100,7 +102,7 @@ export const SortableFieldCard = ({
         className="py-4 px-4"
         cardType="default"
         style={{
-          borderTop:
+          borderLeft:
             isOpen && isChildField
               ? "4px solid rgba(57, 126, 190, 0.6)"
               : isOpen
@@ -128,6 +130,7 @@ export const SortableFieldCard = ({
           branchingColor={branchingColor}
           branchingNumber={branchingNumber}
           fieldIdentifier={fieldIdentifier}
+          onDetach={onDetach}
         />
       </Card>
     </Reorder.Item>

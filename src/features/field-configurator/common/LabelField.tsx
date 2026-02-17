@@ -121,7 +121,9 @@ export const LabelField = ({
   );
 
   if (isEditing) {
-    const displayValue = fieldIdentifier ? `${fieldIdentifier} ${editValue}` : editValue;
+    const displayValue = fieldIdentifier
+      ? `${fieldIdentifier} ${editValue}`
+      : editValue;
 
     return (
       <div className={cn("flex items-end gap-2 h-14", className)}>
@@ -140,9 +142,10 @@ export const LabelField = ({
             value={displayValue}
             onChange={(value) => {
               // Remove the identifier prefix when editing
-              const newValue = fieldIdentifier && value.startsWith(`${fieldIdentifier} `)
-                ? value.substring(`${fieldIdentifier} `.length)
-                : value;
+              const newValue =
+                fieldIdentifier && value.startsWith(`${fieldIdentifier} `)
+                  ? value.substring(`${fieldIdentifier} `.length)
+                  : value;
               setEditValue(newValue);
               onChange(newValue);
             }}
