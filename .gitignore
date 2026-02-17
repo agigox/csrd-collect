@@ -54,6 +54,6 @@ _plans/
 _specs/
 .claude/
 .github/
-.vscoe/
+.vscode/
 docs/
 e2e-tests/
