@@ -116,14 +116,14 @@ export const Footer = ({
             <div className="flex gap-8">
               <div className="flex gap-1">
                 {/* TODO: Detach button */}
-                <IconButton
+                {/*<IconButton
                   appearance="outlined"
                   aria-label="Detachement"
                   name="detach"
                   onClick={onDetach}
                   size="m"
                   variant="transparent"
-                />
+                />*/}
                 {showBranchingButton && (
                   <IconButton
                     appearance="outlined"
