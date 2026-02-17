@@ -176,11 +176,6 @@ export const LabelField = ({
           onClick={collapsedActions ? onOpen : handleClick}
         >
           {displayValue || placeholder}
-          {isDuplicate && (
-            <span className="ml-2 text-xs font-normal text-muted-foreground">
-              (copie)
-            </span>
-          )}
         </div>
       </div>
       {typeSelector}

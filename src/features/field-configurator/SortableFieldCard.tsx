@@ -1,5 +1,5 @@
 import type { FieldConfig } from "@/models/FieldTypes";
-import { Card } from "@rte-ds/react";
+import { Card, Icon } from "@rte-ds/react";
 import { FieldConfigurator } from ".";
 import { Reorder, useDragControls } from "motion/react";
 import { BranchingTag } from "./common/BranchingTag";
@@ -73,15 +73,29 @@ export const SortableFieldCard = ({
         marginRight: isChildField && !isOpen ? `${depth * 8}px` : undefined,
       }}
     >
-      {isOpen &&
-        isChildField &&
-        branchingColor &&
-        branchingNumber !== undefined && (
-          <BranchingTag
-            branchingColor={branchingColor}
-            branchingNumber={branchingNumber}
-          />
-        )}
+      {(fieldConfig.isDuplicate ||
+        (isOpen &&
+          isChildField &&
+          branchingColor &&
+          branchingNumber !== undefined)) && (
+        <div className="flex items-center gap-2">
+          {isOpen &&
+            isChildField &&
+            branchingColor &&
+            branchingNumber !== undefined && (
+              <BranchingTag
+                branchingColor={branchingColor}
+                branchingNumber={branchingNumber}
+              />
+            )}
+          {fieldConfig.isDuplicate && (
+            <div className="flex items-center gap-1 px-2 h-5 rounded-lg text-xs text-black w-fit bg-[#F5DE93]">
+              <Icon name="copy" size={14} color="black" />
+              <span>Dupliqué</span>
+            </div>
+          )}
+        </div>
+      )}
       <Card
         className="py-4 px-4"
         cardType="default"

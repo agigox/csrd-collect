@@ -3,12 +3,14 @@
 import { Select } from "@rte-ds/react";
 import type { FieldConfig, FieldType } from "@/models/FieldTypes";
 import { typeLabels } from "@/models/FieldTypes";
+import { BranchingTag } from "./BranchingTag";
 
 interface BranchingSelectProps {
   optionValue: string;
   linkedFieldIds: string[];
   schema: FieldConfig[];
   branchingColor?: string;
+  branchingNumber?: number;
   onChange: (optionValue: string, newFieldTypes: string[]) => void;
 }
 
@@ -22,6 +24,7 @@ export const BranchingSelect = ({
   linkedFieldIds,
   schema,
   branchingColor,
+  branchingNumber,
   onChange,
 }: BranchingSelectProps) => {
   // Derive current selected types from linked field IDs
@@ -51,6 +54,14 @@ export const BranchingSelect = ({
           ? `${branchingColor ?? "#7C3AED"}`
           : undefined,
       }}
+      labelExtra={
+        hasSelections && branchingNumber !== undefined ? (
+          <BranchingTag
+            branchingColor={branchingColor ?? "#7C3AED"}
+            branchingNumber={branchingNumber}
+          />
+        ) : undefined
+      }
     />
   );
 };
