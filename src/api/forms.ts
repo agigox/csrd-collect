@@ -1,4 +1,4 @@
-import { API_BASE_URL, REAL_API_URL } from "./config";
+import { REAL_API_URL } from "./config";
 import type { FormTemplate } from "@/models/FormTemplate";
 import type { FieldConfig } from "@/models/FieldTypes";
 
@@ -15,7 +15,7 @@ export async function fetchFormTemplates(): Promise<FormTemplate[]> {
 export async function saveFormTemplate(
   form: FormTemplate,
 ): Promise<FormTemplate> {
-  const response = await fetch(`${API_BASE_URL}/form-templates/${form.id}`, {
+  const response = await fetch(`${REAL_API_URL}/form-templates/${form.id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -67,7 +67,7 @@ export async function createFormTemplate(formData: {
 }
 
 export async function deleteFormTemplate(id: string): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/form-templates/${id}`, {
+  const response = await fetch(`${REAL_API_URL}/form-templates/${id}`, {
     method: "DELETE",
   });
 
