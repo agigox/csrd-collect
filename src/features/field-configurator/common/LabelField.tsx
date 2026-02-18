@@ -18,7 +18,6 @@ export interface CollapsedActions {
 interface LabelFieldProps {
   value: string;
   onChange: (value: string) => void;
-  isDuplicate?: boolean;
   className?: string;
   placeholder?: string;
   label?: string;
@@ -48,7 +47,6 @@ const selectableTypes: FieldType[] = [
 export const LabelField = ({
   value,
   onChange,
-  isDuplicate = false,
   className,
   placeholder = "",
   label = "Entête",
@@ -121,10 +119,6 @@ export const LabelField = ({
   );
 
   if (isEditing) {
-    const displayValue = fieldIdentifier
-      ? `${fieldIdentifier} ${editValue}`
-      : editValue;
-
     return (
       <div className={cn("flex items-end gap-2 h-14", className)}>
         <div className="flex flex-col flex-1">
@@ -139,15 +133,10 @@ export const LabelField = ({
             maxLength={150}
             onRightIconClick={() => {}}
             placeholder={placeholder}
-            value={displayValue}
+            value={editValue}
             onChange={(value) => {
-              // Remove the identifier prefix when editing
-              const newValue =
-                fieldIdentifier && value.startsWith(`${fieldIdentifier} `)
-                  ? value.substring(`${fieldIdentifier} `.length)
-                  : value;
-              setEditValue(newValue);
-              onChange(newValue);
+              setEditValue(value);
+              onChange(value);
             }}
             onBlur={handleValidate}
             onKeyDown={handleKeyDown}
@@ -158,8 +147,6 @@ export const LabelField = ({
       </div>
     );
   }
-
-  const displayValue = fieldIdentifier ? `${fieldIdentifier} ${value}` : value;
 
   return (
     <div className={cn("flex items-center gap-2 w-full", className)}>
@@ -172,13 +159,20 @@ export const LabelField = ({
         )}
         <div
           className={cn(
-            "heading-s flex items-center rounded-lg pl-2 h-8 cursor-pointer transition-colors",
+            "heading-s flex items-center gap-1 rounded-lg pl-2 h-8 cursor-pointer transition-colors",
             !collapsedActions && "bg-background-hover",
             displayClassName,
           )}
           onClick={collapsedActions ? onOpen : handleClick}
         >
-          {displayValue || placeholder}
+          {fieldIdentifier && (
+            <span className="shrink-0 text-[#9c9c9c] pr-2">
+              {fieldIdentifier.includes(".")
+                ? fieldIdentifier
+                : `${fieldIdentifier}.`}
+            </span>
+          )}
+          <span className="text-content-primary">{value || placeholder}</span>
         </div>
       </div>
       {typeSelector}
