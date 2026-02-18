@@ -142,12 +142,27 @@ const DateField = ({
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex h-8 w-full items-center justify-between rounded-md border px-3 py-1 text-sm cursor-pointer bg-content-readonly-csrd",
-              error ? "border-red-500" : "border-gray-300",
-              "hover:border-gray-400 transition-colors",
+              "flex h-8 w-full items-center justify-between rounded-sm border border-(--border-secondary) px-4 py-1 text-sm font-normal bg-(--background-default) transition-[border,outline] duration-200",
+              readOnly
+                ? "cursor-not-allowed bg-(--background-disabled) border-(--border-disabled)"
+                : "cursor-pointer",
+              !readOnly && error
+                ? "border-(--border-danger) outline-1 outline-(--border-danger)"
+                : !readOnly && "hover:border-(--border-primary)",
+              !readOnly &&
+                open &&
+                !error &&
+                "border-(--border-brand-default) outline-1 outline-(--border-brand-default)",
             )}
           >
-            <span className={cn(dateObj ? "text-gray-900" : "text-gray-500")}>
+            <span
+              className={cn(
+                "font-[Arial] text-sm leading-5",
+                dateObj
+                  ? "text-(--content-primary)"
+                  : "text-(--content-tertiary)",
+              )}
+            >
               {formatDisplay()}
             </span>
 
@@ -175,7 +190,7 @@ const DateField = ({
               onSelect={readOnly ? undefined : handleSelectDate}
               defaultMonth={dateObj || getDefaultDate()}
               locale={fr}
-              disabled={readOnly}
+              readOnly={readOnly}
             />
 
             {/* Time selector - only shown if includeTime is true */}
@@ -260,7 +275,11 @@ const DateField = ({
         </PopoverContent>
       </Popover>
 
-      {error && <span className="text-sm text-red-500">{error}</span>}
+      {error && (
+        <span className="text-xs font-bold text-content-danger-default px-2">
+          {error}
+        </span>
+      )}
     </>
   );
 
