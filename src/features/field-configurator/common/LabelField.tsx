@@ -155,6 +155,7 @@ export const LabelField = ({
           <BranchingTag
             branchingColor={branchingColor}
             branchingNumber={branchingNumber}
+            fieldIdentifier={fieldIdentifier}
           />
         )}
         <div

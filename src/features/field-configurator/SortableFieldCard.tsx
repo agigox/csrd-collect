@@ -95,6 +95,7 @@ export const SortableFieldCard = ({
               <BranchingTag
                 branchingColor={branchingColor}
                 branchingNumber={branchingNumber}
+                fieldIdentifier={fieldIdentifier}
               />
             )}
           {fieldConfig.isDuplicate && (
