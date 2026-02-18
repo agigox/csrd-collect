@@ -1,7 +1,8 @@
 "use client";
 
 import { Checkbox, IconButton, TextInput } from "@rte-ds/react";
-import type { CheckboxFieldConfig, SelectOption, SpecificConfiguratorProps } from "@/models/FieldTypes";
+import type { CheckboxFieldConfig, SelectOption } from "@/models/FieldTypes";
+import type { SpecificConfiguratorProps } from "@/lib/types/field";
 import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
 import { BranchingSelect } from "../common/BranchingSelect";

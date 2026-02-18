@@ -1,9 +1,7 @@
 "use client";
 
-import type {
-  TextFieldConfig,
-  SpecificConfiguratorProps,
-} from "@/models/FieldTypes";
+import type { TextFieldConfig } from "@/models/FieldTypes";
+import type { SpecificConfiguratorProps } from "@/lib/types/field";
 import { LabelField } from "../common/LabelField";
 import { TextInput } from "@rte-ds/react";
 

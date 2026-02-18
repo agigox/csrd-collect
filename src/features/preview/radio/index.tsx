@@ -1,10 +1,7 @@
 "use client";
 
-import type {
-  FieldProps,
-  FieldRegistration,
-  RadioFieldConfig,
-} from "@/models/FieldTypes";
+import type { RadioFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 import { RadioButtonGroup } from "@rte-ds/react";
 
 const RadioField = ({

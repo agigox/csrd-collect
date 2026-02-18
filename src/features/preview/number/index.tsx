@@ -1,10 +1,7 @@
 "use client";
 
-import type {
-  FieldProps,
-  FieldRegistration,
-  NumberFieldConfig,
-} from "@/models/FieldTypes";
+import type { NumberFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 import { TextInput } from "@rte-ds/react";
 
 const NumberField = ({

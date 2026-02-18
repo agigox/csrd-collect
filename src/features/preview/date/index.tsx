@@ -8,11 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
 import { Calendar } from "@/lib/ui/calendar";
 import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
-import type {
-  FieldProps,
-  FieldRegistration,
-  DateFieldConfig,
-} from "@/models/FieldTypes";
+import type { DateFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 import { Tooltip } from "@rte-ds/react";
 
 type DateValue = {

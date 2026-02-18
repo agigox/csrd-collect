@@ -1,10 +1,8 @@
 "use client";
 
 import { TextInput } from "@rte-ds/react";
-import type {
-  NumberFieldConfig,
-  SpecificConfiguratorProps,
-} from "@/models/FieldTypes";
+import type { NumberFieldConfig } from "@/models/FieldTypes";
+import type { SpecificConfiguratorProps } from "@/lib/types/field";
 import { LabelField } from "../common/LabelField";
 
 export const NumberConfigurator = ({

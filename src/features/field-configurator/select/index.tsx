@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { SelectFieldConfig, SelectOption, SpecificConfiguratorProps } from "@/models/FieldTypes";
+import type { SelectFieldConfig, SelectOption } from "@/models/FieldTypes";
+import type { SpecificConfiguratorProps } from "@/lib/types/field";
 import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
 import { SegmentedControl, Select } from "@rte-ds/react";

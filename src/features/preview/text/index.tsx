@@ -1,10 +1,7 @@
 "use client";
 
-import type {
-  FieldProps,
-  FieldRegistration,
-  TextFieldConfig,
-} from "@/models/FieldTypes";
+import type { TextFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 import { TextInput } from "@rte-ds/react";
 
 const TextField = ({

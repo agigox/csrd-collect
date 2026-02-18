@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { IconButton, Select, TextInput } from "@rte-ds/react";
 import type { FieldType } from "@/models/FieldTypes";
-import { typeLabels, typeIcons } from "@/models/FieldTypes";
+import { typeLabels, typeIcons } from "@/lib/constants/field";
 import { BranchingTag } from "./BranchingTag";
 
 export interface CollapsedActions {

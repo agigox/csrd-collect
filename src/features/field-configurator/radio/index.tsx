@@ -1,11 +1,8 @@
 "use client";
 
 import { IconButton, RadioButton, TextInput } from "@rte-ds/react";
-import type {
-  RadioFieldConfig,
-  SelectOption,
-  SpecificConfiguratorProps,
-} from "@/models/FieldTypes";
+import type { RadioFieldConfig, SelectOption } from "@/models/FieldTypes";
+import type { SpecificConfiguratorProps } from "@/lib/types/field";
 import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
 import { BranchingSelect } from "../common/BranchingSelect";

@@ -2,11 +2,8 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { CheckboxGroup } from "@rte-ds/react";
-import type {
-  FieldProps,
-  FieldRegistration,
-  CheckboxFieldConfig,
-} from "@/models/FieldTypes";
+import type { CheckboxFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 
 const CheckboxField = ({
   config,

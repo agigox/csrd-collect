@@ -1,10 +1,3 @@
-import type { ComponentType } from "react";
-import type { DragControls } from "motion/react";
-
-// ========================
-// Field Types
-// ========================
-
 export type FieldType =
   | "text"
   | "number"
@@ -15,20 +8,6 @@ export type FieldType =
   | "checkbox"
   | "import";
 
-// ========================
-// Validation
-// ========================
-
-export interface ValidationRule {
-  type: "required" | "min" | "max" | "pattern";
-  value?: number | string;
-  message: string;
-}
-
-// ========================
-// Base Field Config
-// ========================
-
 export interface BaseFieldConfig {
   id: string;
   name: string;
@@ -37,7 +16,6 @@ export interface BaseFieldConfig {
   placeholder?: string;
   required?: boolean;
   defaultValue?: string | number | boolean | string[] | number[] | Date;
-  validation?: ValidationRule[];
   description?: string;
   isDuplicate?: boolean;
   // Branching: child-side properties
@@ -46,20 +24,13 @@ export interface BaseFieldConfig {
   branchingColor?: string;
 }
 
-// ========================
-// Options
-// ========================
-
 export interface SelectOption {
   value: string;
   label: string;
 }
 
 export type SelectionMode = "single" | "multiple";
-
-// ========================
-// Specific Field Configs
-// ========================
+export type DateDefaultValue = "none" | "today";
 
 export interface SelectFieldConfig extends BaseFieldConfig {
   type: "select";
@@ -83,8 +54,6 @@ export interface TextFieldConfig extends BaseFieldConfig {
 export interface SwitchFieldConfig extends BaseFieldConfig {
   type: "switch";
 }
-
-export type DateDefaultValue = "none" | "today";
 
 export interface DateFieldConfig extends BaseFieldConfig {
   type: "date";
@@ -127,83 +96,3 @@ export type FieldConfig =
   | RadioFieldConfig
   | CheckboxFieldConfig
   | ImportFieldConfig;
-
-// ========================
-// Field Component Props
-// ========================
-
-export interface FieldProps<T extends FieldConfig = FieldConfig> {
-  config: T;
-  value: unknown;
-  onChange: (value: unknown) => void;
-  error?: string;
-  readOnly?: boolean;
-}
-
-export interface FieldRegistration {
-  type: FieldType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component: ComponentType<FieldProps<any>>;
-  defaultConfig: Partial<BaseFieldConfig>;
-}
-
-// ========================
-// Field Configurator Props
-// ========================
-
-export interface FieldConfiguratorProps {
-  config: FieldConfig;
-  onChange: (config: FieldConfig) => void;
-  onRemove: () => void;
-  onDuplicate: () => void;
-  onMoveUp?: () => void;
-  onMoveDown?: () => void;
-  canMoveUp?: boolean;
-  canMoveDown?: boolean;
-  isOpen?: boolean;
-  onOpen?: () => void;
-  dragControls?: DragControls;
-  schema?: FieldConfig[];
-  onBranchingCleanup?: () => void;
-  isChildField?: boolean;
-  branchingColor?: string;
-  branchingNumber?: number;
-  fieldIdentifier?: string;
-  onDetach?: () => void;
-}
-
-export interface SpecificConfiguratorProps<
-  T extends FieldConfig = FieldConfig,
-> {
-  config: T;
-  onChange: (config: T) => void;
-  onFieldTypeChange?: (type: FieldType) => void;
-  schema?: FieldConfig[];
-  fieldIdentifier?: string;
-}
-
-// ========================
-// UI Labels & Icons
-// ========================
-
-export const typeLabels: Record<string, string> = {
-  text: "Champ libre",
-  number: "Nombre",
-  select: "Liste déroulante",
-  radio: "Choix unique",
-  checkbox: "Choix multiple",
-  switch: "Switch",
-  date: "Date",
-  import: "Import de fichier",
-};
-
-export const typeIcons: Record<string, string> = {
-  text: "chat",
-  number: "chat",
-  select: "list-alt",
-  radio: "check-circle",
-  checkbox: "checkbox",
-  switch: "switch",
-  date: "calendar-month",
-  import: "upload",
-};

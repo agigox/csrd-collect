@@ -1,10 +1,7 @@
 "use client";
 
-import type {
-  FieldProps,
-  FieldRegistration,
-  SelectFieldConfig,
-} from "@/models/FieldTypes";
+import type { SelectFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 import { Select } from "@rte-ds/react";
 
 const SelectField = ({

@@ -13,7 +13,7 @@ import type {
   RadioFieldConfig,
   CheckboxFieldConfig,
 } from "@/models/FieldTypes";
-import { typeLabels, typeIcons } from "@/models/FieldTypes";
+import { typeLabels, typeIcons } from "@/lib/constants/field";
 import { Button, Icon } from "@rte-ds/react";
 import { SortableFieldCard } from "@/features/field-configurator/SortableFieldCard";
 import {

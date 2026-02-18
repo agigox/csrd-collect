@@ -3,11 +3,8 @@
 import { useRef } from "react";
 import { Button } from "@/lib/ui/button";
 import Icon from "@/lib/Icons";
-import type {
-  FieldProps,
-  FieldRegistration,
-  ImportFieldConfig,
-} from "@/models/FieldTypes";
+import type { ImportFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 import { IconButton, Tooltip } from "@rte-ds/react";
 
 interface FileValue {

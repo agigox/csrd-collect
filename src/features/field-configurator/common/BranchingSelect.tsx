@@ -2,7 +2,7 @@
 
 import { Select } from "@rte-ds/react";
 import type { FieldConfig, FieldType } from "@/models/FieldTypes";
-import { typeLabels } from "@/models/FieldTypes";
+import { typeLabels } from "@/lib/constants/field";
 import { BranchingTag } from "./BranchingTag";
 
 interface BranchingSelectProps {

@@ -1,7 +1,8 @@
 "use client";
 
 import { Select } from "@rte-ds/react";
-import type { SwitchFieldConfig, SpecificConfiguratorProps } from "@/models/FieldTypes";
+import type { SwitchFieldConfig } from "@/models/FieldTypes";
+import type { SpecificConfiguratorProps } from "@/lib/types/field";
 import { LabelField } from "../common/LabelField";
 
 const defaultValueOptions = [

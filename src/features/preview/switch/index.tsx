@@ -1,11 +1,8 @@
 "use client";
 
 import { Switch, Tooltip } from "@rte-ds/react";
-import type {
-  FieldProps,
-  FieldRegistration,
-  SwitchFieldConfig,
-} from "@/models/FieldTypes";
+import type { SwitchFieldConfig } from "@/models/FieldTypes";
+import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 
 const SwitchField = ({
   config,

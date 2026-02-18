@@ -1,7 +1,8 @@
 "use client";
 
 import { Checkbox, Select } from "@rte-ds/react";
-import type { ImportFieldConfig, SpecificConfiguratorProps } from "@/models/FieldTypes";
+import type { ImportFieldConfig } from "@/models/FieldTypes";
+import type { SpecificConfiguratorProps } from "@/lib/types/field";
 import { LabelField } from "../common/LabelField";
 
 const formatOptions = [

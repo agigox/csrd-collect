@@ -4,10 +4,10 @@ import { AnimatePresence, motion } from "motion/react";
 import type {
   FieldConfig,
   FieldType,
-  FieldConfiguratorProps,
   RadioFieldConfig,
   CheckboxFieldConfig,
 } from "@/models/FieldTypes";
+import type { FieldConfiguratorProps } from "@/lib/types/field";
 import { getField } from "@/lib/utils/registry";
 
 import { DescriptionField } from "./common/DescriptionField";
