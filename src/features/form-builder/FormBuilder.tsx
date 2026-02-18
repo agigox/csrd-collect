@@ -569,8 +569,14 @@ export const FormBuilder = ({
             const primaryField = primaryActiveFieldName
               ? schema.find((f) => f.name === primaryActiveFieldName)
               : null;
-            const primaryParentId =
-              primaryField?.parentFieldId ?? primaryField?.id;
+            // Walk up to root ancestor for insert button placement
+            let rootAncestor = primaryField;
+            while (rootAncestor?.parentFieldId) {
+              const parent = schema.find((f) => f.id === rootAncestor!.parentFieldId);
+              if (!parent) break;
+              rootAncestor = parent;
+            }
+            const primaryParentId = rootAncestor?.id;
             const primaryParentIndex = primaryParentId
               ? schema.findIndex((f) => f.id === primaryParentId)
               : -1;

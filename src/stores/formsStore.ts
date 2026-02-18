@@ -55,15 +55,21 @@ export const useFormsStore = create<FormsState>()(
         if (schema) {
           const field = schema.find((f) => f.name === name);
           if (field) {
-            // If it's a child, also open the parent
-            if (field.parentFieldId) {
-              const parent = schema.find((f) => f.id === field.parentFieldId);
-              if (parent && !names.includes(parent.name)) {
-                names.push(parent.name);
-              }
+            // Walk up to the root ancestor
+            let root = field;
+            while (root.parentFieldId) {
+              const parent = schema.find((f) => f.id === root.parentFieldId);
+              if (!parent) break;
+              root = parent;
             }
-            // Open all descendants (children, grandchildren, etc.)
-            const descendantIds = getAllDescendantIds(field.id, schema);
+
+            // Add the root if different from clicked field
+            if (root.id !== field.id && !names.includes(root.name)) {
+              names.push(root.name);
+            }
+
+            // Open all descendants from the root (entire tree)
+            const descendantIds = getAllDescendantIds(root.id, schema);
             for (const descendantId of descendantIds) {
               const descendant = schema.find((f) => f.id === descendantId);
               if (descendant && !names.includes(descendant.name)) {
