@@ -49,7 +49,7 @@ node_modules/
 /playwright/.auth/
 .playwright-mcp/
 /CLAUDE.md
-_draft/
+_drafts/
 _plans/
 _specs/
 .claude/
