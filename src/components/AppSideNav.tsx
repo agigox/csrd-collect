@@ -52,10 +52,17 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   const { width } = useBreakpoint();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
   const headerConfig = isAdmin ? adminHeaderConfig : memberHeaderConfig;
+
+  const activeItem = isAdmin
+    ? [...adminMenuItems]
+        .sort((a, b) => b.link.length - a.link.length)
+        .find((item) => pathname.startsWith(item.link))?.id
+    : undefined;
 
   // Avoid hydration mismatch: SideNav uses window.innerWidth to choose
   // between mobile/desktop layout, which differs from SSR (width=0 → mobile)
@@ -67,6 +74,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     <SideNav
       headerConfig={headerConfig}
       {...(isAdmin && { items: adminMenuItems })}
+      activeItem={activeItem}
       collapsible
       size="s"
       collapsed={width <= 1050}

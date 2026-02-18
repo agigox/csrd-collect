@@ -142,7 +142,7 @@ const DateField = ({
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex h-8 w-full items-center justify-between rounded-md border px-3 py-1 text-sm shadow-inner cursor-pointer",
+              "flex h-8 w-full items-center justify-between rounded-md border px-3 py-1 text-sm cursor-pointer bg-content-readonly-csrd",
               error ? "border-red-500" : "border-gray-300",
               "hover:border-gray-400 transition-colors",
             )}
@@ -175,7 +175,6 @@ const DateField = ({
               onSelect={readOnly ? undefined : handleSelectDate}
               defaultMonth={dateObj || getDefaultDate()}
               locale={fr}
-              initialFocus
               disabled={readOnly}
             />
 
@@ -266,7 +265,7 @@ const DateField = ({
   );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       {labelContent}
       {config.description ? (
         <Tooltip

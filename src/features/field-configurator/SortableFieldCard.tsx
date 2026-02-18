@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { FieldConfig } from "@/models/FieldTypes";
 import { Card, Icon } from "@rte-ds/react";
 import { FieldConfigurator } from ".";
@@ -24,6 +25,8 @@ interface SortableFieldCardProps {
   fieldIdentifier?: string;
   depth?: number;
   onDetach?: () => void;
+  insertBefore?: ReactNode;
+  insertAfter?: ReactNode;
 }
 
 export const SortableFieldCard = ({
@@ -45,13 +48,15 @@ export const SortableFieldCard = ({
   fieldIdentifier,
   depth = 0,
   onDetach,
+  insertBefore,
+  insertAfter,
 }: SortableFieldCardProps) => {
   const dragControls = useDragControls();
 
   return (
     <Reorder.Item
       value={fieldConfig}
-      className="flex flex-col gap-1.5"
+      className="flex flex-col gap-4"
       dragListener={false}
       dragControls={isChildField ? undefined : dragControls}
       layout
@@ -75,6 +80,8 @@ export const SortableFieldCard = ({
         marginRight: isChildField && !isOpen ? `${depth * 8}px` : undefined,
       }}
     >
+      {insertBefore}
+      <div className="flex flex-col gap-1.5">
       {(fieldConfig.isDuplicate ||
         (isOpen &&
           isChildField &&
@@ -133,6 +140,8 @@ export const SortableFieldCard = ({
           onDetach={onDetach}
         />
       </Card>
+      </div>
+      {insertAfter}
     </Reorder.Item>
   );
 };

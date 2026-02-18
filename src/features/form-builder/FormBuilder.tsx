@@ -589,39 +589,43 @@ export const FormBuilder = ({
               const depth = getFieldDepth(fieldConfig.id, schema);
               const fieldIdentifier = getFieldIdentifier(fieldConfig.id, schema);
 
-              // "before" button: on the parent card only
-              const showInsertBefore =
-                !isChildField && fieldConfig.id === primaryParentId;
-              // "after" button: on the last field of the group (last child, or parent if no children)
-              const showInsertAfter = index === groupLastIndex;
+              // When no field is active, show insert buttons on first/last fields
+              const noActiveField = !primaryField;
+              // "before" button: on the parent card, or first field when none active
+              const showInsertBefore = noActiveField
+                ? index === 0
+                : !isChildField && fieldConfig.id === primaryParentId;
+              // "after" button: on the last field of the group, or last field when none active
+              const showInsertAfter = noActiveField
+                ? index === schema.length - 1
+                : index === groupLastIndex;
 
               return (
-                <div key={fieldConfig.name} className="flex flex-col gap-4">
-                  {showInsertBefore && renderInsertButton(index, "before")}
-                  <SortableFieldCard
-                    fieldConfig={fieldConfig}
-                    index={index}
-                    totalFields={schema.length}
-                    isOpen={isActive}
-                    onOpen={() => setActiveFieldName(fieldConfig.name, schema)}
-                    onUpdate={(config) => handleUpdateField(index, config)}
-                    onRemove={() => handleRemoveField(index)}
-                    onDuplicate={() => handleDuplicateField(index)}
-                    onMoveUp={() => handleMoveUp(index)}
-                    onMoveDown={() => handleMoveDown(index)}
-                    schema={schema}
-                    onBranchingCleanup={() =>
-                      handleBranchingCleanup(fieldConfig.id)
-                    }
-                    isChildField={isChildField}
-                    branchingColor={fieldConfig.branchingColor}
-                    branchingNumber={getBranchingNumber(fieldConfig)}
-                    fieldIdentifier={fieldIdentifier}
-                    depth={depth}
-                    onDetach={() => handleDetachField(fieldConfig.id)}
-                  />
-                  {showInsertAfter && renderInsertButton(index, "after")}
-                </div>
+                <SortableFieldCard
+                  key={fieldConfig.id}
+                  fieldConfig={fieldConfig}
+                  index={index}
+                  totalFields={schema.length}
+                  isOpen={isActive}
+                  onOpen={() => setActiveFieldName(fieldConfig.name, schema)}
+                  onUpdate={(config) => handleUpdateField(index, config)}
+                  onRemove={() => handleRemoveField(index)}
+                  onDuplicate={() => handleDuplicateField(index)}
+                  onMoveUp={() => handleMoveUp(index)}
+                  onMoveDown={() => handleMoveDown(index)}
+                  schema={schema}
+                  onBranchingCleanup={() =>
+                    handleBranchingCleanup(fieldConfig.id)
+                  }
+                  isChildField={isChildField}
+                  branchingColor={fieldConfig.branchingColor}
+                  branchingNumber={getBranchingNumber(fieldConfig)}
+                  fieldIdentifier={fieldIdentifier}
+                  depth={depth}
+                  onDetach={() => handleDetachField(fieldConfig.id)}
+                  insertBefore={showInsertBefore ? renderInsertButton(index, "before") : undefined}
+                  insertAfter={showInsertAfter ? renderInsertButton(index, "after") : undefined}
+                />
               );
             });
           })()}

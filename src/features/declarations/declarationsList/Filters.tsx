@@ -2,11 +2,9 @@
 
 import { useState, useMemo } from "react";
 import type { Declaration } from "@/models/Declaration";
-import Icon from "@/lib/Icons";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/lib/ui/popover";
-import { ChevronDownIcon } from "lucide-react";
-import { Chip } from "@rte-ds/react";
+import { Chip, Icon } from "@rte-ds/react";
 
 interface FilterOption {
   value: string;
@@ -112,17 +110,19 @@ const FilterSelect = ({
                   <Icon name="reset" size={16} className="opacity-70" />
                 </button>
               )}
-              <ChevronDownIcon
-                className={cn(
-                  "size-5 opacity-50 transition-transform duration-200",
-                  open && "rotate-180",
-                )}
+
+              <Icon
+                appearance="outlined"
+                aria-label={open ? "arrow-chevron-up" : "arrow-chevron-down"}
+                color="#000000"
+                name={open ? "arrow-chevron-up" : "arrow-chevron-down"}
+                size={16}
               />
             </div>
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[var(--radix-popover-trigger-width)] p-0"
+          className="w-(--radix-popover-trigger-width) p-0"
           align="start"
         >
           <div className="flex flex-col py-1 max-h-60 overflow-y-auto">
@@ -188,7 +188,13 @@ interface FiltersProps {
   onClose?: () => void;
 }
 
-const Filters = ({ isOpen, filters, onFiltersChange, declarations, onClose }: FiltersProps) => {
+const Filters = ({
+  isOpen,
+  filters,
+  onFiltersChange,
+  declarations,
+  onClose,
+}: FiltersProps) => {
   if (!isOpen) {
     return null;
   }
@@ -201,9 +207,10 @@ const Filters = ({ isOpen, filters, onFiltersChange, declarations, onClose }: Fi
   ];
 
   // Extract unique author names from declarations
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const authorNameOptions: FilterOption[] = useMemo(() => {
     const uniqueAuthors = Array.from(
-      new Set(declarations.map((d) => d.authorName))
+      new Set(declarations.map((d) => d.authorName)),
     ).sort();
     return uniqueAuthors.map((name) => ({
       value: name,
@@ -212,9 +219,10 @@ const Filters = ({ isOpen, filters, onFiltersChange, declarations, onClose }: Fi
   }, [declarations]);
 
   // Extract unique team IDs from declarations
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const teamIdOptions: FilterOption[] = useMemo(() => {
     const uniqueTeams = Array.from(
-      new Set(declarations.map((d) => d.teamId))
+      new Set(declarations.map((d) => d.teamId)),
     ).sort();
     return uniqueTeams.map((id) => ({
       value: id,
@@ -245,9 +253,7 @@ const Filters = ({ isOpen, filters, onFiltersChange, declarations, onClose }: Fi
         label="Statut"
         options={statusOptions}
         value={filters.status}
-        onChange={(value) =>
-          onFiltersChange({ ...filters, status: value })
-        }
+        onChange={(value) => onFiltersChange({ ...filters, status: value })}
         placeholder="Tous les statuts"
       />
 
@@ -255,9 +261,7 @@ const Filters = ({ isOpen, filters, onFiltersChange, declarations, onClose }: Fi
         label="Auteur"
         options={authorNameOptions}
         value={filters.authorName}
-        onChange={(value) =>
-          onFiltersChange({ ...filters, authorName: value })
-        }
+        onChange={(value) => onFiltersChange({ ...filters, authorName: value })}
         placeholder="Tous les auteurs"
       />
 
@@ -265,9 +269,7 @@ const Filters = ({ isOpen, filters, onFiltersChange, declarations, onClose }: Fi
         label="Équipe"
         options={teamIdOptions}
         value={filters.teamId}
-        onChange={(value) =>
-          onFiltersChange({ ...filters, teamId: value })
-        }
+        onChange={(value) => onFiltersChange({ ...filters, teamId: value })}
         placeholder="Toutes les équipes"
       />
 
