@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import type { DragControls } from "motion/react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/lib/ui/dialog";
-import { Button } from "@/lib/ui/button";
-import { Divider, IconButton, Switch } from "@rte-ds/react";
+import { Button, Divider, IconButton, Modal, Switch } from "@rte-ds/react";
 
 interface FooterProps {
   required: boolean;
@@ -173,61 +165,52 @@ export const Footer = ({
         </div>
       </div>
 
-      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Supprimer ce champ ?</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Cette action est irréversible. Le champ sera définitivement
-            supprimé.
-          </p>
-          <DialogFooter className="gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowDeleteConfirm(false)}
-            >
-              Annuler
-            </Button>
-            <Button variant="destructive" onClick={handleConfirmDelete}>
-              Confirmer
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Modal
+        id="delete-field-confirm"
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        title="Supprimer ce champ ?"
+        icon="delete"
+        description="Cette action est irréversible. Le champ sera définitivement supprimé."
+        size="xs"
+        primaryButton={
+          <Button variant="danger" label="Confirmer" onClick={handleConfirmDelete} />
+        }
+        secondaryButton={
+          <Button variant="neutral" label="Annuler" onClick={() => setShowDeleteConfirm(false)} />
+        }
+      />
 
-      <Dialog open={showDetachConfirm} onOpenChange={setShowDetachConfirm}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>
-              {isDetachingParent
-                ? "Détacher ce champ de ses enfants ?"
-                : "Détacher ce champ ?"}
-            </DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            {isDetachingParent
-              ? `Ce champ sera détaché de ses ${detachChildCount} sous-champ(s). Les sous-champs deviendront indépendants.`
-              : `Ce champ deviendra indépendant et ne sera plus conditionné par «\u00A0${detachParentLabel}\u00A0».`}
-          </p>
-          <DialogFooter className="gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowDetachConfirm(false)}
-            >
-              Annuler
-            </Button>
-            <Button
-              onClick={() => {
-                onDetach?.();
-                setShowDetachConfirm(false);
-              }}
-            >
-              Confirmer
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Modal
+        id="detach-field-confirm"
+        isOpen={showDetachConfirm}
+        onClose={() => setShowDetachConfirm(false)}
+        title={
+          isDetachingParent
+            ? "Détacher ce champ de ses enfants ?"
+            : "Détacher ce champ ?"
+        }
+        icon="detach"
+        description={
+          isDetachingParent
+            ? `Ce champ sera détaché de ses ${detachChildCount} sous-champ(s). Les sous-champs deviendront indépendants.`
+            : `Ce champ deviendra indépendant et ne sera plus conditionné par «\u00A0${detachParentLabel}\u00A0».`
+        }
+        size="xs"
+        primaryButton={
+          <Button
+            variant="primary"
+            label="Confirmer"
+            onClick={() => {
+              onDetach?.();
+              setShowDetachConfirm(false);
+            }}
+          />
+        }
+        secondaryButton={
+          <Button variant="neutral" label="Annuler" onClick={() => setShowDetachConfirm(false)} />
+        }
+      />
     </>
   );
 };
