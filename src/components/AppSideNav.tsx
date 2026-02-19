@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { SideNav, useBreakpoint } from "@rte-ds/react";
+import { useAuthStore } from "@/stores";
 
 interface AppSideNavProps {
   children: React.ReactNode;
@@ -47,9 +48,14 @@ const adminHeaderConfig = {
 
 export default function AppSideNav({ children }: AppSideNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const isAdmin = pathname.startsWith("/admin");
   const [mounted, setMounted] = useState(false);
   const { width } = useBreakpoint();
+  const user = useAuthStore((s) => s.user);
+  const teamInfo = useAuthStore((s) => s.teamInfo);
+  const logout = useAuthStore((s) => s.logout);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -58,10 +64,41 @@ export default function AppSideNav({ children }: AppSideNavProps) {
 
   const headerConfig = isAdmin ? adminHeaderConfig : memberHeaderConfig;
 
+  const profileName =
+    user?.prenom || user?.nom
+      ? `${user.prenom ?? ""} ${user.nom ?? ""}`.trim()
+      : undefined;
+
+  const teamData =
+    !isAdmin && teamInfo
+      ? [
+          { label: "Direction", value: teamInfo.direction },
+          { label: "Centre", value: teamInfo.centre },
+          { label: "GMR", value: teamInfo.gmr },
+          { label: "Équipe", value: teamInfo.equipe },
+        ]
+      : undefined;
+
   const activeItem = isAdmin
     ? [...adminMenuItems]
         .sort((a, b) => b.link.length - a.link.length)
         .find((item) => pathname.startsWith(item.link))?.id
+    : undefined;
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
+
+  const footerItems = isAuthenticated
+    ? [
+        {
+          id: "logout",
+          label: "Déconnexion",
+          icon: "logout",
+          onClick: handleLogout,
+        },
+      ]
     : undefined;
 
   // Avoid hydration mismatch: SideNav uses window.innerWidth to choose
@@ -72,9 +109,17 @@ export default function AppSideNav({ children }: AppSideNavProps) {
 
   return (
     <SideNav
-      headerConfig={headerConfig}
+      headerConfig={{
+        ...headerConfig,
+        version: "1.0.0",
+      }}
       {...(isAdmin && { items: adminMenuItems })}
       activeItem={activeItem}
+      footerItems={footerItems}
+      showProfile={!!profileName}
+      profile={profileName}
+      showTeamData={!!teamData}
+      teamData={teamData}
       collapsible
       size="s"
       collapsed={width <= 1050}
