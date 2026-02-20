@@ -10,11 +10,12 @@ import {
 interface DeclarationsState {
   declarations: Declaration[];
   loading: boolean;
+  hasFetched: boolean;
   error: string | null;
   fetchDeclarations: () => Promise<void>;
   updateDeclaration: (
     id: string,
-    formData: Record<string, unknown> & { name: string },
+    formData: Record<string, unknown>,
   ) => Promise<void>;
   addTempDeclaration: (declaration: Declaration) => void;
   updateTempDeclaration: (id: string, updates: Partial<Declaration>) => void;
@@ -27,18 +28,26 @@ export const useDeclarationsStore = create<DeclarationsState>()(
     (set) => ({
       declarations: [],
       loading: false,
+      hasFetched: false,
       error: null,
 
       fetchDeclarations: async () => {
+        const { hasFetched, loading } = useDeclarationsStore.getState();
+        if (hasFetched || loading) return;
+
         set({ loading: true, error: null }, false, "DECLARATIONS/FETCH_START");
 
         try {
-          const data = await fetchDeclarationsApi();
+          // TODO: remove filter when backend supports deleting validated declarations
+          const data = (await fetchDeclarationsApi()).filter(
+            (d) => d.id !== "f6a395e8-1997-4c8f-876d-0f7df71e9d38",
+          );
 
           set(
             {
               declarations: data,
               loading: false,
+              hasFetched: true,
             },
             false,
             "DECLARATIONS/FETCH_SUCCESS",
@@ -61,7 +70,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
 
       updateDeclaration: async (
         id: string,
-        formData: Record<string, unknown> & { name: string },
+        formData: Record<string, unknown>,
       ) => {
         try {
           // Get current declaration

@@ -428,6 +428,7 @@
   "declarations": [
     {
       "id": "temp_1770994303741_47c0",
+      "name": "Formulaire de test",
       "formTemplateId": "47c0",
       "reference": "DECL-TEMP-1770994303741",
       "location": "",
@@ -437,7 +438,6 @@
       "description": "ce formulaire est de test des differents champs",
       "status": "pending",
       "formData": {
-        "name": "Formulaire de test",
         "text_1": "aaa"
       },
       "submitedBy": "",

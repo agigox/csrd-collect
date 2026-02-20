@@ -11,6 +11,7 @@ interface HeaderProps {
   searchQuery?: string;
   onSearchQueryChange?: (query: string) => void;
   onSearchClose?: () => void;
+  hasDeclarations?: boolean;
 }
 
 const Header = ({
@@ -22,6 +23,7 @@ const Header = ({
   searchQuery = "",
   onSearchQueryChange,
   onSearchClose,
+  hasDeclarations = true,
 }: HeaderProps) => {
   return (
     <div className="flex flex-col gap-2 pb-2.5 pt-2.75">
@@ -32,7 +34,7 @@ const Header = ({
           Déclarations
         </h1>
 
-        {/* Search button - highlighted when active */}
+        {/* Search button */}
         <IconButton
           appearance={isSearchActive ? "filled" : "outlined"}
           aria-label="Rechercher"
@@ -40,9 +42,10 @@ const Header = ({
           onClick={onSearch}
           size="m"
           variant={isSearchActive ? "primary" : "secondary"}
+          disabled={!hasDeclarations}
         />
 
-        {/* Filter button - disabled when search active */}
+        {/* Filter button */}
         <IconButtonToggle
           aria-label="Afficher/masquer les filtres"
           name="filter-alt"
@@ -50,7 +53,7 @@ const Header = ({
           size="m"
           variant="secondary"
           selected={isFilterOpen}
-          disabled={isSearchActive}
+          disabled={!hasDeclarations}
         />
 
         {/* Déclarer button */}

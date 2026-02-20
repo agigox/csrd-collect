@@ -15,11 +15,16 @@ import {
 import { Button } from "@/lib/ui/button";
 import { DynamicForm } from "@/features/form-builder/DynamicForm";
 import Icon from "@/lib/Icons";
+import { LabelField } from "@/features/field-configurator/common/LabelField";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 import ModificationHistory from "./ModificationHistory";
 import { useDeclarationsStore } from "@/stores";
 import type { Declaration } from "@/models/Declaration";
-import type { FieldConfig, RadioFieldConfig, CheckboxFieldConfig } from "@/models/FieldTypes";
+import type {
+  FieldConfig,
+  RadioFieldConfig,
+  CheckboxFieldConfig,
+} from "@/models/FieldTypes";
 
 const Declarations = () => {
   const router = useRouter();
@@ -39,7 +44,9 @@ const Declarations = () => {
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showHistory, setShowHistory] = useState(false);
-  const [tempDeclarations, setTempDeclarations] = useState<Map<string, Declaration>>(new Map());
+  const [tempDeclarations, setTempDeclarations] = useState<
+    Map<string, Declaration>
+  >(new Map());
 
   // Load forms when component mounts
   useEffect(() => {
@@ -49,9 +56,10 @@ const Declarations = () => {
   // Derive modal state from URL
   const formId = searchParams.get("formId");
   const isOnNewPage = pathname === "/declarations/new";
-  const declarationId = pathname.startsWith("/declarations/") && pathname !== "/declarations/new"
-    ? pathname.replace("/declarations/", "")
-    : null;
+  const declarationId =
+    pathname.startsWith("/declarations/") && pathname !== "/declarations/new"
+      ? pathname.replace("/declarations/", "")
+      : null;
 
   // Determine which modals should be open based on URL
   const selectionDialogOpen = isOnNewPage && !formId;
@@ -59,21 +67,25 @@ const Declarations = () => {
 
   // Get the selected declaration based on URL
   const selectedDeclaration = declarationId
-    ? declarations.find((d) => d.id === declarationId) || tempDeclarations.get(declarationId) || null
+    ? declarations.find((d) => d.id === declarationId) ||
+      tempDeclarations.get(declarationId) ||
+      null
     : null;
 
   // Get the selected form based on URL or declaration
   const selectedForm = formId
     ? forms.find((f) => f.id === formId) || null
     : selectedDeclaration
-    ? forms.find((f) => f.id === selectedDeclaration.formTemplateId) || null
-    : null;
+      ? forms.find((f) => f.id === selectedDeclaration.formTemplateId) || null
+      : null;
 
   // Track current temp declaration ID for the selected form
   const [currentTempId, setCurrentTempId] = useState<string | null>(null);
 
   // For new declarations, get temp declaration by current ID
-  const tempDeclaration = currentTempId ? tempDeclarations.get(currentTempId) || null : null;
+  const tempDeclaration = currentTempId
+    ? tempDeclarations.get(currentTempId) || null
+    : null;
 
   // Final selected declaration (either existing or temp)
   const finalSelectedDeclaration = selectedDeclaration || tempDeclaration;
@@ -86,9 +98,7 @@ const Declarations = () => {
       const now = new Date().toISOString();
 
       // Initialize formData with default values from schema
-      const initialFormData: Record<string, unknown> & { name: string } = {
-        name: selectedForm.name || "Nouvelle déclaration",
-      };
+      const initialFormData: Record<string, unknown> = {};
 
       // Add default values for all fields that have them
       selectedForm.schema.fields.forEach((field) => {
@@ -99,6 +109,7 @@ const Declarations = () => {
 
       const tempDeclaration: Declaration = {
         id: tempId,
+        name: "",
         formTemplateId: selectedForm.id,
         reference: `DECL-TEMP-${Date.now()}`,
         location: "",
@@ -119,7 +130,7 @@ const Declarations = () => {
         isNew: true,
       };
 
-      setTempDeclarations(prev => new Map(prev).set(tempId, tempDeclaration));
+      setTempDeclarations((prev) => new Map(prev).set(tempId, tempDeclaration));
       addTempDeclaration(tempDeclaration);
       setCurrentTempId(tempId);
     }
@@ -134,9 +145,11 @@ const Declarations = () => {
 
   // Check if a field has a configured default value
   const fieldHasDefault = useCallback((field: FieldConfig) => {
-    if (field.defaultValue !== undefined && field.defaultValue !== '') return true;
-    if (field.type === 'radio') return (field as RadioFieldConfig).defaultIndex !== undefined;
-    if (field.type === 'checkbox') {
+    if (field.defaultValue !== undefined && field.defaultValue !== "")
+      return true;
+    if (field.type === "radio")
+      return (field as RadioFieldConfig).defaultIndex !== undefined;
+    if (field.type === "checkbox") {
       const indices = (field as CheckboxFieldConfig).defaultIndices;
       return indices !== undefined && indices.length > 0;
     }
@@ -144,24 +157,27 @@ const Declarations = () => {
   }, []);
 
   // Validation function for required fields
-  const validateForm = useCallback((values: Record<string, unknown>) => {
-    if (!selectedForm) return {};
+  const validateForm = useCallback(
+    (values: Record<string, unknown>) => {
+      if (!selectedForm) return {};
 
-    const errors: Record<string, string> = {};
+      const errors: Record<string, string> = {};
 
-    for (const field of selectedForm.schema.fields) {
-      if (field.required) {
-        const value = values[field.name];
-        const isEmpty = value === undefined || value === null || value === '';
-        // Skip error if field has a configured default (preview component uses it as fallback)
-        if (isEmpty && !fieldHasDefault(field)) {
-          errors[field.name] = 'Ce champ est requis';
+      for (const field of selectedForm.schema.fields) {
+        if (field.required) {
+          const value = values[field.name];
+          const isEmpty = value === undefined || value === null || value === "";
+          // Skip error if field has a configured default (preview component uses it as fallback)
+          if (isEmpty && !fieldHasDefault(field)) {
+            errors[field.name] = "Ce champ est requis";
+          }
         }
       }
-    }
 
-    return errors;
-  }, [selectedForm, fieldHasDefault]);
+      return errors;
+    },
+    [selectedForm, fieldHasDefault],
+  );
 
   // Load form values when declaration changes
   useEffect(() => {
@@ -189,24 +205,19 @@ const Declarations = () => {
 
       // Sync with temp declaration in real-time
       if (finalSelectedDeclaration?.isNew) {
-        const updatedFormData = {
-          ...newValues,
-          name: (newValues.name as string) || "Nouvelle déclaration",
-        };
-
         updateTempDeclaration(finalSelectedDeclaration.id, {
-          formData: updatedFormData,
+          formData: newValues,
           updatedAt: new Date().toISOString(),
         });
 
         // Update local temp declarations map
-        setTempDeclarations(prev => {
+        setTempDeclarations((prev) => {
           const next = new Map(prev);
           const existing = next.get(finalSelectedDeclaration.id);
           if (existing) {
             next.set(finalSelectedDeclaration.id, {
               ...existing,
-              formData: updatedFormData,
+              formData: newValues,
               updatedAt: new Date().toISOString(),
             });
           }
@@ -245,7 +256,7 @@ const Declarations = () => {
       // Clean up temp declarations
       if (finalSelectedDeclaration?.isNew) {
         removeTempDeclaration(finalSelectedDeclaration.id);
-        setTempDeclarations(prev => {
+        setTempDeclarations((prev) => {
           const next = new Map(prev);
           next.delete(finalSelectedDeclaration.id);
           return next;
@@ -271,18 +282,14 @@ const Declarations = () => {
       if (finalSelectedDeclaration.isNew) {
         // Confirm temp declaration (create new)
         await confirmTempDeclaration(finalSelectedDeclaration.id);
-        setTempDeclarations(prev => {
+        setTempDeclarations((prev) => {
           const next = new Map(prev);
           next.delete(finalSelectedDeclaration.id);
           return next;
         });
       } else {
         // Update existing declaration
-        const updatedFormData = {
-          ...formValues,
-          name: (formValues.name as string) || finalSelectedDeclaration.formData.name,
-        };
-        await updateDeclaration(finalSelectedDeclaration.id, updatedFormData);
+        await updateDeclaration(finalSelectedDeclaration.id, formValues);
       }
     }
 
@@ -294,7 +301,7 @@ const Declarations = () => {
   };
 
   return (
-    <div className="flex justify-start px-8">
+    <div className="flex justify-start min-h-screen p-8">
       <DeclarationsList
         onDeclarer={handleOpenSelection}
         onEditDeclaration={handleEditDeclaration}
@@ -339,18 +346,44 @@ const Declarations = () => {
                 </div>
               </DialogTitle>
               {finalSelectedDeclaration &&
-               !showHistory &&
-               finalSelectedDeclaration.history &&
-               finalSelectedDeclaration.history.length > 0 && (
-                <Icon
-                  name="listAlt"
-                  size={24}
-                  className="cursor-pointer hover:opacity-70"
-                  onClick={() => setShowHistory(true)}
-                />
-              )}
+                !showHistory &&
+                finalSelectedDeclaration.history &&
+                finalSelectedDeclaration.history.length > 0 && (
+                  <Icon
+                    name="listAlt"
+                    size={24}
+                    className="cursor-pointer hover:opacity-70"
+                    onClick={() => setShowHistory(true)}
+                  />
+                )}
             </div>
           </DialogHeader>
+
+          {finalSelectedDeclaration && (
+            <LabelField
+              value={finalSelectedDeclaration.name}
+              onChange={(newName) => {
+                updateTempDeclaration(finalSelectedDeclaration.id, {
+                  name: newName,
+                });
+                setTempDeclarations((prev) => {
+                  const next = new Map(prev);
+                  const existing = next.get(finalSelectedDeclaration.id);
+                  if (existing) {
+                    next.set(finalSelectedDeclaration.id, {
+                      ...existing,
+                      name: newName,
+                    });
+                  }
+                  return next;
+                });
+              }}
+              placeholder="Titre de la déclaration"
+              label="Titre de la déclaration"
+              displayClassName="heading-m bg-background-hover"
+              className="w-full"
+            />
+          )}
 
           <div className="h-px w-full bg-border" />
 
@@ -369,7 +402,7 @@ const Declarations = () => {
               {!selectedForm && finalSelectedDeclaration && (
                 <div className="flex-1 p-4 text-center text-muted-foreground">
                   <p className="mb-2 font-semibold">
-                    {finalSelectedDeclaration.formData.name}
+                    {finalSelectedDeclaration.name}
                   </p>
                   <p>{finalSelectedDeclaration.description}</p>
                 </div>

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Icon from "@/lib/Icons";
-import { Divider } from "@/lib/Divider";
 import type { ModificationEntry } from "@/models/Declaration";
+import { Divider } from "@rte-ds/react";
 
 interface ModificationHistoryProps {
   entries: ModificationEntry[];
@@ -15,7 +15,7 @@ const ModificationHistory = ({
   onClose,
 }: ModificationHistoryProps) => {
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const toggleExpand = (id: string) => {
@@ -32,7 +32,7 @@ const ModificationHistory = ({
 
   return (
     <div
-      className="flex flex-col gap-4 px-4 py-6 h-full w-[280px]"
+      className="flex flex-col gap-4 px-4 py-6 h-full w-70"
       style={{
         background:
           "linear-gradient(90deg, rgb(230, 238, 248) 0%, rgb(230, 238, 248) 100%)",

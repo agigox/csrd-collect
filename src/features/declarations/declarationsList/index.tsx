@@ -32,11 +32,9 @@ const DeclarationsList = ({
 
   const handleSearchToggle = () => {
     if (isSearchActive) {
-      // Closing search
       setIsSearchActive(false);
       setSearchQuery("");
     } else {
-      // Opening search - close filters and clear them
       setIsSearchActive(true);
       setIsFilterOpen(false);
       setFilters({ status: [], authorName: [], teamId: [] });
@@ -54,10 +52,8 @@ const DeclarationsList = ({
 
   const handleFilterToggle = () => {
     if (isFilterOpen) {
-      // Closing filters
       setIsFilterOpen(false);
     } else {
-      // Opening filters - close search and clear it
       setIsFilterOpen(true);
       setIsSearchActive(false);
       setSearchQuery("");
@@ -83,7 +79,7 @@ const DeclarationsList = ({
     if (isSearchActive && searchQuery.trim() !== "") {
       const lowerQuery = searchQuery.toLowerCase();
       result = result.filter((declaration) =>
-        declaration.formData.name.toLowerCase().includes(lowerQuery)
+        declaration.name.toLowerCase().includes(lowerQuery)
       );
     }
 
@@ -148,6 +144,7 @@ const DeclarationsList = ({
         searchQuery={searchQuery}
         onSearchQueryChange={handleSearchQueryChange}
         onSearchClose={handleSearchClose}
+        hasDeclarations={declarations.length > 0}
       />
 
       <Filters

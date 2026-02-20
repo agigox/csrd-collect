@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FormCard } from "./FormCard";
 import { useFormsStore } from "@/stores";
-import { Card, SegmentedTabs } from "@rte-ds/react";
+import { SegmentedTabs } from "@rte-ds/react";
+import { EmptyCard } from "@/lib/ui/EmptyCard";
 
 const categories = [
   { id: "all", label: "Tous", content: null },
@@ -46,14 +47,7 @@ export const FormsList = () => {
       content: (
         <div className="pt-6 flex flex-col gap-2 w-full m:w-143.5">
           {filteredForms.length === 0 ? (
-            <Card
-              cardType="outlined"
-              disabled
-              size="full"
-              className="px-3 py-1.75"
-            >
-              Aucun formulaire disponible dans cette catégorie
-            </Card>
+            <EmptyCard message="Aucun formulaire disponible dans cette catégorie" />
           ) : (
             filteredForms.map((form) => (
               <FormCard

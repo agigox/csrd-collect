@@ -12,6 +12,7 @@ export interface ModificationEntry {
 
 export interface Declaration {
   id: string;
+  name: string;
   formTemplateId: string;
   reference: string;
   location: string;
@@ -20,8 +21,7 @@ export interface Declaration {
   teamId: string;
   description: string;
   status: "draft" | "pending" | "validated";
-  /** Form data must always contain a 'name' field */
-  formData: Record<string, unknown> & { name: string };
+  formData: Record<string, unknown>;
   submitedBy: string;
   reviewedBy: string;
   reviewComment: string;
