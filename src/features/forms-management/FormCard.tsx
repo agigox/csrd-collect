@@ -1,12 +1,21 @@
 "use client";
 
-import { Card, Divider, IconButton, Chip } from "@rte-ds/react";
+import { Card, Divider, Button, Chip } from "@rte-ds/react";
+
+type FormCardStatus = "draft" | "published" | "validated" | "deleted";
+
+const statusConfig: Record<FormCardStatus, { label: string; backgroundColor: string }> = {
+  draft: { label: "Draft", backgroundColor: "var(--decorative-jaune-ocre)" },
+  published: { label: "Publie", backgroundColor: "var(--decorative-bleu-rte)" },
+  validated: { label: "Valide", backgroundColor: "var(--decorative-vert-digital)" },
+  deleted: { label: "Supprime", backgroundColor: "var(--decorative-rose-digital)" },
+};
 
 interface FormCardProps {
   code: string;
   title: string;
   description: string;
-  isPublished?: boolean;
+  status?: FormCardStatus;
   pressed?: boolean;
   onClick?: () => void;
   onPublish?: () => void;
@@ -16,11 +25,12 @@ export const FormCard = ({
   code,
   title,
   description,
-  isPublished = false,
+  status = "draft",
   pressed,
   onClick,
   onPublish,
 }: FormCardProps) => {
+  const chipConfig = statusConfig[status];
   return (
     <Card
       onClick={onClick}
@@ -30,10 +40,16 @@ export const FormCard = ({
       className="px-3 py-1.75"
     >
       <div className="flex w-full items-center">
-        <div className="flex-1">
-          <p className="text-sm text-muted-foreground">{code}</p>
-          <h3 className="text-lg font-semibold leading-tight">{title}</h3>
+        {/* Left: Title + Code */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-base font-semibold leading-6 text-[#201f1f] tracking-tight truncate">
+            {title}
+          </h3>
+          <p className="text-sm font-semibold text-[#696969] tracking-tight leading-7">
+            {code}
+          </p>
         </div>
+
         <div className="self-stretch">
           <Divider
             appearance="default"
@@ -42,25 +58,43 @@ export const FormCard = ({
             thickness="medium"
           />
         </div>
-        <div className="flex-1 pl-2.5">
-          <p className="text-sm text-muted-foreground line-clamp-2">
+
+        {/* Middle: Description */}
+        <div className="flex-1 min-w-0 pl-2.5">
+          <p className="text-sm font-normal text-[#11161a] leading-[18px] line-clamp-2">
             {description}
           </p>
         </div>
-        <div className="flex items-center gap-2 pl-2">
-          {isPublished ? (
-            <Chip id="published-chip" label="Publie" color="green" />
-          ) : (
-            <IconButton
-              appearance="outlined"
-              aria-label="Publier le formulaire"
-              name="publish"
+
+        <div className="self-stretch">
+          <Divider
+            appearance="default"
+            endPoint="round"
+            orientation="vertical"
+            thickness="medium"
+          />
+        </div>
+
+        {/* Right: Status + Publish action */}
+        <div className="flex flex-col items-end justify-center gap-1.5 pl-2.5 w-20 shrink-0">
+          <Chip
+            id={`status-${code}`}
+            label={chipConfig.label}
+            clickable={false}
+            style={{
+              background: chipConfig.backgroundColor,
+              color: "var(--content-primary)",
+            }}
+          />
+          {status === "draft" && (
+            <Button
+              label="Publier"
+              variant="primary"
+              size="s"
               onClick={(e) => {
                 e.stopPropagation();
                 onPublish?.();
               }}
-              size="s"
-              variant="primary"
             />
           )}
         </div>

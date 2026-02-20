@@ -63,7 +63,7 @@ export const FormsList = () => {
                 code={form.code}
                 title={form.name}
                 description={form.description ?? ""}
-                isPublished={form.isPublished}
+                status={form.isPublished ? "published" : "draft"}
                 onClick={() => handleFormClick(form.id)}
                 onPublish={() => handlePublish(form.id)}
                 pressed={currentSelectedForm === form.id}
