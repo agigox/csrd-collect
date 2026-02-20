@@ -84,7 +84,7 @@ const FilterSelect = ({
                         e.stopPropagation();
                         handleRemoveChip(opt.value);
                       }}
-                      compactSpacing
+                      size="s"
                       type="input"
                       className="px-2!"
                     />

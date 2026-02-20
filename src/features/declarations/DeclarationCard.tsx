@@ -37,7 +37,7 @@ const DeclarationCard = ({
       className="px-3 py-1.75"
     >
       {/* Row 1: Date + Time | Author chip */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between w-full">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-[#201f1f] tracking-tight leading-7">
             {formattedDate}
@@ -46,17 +46,17 @@ const DeclarationCard = ({
             {formattedTime}
           </span>
         </div>
-        <Chip id="author-chip" label={authorName} onClick={() => {}} />
+        <Chip id="author-chip" label={authorName} size="s" clickable={false} />
       </div>
 
       {/* Row 2: Title */}
       <h3 className="text-xl font-semibold text-[#201f1f] tracking-tight leading-7 w-full">
-        {name}
+        {name || "Sans titre"}
       </h3>
 
       {/* Row 3: Description */}
       <p className="text-sm font-normal text-[#11161a] leading- w-full">
-        {description}
+        {description || "Aucune description"}
       </p>
     </Card>
   );
