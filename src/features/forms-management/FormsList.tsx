@@ -18,7 +18,7 @@ const categories = [
 export const FormsList = () => {
   const [activeSegment, setActiveSegment] = useState("all");
   const [currentSelectedForm, setCurrentSelectedForm] = useState("");
-  const { forms, loading, fetchForms } = useFormsStore();
+  const { forms, loading, fetchForms, publishForm } = useFormsStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,6 +28,14 @@ export const FormsList = () => {
   const handleFormClick = (formId: string) => {
     setCurrentSelectedForm(formId);
     router.push(`/admin/${formId}`);
+  };
+
+  const handlePublish = async (formId: string) => {
+    try {
+      await publishForm(formId);
+    } catch (err) {
+      console.error("Erreur lors de la publication:", err);
+    }
   };
 
   if (loading) {
@@ -55,7 +63,9 @@ export const FormsList = () => {
                 code={form.code}
                 title={form.name}
                 description={form.description ?? ""}
+                isPublished={form.isPublished}
                 onClick={() => handleFormClick(form.id)}
+                onPublish={() => handlePublish(form.id)}
                 pressed={currentSelectedForm === form.id}
               />
             ))

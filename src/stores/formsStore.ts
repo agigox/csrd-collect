@@ -8,6 +8,7 @@ import {
   saveFormTemplate,
   createFormTemplate as createFormTemplateApi,
   deleteFormTemplate,
+  publishFormTemplate,
 } from "@/api/forms";
 
 interface FormsState {
@@ -27,6 +28,7 @@ interface FormsState {
     schema: { fields: FieldConfig[] };
   }) => Promise<FormTemplate>;
   deleteForm: (id: string) => Promise<void>;
+  publishForm: (id: string) => Promise<void>;
   fetchForms: () => Promise<void>;
 }
 
@@ -155,6 +157,25 @@ export const useFormsStore = create<FormsState>()(
           );
         } catch (err) {
           console.error("Erreur lors de la suppression du formulaire:", err);
+        }
+      },
+
+      publishForm: async (id: string) => {
+        try {
+          const published = await publishFormTemplate(id);
+
+          set(
+            (state) => ({
+              forms: state.forms.map((f) => (f.id === id ? published : f)),
+              currentForm:
+                state.currentForm?.id === id ? published : state.currentForm,
+            }),
+            false,
+            "FORMS/PUBLISH_FORM",
+          );
+        } catch (err) {
+          console.error("Erreur lors de la publication du formulaire:", err);
+          throw err;
         }
       },
 

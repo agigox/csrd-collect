@@ -11,7 +11,7 @@ interface AppSideNavProps {
 
 const adminMenuItems = [
   {
-    id: "admin-equipe",
+    id: "admin-team",
     icon: "tune",
     label: "Administration d'équipe",
     link: "/admin",
@@ -75,7 +75,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
           { label: "Direction", value: teamInfo.direction },
           { label: "Centre", value: teamInfo.centre },
           { label: "GMR", value: teamInfo.gmr },
-          { label: "Équipe", value: teamInfo.equipe },
+          { label: "Équipe", value: teamInfo.team },
         ]
       : undefined;
 

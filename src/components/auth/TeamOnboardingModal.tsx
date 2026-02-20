@@ -24,14 +24,14 @@ export default function TeamOnboardingModal() {
   const [centreName, setCentreName] = useState("");
   const [gmrId, setGmrId] = useState("");
   const [gmrName, setGmrName] = useState("");
-  const [equipeId, setEquipeId] = useState("");
-  const [equipeName, setEquipeName] = useState("");
+  const [teamId, setTeamId] = useState("");
+  const [teamName, setTeamName] = useState("");
 
   // Options lists
   const [directions, setDirections] = useState<OrgUnit[]>([]);
   const [centres, setCentres] = useState<OrgUnit[]>([]);
   const [gmrsList, setGmrsList] = useState<OrgUnit[]>([]);
-  const [equipes, setEquipes] = useState<OrgUnit[]>([]);
+  const [teams, setTeams] = useState<OrgUnit[]>([]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -67,11 +67,11 @@ export default function TeamOnboardingModal() {
   // Fetch teams when GMR changes
   useEffect(() => {
     if (!gmrId) {
-      setEquipes([]);
+      setTeams([]);
       return;
     }
     fetchTeams(gmrId)
-      .then(setEquipes)
+      .then(setTeams)
       .catch(console.error);
   }, [gmrId]);
 
@@ -84,8 +84,8 @@ export default function TeamOnboardingModal() {
     setCentreName("");
     setGmrId("");
     setGmrName("");
-    setEquipeId("");
-    setEquipeName("");
+    setTeamId("");
+    setTeamName("");
   };
 
   const handleCentreChange = (value: string) => {
@@ -95,8 +95,8 @@ export default function TeamOnboardingModal() {
     // Reset downstream
     setGmrId("");
     setGmrName("");
-    setEquipeId("");
-    setEquipeName("");
+    setTeamId("");
+    setTeamName("");
   };
 
   const handleGmrChange = (value: string) => {
@@ -104,18 +104,18 @@ export default function TeamOnboardingModal() {
     setGmrId(value);
     setGmrName(found?.name || "");
     // Reset downstream
-    setEquipeId("");
-    setEquipeName("");
+    setTeamId("");
+    setTeamName("");
   };
 
-  const handleEquipeChange = (value: string) => {
-    const found = equipes.find((e) => e.id === value);
-    setEquipeId(value);
-    setEquipeName(found?.name || "");
+  const handleTeamChange = (value: string) => {
+    const found = teams.find((e) => e.id === value);
+    setTeamId(value);
+    setTeamName(found?.name || "");
   };
 
   const isFormValid =
-    directionId && centreId && gmrId && equipeId;
+    directionId && centreId && gmrId && teamId;
 
   const handleValidate = async () => {
     if (!isFormValid) return;
@@ -128,8 +128,8 @@ export default function TeamOnboardingModal() {
         centre: centreName,
         gmrId,
         gmr: gmrName,
-        equipeId,
-        equipe: equipeName,
+        teamId,
+        team: teamName,
       };
       await updateTeamInfo(teamInfo);
     } catch (err) {
@@ -202,15 +202,15 @@ export default function TeamOnboardingModal() {
 
         {gmrId && (
           <Select
-            id="equipe"
+            id="team"
             label="Equipe"
-            value={equipeId}
-            onChange={handleEquipeChange}
-            options={toOptions(equipes)}
+            value={teamId}
+            onChange={handleTeamChange}
+            options={toOptions(teams)}
             required
             showResetButton
-            onClear={() => handleEquipeChange("")}
-            data-testid="select-equipe"
+            onClear={() => handleTeamChange("")}
+            data-testid="select-team"
           />
         )}
       </div>

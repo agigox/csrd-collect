@@ -32,6 +32,8 @@ const Declarations = () => {
   const searchParams = useSearchParams();
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
+  const teamInfo = useAuthStore((state) => state.teamInfo);
   const {
     declarations,
     updateDeclaration,
@@ -113,9 +115,9 @@ const Declarations = () => {
         formTemplateId: selectedForm.id,
         reference: `DECL-TEMP-${Date.now()}`,
         location: "",
-        authorId: "current-user",
-        authorName: "Utilisateur actuel",
-        teamId: "current-team",
+        authorId: user?.nni || user?.id || "",
+        authorName: `${user?.prenom ?? ""} ${user?.nom ?? ""}`.trim(),
+        teamId: teamInfo?.teamId || "",
         description: selectedForm.description || "",
         status: "draft",
         formData: initialFormData,

@@ -20,8 +20,8 @@ export interface TeamInfo {
   centre: string;
   gmrId: string;
   gmr: string;
-  equipeId: string;
-  equipe: string;
+  teamId: string;
+  team: string;
 }
 
 export interface RegisterData {

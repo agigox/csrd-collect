@@ -15,8 +15,8 @@
         "centre": "Centre de Maintenance Lyon",
         "gmrId": "01faa66f-a7b8-40c9-8504-01dcac1f6604",
         "gmr": "GMR Lyon Est",
-        "equipeId": "aefd34e5-157f-4def-b1ff-434ca5dfdf18",
-        "equipe": "Équipe Alpha"
+        "teamId": "aefd34e5-157f-4def-b1ff-434ca5dfdf18",
+        "team": "Équipe Alpha"
       }
     },
     {
@@ -63,8 +63,8 @@
         "centre": "Centre Lyon",
         "gmrId": "dd1cee4c-1f37-408c-a5be-be20cb0ae32e",
         "gmr": "GMR Lyon Est",
-        "equipeId": "68ef1919-d839-48ae-8839-859ad5c76b15",
-        "equipe": "Equipe Alpha"
+        "teamId": "68ef1919-d839-48ae-8839-859ad5c76b15",
+        "team": "Equipe Alpha"
       }
     },
     {
