@@ -33,7 +33,7 @@ const Declarations = () => {
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
-  const teamInfo = useAuthStore((state) => state.teamInfo);
+  const team = useAuthStore((state) => state.team);
   const {
     declarations,
     updateDeclaration,
@@ -117,7 +117,7 @@ const Declarations = () => {
         location: "",
         authorId: user?.nni || user?.id || "",
         authorName: `${user?.prenom ?? ""} ${user?.nom ?? ""}`.trim(),
-        teamId: teamInfo?.teamId || "",
+        teamId: team?.teamId || "",
         description: selectedForm.description || "",
         status: "draft",
         formData: initialFormData,

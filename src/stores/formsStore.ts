@@ -59,8 +59,8 @@ export const useFormsStore = create<FormsState>()(
           if (field) {
             // Walk up to the root ancestor
             let root = field;
-            while (root.parentFieldId) {
-              const parent = schema.find((f) => f.id === root.parentFieldId);
+            while (root.branchingInfo?.parentFieldId) {
+              const parent = schema.find((f) => f.id === root.branchingInfo!.parentFieldId);
               if (!parent) break;
               root = parent;
             }

@@ -53,7 +53,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   const [mounted, setMounted] = useState(false);
   const { width } = useBreakpoint();
   const user = useAuthStore((s) => s.user);
-  const teamInfo = useAuthStore((s) => s.teamInfo);
+  const team = useAuthStore((s) => s.team);
   const logout = useAuthStore((s) => s.logout);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
@@ -70,12 +70,12 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       : undefined;
 
   const teamData =
-    !isAdmin && teamInfo
+    !isAdmin && team
       ? [
-          { label: "Direction", value: teamInfo.direction },
-          { label: "Centre", value: teamInfo.centre },
-          { label: "GMR", value: teamInfo.gmr },
-          { label: "Équipe", value: teamInfo.team },
+          { label: "Direction", value: team.direction },
+          { label: "Centre", value: team.centre },
+          { label: "GMR", value: team.gmr },
+          { label: "Équipe", value: team.team },
         ]
       : undefined;
 

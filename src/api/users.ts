@@ -51,7 +51,7 @@ export async function registerUser(data: RegisterData): Promise<User> {
     password: data.password,
     ...(isNni ? { nni: data.nniOrEmail } : { email: data.nniOrEmail }),
     ...(data.role === "member"
-      ? { teamInfo: null }
+      ? { team: null }
       : { status: "pending" as const }),
   };
 
@@ -70,14 +70,14 @@ export async function registerUser(data: RegisterData): Promise<User> {
   return userWithoutPassword;
 }
 
-export async function patchUserTeamInfo(
+export async function patchUserTeam(
   id: string,
-  teamInfo: User["teamInfo"],
+  team: User["team"],
 ): Promise<User> {
   const response = await fetch(`${API_BASE_URL}/users/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ teamInfo }),
+    body: JSON.stringify({ team }),
   });
 
   if (!response.ok) {

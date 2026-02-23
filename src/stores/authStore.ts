@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import type { User, RegisterData } from "@/models/User";
-import type { TeamInfo } from "@/models/User";
+import type { Team } from "@/models/User";
 import {
   loginUser,
   registerUser,
-  patchUserTeamInfo,
+  patchUserTeam,
   fetchUserById,
 } from "@/api/users";
 
@@ -17,14 +17,14 @@ interface AuthState {
   error: string | null;
 
   // Backward-compatible field
-  teamInfo: TeamInfo | null;
+  team: Team | null;
 
   // Actions
   login: (nniOrEmail: string, password: string) => Promise<void>;
   register: (data: RegisterData) => Promise<User>;
   logout: () => void;
   refreshUser: () => Promise<void>;
-  updateTeamInfo: (teamInfo: TeamInfo) => Promise<void>;
+  updateTeam: (team: Team) => Promise<void>;
   setLoading: (loading: boolean) => void;
   clearError: () => void;
 }
@@ -33,7 +33,7 @@ interface AuthState {
 interface PersistedAuthState {
   user: User | null;
   isAuthenticated: boolean;
-  teamInfo: TeamInfo | null;
+  team: Team | null;
 }
 
 // Computed selectors (use outside the store via useAuthStore(selectX))
@@ -44,7 +44,7 @@ export const selectIsMember = (state: AuthState) =>
 export const selectIsPendingApproval = (state: AuthState) =>
   state.user?.role === "admin" && state.user?.status === "pending";
 export const selectNeedsTeamOnboarding = (state: AuthState) =>
-  state.user?.role === "member" && !state.user?.teamInfo;
+  state.user?.role === "member" && !state.user?.team;
 
 export const useAuthStore = create<AuthState>()(
   devtools(
@@ -54,7 +54,7 @@ export const useAuthStore = create<AuthState>()(
         isAuthenticated: false,
         isLoading: true,
         error: null,
-        teamInfo: null,
+        team: null,
 
         login: async (nniOrEmail: string, password: string) => {
           set({ isLoading: true, error: null }, false, "AUTH/LOGIN_START");
@@ -66,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
                 isAuthenticated: true,
                 isLoading: false,
                 error: null,
-                teamInfo: user.teamInfo ?? null,
+                team: user.team ?? null,
               },
               false,
               "AUTH/LOGIN_SUCCESS"
@@ -113,7 +113,7 @@ export const useAuthStore = create<AuthState>()(
           set(
             {
               user: null,
-              teamInfo: null,
+              team: null,
               isAuthenticated: false,
               error: null,
             },
@@ -130,7 +130,7 @@ export const useAuthStore = create<AuthState>()(
             set(
               {
                 user: freshUser,
-                teamInfo: freshUser.teamInfo ?? null,
+                team: freshUser.team ?? null,
               },
               false,
               "AUTH/REFRESH_USER"
@@ -140,18 +140,18 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        updateTeamInfo: async (teamInfo: TeamInfo) => {
+        updateTeam: async (team: Team) => {
           const { user } = get();
           if (!user) throw new Error("Utilisateur non connecté");
 
-          await patchUserTeamInfo(user.id, teamInfo);
+          await patchUserTeam(user.id, team);
           set(
             {
-              user: { ...user, teamInfo },
-              teamInfo,
+              user: { ...user, team },
+              team,
             },
             false,
-            "AUTH/UPDATE_TEAM_INFO"
+            "AUTH/UPDATE_TEAM"
           );
         },
 
@@ -163,21 +163,31 @@ export const useAuthStore = create<AuthState>()(
       }),
       {
         name: "csrd_auth",
-        version: 1,
+        version: 2,
         migrate: (persistedState, version): PersistedAuthState => {
           const state = persistedState as Record<string, unknown>;
           if (version === 0) {
             // Migration from v0: add user field from existing teamInfo
+            const teamInfo = state.teamInfo as Team | null;
             return {
               user: state.isAuthenticated
                 ? {
                     id: "migrated",
                     role: "member" as const,
-                    teamInfo: (state.teamInfo as TeamInfo) ?? null,
+                    team: teamInfo ?? null,
                   }
                 : null,
               isAuthenticated: !!state.isAuthenticated,
-              teamInfo: (state.teamInfo as TeamInfo) ?? null,
+              team: teamInfo ?? null,
+            };
+          }
+          if (version === 1) {
+            // Migration from v1: rename teamInfo → team
+            const teamInfo = state.teamInfo as Team | null;
+            return {
+              user: state.user as User | null,
+              isAuthenticated: !!state.isAuthenticated,
+              team: teamInfo ?? null,
             };
           }
           return state as unknown as PersistedAuthState;
@@ -185,11 +195,11 @@ export const useAuthStore = create<AuthState>()(
         partialize: (state): PersistedAuthState => ({
           user: state.user,
           isAuthenticated: state.isAuthenticated,
-          teamInfo: state.teamInfo,
+          team: state.team,
         }),
         onRehydrateStorage: () => (state) => {
           if (state?.isAuthenticated && state?.user?.id) {
-            // Re-fetch user from server to get latest status/teamInfo
+            // Re-fetch user from server to get latest status/team
             state.refreshUser().finally(() => {
               state.setLoading(false);
             });

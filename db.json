@@ -8,7 +8,7 @@
       "prenom": "Julien",
       "role": "member",
       "password": "Abcdef1#ghijk!",
-      "teamInfo": {
+      "team": {
         "directionId": "7b071c25-c46b-4773-94bd-087594191394",
         "direction": "Direction Nord",
         "maintenanceCenterId": "b55f21b1-1916-4bff-a679-1f07cd5325c7",
@@ -47,7 +47,7 @@
       "email": "test@test.com",
       "password": "Abcdef1#ghijk!",
       "nni": "AB123",
-      "teamInfo": null
+      "team": null
     },
     {
       "id": "2faf",
@@ -56,7 +56,7 @@
       "role": "member",
       "password": "Test12&88",
       "email": "amin.tabou@gmail.com",
-      "teamInfo": {
+      "team": {
         "directionId": "65a51999-25a4-41e6-9c27-8dd13b4d5614",
         "direction": "Direction Nord",
         "maintenanceCenterId": "db07c867-6db3-47d7-b918-658de95788fb",
@@ -215,9 +215,11 @@
             "type": "number",
             "label": "Nombre",
             "placeholder": "",
-            "parentFieldId": "secteur",
-            "parentOptionValue": "option_1",
-            "branchingColor": "#7C3AED"
+            "branchingInfo": {
+              "parentFieldId": "secteur",
+              "parentOptionValue": "option_1",
+              "branchingColor": "#7C3AED"
+            }
           },
           {
             "id": "select_1",
@@ -226,9 +228,11 @@
             "label": "Liste déroulante",
             "options": [],
             "selectionMode": "single",
-            "parentFieldId": "secteur",
-            "parentOptionValue": "option_1",
-            "branchingColor": "#7C3AED"
+            "branchingInfo": {
+              "parentFieldId": "secteur",
+              "parentOptionValue": "option_1",
+              "branchingColor": "#7C3AED"
+            }
           },
           {
             "id": "radio_1",
@@ -249,9 +253,11 @@
                 "label": "Choix 3"
               }
             ],
-            "parentFieldId": "secteur",
-            "parentOptionValue": "option_1",
-            "branchingColor": "#7C3AED"
+            "branchingInfo": {
+              "parentFieldId": "secteur",
+              "parentOptionValue": "option_1",
+              "branchingColor": "#7C3AED"
+            }
           }
         ]
       },

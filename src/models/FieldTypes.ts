@@ -8,6 +8,12 @@ export type FieldType =
   | "checkbox"
   | "import";
 
+export interface BranchingInfo {
+  parentFieldId: string;
+  parentOptionValue: string;
+  branchingColor: string;
+}
+
 export interface BaseFieldConfig {
   id: string;
   name: string;
@@ -19,9 +25,7 @@ export interface BaseFieldConfig {
   description?: string;
   isDuplicate?: boolean;
   // Branching: child-side properties
-  parentFieldId?: string;
-  parentOptionValue?: string;
-  branchingColor?: string;
+  branchingInfo?: BranchingInfo;
 }
 
 export interface SelectOption {

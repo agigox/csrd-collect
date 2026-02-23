@@ -24,7 +24,7 @@ export function generateBranchingColor(existingColors: string[]): string {
  */
 export function getChildFieldIds(parentId: string, schema: FieldConfig[]): string[] {
   return schema
-    .filter((f) => f.parentFieldId === parentId)
+    .filter((f) => f.branchingInfo?.parentFieldId === parentId)
     .map((f) => f.id);
 }
 
@@ -69,13 +69,13 @@ export function getFieldDepth(
   visited: Set<string> = new Set(),
 ): number {
   const field = schema.find((f) => f.id === fieldId);
-  if (!field || !field.parentFieldId) return 0;
+  if (!field || !field.branchingInfo?.parentFieldId) return 0;
 
   // Prevent infinite recursion
   if (visited.has(fieldId)) return 0;
   visited.add(fieldId);
 
-  return 1 + getFieldDepth(field.parentFieldId, schema, visited);
+  return 1 + getFieldDepth(field.branchingInfo.parentFieldId, schema, visited);
 }
 
 /**
@@ -96,25 +96,25 @@ export function getFieldIdentifier(
   visited.add(fieldId);
 
   // Root field: calculate position among other root fields
-  if (!field.parentFieldId) {
-    const rootFields = schema.filter((f) => !f.parentFieldId);
+  if (!field.branchingInfo?.parentFieldId) {
+    const rootFields = schema.filter((f) => !f.branchingInfo?.parentFieldId);
     const position = rootFields.findIndex((f) => f.id === fieldId) + 1;
     return String(position);
   }
 
   // Child field: get parent identifier and append option index
-  const parent = schema.find((f) => f.id === field.parentFieldId);
+  const parent = schema.find((f) => f.id === field.branchingInfo!.parentFieldId);
   if (!parent || (parent.type !== "radio" && parent.type !== "checkbox")) {
     return "";
   }
 
-  const parentIdentifier = getFieldIdentifier(field.parentFieldId, schema, visited);
+  const parentIdentifier = getFieldIdentifier(field.branchingInfo.parentFieldId, schema, visited);
   if (!parentIdentifier) return "";
 
   // Find the option index
   const parentConfig = parent as { options?: { value: string }[] };
   const options = parentConfig.options ?? [];
-  const optionIndex = options.findIndex((o) => o.value === field.parentOptionValue);
+  const optionIndex = options.findIndex((o) => o.value === field.branchingInfo!.parentOptionValue);
 
   if (optionIndex === -1) return parentIdentifier;
 
@@ -129,19 +129,19 @@ export function isChildFieldVisible(
   values: Record<string, unknown>,
   schema: FieldConfig[],
 ): boolean {
-  if (!field.parentFieldId || !field.parentOptionValue) return true;
+  if (!field.branchingInfo?.parentFieldId || !field.branchingInfo?.parentOptionValue) return true;
 
-  const parent = schema.find((f) => f.id === field.parentFieldId);
+  const parent = schema.find((f) => f.id === field.branchingInfo!.parentFieldId);
   if (!parent) return false;
 
   const parentValue = values[parent.name];
 
   if (parent.type === "radio") {
-    return parentValue === field.parentOptionValue;
+    return parentValue === field.branchingInfo.parentOptionValue;
   }
 
   if (parent.type === "checkbox") {
-    return Array.isArray(parentValue) && parentValue.includes(field.parentOptionValue);
+    return Array.isArray(parentValue) && parentValue.includes(field.branchingInfo.parentOptionValue);
   }
 
   return false;
@@ -152,14 +152,14 @@ export function isChildFieldVisible(
  */
 export function regroupChildrenAfterReorder(schema: FieldConfig[]): FieldConfig[] {
   // Separate root fields (no parent) from children
-  const roots = schema.filter((f) => !f.parentFieldId);
+  const roots = schema.filter((f) => !f.branchingInfo?.parentFieldId);
   const childrenByParent = new Map<string, FieldConfig[]>();
 
   for (const field of schema) {
-    if (field.parentFieldId) {
-      const siblings = childrenByParent.get(field.parentFieldId) ?? [];
+    if (field.branchingInfo?.parentFieldId) {
+      const siblings = childrenByParent.get(field.branchingInfo.parentFieldId) ?? [];
       siblings.push(field);
-      childrenByParent.set(field.parentFieldId, siblings);
+      childrenByParent.set(field.branchingInfo.parentFieldId, siblings);
     }
   }
 
@@ -185,10 +185,10 @@ export function detachChildFromSchema(
   schema: FieldConfig[],
 ): FieldConfig[] {
   const field = schema.find((f) => f.id === fieldId);
-  if (!field || !field.parentFieldId) return schema;
+  if (!field || !field.branchingInfo?.parentFieldId) return schema;
 
-  const parentId = field.parentFieldId;
-  const parentOptionValue = field.parentOptionValue;
+  const parentId = field.branchingInfo.parentFieldId;
+  const parentOptionValue = field.branchingInfo.parentOptionValue;
 
   // Collect the field + its own descendants (its sub-tree)
   const ownDescendantIds = getAllDescendantIds(fieldId, schema);
@@ -198,9 +198,7 @@ export function detachChildFromSchema(
     if (f.id === fieldId) {
       // Strip branching child props
       const clone = { ...f };
-      delete clone.parentFieldId;
-      delete clone.parentOptionValue;
-      delete clone.branchingColor;
+      delete clone.branchingInfo;
       return clone;
     }
     return { ...f };
@@ -271,7 +269,7 @@ export function detachChildFromSchema(
 /**
  * Detach a parent field from all its direct children.
  * - Removes branchingEnabled, branching, branchingColors from parent
- * - Strips parentFieldId, parentOptionValue, branchingColor from direct children only
+ * - Strips branchingInfo from direct children only
  * - Grandchildren keep their links to their own direct parents (sub-trees stay intact)
  * - Schema order is preserved
  */
@@ -296,11 +294,9 @@ export function detachParentFromSchema(
       return clone as FieldConfig;
     }
     if (directChildIds.has(f.id)) {
-      // Strip parent link from direct children only
+      // Strip branchingInfo from direct children only
       const clone = { ...f };
-      delete clone.parentFieldId;
-      delete clone.parentOptionValue;
-      delete clone.branchingColor;
+      delete clone.branchingInfo;
       return clone;
     }
     return f;

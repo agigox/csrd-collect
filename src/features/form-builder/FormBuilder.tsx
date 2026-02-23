@@ -142,8 +142,8 @@ export const FormBuilder = ({
         for (const removedEntry of removedTypes) {
           const childToRemove = newSchema.find(
             (f) =>
-              f.parentFieldId === config.id &&
-              f.parentOptionValue === optionValue &&
+              f.branchingInfo?.parentFieldId === config.id &&
+              f.branchingInfo?.parentOptionValue === optionValue &&
               (f.id === removedEntry || f.type === removedEntry),
           );
           if (childToRemove) {
@@ -162,16 +162,18 @@ export const FormBuilder = ({
             addedType as FieldType,
             generateFieldName,
           );
-          childField.parentFieldId = config.id;
-          childField.parentOptionValue = optionValue;
-          childField.branchingColor = color;
+          childField.branchingInfo = {
+            parentFieldId: config.id,
+            parentOptionValue: optionValue,
+            branchingColor: color,
+          };
 
           // Insert right after the parent (or after last sibling)
           const parentIdx = newSchema.findIndex((f) => f.id === config.id);
           const siblings = newSchema.filter(
             (f) =>
-              f.parentFieldId === config.id &&
-              f.parentOptionValue === optionValue,
+              f.branchingInfo?.parentFieldId === config.id &&
+              f.branchingInfo?.parentOptionValue === optionValue,
           );
           const lastSiblingIdx =
             siblings.length > 0
@@ -232,24 +234,24 @@ export const FormBuilder = ({
     }
 
     // If field is a child, clean up parent's branching
-    if (field.parentFieldId) {
+    if (field.branchingInfo?.parentFieldId) {
       const parentIdx = newSchema.findIndex(
-        (f) => f.id === field.parentFieldId,
+        (f) => f.id === field.branchingInfo!.parentFieldId,
       );
       if (parentIdx >= 0) {
         const parent = newSchema[parentIdx] as
           | RadioFieldConfig
           | CheckboxFieldConfig;
-        if (parent.branching && field.parentOptionValue) {
+        if (parent.branching && field.branchingInfo.parentOptionValue) {
           const newBranching = { ...parent.branching };
-          const optionFields = newBranching[field.parentOptionValue] ?? [];
-          newBranching[field.parentOptionValue] = optionFields.filter(
+          const optionFields = newBranching[field.branchingInfo.parentOptionValue] ?? [];
+          newBranching[field.branchingInfo.parentOptionValue] = optionFields.filter(
             (id) => id !== field.id,
           );
-          if (newBranching[field.parentOptionValue].length === 0) {
-            delete newBranching[field.parentOptionValue];
+          if (newBranching[field.branchingInfo.parentOptionValue].length === 0) {
+            delete newBranching[field.branchingInfo.parentOptionValue];
             const newBranchingColors = { ...(parent.branchingColors ?? {}) };
-            delete newBranchingColors[field.parentOptionValue];
+            delete newBranchingColors[field.branchingInfo.parentOptionValue];
             newSchema[parentIdx] = {
               ...parent,
               branching: newBranching,
@@ -322,8 +324,11 @@ export const FormBuilder = ({
 
     // Remap references
     for (const cloned of clonedFields) {
-      if (cloned.parentFieldId && idMap.has(cloned.parentFieldId)) {
-        cloned.parentFieldId = idMap.get(cloned.parentFieldId)!;
+      if (cloned.branchingInfo?.parentFieldId && idMap.has(cloned.branchingInfo.parentFieldId)) {
+        cloned.branchingInfo = {
+          ...cloned.branchingInfo,
+          parentFieldId: idMap.get(cloned.branchingInfo.parentFieldId)!,
+        };
       }
       if (
         (cloned.type === "radio" || cloned.type === "checkbox") &&
@@ -358,14 +363,14 @@ export const FormBuilder = ({
     const field = schema[index];
 
     // Don't move child fields independently
-    if (field.parentFieldId) return;
+    if (field.branchingInfo?.parentFieldId) return;
 
     const descendantIds = getAllDescendantIds(field.id, schema);
     const groupSize = 1 + descendantIds.length;
 
     // Find the field above the group
     const fieldAbove = schema[index - 1];
-    if (fieldAbove.parentFieldId) return; // Can't swap into another group
+    if (fieldAbove.branchingInfo?.parentFieldId) return; // Can't swap into another group
 
     const newSchema = [...schema];
     // Move the group up by 1
@@ -378,7 +383,7 @@ export const FormBuilder = ({
     const field = schema[index];
 
     // Don't move child fields independently
-    if (field.parentFieldId) return;
+    if (field.branchingInfo?.parentFieldId) return;
 
     const descendantIds = getAllDescendantIds(field.id, schema);
     const groupSize = 1 + descendantIds.length;
@@ -388,7 +393,7 @@ export const FormBuilder = ({
 
     // Find the field below the group
     const fieldBelow = schema[groupEnd];
-    if (fieldBelow.parentFieldId) return;
+    if (fieldBelow.branchingInfo?.parentFieldId) return;
 
     const belowDescendants = getAllDescendantIds(fieldBelow.id, schema);
     const belowGroupSize = 1 + belowDescendants.length;
@@ -415,7 +420,7 @@ export const FormBuilder = ({
     const field = schema.find((f) => f.id === fieldId);
     if (!field) return;
 
-    const isChild = !!field.parentFieldId;
+    const isChild = !!field.branchingInfo?.parentFieldId;
     let newSchema: FieldConfig[];
 
     if (isChild) {
@@ -528,14 +533,14 @@ export const FormBuilder = ({
 
   // Compute branching number for child fields (= option index in parent)
   const getBranchingNumber = (field: FieldConfig): number => {
-    if (!field.parentFieldId || !field.parentOptionValue) return 0;
-    const parent = schema.find((f) => f.id === field.parentFieldId);
+    if (!field.branchingInfo?.parentFieldId || !field.branchingInfo?.parentOptionValue) return 0;
+    const parent = schema.find((f) => f.id === field.branchingInfo!.parentFieldId);
     if (!parent || (parent.type !== "radio" && parent.type !== "checkbox"))
       return 0;
     const parentConfig = parent as RadioFieldConfig | CheckboxFieldConfig;
     const options = parentConfig.options ?? [];
     const optionIndex = options.findIndex(
-      (o) => o.value === field.parentOptionValue,
+      (o) => o.value === field.branchingInfo!.parentOptionValue,
     );
     return optionIndex + 1;
   };
@@ -571,8 +576,8 @@ export const FormBuilder = ({
               : null;
             // Walk up to root ancestor for insert button placement
             let rootAncestor = primaryField;
-            while (rootAncestor?.parentFieldId) {
-              const parent = schema.find((f) => f.id === rootAncestor!.parentFieldId);
+            while (rootAncestor?.branchingInfo?.parentFieldId) {
+              const parent = schema.find((f) => f.id === rootAncestor!.branchingInfo!.parentFieldId);
               if (!parent) break;
               rootAncestor = parent;
             }
@@ -591,7 +596,7 @@ export const FormBuilder = ({
 
             return schema.map((fieldConfig, index) => {
               const isActive = activeFieldNames.includes(fieldConfig.name);
-              const isChildField = !!fieldConfig.parentFieldId;
+              const isChildField = !!fieldConfig.branchingInfo?.parentFieldId;
               const depth = getFieldDepth(fieldConfig.id, schema);
               const fieldIdentifier = getFieldIdentifier(fieldConfig.id, schema);
 
@@ -624,7 +629,7 @@ export const FormBuilder = ({
                     handleBranchingCleanup(fieldConfig.id)
                   }
                   isChildField={isChildField}
-                  branchingColor={fieldConfig.branchingColor}
+                  branchingColor={fieldConfig.branchingInfo?.branchingColor}
                   branchingNumber={getBranchingNumber(fieldConfig)}
                   fieldIdentifier={fieldIdentifier}
                   depth={depth}

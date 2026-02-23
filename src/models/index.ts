@@ -10,7 +10,7 @@ export type {
   ModificationEntry,
 } from "./Declaration";
 
-export type { TeamInfo } from "./TeamInfo";
+export type { Team } from "./Team";
 
 export type {
   User,

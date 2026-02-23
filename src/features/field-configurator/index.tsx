@@ -93,9 +93,7 @@ export const FieldConfigurator = ({
       label: config.label,
       required: config.required,
       description: config.description,
-      parentFieldId: config.parentFieldId,
-      parentOptionValue: config.parentOptionValue,
-      branchingColor: config.branchingColor,
+      branchingInfo: config.branchingInfo,
       ...registration?.defaultConfig,
     };
 
@@ -158,15 +156,15 @@ export const FieldConfigurator = ({
 
   // Compute detach button visibility and context
   const hasChildren =
-    !!schema && schema.some((f) => f.parentFieldId === config.id);
+    !!schema && schema.some((f) => f.branchingInfo?.parentFieldId === config.id);
   const showDetachButton =
     !!isChildField || (branchingEnabled && hasChildren);
   const isDetachingParent = !isChildField;
   const detachParentLabel = isChildField
-    ? schema?.find((f) => f.id === config.parentFieldId)?.label
+    ? schema?.find((f) => f.id === config.branchingInfo?.parentFieldId)?.label
     : undefined;
   const detachChildCount = isDetachingParent
-    ? schema?.filter((f) => f.parentFieldId === config.id).length
+    ? schema?.filter((f) => f.branchingInfo?.parentFieldId === config.id).length
     : undefined;
 
   const renderSpecificConfigurator = () => {

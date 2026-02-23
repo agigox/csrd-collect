@@ -33,7 +33,7 @@ export const DynamicForm = ({
       const changedField = schema.find((f) => f.name === fieldName);
       if (changedField) {
         for (const field of schema) {
-          if (field.parentFieldId === changedField.id) {
+          if (field.branchingInfo?.parentFieldId === changedField.id) {
             if (!isChildFieldVisible(field, newValues, schema)) {
               delete newValues[field.name];
             }
@@ -51,7 +51,7 @@ export const DynamicForm = ({
         <AnimatePresence mode="popLayout">
           {schema.map((fieldConfig) => {
             // Check visibility for child fields
-            if (fieldConfig.parentFieldId) {
+            if (fieldConfig.branchingInfo?.parentFieldId) {
               if (!isChildFieldVisible(fieldConfig, values, schema)) {
                 return null;
               }

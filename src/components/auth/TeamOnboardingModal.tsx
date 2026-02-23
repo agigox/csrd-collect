@@ -9,13 +9,13 @@ import {
   fetchGmrs,
   fetchTeams,
 } from "@/api/users";
-import type { OrgUnit, TeamInfo } from "@/models/User";
+import type { OrgUnit, Team } from "@/models/User";
 
 const toOptions = (items: OrgUnit[]) =>
   items.map((item) => ({ value: item.id, label: item.name }));
 
 export default function TeamOnboardingModal() {
-  const updateTeamInfo = useAuthStore((s) => s.updateTeamInfo);
+  const updateTeam = useAuthStore((s) => s.updateTeam);
 
   // Selections (id + label pairs)
   const [directionId, setDirectionId] = useState("");
@@ -121,7 +121,7 @@ export default function TeamOnboardingModal() {
     if (!isFormValid) return;
     setIsSubmitting(true);
     try {
-      const teamInfo: TeamInfo = {
+      const team: Team = {
         directionId,
         direction: directionName,
         maintenanceCenterId: centreId,
@@ -131,7 +131,7 @@ export default function TeamOnboardingModal() {
         teamId,
         team: teamName,
       };
-      await updateTeamInfo(teamInfo);
+      await updateTeam(team);
     } catch (err) {
       console.error("Erreur lors de la sauvegarde:", err);
     } finally {

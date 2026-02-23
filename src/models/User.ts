@@ -10,10 +10,10 @@ export interface User {
   role: UserRole;
   status?: UserStatus;
   password?: string;
-  teamInfo?: TeamInfo | null;
+  team?: Team | null;
 }
 
-export interface TeamInfo {
+export interface Team {
   directionId: string;
   direction: string;
   maintenanceCenterId: string;
