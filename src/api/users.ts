@@ -45,8 +45,8 @@ export async function registerUser(data: RegisterData): Promise<User> {
   const isNni = /^[A-Z0-9]{5}$/.test(data.nniOrEmail);
 
   const body: Record<string, unknown> = {
-    nom: data.nom || "",
-    prenom: data.prenom || "",
+    lastName: data.lastName || "",
+    firstName: data.firstName || "",
     role: data.role,
     password: data.password,
     ...(isNni ? { nni: data.nniOrEmail } : { email: data.nniOrEmail }),

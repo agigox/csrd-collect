@@ -5,8 +5,8 @@ export interface User {
   id: string;
   email?: string;
   nni?: string;
-  nom?: string;
-  prenom?: string;
+  lastName?: string;
+  firstName?: string;
   role: UserRole;
   status?: UserStatus;
   password?: string;
@@ -25,8 +25,8 @@ export interface Team {
 }
 
 export interface RegisterData {
-  nom?: string;
-  prenom?: string;
+  lastName?: string;
+  firstName?: string;
   nniOrEmail: string;
   password: string;
   role: UserRole;

@@ -9,8 +9,8 @@ import type { UserRole } from "@/models/User";
 export default function RegisterStep1Page() {
   const router = useRouter();
 
-  const [nom, setNom] = useState("");
-  const [prenom, setPrenom] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [nniOrEmail, setNniOrEmail] = useState("");
   const [role, setRole] = useState<UserRole>("member");
 
@@ -26,8 +26,8 @@ export default function RegisterStep1Page() {
     const params = new URLSearchParams();
     params.set("nniOrEmail", nniOrEmail);
     params.set("role", role);
-    if (nom) params.set("nom", nom);
-    if (prenom) params.set("prenom", prenom);
+    if (lastName) params.set("lastName", lastName);
+    if (firstName) params.set("firstName", firstName);
 
     router.push(`/register/password?${params.toString()}`);
   };
@@ -46,18 +46,18 @@ export default function RegisterStep1Page() {
 
       <div className="flex gap-2.5 w-full">
         <TextInput
-          id="nom"
+          id="lastName"
           label="Nom"
-          value={nom}
-          onChange={(value) => setNom(value)}
-          data-testid="input-nom"
+          value={lastName}
+          onChange={(value) => setLastName(value)}
+          data-testid="input-lastName"
         />
         <TextInput
-          id="prenom"
+          id="firstName"
           label="Prénom"
-          value={prenom}
-          onChange={(value) => setPrenom(value)}
-          data-testid="input-prenom"
+          value={firstName}
+          onChange={(value) => setFirstName(value)}
+          data-testid="input-firstName"
         />
       </div>
 

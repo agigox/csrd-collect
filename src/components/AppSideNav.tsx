@@ -65,8 +65,8 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   const headerConfig = isAdmin ? adminHeaderConfig : memberHeaderConfig;
 
   const profileName =
-    user?.prenom || user?.nom
-      ? `${user.prenom ?? ""} ${user.nom ?? ""}`.trim()
+    user?.firstName || user?.lastName
+      ? `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim()
       : undefined;
 
   const teamData =

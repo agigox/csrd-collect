@@ -1,6 +1,12 @@
 "use client";
 
-import { Button, Divider, IconButton, IconButtonToggle, Searchbar } from "@rte-ds/react";
+import {
+  Button,
+  Divider,
+  IconButton,
+  IconButtonToggle,
+  Searchbar,
+} from "@rte-ds/react";
 
 interface HeaderProps {
   onSearch?: () => void;

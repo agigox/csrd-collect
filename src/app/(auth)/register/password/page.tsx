@@ -18,8 +18,8 @@ function PasswordForm() {
 
   const nniOrEmail = searchParams.get("nniOrEmail") || "";
   const role = (searchParams.get("role") || "member") as UserRole;
-  const nom = searchParams.get("nom") || "";
-  const prenom = searchParams.get("prenom") || "";
+  const lastName = searchParams.get("lastName") || "";
+  const firstName = searchParams.get("firstName") || "";
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,8 +49,8 @@ function PasswordForm() {
         nniOrEmail,
         password,
         role,
-        nom: nom || undefined,
-        prenom: prenom || undefined,
+        lastName: lastName || undefined,
+        firstName: firstName || undefined,
       });
 
       // Redirect to login with success param

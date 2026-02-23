@@ -116,7 +116,7 @@ const Declarations = () => {
         reference: `DECL-TEMP-${Date.now()}`,
         location: "",
         authorId: user?.nni || user?.id || "",
-        authorName: `${user?.prenom ?? ""} ${user?.nom ?? ""}`.trim(),
+        authorName: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
         teamId: team?.teamId || "",
         description: selectedForm.description || "",
         status: "draft",
