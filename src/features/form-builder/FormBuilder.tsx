@@ -22,6 +22,7 @@ import {
   getChildFieldIds,
   generateBranchingColor,
   regroupChildrenAfterReorder,
+  sortChildrenByOptionIndex,
   getFieldDepth,
   getFieldIdentifier,
   detachChildFromSchema,
@@ -68,6 +69,10 @@ export const FormBuilder = ({
     setMounted(true);
   }, []);
 
+  const sortedOnChange = (newSchema: FieldConfig[]) => {
+    onChange(sortChildrenByOptionIndex(newSchema));
+  };
+
   const generateFieldName = (type: FieldType) => {
     const existingNames = schema.map((f) => f.name);
     let counter = 1;
@@ -85,9 +90,9 @@ export const FormBuilder = ({
     if (insertAtIndex !== undefined) {
       const newSchema = [...schema];
       newSchema.splice(insertAtIndex, 0, newField);
-      onChange(newSchema);
+      sortedOnChange(newSchema);
     } else {
-      onChange([...schema, newField]);
+      sortedOnChange([...schema, newField]);
     }
     setActiveFieldName(newField.name, schema);
     setPopoverOpen(false);
@@ -212,7 +217,7 @@ export const FormBuilder = ({
       }
     }
 
-    onChange(newSchema);
+    sortedOnChange(newSchema);
 
     // Recalculate active fields so new children are auto-opened with their parent
     if (primaryActiveFieldName) {
@@ -264,7 +269,7 @@ export const FormBuilder = ({
       }
     }
 
-    onChange(newSchema);
+    sortedOnChange(newSchema);
   };
 
   const handleDuplicateField = (index: number) => {
@@ -282,7 +287,7 @@ export const FormBuilder = ({
       };
       const newSchema = [...schema];
       newSchema.splice(index + 1, 0, duplicatedField);
-      onChange(newSchema);
+      sortedOnChange(newSchema);
       setActiveFieldName(duplicatedField.name, newSchema);
       return;
     }
@@ -354,7 +359,7 @@ export const FormBuilder = ({
     );
     const newSchema = [...schema];
     newSchema.splice(lastOriginalIdx + 1, 0, ...clonedFields);
-    onChange(newSchema);
+    sortedOnChange(newSchema);
     setActiveFieldName(clonedFields[0].name, newSchema);
   };
 
@@ -376,7 +381,7 @@ export const FormBuilder = ({
     // Move the group up by 1
     const group = newSchema.splice(index, groupSize);
     newSchema.splice(index - 1, 0, ...group);
-    onChange(newSchema);
+    sortedOnChange(newSchema);
   };
 
   const handleMoveDown = (index: number) => {
@@ -401,11 +406,11 @@ export const FormBuilder = ({
     const newSchema = [...schema];
     const group = newSchema.splice(index, groupSize);
     newSchema.splice(index + belowGroupSize, 0, ...group);
-    onChange(newSchema);
+    sortedOnChange(newSchema);
   };
 
   const handleReorder = (reordered: FieldConfig[]) => {
-    onChange(regroupChildrenAfterReorder(reordered));
+    sortedOnChange(regroupChildrenAfterReorder(reordered));
   };
 
   const handleBranchingCleanup = (fieldId: string) => {
@@ -413,7 +418,7 @@ export const FormBuilder = ({
     if (descendantIds.length === 0) return;
     const idsToRemove = new Set(descendantIds);
     const newSchema = schema.filter((f) => !idsToRemove.has(f.id));
-    onChange(newSchema);
+    sortedOnChange(newSchema);
   };
 
   const handleDetachField = (fieldId: string) => {
@@ -429,7 +434,7 @@ export const FormBuilder = ({
       newSchema = detachParentFromSchema(fieldId, schema);
     }
 
-    onChange(newSchema);
+    sortedOnChange(newSchema);
     setActiveFieldName(field.name, newSchema);
   };
 

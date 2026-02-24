@@ -148,30 +148,78 @@ export function isChildFieldVisible(
 }
 
 /**
- * After a drag-and-drop reorder, regroup children right after their parent.
+ * Sort children by their parent's option index, recursively at every depth level.
+ * Root fields keep their original relative order. Children of the same parent are
+ * sorted by the index of their parentOptionValue in the parent's options array.
+ * Children sharing the same option preserve their insertion order (stable sort).
  */
-export function regroupChildrenAfterReorder(schema: FieldConfig[]): FieldConfig[] {
-  // Separate root fields (no parent) from children
-  const roots = schema.filter((f) => !f.branchingInfo?.parentFieldId);
-  const childrenByParent = new Map<string, FieldConfig[]>();
+export function sortChildrenByOptionIndex(schema: FieldConfig[]): FieldConfig[] {
+  if (schema.length === 0) return schema;
 
-  for (const field of schema) {
-    if (field.branchingInfo?.parentFieldId) {
-      const siblings = childrenByParent.get(field.branchingInfo.parentFieldId) ?? [];
-      siblings.push(field);
-      childrenByParent.set(field.branchingInfo.parentFieldId, siblings);
+  // Index fields by ID for O(1) lookup
+  const byId = new Map<string, FieldConfig>();
+  for (const f of schema) byId.set(f.id, f);
+
+  // Group children by parentFieldId (preserving insertion order)
+  const childrenByParent = new Map<string, FieldConfig[]>();
+  let hasChildren = false;
+  for (const f of schema) {
+    if (f.branchingInfo?.parentFieldId) {
+      hasChildren = true;
+      const siblings = childrenByParent.get(f.branchingInfo.parentFieldId) ?? [];
+      siblings.push(f);
+      childrenByParent.set(f.branchingInfo.parentFieldId, siblings);
     }
   }
 
-  // Rebuild: for each root, insert it then its children
+  // Fast path: no children at all — return as-is
+  if (!hasChildren) return schema;
+
+  // Sort each parent's children by option index
+  for (const [parentId, children] of childrenByParent) {
+    const parent = byId.get(parentId);
+    if (!parent || (parent.type !== "radio" && parent.type !== "checkbox")) continue;
+    const options = (parent as { options?: { value: string }[] }).options ?? [];
+
+    children.sort((a, b) => {
+      const ai = options.findIndex((o) => o.value === a.branchingInfo!.parentOptionValue);
+      const bi = options.findIndex((o) => o.value === b.branchingInfo!.parentOptionValue);
+      return ai - bi;
+    });
+  }
+
+  // Recursively flatten: root -> sorted children -> each child's sorted sub-tree
+  const visited = new Set<string>();
   const result: FieldConfig[] = [];
-  for (const root of roots) {
-    result.push(root);
-    const children = childrenByParent.get(root.id) ?? [];
-    result.push(...children);
+
+  const emitSubTree = (field: FieldConfig) => {
+    if (visited.has(field.id)) return;
+    visited.add(field.id);
+    result.push(field);
+    const children = childrenByParent.get(field.id);
+    if (children) {
+      for (const child of children) emitSubTree(child);
+    }
+  };
+
+  // Emit roots in their original order
+  for (const f of schema) {
+    if (!f.branchingInfo?.parentFieldId) emitSubTree(f);
+  }
+
+  // Safety: append any orphan fields not visited
+  for (const f of schema) {
+    if (!visited.has(f.id)) result.push(f);
   }
 
   return result;
+}
+
+/**
+ * After a drag-and-drop reorder, regroup children right after their parent.
+ */
+export function regroupChildrenAfterReorder(schema: FieldConfig[]): FieldConfig[] {
+  return sortChildrenByOptionIndex(schema);
 }
 
 /**
