@@ -52,7 +52,7 @@ const ModificationHistory = ({
             <Icon name="close" size={20} color="#201f1f" />
           </button>
         </div>
-        <Divider className="bg-[#cdcccc]" />
+        <Divider />
       </div>
 
       {/* Timeline */}

@@ -255,7 +255,6 @@ export const FieldConfigurator = ({
           <LabelField
             value={config.label}
             onChange={() => {}}
-            isDuplicate={config.isDuplicate}
             fieldType={config.type}
             collapsedActions={{
               onMoveUp,

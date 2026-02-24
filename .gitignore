@@ -56,5 +56,3 @@ _specs/
 .github/
 .vscode/
 docs/
-e2e-tests/
-playwright.config.ts

@@ -16,7 +16,6 @@ export const TextConfigurator = ({
       <LabelField
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
-        isDuplicate={config.isDuplicate}
         className="flex-1 w-full"
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}

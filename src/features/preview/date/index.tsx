@@ -190,7 +190,6 @@ const DateField = ({
               onSelect={readOnly ? undefined : handleSelectDate}
               defaultMonth={dateObj || getDefaultDate()}
               locale={fr}
-              readOnly={readOnly}
             />
 
             {/* Time selector - only shown if includeTime is true */}

@@ -124,7 +124,6 @@ export const CheckboxConfigurator = ({
       <LabelField
         value={config.label}
         onChange={(label) => onChange({ ...config, label, isDuplicate: false })}
-        isDuplicate={config.isDuplicate}
         fieldType={config.type}
         onFieldTypeChange={onFieldTypeChange}
         fieldIdentifier={fieldIdentifier}
