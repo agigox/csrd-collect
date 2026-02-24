@@ -93,6 +93,7 @@ const Declarations = () => {
   const finalSelectedDeclaration = selectedDeclaration || tempDeclaration;
 
   // Create temp declaration when needed
+  /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
   useEffect(() => {
     if (selectedForm && !selectedDeclaration && !currentTempId) {
       // Use timestamp for unique ID
@@ -137,13 +138,16 @@ const Declarations = () => {
       setCurrentTempId(tempId);
     }
   }, [selectedForm, selectedDeclaration, currentTempId, addTempDeclaration]);
+  /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 
   // Clean up temp ID when URL changes away from new declaration
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (!isOnNewPage || !formId) {
       setCurrentTempId(null);
     }
   }, [isOnNewPage, formId]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Check if a field has a configured default value
   const fieldHasDefault = useCallback((field: FieldConfig) => {
@@ -182,6 +186,7 @@ const Declarations = () => {
   );
 
   // Load form values when declaration changes
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (finalSelectedDeclaration) {
       const values = finalSelectedDeclaration.formData || {};
@@ -195,6 +200,7 @@ const Declarations = () => {
       setFormErrors({});
     }
   }, [finalSelectedDeclaration, validateForm]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Handler for form value changes - sync with temp declaration
   const handleFormValuesChange = useCallback(

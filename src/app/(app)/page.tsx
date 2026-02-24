@@ -26,7 +26,7 @@ export default function LandingPage() {
         </p>
         <div className="pt-8">
           <p className="text-sm text-muted-foreground">
-            Veuillez vous authentifier pour accéder à l'application
+            Veuillez vous authentifier pour accéder à l&apos;application
           </p>
         </div>
       </div>
