@@ -21,7 +21,7 @@ const slides = [
   },
 ];
 
-const AUTOPLAY_INTERVAL = 3000;
+const AUTOPLAY_INTERVAL = 4000;
 
 export default function AuthCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);

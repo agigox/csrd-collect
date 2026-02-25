@@ -73,7 +73,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     !isAdmin && team
       ? [
           { label: "Direction", value: team.direction },
-          { label: "Centre", value: team.centre },
+          { label: "CM", value: team.centre },
           { label: "GMR", value: team.gmr },
           { label: "Équipe", value: team.team },
         ]

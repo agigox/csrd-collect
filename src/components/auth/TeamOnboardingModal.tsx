@@ -167,7 +167,7 @@ export default function TeamOnboardingModal() {
         {directionId && (
           <Select
             id="centre"
-            label="Centre maintenance"
+            label="Département/CM"
             value={centreId}
             onChange={handleCentreChange}
             options={toOptions(centres)}
@@ -182,7 +182,7 @@ export default function TeamOnboardingModal() {
         {centreId && (
           <Select
             id="gmr"
-            label="GMR"
+            label="Service/GMR"
             value={gmrId}
             onChange={handleGmrChange}
             options={toOptions(gmrsList)}

@@ -4,11 +4,30 @@ import { Card, Divider, Button, Chip } from "@rte-ds/react";
 
 type FormCardStatus = "draft" | "published" | "validated" | "deleted";
 
-const statusConfig: Record<FormCardStatus, { label: string; backgroundColor: string }> = {
-  draft: { label: "Draft", backgroundColor: "var(--decorative-jaune-ocre)" },
-  published: { label: "Publie", backgroundColor: "var(--decorative-bleu-rte)" },
-  validated: { label: "Valide", backgroundColor: "var(--decorative-vert-digital)" },
-  deleted: { label: "Supprime", backgroundColor: "var(--decorative-rose-digital)" },
+const statusConfig: Record<
+  FormCardStatus,
+  { label: string; backgroundColor: string; icon?: string }
+> = {
+  draft: {
+    label: "Draft",
+    backgroundColor: "var(--decorative-jaune-ocre)",
+    icon: "sticky-note",
+  },
+  published: {
+    label: "Publié",
+    backgroundColor: "var(--decorative-bleu-rte)",
+    icon: "sticky-note-valide",
+  },
+  validated: {
+    label: "Validé",
+    backgroundColor: "var(--decorative-vert-digital)",
+    icon: "check-circle",
+  },
+  deleted: {
+    label: "Supprimé",
+    backgroundColor: "var(--decorative-rose-digital)",
+    icon: "delete",
+  },
 };
 
 interface FormCardProps {
@@ -61,7 +80,7 @@ export const FormCard = ({
 
         {/* Middle: Description */}
         <div className="flex-1 min-w-0 pl-2.5">
-          <p className="text-sm font-normal text-[#11161a] leading-[18px] line-clamp-2">
+          <p className="text-sm font-normal text-[#11161a] leading-4.5 line-clamp-2">
             {description}
           </p>
         </div>
@@ -76,14 +95,17 @@ export const FormCard = ({
         </div>
 
         {/* Right: Status + Publish action */}
-        <div className="flex flex-col items-end justify-center gap-1.5 pl-2.5 w-20 shrink-0">
+        <div className="flex flex-col items-end justify-center gap-1.5 pl-2.5 w-21 shrink-0">
           <Chip
             id={`status-${code}`}
             label={chipConfig.label}
+            icon={chipConfig.icon}
             clickable={false}
+            size="s"
             style={{
               background: chipConfig.backgroundColor,
               color: "var(--content-primary)",
+              width: "100%",
             }}
           />
           {status === "draft" && (
@@ -95,6 +117,7 @@ export const FormCard = ({
                 e.stopPropagation();
                 onPublish?.();
               }}
+              style={{ width: "100%" }}
             />
           )}
         </div>
