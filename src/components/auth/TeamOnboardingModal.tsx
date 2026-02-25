@@ -37,9 +37,7 @@ export default function TeamOnboardingModal() {
 
   // Fetch directions on mount
   useEffect(() => {
-    fetchDirections()
-      .then(setDirections)
-      .catch(console.error);
+    fetchDirections().then(setDirections).catch(console.error);
   }, []);
 
   // Fetch centres when direction changes
@@ -48,9 +46,7 @@ export default function TeamOnboardingModal() {
       setCentres([]);
       return;
     }
-    fetchMaintenanceCenters(directionId)
-      .then(setCentres)
-      .catch(console.error);
+    fetchMaintenanceCenters(directionId).then(setCentres).catch(console.error);
   }, [directionId]);
 
   // Fetch GMRs when centre changes
@@ -59,9 +55,7 @@ export default function TeamOnboardingModal() {
       setGmrsList([]);
       return;
     }
-    fetchGmrs(centreId)
-      .then(setGmrsList)
-      .catch(console.error);
+    fetchGmrs(centreId).then(setGmrsList).catch(console.error);
   }, [centreId]);
 
   // Fetch teams when GMR changes
@@ -70,9 +64,7 @@ export default function TeamOnboardingModal() {
       setTeams([]);
       return;
     }
-    fetchTeams(gmrId)
-      .then(setTeams)
-      .catch(console.error);
+    fetchTeams(gmrId).then(setTeams).catch(console.error);
   }, [gmrId]);
 
   const handleDirectionChange = (value: string) => {
@@ -114,8 +106,7 @@ export default function TeamOnboardingModal() {
     setTeamName(found?.name || "");
   };
 
-  const isFormValid =
-    directionId && centreId && gmrId && teamId;
+  const isFormValid = directionId && centreId && gmrId && teamId;
 
   const handleValidate = async () => {
     if (!isFormValid) return;
@@ -170,6 +161,7 @@ export default function TeamOnboardingModal() {
           showResetButton
           onClear={() => handleDirectionChange("")}
           data-testid="select-direction"
+          width={280}
         />
 
         {directionId && (
@@ -183,6 +175,7 @@ export default function TeamOnboardingModal() {
             showResetButton
             onClear={() => handleCentreChange("")}
             data-testid="select-centre"
+            width={280}
           />
         )}
 
@@ -197,6 +190,7 @@ export default function TeamOnboardingModal() {
             showResetButton
             onClear={() => handleGmrChange("")}
             data-testid="select-gmr"
+            width={280}
           />
         )}
 
@@ -211,6 +205,7 @@ export default function TeamOnboardingModal() {
             showResetButton
             onClear={() => handleTeamChange("")}
             data-testid="select-team"
+            width={280}
           />
         )}
       </div>

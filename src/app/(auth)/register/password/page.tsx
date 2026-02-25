@@ -132,7 +132,7 @@ function PasswordForm() {
         générales d&apos;utilisations.
       </p>
 
-      <div className="flex items-end justify-center w-full h-12">
+      <div className="flex flex-col sm:flex-row items-center justify-center w-full h-12">
         <span className="text-sm text-content-secondary">
           Vous avez déjà un compte ?{" "}
         </span>
