@@ -25,7 +25,7 @@ export default function AuthLayout({
         className="flex-1 flex flex-col items-center overflow-y-auto"
         style={{ backgroundColor: "#f5f5f5" }}
       >
-        <div className="w-full max-w-102 py-12 px-6 pl-17 lg:px-0">
+        <div className="w-full max-w-107 py-12 px-6 pl-17 lg:px-0">
           {/* Main heading */}
           <h1
             className="text-[40px] font-semibold leading-12 mb-8"

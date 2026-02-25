@@ -12,12 +12,26 @@ export default function RegisterStep1Page() {
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [nniOrEmail, setNniOrEmail] = useState("");
+  const [nniOrEmailTouched, setNniOrEmailTouched] = useState(false);
   const [role, setRole] = useState<UserRole>("member");
 
-  // Validate NNI (5 alphanumeric uppercase) or email
-  const isNni = /^[A-Z0-9]{5}$/.test(nniOrEmail);
-  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nniOrEmail);
+  const isNni = /^[a-zA-Z0-9]{5,6}$/.test(nniOrEmail);
+  const isEmail = /^[^\s@]+@rte-france\.com$/.test(nniOrEmail);
   const isFieldValid = isNni || isEmail;
+
+  const getFieldError = (): string | undefined => {
+    if (!nniOrEmailTouched || nniOrEmail === "") return undefined;
+    if (nniOrEmail.includes("@")) {
+      if (!isEmail)
+        return "L'adresse email doit être au format @rte-france.com";
+    } else {
+      if (!isNni)
+        return "Le NNI doit contenir 5 ou 6 caractères alphanumériques";
+    }
+    return undefined;
+  };
+
+  const fieldError = getFieldError();
 
   const handleContinue = () => {
     if (!isFieldValid) return;
@@ -66,12 +80,17 @@ export default function RegisterStep1Page() {
         label="Email ou NNI"
         value={nniOrEmail}
         onChange={(value) => setNniOrEmail(value)}
+        onBlur={() => setNniOrEmailTouched(true)}
         required
+        error={!!fieldError}
+        placeholder={"admin@rte-france.com OU AB123"}
+        assistiveTextLabel={fieldError}
+        assistiveAppearance={fieldError ? "error" : "description"}
         data-testid="input-nni-email"
         width="100%"
       />
 
-      <div className="w-full mt-2">
+      <div className="w-full">
         <RadioButtonGroup
           groupName="role-selector"
           groupTitle="Rôle"
