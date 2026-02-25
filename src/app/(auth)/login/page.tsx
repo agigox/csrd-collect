@@ -12,11 +12,29 @@ export default function LoginPage() {
   const clearError = useAuthStore((s) => s.clearError);
 
   const [nniOrEmail, setNniOrEmail] = useState("");
+  const [nniOrEmailTouched, setNniOrEmailTouched] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isFormValid = nniOrEmail.trim() !== "" && password.trim() !== "";
+  const isNni = /^[a-zA-Z0-9]{5,6}$/.test(nniOrEmail);
+  const isEmail = /^[^\s@]+@rte-france\.com$/.test(nniOrEmail);
+  const isNniOrEmailValid = isNni || isEmail;
+
+  const getNniOrEmailError = (): string | undefined => {
+    if (!nniOrEmailTouched || nniOrEmail === "") return undefined;
+    if (nniOrEmail.includes("@")) {
+      if (!isEmail)
+        return "L'adresse email doit être au format @rte-france.com";
+    } else {
+      if (!isNni)
+        return "Le NNI doit contenir 5 ou 6 caractères alphanumériques";
+    }
+    return undefined;
+  };
+
+  const fieldError = getNniOrEmailError();
+  const isFormValid = isNniOrEmailValid && password.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +83,12 @@ export default function LoginPage() {
             label="Email ou NNI"
             value={nniOrEmail}
             onChange={(value) => setNniOrEmail(value)}
+            onBlur={() => setNniOrEmailTouched(true)}
             required
+            error={!!fieldError}
+            placeholder={"admin@rte-france.com OU AB123"}
+            assistiveTextLabel={fieldError}
+            assistiveAppearance={fieldError ? "error" : "description"}
             data-testid="input-nni-email"
             width="100%"
           />
