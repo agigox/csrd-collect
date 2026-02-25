@@ -32,7 +32,11 @@ export const FormsList = () => {
 
   const handlePublish = async (formId: string) => {
     try {
-      await publishForm(formId);
+      const [result] = await Promise.all([
+        publishForm(formId),
+        new Promise((r) => setTimeout(r, 1000)),
+      ]);
+      return result;
     } catch (err) {
       console.error("Erreur lors de la publication:", err);
     }

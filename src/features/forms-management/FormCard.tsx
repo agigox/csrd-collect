@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, Divider, Button, Chip } from "@rte-ds/react";
 
 type FormCardStatus = "draft" | "published" | "validated" | "deleted";
@@ -37,7 +38,7 @@ interface FormCardProps {
   status?: FormCardStatus;
   pressed?: boolean;
   onClick?: () => void;
-  onPublish?: () => void;
+  onPublish?: () => Promise<void>;
 }
 
 export const FormCard = ({
@@ -49,7 +50,20 @@ export const FormCard = ({
   onClick,
   onPublish,
 }: FormCardProps) => {
+  const [publishing, setPublishing] = useState(false);
   const chipConfig = statusConfig[status];
+
+  const handlePublish = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (publishing) return;
+    setPublishing(true);
+    try {
+      await onPublish?.();
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   return (
     <Card
       onClick={onClick}
@@ -64,7 +78,7 @@ export const FormCard = ({
           <h3 className="text-base font-semibold leading-6 text-[#201f1f] tracking-tight truncate">
             {title}
           </h3>
-          <p className="text-sm font-semibold text-[#696969] tracking-tight leading-7">
+          <p className="text-sm font-semibold text-[#696969] tracking-tight leading-7 truncate">
             {code}
           </p>
         </div>
@@ -110,13 +124,12 @@ export const FormCard = ({
           />
           {status === "draft" && (
             <Button
-              label="Publier"
+              label={publishing ? "..." : "Publier"}
               variant="primary"
               size="s"
-              onClick={(e) => {
-                e.stopPropagation();
-                onPublish?.();
-              }}
+              icon={publishing ? "sync" : undefined}
+              disabled={publishing}
+              onClick={handlePublish}
               style={{ width: "100%" }}
             />
           )}
