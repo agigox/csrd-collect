@@ -82,7 +82,7 @@ export default function LoginPage() {
             id="nni-email"
             label="Email ou NNI"
             value={nniOrEmail}
-            onChange={(value) => setNniOrEmail(value)}
+            onChange={(value) => setNniOrEmail(value.includes("@") ? value.toLowerCase() : value.toUpperCase())}
             onBlur={() => setNniOrEmailTouched(true)}
             required
             error={!!fieldError}

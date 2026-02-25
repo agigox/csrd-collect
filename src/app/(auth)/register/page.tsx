@@ -58,13 +58,14 @@ export default function RegisterStep1Page() {
         S&apos;inscrire
       </h2>
 
-      <div className="flex gap-2.5 w-full">
+      <div className="flex flex-col sm:flex-row gap-2.5 w-full">
         <TextInput
           id="lastName"
           label="Nom"
           value={lastName}
           onChange={(value) => setLastName(value)}
           data-testid="input-lastName"
+          width="100%"
         />
         <TextInput
           id="firstName"
@@ -72,6 +73,7 @@ export default function RegisterStep1Page() {
           value={firstName}
           onChange={(value) => setFirstName(value)}
           data-testid="input-firstName"
+          width="100%"
         />
       </div>
 
@@ -79,7 +81,11 @@ export default function RegisterStep1Page() {
         id="nni-email"
         label="Email ou NNI"
         value={nniOrEmail}
-        onChange={(value) => setNniOrEmail(value)}
+        onChange={(value) =>
+          setNniOrEmail(
+            value.includes("@") ? value.toLowerCase() : value.toUpperCase(),
+          )
+        }
         onBlur={() => setNniOrEmailTouched(true)}
         required
         error={!!fieldError}
