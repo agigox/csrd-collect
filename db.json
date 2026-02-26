@@ -1,61 +1,12 @@
 {
   "users": [
     {
-      "id": "1",
-      "nni": "AB123",
-      "email": "member@csrd-collecte.fr",
-      "lastName": "Neuville",
-      "firstName": "Julien",
+      "id": "0d6f",
+      "lastName": "Test",
+      "firstName": "tes",
       "role": "member",
-      "password": "Abcdef1#ghijk!",
-      "team": {
-        "directionId": "7b071c25-c46b-4773-94bd-087594191394",
-        "direction": "Direction Nord",
-        "maintenanceCenterId": "b55f21b1-1916-4bff-a679-1f07cd5325c7",
-        "centre": "Centre de Maintenance Lyon",
-        "gmrId": "01faa66f-a7b8-40c9-8504-01dcac1f6604",
-        "gmr": "GMR Lyon Est",
-        "teamId": "aefd34e5-157f-4def-b1ff-434ca5dfdf18",
-        "team": "Équipe Alpha"
-      }
-    },
-    {
-      "id": "2",
-      "nni": "XY789",
-      "email": "admin-pending@csrd-collecte.fr",
-      "lastName": "Menard",
-      "firstName": "Jérôme",
-      "role": "admin",
-      "status": "approved",
-      "password": "Admin1#secure!"
-    },
-    {
-      "id": "3",
-      "nni": "ZW456",
-      "email": "admin-approved@csrd-collecte.fr",
-      "lastName": "Dupont",
-      "firstName": "Marie",
-      "role": "admin",
-      "status": "approved",
-      "password": "Admin1#secure!"
-    },
-    {
-      "id": "3edf",
-      "lastName": "",
-      "firstName": "",
-      "role": "member",
-      "email": "test@test.com",
-      "password": "Abcdef1#ghijk!",
-      "nni": "AB123",
-      "team": null
-    },
-    {
-      "id": "2faf",
-      "lastName": "TABOU",
-      "firstName": "Amine",
-      "role": "member",
-      "password": "Test12&88",
-      "email": "amin.tabou@gmail.com",
+      "password": "Test12",
+      "nni": "ABC12",
       "team": {
         "directionId": "65a51999-25a4-41e6-9c27-8dd13b4d5614",
         "direction": "Direction Nord",
@@ -68,21 +19,12 @@
       }
     },
     {
-      "id": "0fd1",
-      "lastName": "Ap",
-      "firstName": "Ap",
-      "role": "admin",
-      "password": "Test12&8822T262",
-      "nni": "AA123",
-      "status": "approved"
-    },
-    {
-      "id": "66b2",
-      "lastName": "zz",
-      "firstName": "zz",
+      "id": "f1a5",
+      "lastName": "AZ",
+      "firstName": "AZ",
       "role": "admin",
       "password": "Test12",
-      "email": "zz@zz.com",
+      "nni": "AZ123",
       "status": "approved"
     }
   ],
