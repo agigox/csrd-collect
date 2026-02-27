@@ -1,5 +1,26 @@
 # Journal des modifications
 
+## [1.0.1](../../compare/v1.0.0...v1.0.1) (2026-02-26)
+
+### Fonctionnalités
+
+- **auth:** séparation du champ "Email ou NNI" en deux champs distincts NNI et Email sur la page d'inscription ([7a200b1](../../commit/7a200b1))
+- **auth:** unification du système de rôles avec toggle admin et suppression de la sélection de rôle à l'inscription ([ae41474](../../commit/ae41474))
+- **auth:** ajout du critère 12 caractères dans la checklist du mot de passe et blocage si le mot de passe n'est pas "fort" ([5315d2f](../../commit/5315d2f))
+- **deps:** upgrade @rte-ds/core à 1.3.12 et @rte-ds/react à 1.3.13 ([0bca66f](../../commit/0bca66f))
+- **deps:** upgrade @rte-ds/core à 1.3.13 et @rte-ds/react à 1.3.15 ([ffcaae2](../../commit/ffcaae2))
+- **ui:** utilisation de la prop `showCloseIcon` pour masquer le bouton fermer sur les modales AdminApproval et TeamOnboarding ([ffcaae2](../../commit/ffcaae2))
+
+### Corrections de bugs
+
+- **auth:** alignement des règles de validation NNI/email de la page de connexion avec celles de l'inscription ([5315d2f](../../commit/5315d2f))
+
+### Refactorisation
+
+- **sidebar:** suppression du lien "Déclarations" redondant dans le menu admin (le toggle admin remplissant déjà cette fonction) ([5315d2f](../../commit/5315d2f))
+- **api:** simplification de `registerUser` pour envoyer toujours NNI et email explicitement au lieu d'inférer via regex ([7a200b1](../../commit/7a200b1))
+- **db:** nettoyage des utilisateurs mock dans db.json ([02c5dbb](../../commit/02c5dbb))
+
 ## [1.0.0](../../compare/v0.1.0...v1.0.0) (2026-02-23)
 
 ### Fonctionnalités
