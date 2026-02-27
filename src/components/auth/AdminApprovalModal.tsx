@@ -23,6 +23,7 @@ export default function AdminApprovalModal() {
         title="En attente d'approbation"
         description="Votre compte est en cours de validation. Un administrateur doit approuver votre accès. Vous serez notifié par email une fois votre compte activé."
         size="xs"
+        showCloseIcon={false}
         primaryButton={
           <Button
             variant="danger"

@@ -1,32 +1,13 @@
 {
   "users": [
     {
-      "id": "0d6f",
-      "lastName": "Test",
-      "firstName": "tes",
-      "role": "member",
-      "status": "approved",
-      "password": "Test12",
-      "nni": "ABC12",
-      "team": {
-        "directionId": "65a51999-25a4-41e6-9c27-8dd13b4d5614",
-        "direction": "Direction Nord",
-        "maintenanceCenterId": "db07c867-6db3-47d7-b918-658de95788fb",
-        "centre": "Centre Lyon",
-        "gmrId": "dd1cee4c-1f37-408c-a5be-be20cb0ae32e",
-        "gmr": "GMR Lyon Est",
-        "teamId": "68ef1919-d839-48ae-8839-859ad5c76b15",
-        "team": "Equipe Alpha"
-      }
-    },
-    {
-      "id": "f1a5",
-      "lastName": "AZ",
-      "firstName": "AZ",
+      "id": "7a0b",
+      "nni": "DDD",
+      "email": "amin.text@gmail.com",
+      "lastName": "ZZ",
+      "firstName": "ZZ",
       "role": "admin",
       "status": "approved",
-      "password": "Test12",
-      "nni": "AZ123",
       "team": {
         "directionId": "65a51999-25a4-41e6-9c27-8dd13b4d5614",
         "direction": "Direction Nord",
@@ -36,7 +17,19 @@
         "gmr": "GMR Lyon Est",
         "teamId": "68ef1919-d839-48ae-8839-859ad5c76b15",
         "team": "Equipe Alpha"
-      }
+      },
+      "password": "Test12&11111"
+    },
+    {
+      "id": "0445",
+      "nni": "xAZZZ",
+      "email": "ami.ta@gmail.com",
+      "lastName": "Amine",
+      "firstName": "TABOU",
+      "role": "member",
+      "status": "pending",
+      "team": null,
+      "password": "Test12&11ddd"
     }
   ],
   "category-codes": [

@@ -132,84 +132,85 @@ export default function TeamOnboardingModal() {
 
   return (
     <>
-    <style>{`#team-onboarding [data-testid="modal-close-button"] { display: none; }`}</style>
-    <Modal
-      id="team-onboarding"
-      isOpen={true}
-      onClose={() => {}}
-      title="Bienvenue sur le collecteur"
-      description="Avant de commencer, veuillez renseigner votre équipe d'appartenance."
-      size="s"
-      primaryButton={
-        <Button
-          variant="primary"
-          label={isSubmitting ? "Validation..." : "Valider"}
-          onClick={handleValidate}
-          disabled={!isFormValid || isSubmitting}
-          data-testid="btn-valider"
-        />
-      }
-    >
-      <div className="flex flex-col gap-4">
-        <Select
-          id="direction"
-          label="Direction"
-          value={directionId}
-          onChange={handleDirectionChange}
-          options={toOptions(directions)}
-          required
-          showResetButton
-          onClear={() => handleDirectionChange("")}
-          data-testid="select-direction"
-          width={280}
-        />
-
-        {directionId && (
+      <style>{`#team-onboarding [data-testid="modal-close-button"] { display: none; }`}</style>
+      <Modal
+        id="team-onboarding"
+        isOpen={true}
+        onClose={() => {}}
+        title="Bienvenue sur le collecteur"
+        description="Avant de commencer, veuillez renseigner votre équipe d'appartenance."
+        size="s"
+        primaryButton={
+          <Button
+            variant="primary"
+            label={isSubmitting ? "Validation..." : "Valider"}
+            onClick={handleValidate}
+            disabled={!isFormValid || isSubmitting}
+            data-testid="btn-valider"
+          />
+        }
+        showCloseIcon={false}
+      >
+        <div className="flex flex-col gap-4">
           <Select
-            id="centre"
-            label="Département/CM"
-            value={centreId}
-            onChange={handleCentreChange}
-            options={toOptions(centres)}
+            id="direction"
+            label="Direction"
+            value={directionId}
+            onChange={handleDirectionChange}
+            options={toOptions(directions)}
             required
             showResetButton
-            onClear={() => handleCentreChange("")}
-            data-testid="select-centre"
+            onClear={() => handleDirectionChange("")}
+            data-testid="select-direction"
             width={280}
           />
-        )}
 
-        {centreId && (
-          <Select
-            id="gmr"
-            label="Service/GMR"
-            value={gmrId}
-            onChange={handleGmrChange}
-            options={toOptions(gmrsList)}
-            required
-            showResetButton
-            onClear={() => handleGmrChange("")}
-            data-testid="select-gmr"
-            width={280}
-          />
-        )}
+          {directionId && (
+            <Select
+              id="centre"
+              label="Département/CM"
+              value={centreId}
+              onChange={handleCentreChange}
+              options={toOptions(centres)}
+              required
+              showResetButton
+              onClear={() => handleCentreChange("")}
+              data-testid="select-centre"
+              width={280}
+            />
+          )}
 
-        {gmrId && (
-          <Select
-            id="team"
-            label="Equipe"
-            value={teamId}
-            onChange={handleTeamChange}
-            options={toOptions(teams)}
-            required
-            showResetButton
-            onClear={() => handleTeamChange("")}
-            data-testid="select-team"
-            width={280}
-          />
-        )}
-      </div>
-    </Modal>
+          {centreId && (
+            <Select
+              id="gmr"
+              label="Service/GMR"
+              value={gmrId}
+              onChange={handleGmrChange}
+              options={toOptions(gmrsList)}
+              required
+              showResetButton
+              onClear={() => handleGmrChange("")}
+              data-testid="select-gmr"
+              width={280}
+            />
+          )}
+
+          {gmrId && (
+            <Select
+              id="team"
+              label="Equipe"
+              value={teamId}
+              onChange={handleTeamChange}
+              options={toOptions(teams)}
+              required
+              showResetButton
+              onClear={() => handleTeamChange("")}
+              data-testid="select-team"
+              width={280}
+            />
+          )}
+        </div>
+      </Modal>
     </>
   );
 }

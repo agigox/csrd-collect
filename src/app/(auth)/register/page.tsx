@@ -85,11 +85,10 @@ export default function RegisterStep1Page() {
         id="nni"
         label="NNI"
         value={nni}
-        onChange={(value) => setNni(value.toUpperCase())}
+        onChange={(value) => setNni(value)}
         onBlur={() => setNniTouched(true)}
         required
         error={!!nniError}
-        placeholder="AB123"
         assistiveTextLabel={nniError}
         assistiveAppearance={nniError ? "error" : "description"}
         data-testid="input-nni"
@@ -100,11 +99,10 @@ export default function RegisterStep1Page() {
         id="email"
         label="Email"
         value={email}
-        onChange={(value) => setEmail(value.toLowerCase())}
+        onChange={(value) => setEmail(value)}
         onBlur={() => setEmailTouched(true)}
         required
         error={!!emailError}
-        placeholder="prenom.nom@rte-france.com"
         assistiveTextLabel={emailError}
         assistiveAppearance={emailError ? "error" : "description"}
         data-testid="input-email"
