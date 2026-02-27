@@ -131,12 +131,12 @@ export default function TeamOnboardingModal() {
   };
 
   return (
+    <>
+    <style>{`#team-onboarding [data-testid="modal-close-button"] { display: none; }`}</style>
     <Modal
       id="team-onboarding"
       isOpen={true}
-      onClose={() => {
-        // X close button dismisses without saving — modal re-shows on next visit
-      }}
+      onClose={() => {}}
       title="Bienvenue sur le collecteur"
       description="Avant de commencer, veuillez renseigner votre équipe d'appartenance."
       size="s"
@@ -210,5 +210,6 @@ export default function TeamOnboardingModal() {
         )}
       </div>
     </Modal>
+    </>
   );
 }

@@ -36,31 +36,16 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
       return;
     }
 
-    // Authenticated on auth page → redirect to appropriate home
+    // Authenticated on auth page → redirect to declarations
     if (isAuthenticated && onAuthPage) {
-      if (user?.role === "admin") {
-        router.replace("/admin");
-      } else {
-        router.replace("/declarations");
-      }
+      router.replace("/declarations");
       return;
     }
 
-    // Admin on member routes → redirect to admin
+    // Non-admin on admin routes → redirect to declarations
     if (
       isAuthenticated &&
-      user?.role === "admin" &&
-      user?.status === "approved" &&
-      !pathname.startsWith("/admin")
-    ) {
-      router.replace("/admin");
-      return;
-    }
-
-    // Member on admin routes → redirect to declarations
-    if (
-      isAuthenticated &&
-      user?.role === "member" &&
+      user?.role !== "admin" &&
       pathname.startsWith("/admin")
     ) {
       router.replace("/declarations");
@@ -68,8 +53,8 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     }
   }, [isLoading, isAuthenticated, onAuthPage, user, pathname, router]);
 
-  // Show loading state while checking auth
-  if (isLoading) {
+  // Show loading state while checking auth (only on protected pages, not auth pages)
+  if (isLoading && !onAuthPage) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-gray-500">Chargement...</div>
@@ -87,7 +72,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     return null;
   }
 
-  // Admin pending approval → show blocking modal
+  // User pending approval → show blocking modal
   if (isPendingApproval) {
     return (
       <>
@@ -97,7 +82,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     );
   }
 
-  // Member needs team onboarding → show blocking modal
+  // User needs team onboarding → show blocking modal
   if (needsTeamOnboarding) {
     return (
       <>

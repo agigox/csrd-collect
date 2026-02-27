@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 import { clearAuth, loginAsMember, loginAsAdmin } from "../helpers/auth";
 
 const API_BASE_URL = "http://localhost:4000";
+const REAL_API_URL =
+  "http://dev-csrd-load-balancer-1990765532.eu-west-3.elb.amazonaws.com/api";
 
 const mockMemberUser = {
   id: "1",
@@ -96,10 +98,10 @@ test.describe("Connexion", () => {
   test("connexion membre réussie redirige vers /declarations", async ({
     page,
   }) => {
-    await page.route("**/declarations", (route) =>
+    await page.route(`${REAL_API_URL}/declarations`, (route) =>
       route.fulfill({ json: [] })
     );
-    await page.route("**/form-templates", (route) =>
+    await page.route(`${REAL_API_URL}/form-templates`, (route) =>
       route.fulfill({ json: [] })
     );
 
@@ -111,8 +113,11 @@ test.describe("Connexion", () => {
     await expect(page).toHaveURL(/\/declarations/);
   });
 
-  test("connexion admin approuvé redirige vers /admin", async ({ page }) => {
-    await page.route("**/form-templates", (route) =>
+  test("connexion admin approuvé redirige vers /declarations", async ({ page }) => {
+    await page.route(`${REAL_API_URL}/declarations`, (route) =>
+      route.fulfill({ json: [] })
+    );
+    await page.route(`${REAL_API_URL}/form-templates`, (route) =>
       route.fulfill({ json: [] })
     );
 
@@ -121,16 +126,20 @@ test.describe("Connexion", () => {
     await page.getByTestId("input-password").fill("Admin1#secure!");
     await page.getByTestId("btn-se-connecter").click();
 
-    await expect(page).toHaveURL(/\/admin/);
+    await expect(page).toHaveURL(/\/declarations/);
   });
 
   test("un utilisateur authentifié (membre) est redirigé depuis /login", async ({
     page,
   }) => {
-    await page.route("**/declarations", (route) =>
+    // Mock user refresh API (store rehydration calls fetchUserById)
+    await page.route(`${API_BASE_URL}/users/*`, (route) =>
+      route.fulfill({ status: 404, json: {} })
+    );
+    await page.route(`${REAL_API_URL}/declarations`, (route) =>
       route.fulfill({ json: [] })
     );
-    await page.route("**/form-templates", (route) =>
+    await page.route(`${REAL_API_URL}/form-templates`, (route) =>
       route.fulfill({ json: [] })
     );
 
@@ -144,14 +153,21 @@ test.describe("Connexion", () => {
   test("un utilisateur authentifié (admin) est redirigé depuis /login", async ({
     page,
   }) => {
-    await page.route("**/form-templates", (route) =>
+    // Mock user refresh API (store rehydration calls fetchUserById)
+    await page.route(`${API_BASE_URL}/users/*`, (route) =>
+      route.fulfill({ status: 404, json: {} })
+    );
+    await page.route(`${REAL_API_URL}/declarations`, (route) =>
+      route.fulfill({ json: [] })
+    );
+    await page.route(`${REAL_API_URL}/form-templates`, (route) =>
       route.fulfill({ json: [] })
     );
 
     await loginAsAdmin(page, "approved");
     await page.goto("/login");
 
-    await expect(page).toHaveURL(/\/admin/);
+    await expect(page).toHaveURL(/\/declarations/);
   });
 
   test("le lien S'inscrire pointe vers /register", async ({ page }) => {

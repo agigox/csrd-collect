@@ -42,8 +42,8 @@ importers:
         specifier: ^1.3.12
         version: 1.3.12(sass@1.97.3)
       '@rte-ds/react':
-        specifier: ^1.3.13
-        version: 1.3.13(react@19.2.3)
+        specifier: ^1.3.14
+        version: 1.3.14(react@19.2.3)
       axios:
         specifier: ^1.13.2
         version: 1.13.4
@@ -1253,8 +1253,8 @@ packages:
     peerDependencies:
       sass: ^1.85.1
 
-  '@rte-ds/react@1.3.13':
-    resolution: {integrity: sha512-3w7mu7UzkLzMFRXtNpZ6FIfG35pRDdbSBAaJBp0ZyahWckyGtQey5vb9/jynIDnXVseI3KOOgkS9sgqP/hwjQA==}
+  '@rte-ds/react@1.3.14':
+    resolution: {integrity: sha512-dL/qVOLQ1eC+NHxKQMPMlXtMt6aAPMDa4eGjtEfK5BxcEAoQaj3rjSUaa/fbdIFpCHXAqVMAISKoMehVKDSwfw==}
     peerDependencies:
       react: '>=18.0.0'
 
@@ -5171,7 +5171,7 @@ snapshots:
     dependencies:
       sass: 1.97.3
 
-  '@rte-ds/react@1.3.13(react@19.2.3)':
+  '@rte-ds/react@1.3.14(react@19.2.3)':
     dependencies:
       '@rte-ds/core': 1.3.12(sass@1.97.3)
       clsx: 2.1.1

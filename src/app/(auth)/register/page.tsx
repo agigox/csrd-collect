@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TextInput, Button, RadioButtonGroup } from "@rte-ds/react";
+import { TextInput, Button } from "@rte-ds/react";
 import Link from "next/link";
-import type { UserRole } from "@/models/User";
 
 export default function RegisterStep1Page() {
   const router = useRouter();
@@ -13,7 +12,6 @@ export default function RegisterStep1Page() {
   const [firstName, setFirstName] = useState("");
   const [nniOrEmail, setNniOrEmail] = useState("");
   const [nniOrEmailTouched, setNniOrEmailTouched] = useState(false);
-  const [role, setRole] = useState<UserRole>("member");
 
   const isNni = /^[a-zA-Z0-9]{5,6}$/.test(nniOrEmail);
   const isEmail = /^[^\s@]+@rte-france\.com$/.test(nniOrEmail);
@@ -39,7 +37,6 @@ export default function RegisterStep1Page() {
     // Pass data to step 2 via searchParams
     const params = new URLSearchParams();
     params.set("nniOrEmail", nniOrEmail);
-    params.set("role", role);
     if (lastName) params.set("lastName", lastName);
     if (firstName) params.set("firstName", firstName);
 
@@ -95,19 +92,6 @@ export default function RegisterStep1Page() {
         data-testid="input-nni-email"
         width="100%"
       />
-
-      <div className="w-full">
-        <RadioButtonGroup
-          groupName="role-selector"
-          groupTitle="Rôle"
-          showGroupTitle
-          items={["Membre", "Administrateur"]}
-          value={role === "member" ? "Membre" : "Administrateur"}
-          onChange={(value) => setRole(value === "Membre" ? "member" : "admin")}
-          direction="horizontal"
-          data-testid="role-selector"
-        />
-      </div>
 
       <div className="pt-6 w-full">
         <Button

@@ -14,23 +14,24 @@ export default function AdminApprovalModal() {
   };
 
   return (
-    <Modal
-      id="admin-approval-pending"
-      isOpen={true}
-      onClose={() => {
-        // No-op — cannot close this modal
-      }}
-      title="En attente d'approbation par un Super administrateur"
-      description="Votre compte administrateur est en cours de validation. Un super administrateur doit approuver votre accès. Vous serez notifié par email une fois votre compte activé."
-      size="xs"
-      primaryButton={
-        <Button
-          variant="danger"
-          label="Se déconnecter"
-          onClick={handleLogout}
-          data-testid="btn-deconnecter"
-        />
-      }
-    />
+    <>
+      <style>{`#admin-approval-pending [data-testid="modal-close-button"] { display: none; }`}</style>
+      <Modal
+        id="admin-approval-pending"
+        isOpen={true}
+        onClose={() => {}}
+        title="En attente d'approbation"
+        description="Votre compte est en cours de validation. Un administrateur doit approuver votre accès. Vous serez notifié par email une fois votre compte activé."
+        size="xs"
+        primaryButton={
+          <Button
+            variant="danger"
+            label="Se déconnecter"
+            onClick={handleLogout}
+            data-testid="btn-deconnecter"
+          />
+        }
+      />
+    </>
   );
 }

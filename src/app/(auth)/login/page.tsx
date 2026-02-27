@@ -47,13 +47,7 @@ export default function LoginPage() {
     try {
       await login(nniOrEmail.trim(), password);
 
-      // Redirect is handled by AuthGuard after store update
-      const user = useAuthStore.getState().user;
-      if (user?.role === "admin") {
-        router.push("/admin");
-      } else {
-        router.push("/declarations");
-      }
+      router.push("/declarations");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur de connexion");
     } finally {

@@ -47,12 +47,11 @@ export async function registerUser(data: RegisterData): Promise<User> {
   const body: Record<string, unknown> = {
     lastName: data.lastName || "",
     firstName: data.firstName || "",
-    role: data.role,
+    role: "member",
+    status: "pending",
+    team: null,
     password: data.password,
     ...(isNni ? { nni: data.nniOrEmail } : { email: data.nniOrEmail }),
-    ...(data.role === "member"
-      ? { team: null }
-      : { status: "pending" as const }),
   };
 
   const response = await fetch(`${API_BASE_URL}/users`, {

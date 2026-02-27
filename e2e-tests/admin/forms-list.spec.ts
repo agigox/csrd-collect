@@ -3,14 +3,22 @@ import {
   mockFormTemplates,
   mockCategoryCodes,
 } from "../helpers/mock-data";
+import { loginAsAdmin } from "../helpers/auth";
+
+const API_BASE_URL = "http://localhost:4000";
+const REAL_API_URL = "http://dev-csrd-load-balancer-1990765532.eu-west-3.elb.amazonaws.com/api";
 
 test.describe("Liste des formulaires admin", () => {
   test.beforeEach(async ({ page }) => {
     // Mock API calls
-    await page.route("**/form-templates", (route) =>
+    await loginAsAdmin(page);
+    await page.route(`${API_BASE_URL}/users/*`, (route) =>
+      route.fulfill({ status: 404, json: {} })
+    );
+    await page.route(`${REAL_API_URL}/form-templates`, (route) =>
       route.fulfill({ json: mockFormTemplates })
     );
-    await page.route("**/category-codes", (route) =>
+    await page.route(`${API_BASE_URL}/category-codes`, (route) =>
       route.fulfill({ json: mockCategoryCodes })
     );
 

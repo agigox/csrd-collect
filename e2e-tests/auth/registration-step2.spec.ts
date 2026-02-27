@@ -18,6 +18,7 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
             nom: "Dupont",
             prenom: "Marie",
             role: "member",
+            status: "pending",
             team: null,
           },
         });
@@ -27,7 +28,7 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
 
     // Navigate to step 2 with query params (simulating step 1 completion)
     await page.goto(
-      "/register/password?nniOrEmail=AB123&role=member&nom=Dupont&prenom=Marie"
+      "/register/password?nniOrEmail=AB123&nom=Dupont&prenom=Marie"
     );
   });
 
@@ -37,7 +38,7 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
   });
 
   test("le bouton S'inscrire est désactivé initialement", async ({ page }) => {
-    await expect(page.getByTestId("btn-inscrire")).toBeDisabled();
+    await expect(page.getByTestId("btn-sinscrire")).toBeDisabled();
   });
 
   test("l'indicateur de force affiche Faible pour un mot de passe court", async ({
@@ -66,7 +67,7 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
   }) => {
     await page.getByTestId("input-password").fill("Abcdef1#ghijk!");
     await page.getByTestId("input-confirm-password").fill("different");
-    await expect(page.getByTestId("btn-inscrire")).toBeDisabled();
+    await expect(page.getByTestId("btn-sinscrire")).toBeDisabled();
   });
 
   test("le bouton S'inscrire s'active quand le mot de passe est fort et les deux champs correspondent", async ({
@@ -74,13 +75,13 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
   }) => {
     await page.getByTestId("input-password").fill("Abcdef1#ghijk!");
     await page.getByTestId("input-confirm-password").fill("Abcdef1#ghijk!");
-    await expect(page.getByTestId("btn-inscrire")).toBeEnabled();
+    await expect(page.getByTestId("btn-sinscrire")).toBeEnabled();
   });
 
   test("soumettre l'inscription redirige vers /login", async ({ page }) => {
     await page.getByTestId("input-password").fill("Abcdef1#ghijk!");
     await page.getByTestId("input-confirm-password").fill("Abcdef1#ghijk!");
-    await page.getByTestId("btn-inscrire").click();
+    await page.getByTestId("btn-sinscrire").click();
 
     await expect(page).toHaveURL(/\/login/);
   });

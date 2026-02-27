@@ -3,27 +3,34 @@ import {
   mockFormTemplates,
   mockCategoryCodes,
 } from "../helpers/mock-data";
+import { loginAsAdmin } from "../helpers/auth";
+
+const API_BASE_URL = "http://localhost:4000";
+const REAL_API_URL = "http://dev-csrd-load-balancer-1990765532.eu-west-3.elb.amazonaws.com/api";
 
 test.describe("Navigation admin", () => {
   test.beforeEach(async ({ page }) => {
+    await loginAsAdmin(page);
+
     // Mock API calls
-    await page.route("**/form-templates", (route) =>
+    await page.route(`${API_BASE_URL}/users/*`, (route) =>
+      route.fulfill({ status: 404, json: {} })
+    );
+    await page.route(`${REAL_API_URL}/form-templates`, (route) =>
       route.fulfill({ json: mockFormTemplates })
     );
-    await page.route("**/category-codes", (route) =>
+    await page.route(`${API_BASE_URL}/category-codes`, (route) =>
       route.fulfill({ json: mockCategoryCodes })
+    );
+    await page.route(`${REAL_API_URL}/declarations`, (route) =>
+      route.fulfill({ json: [] })
     );
   });
 
-  test("la page admin se charge sans modal de connexion", async ({
+  test("la page admin se charge correctement pour un admin authentifié", async ({
     page,
   }) => {
     await page.goto("/admin");
-
-    // No login modal should appear
-    await expect(
-      page.getByRole("heading", { name: "Bienvenue sur le collecteur" })
-    ).not.toBeVisible();
 
     // Admin content should be visible
     await expect(
@@ -31,10 +38,10 @@ test.describe("Navigation admin", () => {
     ).toBeVisible();
   });
 
-  test("la sidebar affiche le titre Administration", async ({ page }) => {
+  test("la sidebar affiche le titre CSRD collecte", async ({ page }) => {
     await page.goto("/admin");
     await expect(
-      page.getByRole("heading", { name: "Administration" })
+      page.getByRole("heading", { name: "CSRD collecte" })
     ).toBeVisible();
   });
 
@@ -44,13 +51,13 @@ test.describe("Navigation admin", () => {
     await page.goto("/admin");
 
     await expect(
-      page.getByRole("link", { name: "Administration d'équipe" })
+      page.getByRole("link", { name: "Admin. déclarations" })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Paramètrage déclaratif" })
+      page.getByRole("link", { name: "Admin. d'équipe" })
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Gestion des données" })
+      page.locator("nav").getByRole("link", { name: "Déclarations" })
     ).toBeVisible();
   });
 
@@ -61,19 +68,19 @@ test.describe("Navigation admin", () => {
     ).toBeVisible();
   });
 
-  test("cliquer sur Gestion des données navigue vers la bonne route", async ({
+  test("cliquer sur Admin. d'équipe navigue vers la bonne route", async ({
     page,
   }) => {
     await page.goto("/admin");
-    await page.getByRole("link", { name: "Gestion des données" }).click();
+    await page.getByRole("link", { name: "Admin. d'équipe" }).click();
     await expect(page).toHaveURL(/\/admin\/gestion-donnees/);
   });
 
-  test("cliquer sur Paramètrage déclaratif navigue vers la bonne route", async ({
+  test("cliquer sur Déclarations navigue vers /declarations", async ({
     page,
   }) => {
     await page.goto("/admin");
-    await page.getByRole("link", { name: "Paramètrage déclaratif" }).click();
-    await expect(page).toHaveURL(/\/admin\/parametrage-declaratif/);
+    await page.locator("nav").getByRole("link", { name: "Déclarations" }).click();
+    await expect(page).toHaveURL(/\/declarations/);
   });
 });

@@ -24,6 +24,7 @@ export async function loginAsMember(
     lastName: "Neuville",
     firstName: "Julien",
     role: "member",
+    status: "approved",
     team,
   };
 
@@ -50,6 +51,17 @@ export async function loginAsAdmin(
   page: Page,
   status: "pending" | "approved" = "approved"
 ) {
+  const team: User["team"] = {
+    directionId: "dir-1",
+    direction: "Maintenance",
+    maintenanceCenterId: "mc-1",
+    centre: "Aura",
+    gmrId: "gmr-1",
+    gmr: "GMR Lyon Est",
+    teamId: "team-1",
+    team: "Équipe Alpha",
+  };
+
   const user: User = {
     id: "admin-1",
     nni: "ZW456",
@@ -57,21 +69,22 @@ export async function loginAsAdmin(
     firstName: "Marie",
     role: "admin",
     status,
+    team,
   };
 
   await page.addInitScript(
-    ({ user }) => {
+    ({ user, team }) => {
       const authState = {
         state: {
           user,
           isAuthenticated: true,
-          team: null,
+          team,
         },
         version: 2,
       };
       localStorage.setItem("csrd_auth", JSON.stringify(authState));
     },
-    { user }
+    { user, team }
   );
 }
 

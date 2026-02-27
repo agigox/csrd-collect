@@ -3,11 +3,20 @@ import {
   mockFormTemplates,
   mockCategoryCodes,
 } from "../helpers/mock-data";
+import { loginAsAdmin } from "../helpers/auth";
+
+const API_BASE_URL = "http://localhost:4000";
+const REAL_API_URL = "http://dev-csrd-load-balancer-1990765532.eu-west-3.elb.amazonaws.com/api";
 
 test.describe("Éditeur de formulaire admin", () => {
   test.beforeEach(async ({ page }) => {
+    await loginAsAdmin(page);
+    await page.route(`${API_BASE_URL}/users/*`, (route) =>
+      route.fulfill({ status: 404, json: {} })
+    );
+
     // Mock API calls
-    await page.route("**/form-templates", (route) => {
+    await page.route(`${REAL_API_URL}/form-templates`, (route) => {
       if (route.request().method() === "POST") {
         const body = route.request().postDataJSON();
         return route.fulfill({
@@ -26,7 +35,7 @@ test.describe("Éditeur de formulaire admin", () => {
       }
       return route.fulfill({ json: mockFormTemplates });
     });
-    await page.route("**/form-templates/*", (route) => {
+    await page.route(`${REAL_API_URL}/form-templates/*`, (route) => {
       if (route.request().method() === "PATCH") {
         const body = route.request().postDataJSON();
         return route.fulfill({
@@ -38,7 +47,7 @@ test.describe("Éditeur de formulaire admin", () => {
       }
       return route.fulfill({ json: mockFormTemplates[0] });
     });
-    await page.route("**/category-codes", (route) =>
+    await page.route(`${API_BASE_URL}/category-codes`, (route) =>
       route.fulfill({ json: mockCategoryCodes })
     );
 

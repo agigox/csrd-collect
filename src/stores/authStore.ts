@@ -42,9 +42,9 @@ export const selectIsAdmin = (state: AuthState) =>
 export const selectIsMember = (state: AuthState) =>
   state.user?.role === "member";
 export const selectIsPendingApproval = (state: AuthState) =>
-  state.user?.role === "admin" && state.user?.status === "pending";
+  state.user?.status === "pending";
 export const selectNeedsTeamOnboarding = (state: AuthState) =>
-  state.user?.role === "member" && !state.user?.team;
+  !!state.user && state.user.status !== "pending" && !state.user.team;
 
 export const useAuthStore = create<AuthState>()(
   devtools(

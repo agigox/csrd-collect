@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { clearAuth } from "../helpers/auth";
 
-test.describe("Inscription — Étape 1 (identité + rôle)", () => {
+test.describe("Inscription — Étape 1 (identité)", () => {
   test.beforeEach(async ({ page }) => {
     await clearAuth(page);
     await page.goto("/register");
@@ -13,8 +13,8 @@ test.describe("Inscription — Étape 1 (identité + rôle)", () => {
     await expect(
       page.getByRole("heading", { name: "S'inscrire" })
     ).toBeVisible();
-    await expect(page.getByTestId("input-nom")).toBeVisible();
-    await expect(page.getByTestId("input-prenom")).toBeVisible();
+    await expect(page.getByTestId("input-lastName")).toBeVisible();
+    await expect(page.getByTestId("input-firstName")).toBeVisible();
     await expect(page.getByTestId("input-nni-email")).toBeVisible();
   });
 
@@ -39,27 +39,25 @@ test.describe("Inscription — Étape 1 (identité + rôle)", () => {
   test("le bouton Poursuivre s'active avec un email valide", async ({
     page,
   }) => {
-    await page.getByTestId("input-nni-email").fill("user@example.com");
+    await page.getByTestId("input-nni-email").fill("user@rte-france.com");
     await expect(page.getByTestId("btn-poursuivre")).toBeEnabled();
   });
 
-  test("le rôle Membre est sélectionné par défaut", async ({ page }) => {
-    await expect(page.getByText("Membre")).toBeVisible();
-    await expect(page.getByText("Administrateur")).toBeVisible();
+  test("le formulaire ne contient pas de sélecteur de rôle", async ({ page }) => {
+    await expect(page.getByTestId("role-selector")).not.toBeVisible();
   });
 
   test("naviguer vers l'étape 2 en cliquant sur Poursuivre", async ({
     page,
   }) => {
-    await page.getByTestId("input-nom").fill("Dupont");
-    await page.getByTestId("input-prenom").fill("Marie");
+    await page.getByTestId("input-lastName").fill("Dupont");
+    await page.getByTestId("input-firstName").fill("Marie");
     await page.getByTestId("input-nni-email").fill("AB123");
 
     await page.getByTestId("btn-poursuivre").click();
     await expect(page).toHaveURL(/\/register\/password/);
     // Search params should carry the data
     await expect(page).toHaveURL(/nniOrEmail=AB123/);
-    await expect(page).toHaveURL(/role=member/);
   });
 
   test("le lien Se connecter redirige vers /login", async ({ page }) => {

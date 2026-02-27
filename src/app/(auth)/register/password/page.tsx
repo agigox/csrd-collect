@@ -9,7 +9,6 @@ import PasswordStrengthMeter, {
   evaluateStrength,
 } from "@/features/auth/PasswordStrengthMeter";
 import { useAuthStore } from "@/stores";
-import type { UserRole } from "@/models/User";
 
 function PasswordForm() {
   const router = useRouter();
@@ -17,7 +16,6 @@ function PasswordForm() {
   const register = useAuthStore((s) => s.register);
 
   const nniOrEmail = searchParams.get("nniOrEmail") || "";
-  const role = (searchParams.get("role") || "member") as UserRole;
   const lastName = searchParams.get("lastName") || "";
   const firstName = searchParams.get("firstName") || "";
 
@@ -48,7 +46,6 @@ function PasswordForm() {
       await register({
         nniOrEmail,
         password,
-        role,
         lastName: lastName || undefined,
         firstName: firstName || undefined,
       });

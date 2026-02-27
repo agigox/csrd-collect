@@ -2,67 +2,72 @@
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { SideNav, useBreakpoint } from "@rte-ds/react";
-import { useAuthStore } from "@/stores";
+import { SideNav, Switch, useBreakpoint } from "@rte-ds/react";
+import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
 
 interface AppSideNavProps {
   children: React.ReactNode;
 }
 
+const headerConfig = {
+  icon: "home",
+  identifier: "CC",
+  link: "/declarations",
+  title: "CSRD collecte",
+  version: "V1.1.3",
+};
+
 const adminMenuItems = [
   {
-    id: "admin-team",
+    id: "admin-declarations",
     icon: "tune",
-    label: "Administration d'équipe",
+    label: "Admin. déclarations",
     link: "/admin",
   },
   {
-    id: "admin-parametrage",
-    icon: "download",
-    label: "Paramètrage déclaratif",
-    link: "/admin/parametrage-declaratif",
-  },
-  {
-    id: "admin-donnees",
-    icon: "download",
-    label: "Gestion des données",
+    id: "admin-equipe",
+    icon: "group",
+    label: "Admin. d'équipe",
     link: "/admin/gestion-donnees",
   },
+  {
+    id: "declarations",
+    icon: "campaign",
+    label: "Déclarations",
+    link: "/declarations",
+  },
 ];
-
-const memberHeaderConfig = {
-  icon: "home",
-  identifier: "CC",
-  link: "/",
-  title: "CSRD Collecte",
-  version: "V1.0.0",
-};
-
-const adminHeaderConfig = {
-  icon: "settings",
-  identifier: "AD",
-  link: "/admin",
-  title: "Administration",
-  version: "V1.0.0",
-};
 
 export default function AppSideNav({ children }: AppSideNavProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const isAdmin = pathname.startsWith("/admin");
   const [mounted, setMounted] = useState(false);
+  const [adminMode, setAdminMode] = useState(false);
   const { width } = useBreakpoint();
   const user = useAuthStore((s) => s.user);
   const team = useAuthStore((s) => s.team);
   const logout = useAuthStore((s) => s.logout);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isUserAdmin = useAuthStore(selectIsAdmin);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
-  const headerConfig = isAdmin ? adminHeaderConfig : memberHeaderConfig;
+  // Sync adminMode with pathname
+  useEffect(() => {
+    setAdminMode(pathname.startsWith("/admin"));
+  }, [pathname]);
+
+  const handleToggleAdmin = () => {
+    const newMode = !adminMode;
+    setAdminMode(newMode);
+    if (newMode) {
+      router.push("/admin");
+    } else {
+      router.push("/declarations");
+    }
+  };
 
   const profileName =
     user?.firstName || user?.lastName
@@ -70,7 +75,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       : undefined;
 
   const teamData =
-    !isAdmin && team
+    !adminMode && team
       ? [
           { label: "Direction", value: team.direction },
           { label: "CM", value: team.centre },
@@ -79,7 +84,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
         ]
       : undefined;
 
-  const activeItem = isAdmin
+  const activeItem = adminMode
     ? [...adminMenuItems]
         .sort((a, b) => b.link.length - a.link.length)
         .find((item) => pathname.startsWith(item.link))?.id
@@ -101,6 +106,16 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       ]
     : undefined;
 
+  const adminToggle = isUserAdmin ? (
+    <div data-testid="admin-toggle">
+      <Switch
+        label="Admin"
+        checked={adminMode}
+        onChange={handleToggleAdmin}
+      />
+    </div>
+  ) : undefined;
+
   // Avoid hydration mismatch: SideNav uses window.innerWidth to choose
   // between mobile/desktop layout, which differs from SSR (width=0 → mobile)
   if (!mounted) {
@@ -111,13 +126,14 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     <SideNav
       headerConfig={{
         ...headerConfig,
-        version: "1.0.0",
+        version: "V1.1.3",
       }}
-      {...(isAdmin && { items: adminMenuItems })}
+      {...(adminMode && { items: adminMenuItems })}
       activeItem={activeItem}
       footerItems={footerItems}
       showProfile={!!profileName}
       profile={profileName}
+      middleItem={adminToggle}
       showTeamData={!!teamData}
       teamData={teamData}
       collapsible

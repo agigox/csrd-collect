@@ -29,7 +29,6 @@ export interface RegisterData {
   firstName?: string;
   nniOrEmail: string;
   password: string;
-  role: UserRole;
 }
 
 export interface OrgUnit {
