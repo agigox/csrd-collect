@@ -52,6 +52,7 @@ node_modules/
 _drafts/
 _plans/
 _specs/
+_test-state/
 .claude/
 .github/
 .vscode/
