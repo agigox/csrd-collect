@@ -6,6 +6,7 @@ interface PasswordStrengthMeterProps {
 
 interface PasswordCriteria {
   length: boolean;
+  longLength: boolean;
   uppercase: boolean;
   lowercase: boolean;
   special: boolean;
@@ -17,6 +18,7 @@ type Strength = "faible" | "moyen" | "fort";
 function evaluateCriteria(password: string): PasswordCriteria {
   return {
     length: password.length >= 8,
+    longLength: password.length >= 12,
     uppercase: /[A-Z]/.test(password),
     lowercase: /[a-z]/.test(password),
     special: /[#&%*!@$^()_\-+=]/.test(password),
@@ -25,12 +27,12 @@ function evaluateCriteria(password: string): PasswordCriteria {
 }
 
 function evaluateStrength(
-  password: string,
+  _password: string,
   criteria: PasswordCriteria
 ): Strength {
   const score = Object.values(criteria).filter(Boolean).length;
   if (score <= 2) return "faible";
-  if (password.length >= 12 && score === 5) return "fort";
+  if (score === 6) return "fort";
   return "moyen";
 }
 
@@ -61,6 +63,7 @@ const strengthConfig: Record<
 
 const criteriaLabels = [
   { key: "length" as const, label: "8 caractères" },
+  { key: "longLength" as const, label: "12 caractères" },
   { key: "uppercase" as const, label: "1 lettre majuscule" },
   { key: "lowercase" as const, label: "1 lettre minuscule" },
   { key: "special" as const, label: "1 caractère spécial (#&%*#...)" },

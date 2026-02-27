@@ -30,12 +30,6 @@ const adminMenuItems = [
     label: "Admin. d'équipe",
     link: "/admin/gestion-donnees",
   },
-  {
-    id: "declarations",
-    icon: "campaign",
-    label: "Déclarations",
-    link: "/declarations",
-  },
 ];
 
 export default function AppSideNav({ children }: AppSideNavProps) {
@@ -107,11 +101,12 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     : undefined;
 
   const adminToggle = isUserAdmin ? (
-    <div data-testid="admin-toggle">
+    <div data-testid="admin-toggle" className="flex w-full justify-center">
       <Switch
         label="Admin"
         checked={adminMode}
         onChange={handleToggleAdmin}
+        labelStyle={{ color: "#E6EEF8" }}
       />
     </div>
   ) : undefined;

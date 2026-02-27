@@ -63,6 +63,14 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
     await expect(page.getByTestId("strength-label")).toContainText("Fort");
   });
 
+  test("le bouton S'inscrire est désactivé avec un mot de passe moyen", async ({
+    page,
+  }) => {
+    await page.getByTestId("input-password").fill("Abcdef1#");
+    await page.getByTestId("input-confirm-password").fill("Abcdef1#");
+    await expect(page.getByTestId("btn-sinscrire")).toBeDisabled();
+  });
+
   test("le bouton S'inscrire est désactivé si les mots de passe ne correspondent pas", async ({
     page,
   }) => {

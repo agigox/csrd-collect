@@ -34,7 +34,7 @@ function PasswordForm() {
   const criteria = evaluateCriteria(password);
   const strength = evaluateStrength(password, criteria);
   const passwordsMatch = password === confirmPassword && confirmPassword !== "";
-  const isFormValid = strength !== "faible" && passwordsMatch && !isSubmitting;
+  const isFormValid = strength === "fort" && passwordsMatch && !isSubmitting;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

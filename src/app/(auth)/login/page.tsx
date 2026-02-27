@@ -17,18 +17,17 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isNni = /^[a-zA-Z0-9]{5,6}$/.test(nniOrEmail);
-  const isEmail = /^[^\s@]+@rte-france\.com$/.test(nniOrEmail);
+  const isNni = /^[a-zA-Z0-9]{1,10}$/.test(nniOrEmail);
+  const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nniOrEmail);
   const isNniOrEmailValid = isNni || isEmail;
 
   const getNniOrEmailError = (): string | undefined => {
     if (!nniOrEmailTouched || nniOrEmail === "") return undefined;
     if (nniOrEmail.includes("@")) {
-      if (!isEmail)
-        return "L'adresse email doit être au format @rte-france.com";
+      if (!isEmail) return "Veuillez saisir une adresse email valide";
     } else {
       if (!isNni)
-        return "Le NNI doit contenir 5 ou 6 caractères alphanumériques";
+        return "Le NNI doit contenir uniquement des caractères alphanumériques (max 10)";
     }
     return undefined;
   };
@@ -76,11 +75,10 @@ export default function LoginPage() {
             id="nni-email"
             label="Email ou NNI"
             value={nniOrEmail}
-            onChange={(value) => setNniOrEmail(value.includes("@") ? value.toLowerCase() : value.toUpperCase())}
+            onChange={(value) => setNniOrEmail(value)}
             onBlur={() => setNniOrEmailTouched(true)}
             required
             error={!!fieldError}
-            placeholder={"admin@rte-france.com OU AB123"}
             assistiveTextLabel={fieldError}
             assistiveAppearance={fieldError ? "error" : "description"}
             data-testid="input-nni-email"
