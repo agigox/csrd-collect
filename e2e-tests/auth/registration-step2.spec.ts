@@ -15,8 +15,9 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
           json: {
             id: "new-user-1",
             nni: "AB123",
-            nom: "Dupont",
-            prenom: "Marie",
+            email: "marie.dupont@rte-france.com",
+            lastName: "Dupont",
+            firstName: "Marie",
             role: "member",
             status: "pending",
             team: null,
@@ -28,7 +29,7 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
 
     // Navigate to step 2 with query params (simulating step 1 completion)
     await page.goto(
-      "/register/password?nniOrEmail=AB123&nom=Dupont&prenom=Marie"
+      "/register/password?nni=AB123&email=marie.dupont%40rte-france.com&lastName=Dupont&firstName=Marie"
     );
   });
 
@@ -84,6 +85,18 @@ test.describe("Inscription — Étape 2 (mot de passe)", () => {
     await page.getByTestId("btn-sinscrire").click();
 
     await expect(page).toHaveURL(/\/login/);
+  });
+
+  test("redirige vers /register si nni manquant", async ({ page }) => {
+    await page.goto(
+      "/register/password?email=marie.dupont%40rte-france.com"
+    );
+    await expect(page).toHaveURL(/\/register$/);
+  });
+
+  test("redirige vers /register si email manquant", async ({ page }) => {
+    await page.goto("/register/password?nni=AB123");
+    await expect(page).toHaveURL(/\/register$/);
   });
 
   test("affiche la mention légale", async ({ page }) => {

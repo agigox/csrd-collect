@@ -15,7 +15,8 @@ function PasswordForm() {
   const searchParams = useSearchParams();
   const register = useAuthStore((s) => s.register);
 
-  const nniOrEmail = searchParams.get("nniOrEmail") || "";
+  const nni = searchParams.get("nni") || "";
+  const email = searchParams.get("email") || "";
   const lastName = searchParams.get("lastName") || "";
   const firstName = searchParams.get("firstName") || "";
 
@@ -24,8 +25,8 @@ function PasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect back if no nniOrEmail (direct URL access)
-  if (!nniOrEmail) {
+  // Redirect back if nni or email missing (direct URL access)
+  if (!nni || !email) {
     router.replace("/register");
     return null;
   }
@@ -44,7 +45,8 @@ function PasswordForm() {
 
     try {
       await register({
-        nniOrEmail,
+        nni,
+        email,
         password,
         lastName: lastName || undefined,
         firstName: firstName || undefined,

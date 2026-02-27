@@ -42,16 +42,15 @@ export async function loginUser(
 }
 
 export async function registerUser(data: RegisterData): Promise<User> {
-  const isNni = /^[A-Z0-9]{5}$/.test(data.nniOrEmail);
-
   const body: Record<string, unknown> = {
+    nni: data.nni,
+    email: data.email,
     lastName: data.lastName || "",
     firstName: data.firstName || "",
     role: "member",
     status: "pending",
     team: null,
     password: data.password,
-    ...(isNni ? { nni: data.nniOrEmail } : { email: data.nniOrEmail }),
   };
 
   const response = await fetch(`${API_BASE_URL}/users`, {

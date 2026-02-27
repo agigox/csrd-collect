@@ -27,7 +27,8 @@ export interface Team {
 export interface RegisterData {
   lastName?: string;
   firstName?: string;
-  nniOrEmail: string;
+  nni: string;
+  email: string;
   password: string;
 }
 

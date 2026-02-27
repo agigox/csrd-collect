@@ -5,38 +5,45 @@ import { useRouter } from "next/navigation";
 import { TextInput, Button } from "@rte-ds/react";
 import Link from "next/link";
 
+const NNI_REGEX = /^[a-zA-Z0-9]{1,10}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function RegisterStep1Page() {
   const router = useRouter();
 
   const [lastName, setLastName] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [nniOrEmail, setNniOrEmail] = useState("");
-  const [nniOrEmailTouched, setNniOrEmailTouched] = useState(false);
+  const [nni, setNni] = useState("");
+  const [email, setEmail] = useState("");
+  const [nniTouched, setNniTouched] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
 
-  const isNni = /^[a-zA-Z0-9]{5,6}$/.test(nniOrEmail);
-  const isEmail = /^[^\s@]+@rte-france\.com$/.test(nniOrEmail);
-  const isFieldValid = isNni || isEmail;
+  const isNniValid = NNI_REGEX.test(nni);
+  const isEmailValid = EMAIL_REGEX.test(email);
+  const isFormValid = isNniValid && isEmailValid;
 
-  const getFieldError = (): string | undefined => {
-    if (!nniOrEmailTouched || nniOrEmail === "") return undefined;
-    if (nniOrEmail.includes("@")) {
-      if (!isEmail)
-        return "L'adresse email doit être au format @rte-france.com";
-    } else {
-      if (!isNni)
-        return "Le NNI doit contenir 5 ou 6 caractères alphanumériques";
-    }
+  const getNniError = (): string | undefined => {
+    if (!nniTouched || nni === "") return undefined;
+    if (!isNniValid)
+      return "Le NNI doit contenir uniquement des caractères alphanumériques (max 10)";
     return undefined;
   };
 
-  const fieldError = getFieldError();
+  const getEmailError = (): string | undefined => {
+    if (!emailTouched || email === "") return undefined;
+    if (!isEmailValid) return "Veuillez saisir une adresse email valide";
+    return undefined;
+  };
+
+  const nniError = getNniError();
+  const emailError = getEmailError();
 
   const handleContinue = () => {
-    if (!isFieldValid) return;
+    if (!isFormValid) return;
 
-    // Pass data to step 2 via searchParams
     const params = new URLSearchParams();
-    params.set("nniOrEmail", nniOrEmail);
+    params.set("nni", nni);
+    params.set("email", email);
     if (lastName) params.set("lastName", lastName);
     if (firstName) params.set("firstName", firstName);
 
@@ -75,21 +82,32 @@ export default function RegisterStep1Page() {
       </div>
 
       <TextInput
-        id="nni-email"
-        label="Email ou NNI"
-        value={nniOrEmail}
-        onChange={(value) =>
-          setNniOrEmail(
-            value.includes("@") ? value.toLowerCase() : value.toUpperCase(),
-          )
-        }
-        onBlur={() => setNniOrEmailTouched(true)}
+        id="nni"
+        label="NNI"
+        value={nni}
+        onChange={(value) => setNni(value.toUpperCase())}
+        onBlur={() => setNniTouched(true)}
         required
-        error={!!fieldError}
-        placeholder={"admin@rte-france.com OU AB123"}
-        assistiveTextLabel={fieldError}
-        assistiveAppearance={fieldError ? "error" : "description"}
-        data-testid="input-nni-email"
+        error={!!nniError}
+        placeholder="AB123"
+        assistiveTextLabel={nniError}
+        assistiveAppearance={nniError ? "error" : "description"}
+        data-testid="input-nni"
+        width="100%"
+      />
+
+      <TextInput
+        id="email"
+        label="Email"
+        value={email}
+        onChange={(value) => setEmail(value.toLowerCase())}
+        onBlur={() => setEmailTouched(true)}
+        required
+        error={!!emailError}
+        placeholder="prenom.nom@rte-france.com"
+        assistiveTextLabel={emailError}
+        assistiveAppearance={emailError ? "error" : "description"}
+        data-testid="input-email"
         width="100%"
       />
 
@@ -97,7 +115,7 @@ export default function RegisterStep1Page() {
         <Button
           label="Poursuivre"
           onClick={handleContinue}
-          disabled={!isFieldValid}
+          disabled={!isFormValid}
           variant="primary"
           className="w-full"
           data-testid="btn-poursuivre"
