@@ -6,11 +6,11 @@ import {
 import { loginAsAdmin } from "../helpers/auth";
 
 const API_BASE_URL = "http://localhost:4000";
-const REAL_API_URL = "http://dev-csrd-load-balancer-1990765532.eu-west-3.elb.amazonaws.com/api";
+const REAL_API_URL =
+  "http://dev-csrd-load-balancer-1990765532.eu-west-3.elb.amazonaws.com/api";
 
-test.describe("Liste des formulaires admin", () => {
+test.describe("Liste des formulaires admin - Redesign", () => {
   test.beforeEach(async ({ page }) => {
-    // Mock API calls
     await loginAsAdmin(page);
     await page.route(`${API_BASE_URL}/users/*`, (route) =>
       route.fulfill({ status: 404, json: {} })
@@ -21,94 +21,130 @@ test.describe("Liste des formulaires admin", () => {
     await page.route(`${API_BASE_URL}/category-codes`, (route) =>
       route.fulfill({ json: mockCategoryCodes })
     );
-
     await page.goto("/admin");
   });
 
-  test("affiche la liste des cartes de formulaires", async ({ page }) => {
-    await expect(
-      page.getByRole("heading", { name: "Fuite d'huile" })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Incident de sécurité" })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Contrôle qualité" })
-    ).toBeVisible();
+  test("affiche le titre Admin. des déclarations", async ({ page }) => {
+    await expect(page.getByText("Admin. des déclarations")).toBeVisible();
   });
 
-  test("affiche les codes des formulaires", async ({ page }) => {
-    await expect(page.getByText("E2-1234_01")).toBeVisible();
-    await expect(page.getByText("E1-5678_02")).toBeVisible();
-    await expect(page.getByText("E3-9012_03")).toBeVisible();
-  });
-
-  test("le SegmentedControl affiche les catégories", async ({ page }) => {
-    await expect(page.getByRole("radio", { name: "Tous" })).toBeVisible();
-    await expect(page.getByRole("radio", { name: "E1-2" })).toBeVisible();
-    await expect(page.getByRole("radio", { name: "E2-4" })).toBeVisible();
-    await expect(page.getByRole("radio", { name: "E3-2" })).toBeVisible();
-    await expect(page.getByRole("radio", { name: "E4-2" })).toBeVisible();
-  });
-
-  test("filtrer par catégorie E2-4 affiche uniquement les formulaires correspondants", async ({
+  test("le bouton Créer un formulaire est visible et navigue vers /admin/new", async ({
     page,
   }) => {
-    // Click the E2-4 segment (radio role)
-    await page.getByRole("radio", { name: "E2-4" }).click();
-
-    // Should show E2-4 form
-    await expect(
-      page.getByRole("heading", { name: "Fuite d'huile" })
-    ).toBeVisible();
-
-    // Should NOT show E1-2 or E3-2 forms
-    await expect(
-      page.getByRole("heading", { name: "Incident de sécurité" })
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Contrôle qualité" })
-    ).not.toBeVisible();
+    const createBtn = page.getByRole("button", {
+      name: /Créer un formulaire/i,
+    });
+    await expect(createBtn).toBeVisible();
+    await createBtn.click();
+    await expect(page).toHaveURL(/\/admin\/new/);
   });
 
-  test("filtrer par catégorie E1-2 affiche uniquement les formulaires correspondants", async ({
+  test("la barre de recherche filtre les formulaires par nom", async ({
     page,
   }) => {
-    await page.getByRole("radio", { name: "E1-2" }).click();
+    // First accordion (E2-4) should be open by default, showing its forms
+    await expect(page.getByText("Fuite d'huile")).toBeVisible();
 
-    await expect(
-      page.getByRole("heading", { name: "Incident de sécurité" })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Fuite d'huile" })
-    ).not.toBeVisible();
+    // Search for a specific form
+    const searchbar = page.getByLabel("Rechercher");
+    await searchbar.fill("Incident");
+
+    // Only matching form should be visible
+    await expect(page.getByText("Incident de sécurité")).toBeVisible();
+    await expect(page.getByText("Fuite d'huile")).not.toBeVisible();
   });
 
-  test("revenir à Tous affiche tous les formulaires", async ({ page }) => {
-    // Filter first
-    await page.getByRole("radio", { name: "E2-4" }).click();
-    await expect(
-      page.getByRole("heading", { name: "Incident de sécurité" })
-    ).not.toBeVisible();
+  test("la recherche peut être effacée", async ({ page }) => {
+    const searchbar = page.getByLabel("Rechercher");
+    await searchbar.fill("Incident");
+    await expect(page.getByText("Fuite d'huile")).not.toBeVisible();
 
-    // Go back to all
-    await page.getByRole("radio", { name: "Tous" }).click();
-
-    await expect(
-      page.getByRole("heading", { name: "Fuite d'huile" })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Incident de sécurité" })
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "Contrôle qualité" })
-    ).toBeVisible();
+    // Clear search
+    await searchbar.clear();
+    await expect(page.getByText("Fuite d'huile")).toBeVisible();
   });
 
-  test("cliquer sur une carte de formulaire navigue vers le paramétrage", async ({
+  test("affiche un message quand aucun formulaire ne correspond", async ({
     page,
   }) => {
-    await page.getByRole("heading", { name: "Fuite d'huile" }).click();
-    await expect(page).toHaveURL(/\/admin\/parametrage-declaratif/);
+    const searchbar = page.getByLabel("Rechercher");
+    await searchbar.fill("zzzznonexistent");
+    await expect(page.getByText("Aucun formulaire trouvé")).toBeVisible();
+  });
+
+  test("les accordéons groupent les formulaires par catégorie", async ({
+    page,
+  }) => {
+    await expect(page.getByTestId("accordion-E2-4")).toBeVisible();
+    await expect(page.getByTestId("accordion-E1-2")).toBeVisible();
+    await expect(page.getByTestId("accordion-E3-2")).toBeVisible();
+  });
+
+  test("cliquer sur un formulaire ouvre le panneau de détail", async ({
+    page,
+  }) => {
+    await page.getByText("Fuite d'huile").click();
+    const panel = page.locator("[data-slot='dialog-content']");
+    await expect(panel.getByText("Fuite d'huile")).toBeVisible();
+  });
+
+  test("le panneau affiche le statut et les boutons", async ({ page }) => {
+    await page.getByText("Fuite d'huile").click();
+    const panel = page.locator("[data-slot='dialog-content']");
+    // Status chip for published form
+    await expect(panel.getByText("Publié")).toBeVisible();
+    // Edit button always visible
+    await expect(
+      panel.getByRole("button", { name: /diter/i })
+    ).toBeVisible();
+    // Publish button NOT visible for published form
+    await expect(
+      panel.getByRole("button", { name: /Publier/i })
+    ).not.toBeVisible();
+  });
+
+  test("le bouton Publier est visible uniquement pour les formulaires en brouillon", async ({
+    page,
+  }) => {
+    // Click on the draft form (Audit environnemental - form-4)
+    await page.getByText("Audit environnemental").click();
+    const panel = page.locator("[data-slot='dialog-content']");
+    await expect(panel.getByText("Essai")).toBeVisible();
+    await expect(
+      panel.getByRole("button", { name: /Publier/i })
+    ).toBeVisible();
+  });
+
+  test("publier un formulaire appelle l'API", async ({ page }) => {
+    let publishCalled = false;
+    await page.route(
+      `${REAL_API_URL}/form-templates/form-4/publish`,
+      (route) => {
+        publishCalled = true;
+        const draftForm = mockFormTemplates.find((f) => f.id === "form-4");
+        route.fulfill({
+          json: {
+            ...draftForm,
+            isPublished: true,
+            publishedAt: new Date().toISOString(),
+          },
+        });
+      }
+    );
+
+    await page.getByText("Audit environnemental").click();
+    const panel = page.locator("[data-slot='dialog-content']");
+    await panel.getByRole("button", { name: /Publier/i }).click();
+    await page.waitForTimeout(2000);
+    expect(publishCalled).toBe(true);
+  });
+
+  test("le bouton close ferme le panneau", async ({ page }) => {
+    await page.getByText("Fuite d'huile").click();
+    const panel = page.locator("[data-slot='dialog-content']");
+    await expect(panel).toBeVisible();
+
+    await panel.getByRole("button", { name: /close/i }).click();
+    await expect(panel).not.toBeVisible();
   });
 });

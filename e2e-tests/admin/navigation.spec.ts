@@ -34,7 +34,7 @@ test.describe("Navigation admin", () => {
 
     // Admin content should be visible
     await expect(
-      page.getByText("Administration des formulaires de déclaration")
+      page.getByText("Admin. des déclarations")
     ).toBeVisible();
   });
 
@@ -64,7 +64,7 @@ test.describe("Navigation admin", () => {
   test("le titre de la page est correct", async ({ page }) => {
     await page.goto("/admin");
     await expect(
-      page.getByText("Administration des formulaires de déclaration")
+      page.getByText("Admin. des déclarations")
     ).toBeVisible();
   });
 

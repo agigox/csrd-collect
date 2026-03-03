@@ -1,38 +1,99 @@
 "use client";
 
-import Link from "next/link";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { Grid, useBreakpoint } from "@rte-ds/react";
 import { FormsList } from "./FormsList";
-import PageTitle from "@/lib/ui/page-title";
-import { Button, IconButton, useBreakpoint } from "@rte-ds/react";
+import { FormDetailPanel } from "./FormDetailPanel";
+import { useFormsStore } from "@/stores";
+import { useCategoryCodesStore } from "@/stores/categoryCodesStore";
+import type { FormTemplate } from "@/models/FormTemplate";
 
 export default function AdminPageContent() {
+  const { forms, loading, fetchForms, publishForm } = useFormsStore();
+  const { categoryCodes, fetchCategoryCodes } = useCategoryCodesStore();
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { isBelow } = useBreakpoint();
-  const isMobile = isBelow("m");
+  const isMobile = isBelow("s");
+
+  // Derive selectedForm from forms array - automatically stays in sync
+  const selectedForm = useMemo(
+    () =>
+      selectedFormId
+        ? (forms.find((f) => f.id === selectedFormId) ?? null)
+        : null,
+    [forms, selectedFormId],
+  );
+
+  useEffect(() => {
+    fetchForms();
+    fetchCategoryCodes();
+  }, [fetchForms, fetchCategoryCodes]);
+
+  // Filter forms by search query (case-insensitive on form.name)
+  const filteredForms = useMemo(() => {
+    if (!searchQuery.trim()) return forms;
+    const query = searchQuery.toLowerCase().trim();
+    return forms.filter((f) => f.name.toLowerCase().includes(query));
+  }, [forms, searchQuery]);
+
+  // Group filtered forms by categoryCode
+  const groupedForms = useMemo(() => {
+    const groups: Record<string, FormTemplate[]> = {};
+    for (const form of filteredForms) {
+      const key = form.categoryCode || "other";
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(form);
+    }
+    return groups;
+  }, [filteredForms]);
+
+  const handleSelectForm = useCallback((form: FormTemplate) => {
+    setSelectedFormId(form.id);
+  }, []);
+
+  const handleClosePanel = useCallback(() => {
+    setSelectedFormId(null);
+  }, []);
+
+  const handlePublish = useCallback(
+    async (formId: string) => {
+      await publishForm(formId);
+    },
+    [publishForm],
+  );
+
+  if (loading) {
+    return (
+      <div className="text-center py-8">Chargement des formulaires...</div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-2 px-8 py-2.5 h-full">
-      <div className="flex gap-8 items-center">
-        <PageTitle title="Administration des formulaires de déclaration" />
-        <Link href="/admin/new">
-          {isMobile ? (
-            <IconButton
-              appearance="outlined"
-              aria-label="Ajouter un formulaire"
-              name="add-box"
-              size="m"
-              variant="primary"
+    <div className="max-w-480 mx-auto h-full">
+      <Grid gridType="fluid">
+        {!(isMobile && selectedForm) && (
+          <Grid.Col xxs={2} xs={6} s={3} m={5}>
+            <FormsList
+              forms={filteredForms}
+              groupedForms={groupedForms}
+              categoryCodes={categoryCodes}
+              selectedFormId={selectedForm?.id ?? null}
+              onSelectForm={handleSelectForm}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
             />
-          ) : (
-            <Button
-              icon="add-box"
-              iconPosition="right"
-              label="Ajouter un formulaire"
-              size="m"
-              variant="primary"
-            />
-          )}
-        </Link>
-      </div>
-      <FormsList />
+          </Grid.Col>
+        )}
+        <Grid.Col xxs={2} xs={6} s={3} m={7}>
+          <FormDetailPanel
+            form={selectedForm}
+            open={!!selectedForm}
+            onClose={handleClosePanel}
+            onPublish={handlePublish}
+          />
+        </Grid.Col>
+      </Grid>
     </div>
   );
 }

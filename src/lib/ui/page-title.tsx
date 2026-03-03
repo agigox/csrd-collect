@@ -7,7 +7,7 @@ interface PageTitleProps {
 
 const PageTitle = ({ title }: PageTitleProps) => {
   return (
-    <div className="flex flex-col gap-2 w-fit py-3">
+    <div className="flex flex-col gap-2 w-full">
       <div className="flex items-center justify-between">
         <div className="heading-m">{title}</div>
       </div>

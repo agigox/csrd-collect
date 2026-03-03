@@ -92,6 +92,30 @@ export const mockFormTemplates = [
     createdAt: "2025-02-15T08:00:00Z",
     updatedAt: "2025-03-01T10:00:00Z",
   },
+  {
+    id: "form-4",
+    code: "E2-3456_04",
+    name: "Audit environnemental",
+    description: "Formulaire d'audit environnemental trimestriel",
+    categoryCode: "E2-4",
+    schema: {
+      fields: [
+        {
+          name: "observations",
+          type: "text",
+          label: "Observations",
+          required: false,
+        },
+      ],
+    },
+    version: 1,
+    isPublished: false,
+    publishedAt: null,
+    parentTemplateId: null,
+    isActive: true,
+    createdAt: "2025-03-01T08:00:00Z",
+    updatedAt: "2025-03-01T08:00:00Z",
+  },
 ];
 
 export const mockDeclarations = [
