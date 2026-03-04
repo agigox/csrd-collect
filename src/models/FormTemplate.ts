@@ -18,6 +18,8 @@ export interface FormTemplate {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  createdBy?: string;
+  isSuspended?: boolean;
 }
 
 export type CreateFormTemplateInput = Omit<

@@ -1,5 +1,25 @@
 # Journal des modifications
 
+## [1.0.2](../../compare/v1.0.1...v1.0.2) (2026-03-04)
+
+### Fonctionnalites
+
+- **admin:** refonte de la liste des formulaires admin avec groupes en accordeon et panneau de detail lateral ([f3417f7](../../commit/f3417f7))
+- **admin:** ajout du panneau de configuration a 4 onglets (equipes, administrateurs, parametres, previsualisation) ([cac854a](../../commit/cac854a))
+- **modeles:** ajout des champs `createdBy` et `isSuspended` sur FormTemplate ([cac854a](../../commit/cac854a))
+- **modeles:** ajout du role `superAdmin` dans l'enum UserRole ([cac854a](../../commit/cac854a))
+- **api:** envoi du champ `isSuspended` dans la sauvegarde des formulaires ([cac854a](../../commit/cac854a))
+- **preview:** extraction du composant reutilisable `FormPreviewContent` depuis `FormPreview` ([cac854a](../../commit/cac854a))
+
+### Infrastructure
+
+- **deploy:** activation de l'export statique Next.js pour le deploiement S3 (`output: "export"`, `images: { unoptimized: true }`) ([5ed4c2b](../../commit/5ed4c2b))
+
+### Maintenance
+
+- **docs:** ajout du changelog v1.0.1 et suppression des _specs du suivi git ([c3418b5](../../commit/c3418b5))
+- **gitignore:** ajout de _test-state au .gitignore ([5226547](../../commit/5226547))
+
 ## [1.0.1](../../compare/v1.0.0...v1.0.1) (2026-02-26)
 
 ### Fonctionnalités

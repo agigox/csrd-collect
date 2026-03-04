@@ -23,6 +23,7 @@ export async function saveFormTemplate(
       description: form.description,
       categoryCode: form.categoryCode,
       schema: form.schema,
+      isSuspended: form.isSuspended,
     }),
   });
 
