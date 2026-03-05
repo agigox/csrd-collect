@@ -28,7 +28,7 @@ const adminMenuItems = [
     id: "admin-equipe",
     icon: "group",
     label: "Admin. d'équipe",
-    link: "/admin/gestion-donnees",
+    link: "/admin/teams-admin",
   },
 ];
 

@@ -67,24 +67,26 @@ export const FormsList = ({
       {!hasResults ? (
         <EmptyCard message="Aucun formulaire trouvé" />
       ) : (
-        activeCategories.map((catCode, index) => (
-          <AccordionSection
-            key={catCode}
-            title={getCategoryLabel(catCode)}
-            defaultOpen={index === 0}
-            data-testid={`accordion-${catCode}`}
-          >
-            {groupedForms[catCode].map((form) => (
-              <FormCard
-                key={form.id}
-                title={form.name}
-                status={getFormStatus(form)}
-                selected={selectedFormId === form.id}
-                onClick={() => onSelectForm(form)}
-              />
-            ))}
-          </AccordionSection>
-        ))
+        <div className="flex flex-col gap-2">
+          {activeCategories.map((catCode, index) => (
+            <AccordionSection
+              key={catCode}
+              title={getCategoryLabel(catCode)}
+              defaultOpen={index === 0}
+              data-testid={`accordion-${catCode}`}
+            >
+              {groupedForms[catCode].map((form) => (
+                <FormCard
+                  key={form.id}
+                  title={form.name}
+                  status={getFormStatus(form)}
+                  selected={selectedFormId === form.id}
+                  onClick={() => onSelectForm(form)}
+                />
+              ))}
+            </AccordionSection>
+          ))}
+        </div>
       )}
     </div>
   );

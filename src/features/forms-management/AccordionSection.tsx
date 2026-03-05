@@ -27,7 +27,7 @@ export const AccordionSection = ({
         aria-expanded={isOpen}
       >
         <span
-          className="text-sm text-content-tertiary font-normal"
+          className="text-sm text-[#727272] font-normal w-[87px] text-left"
           style={{ fontSize: "13px" }}
         >
           {title}
@@ -36,14 +36,14 @@ export const AccordionSection = ({
           <Divider
             appearance="default"
             orientation="horizontal"
-            thickness="medium"
+            borderColor="#727272"
           />
         </div>
 
         <Icon
           name={isOpen ? "arrow-chevron-up" : "arrow-chevron-down"}
           size={20}
-          color="var(--content-tertiary)"
+          color="#727272"
         />
       </button>
       <div
