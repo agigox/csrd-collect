@@ -12,11 +12,7 @@ export interface MockAdmin {
   isCreator?: boolean;
 }
 
-const defaultTeams: MockTeam[] = [
-  { id: "team-1", name: "Equipe Maintenance Nord" },
-  { id: "team-2", name: "Equipe Exploitation Sud" },
-  { id: "team-3", name: "Equipe Support Technique" },
-];
+const formTeamsMap = new Map<string, MockTeam[]>();
 
 const defaultAdmins: MockAdmin[] = [
   { id: "admin-1", name: "Marie Dupont", role: "superAdmin" },
@@ -24,8 +20,12 @@ const defaultAdmins: MockAdmin[] = [
   { id: "admin-3", name: "Sophie Bernard", role: "admin" },
 ];
 
-export function getMockTeams(_formId: string): MockTeam[] {
-  return defaultTeams;
+export function getMockTeams(formId: string): MockTeam[] {
+  return formTeamsMap.get(formId) ?? [];
+}
+
+export function setMockTeams(formId: string, teams: MockTeam[]): void {
+  formTeamsMap.set(formId, teams);
 }
 
 export function getMockAdmins(_formId: string): MockAdmin[] {
