@@ -57,7 +57,9 @@ export const useDeclarationsStore = create<DeclarationsState>()(
             {
               error:
                 err instanceof Error
-                  ? err.message
+                  ? err.message === "Failed to fetch"
+                    ? "Impossible de se connecter au serveur"
+                    : "Erreur lors du chargement"
                   : "Erreur lors du chargement",
               loading: false,
             },

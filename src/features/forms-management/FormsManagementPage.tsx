@@ -1,18 +1,25 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Grid, useBreakpoint } from "@rte-ds/react";
 import { FormsList } from "./FormsList";
 import { FormDetailPanel } from "./FormDetailPanel";
+import CreateFormModal from "./CreateFormModal";
 import { useFormsStore } from "@/stores";
 import { useCategoryCodesStore } from "@/stores/categoryCodesStore";
+import { useFormEditorStore } from "@/stores/formEditorStore";
 import type { FormTemplate } from "@/models/FormTemplate";
 
 export default function AdminPageContent() {
+  const router = useRouter();
   const { forms, loading, fetchForms, publishForm } = useFormsStore();
   const { categoryCodes, fetchCategoryCodes } = useCategoryCodesStore();
+  const { setFormName, setFormDescription, setFormCategoryCode, setFormEditableBy } =
+    useFormEditorStore();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { isBelow } = useBreakpoint();
   const isMobile = isBelow("s");
 
@@ -63,6 +70,18 @@ export default function AdminPageContent() {
     [publishForm],
   );
 
+  const handleCreateValidate = useCallback(
+    (data: { name: string; categoryCode: string; description: string; editableBy: string }) => {
+      setFormName(data.name);
+      setFormCategoryCode(data.categoryCode);
+      setFormDescription(data.description);
+      setFormEditableBy(data.editableBy);
+      setIsCreateModalOpen(false);
+      router.push("/admin/new");
+    },
+    [setFormName, setFormCategoryCode, setFormDescription, setFormEditableBy, router],
+  );
+
   if (loading) {
     return (
       <div className="text-center py-8">Chargement des formulaires...</div>
@@ -82,6 +101,7 @@ export default function AdminPageContent() {
               onSelectForm={handleSelectForm}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
+              onCreateForm={() => setIsCreateModalOpen(true)}
             />
           </Grid.Col>
         )}
@@ -94,6 +114,11 @@ export default function AdminPageContent() {
           />
         </Grid.Col>
       </Grid>
+      <CreateFormModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onValidate={handleCreateValidate}
+      />
     </div>
   );
 }

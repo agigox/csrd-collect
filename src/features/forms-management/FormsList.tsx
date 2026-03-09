@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Searchbar, Button } from "@rte-ds/react";
 import { FormCard } from "./FormCard";
 import { AccordionSection } from "./AccordionSection";
@@ -18,6 +17,7 @@ interface FormsListProps {
   onSelectForm: (form: FormTemplate) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onCreateForm: () => void;
 }
 
 export const FormsList = ({
@@ -28,6 +28,7 @@ export const FormsList = ({
   onSelectForm,
   searchQuery,
   onSearchChange,
+  onCreateForm,
 }: FormsListProps) => {
   const getCategoryLabel = (code: string) => {
     if (code === "other") return "Non catégorisé";
@@ -46,15 +47,16 @@ export const FormsList = ({
   return (
     <div className="flex flex-col gap-5 py-2.5 pl-4 h-full overflow-y-auto">
       <PageTitle title="Admin. des déclarations" />
-      <Link href="/admin/new" className="text-center">
+      <div className="text-center">
         <Button
           icon="add-box"
           iconPosition="right"
           label="Créer un formulaire"
           size="m"
           variant="primary"
+          onClick={onCreateForm}
         />
-      </Link>
+      </div>
       <Searchbar
         appearance="secondary"
         value={searchQuery}

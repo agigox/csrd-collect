@@ -65,11 +65,12 @@ const DeclarationsList = ({
   }, [fetchDeclarations]);
 
   // Check if filters are active
-  const hasActiveFilters = useMemo(() =>
-    filters.status.length > 0 ||
-    filters.authorName.length > 0 ||
-    filters.teamId.length > 0,
-    [filters]
+  const hasActiveFilters = useMemo(
+    () =>
+      filters.status.length > 0 ||
+      filters.authorName.length > 0 ||
+      filters.teamId.length > 0,
+    [filters],
   );
 
   const filteredDeclarations = useMemo(() => {
@@ -79,7 +80,7 @@ const DeclarationsList = ({
     if (isSearchActive && searchQuery.trim() !== "") {
       const lowerQuery = searchQuery.toLowerCase();
       result = result.filter((declaration) =>
-        declaration.name.toLowerCase().includes(lowerQuery)
+        declaration.name.toLowerCase().includes(lowerQuery),
       );
     }
 
@@ -87,12 +88,14 @@ const DeclarationsList = ({
     if (hasActiveFilters && !isSearchActive) {
       result = result.filter((declaration) => {
         const matchesStatus =
-          filters.status.length === 0 || filters.status.includes(declaration.status);
+          filters.status.length === 0 ||
+          filters.status.includes(declaration.status);
         const matchesAuthor =
           filters.authorName.length === 0 ||
           filters.authorName.includes(declaration.authorName);
         const matchesTeam =
-          filters.teamId.length === 0 || filters.teamId.includes(declaration.teamId);
+          filters.teamId.length === 0 ||
+          filters.teamId.includes(declaration.teamId);
 
         return matchesStatus && matchesAuthor && matchesTeam;
       });
@@ -107,7 +110,7 @@ const DeclarationsList = ({
     filteredDeclarations.forEach((declaration) => {
       // Format createdAt to display date
       const date = new Date(declaration.createdAt);
-      const dateKey = date.toLocaleDateString('fr-FR');
+      const dateKey = date.toLocaleDateString("fr-FR");
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
@@ -127,7 +130,7 @@ const DeclarationsList = ({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-start justify-center p-8">
         <div className="text-red-500">Erreur: {error}</div>
       </div>
     );

@@ -20,6 +20,7 @@ export interface FormTemplate {
   updatedAt: string;
   createdBy?: string;
   isSuspended?: boolean;
+  editableBy?: string;
 }
 
 export type CreateFormTemplateInput = Omit<

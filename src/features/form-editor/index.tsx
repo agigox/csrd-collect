@@ -7,7 +7,6 @@ import { useFormEditorStore } from "@/stores/formEditorStore";
 import { Button, IconButton, useBreakpoint } from "@rte-ds/react";
 
 import { FormHeader } from "./FormHeader";
-import { FormMetadata } from "./FormMetadata";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { FormPreview } from "./FormPreview";
 
@@ -53,8 +52,12 @@ export default function FormCreation() {
     fetchCategoryCodes();
   }, [fetchForms, fetchCategoryCodes]);
 
+  // Only initialize from an existing form (edit mode).
+  // For new forms (/admin/new), the store is pre-populated by the CreateFormModal.
   useEffect(() => {
-    initializeFromForm(currentForm);
+    if (currentForm) {
+      initializeFromForm(currentForm);
+    }
   }, [currentForm, initializeFromForm]);
 
   const isEditMode = currentForm !== null;
@@ -132,7 +135,6 @@ export default function FormCreation() {
             onDelete={handleDelete}
           />
           <div className="flex flex-col gap-6">
-            <FormMetadata />
             <SchemaBuilder />
           </div>
         </div>

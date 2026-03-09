@@ -9,6 +9,7 @@ interface FormEditorState {
   formName: string;
   formDescription: string;
   formCategoryCode: string;
+  formEditableBy: string;
   schema: FieldConfig[];
 
   // UI state
@@ -19,6 +20,7 @@ interface FormEditorState {
   setFormName: (name: string) => void;
   setFormDescription: (description: string) => void;
   setFormCategoryCode: (code: string) => void;
+  setFormEditableBy: (editableBy: string) => void;
   setSchema: (schema: FieldConfig[]) => void;
   setIsSaving: (saving: boolean) => void;
   setShowPreview: (show: boolean) => void;
@@ -32,6 +34,7 @@ const initialState = {
   formName: "",
   formDescription: "",
   formCategoryCode: DEFAULT_CATEGORY_CODE,
+  formEditableBy: "",
   schema: [] as FieldConfig[],
   isSaving: false,
   showPreview: false,
@@ -51,6 +54,9 @@ export const useFormEditorStore = create<FormEditorState>()(
       setFormCategoryCode: (code) =>
         set({ formCategoryCode: code }, false, "FORM_EDITOR/SET_CATEGORY_CODE"),
 
+      setFormEditableBy: (editableBy) =>
+        set({ formEditableBy: editableBy }, false, "FORM_EDITOR/SET_EDITABLE_BY"),
+
       setSchema: (schema) =>
         set({ schema }, false, "FORM_EDITOR/SET_SCHEMA"),
 
@@ -67,6 +73,7 @@ export const useFormEditorStore = create<FormEditorState>()(
             formName: form?.name ?? "",
             formDescription: form?.description ?? "",
             formCategoryCode: form?.categoryCode ?? DEFAULT_CATEGORY_CODE,
+            formEditableBy: form?.editableBy ?? "",
             schema: form?.schema?.fields ?? [],
           },
           false,
