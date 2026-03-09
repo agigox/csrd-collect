@@ -10,6 +10,8 @@ export interface TreeNode {
   name: string;
   level: number;
   children: TreeNode[];
+  childrenLoaded?: boolean;
+  loading?: boolean;
 }
 
 // --- Pure utility functions ---
@@ -117,6 +119,7 @@ interface TreeNodeListProps {
   expandedIds: Set<string>;
   onToggleExpanded: (nodeId: string) => void;
   onToggleSelection: (node: TreeNode) => void;
+  onLoadChildren?: (nodeId: string) => Promise<void>;
 }
 
 function TreeNodeList({
@@ -125,6 +128,7 @@ function TreeNodeList({
   expandedIds,
   onToggleExpanded,
   onToggleSelection,
+  onLoadChildren,
 }: TreeNodeListProps) {
   return (
     <div className="flex flex-col gap-1">
@@ -136,6 +140,7 @@ function TreeNodeList({
           expandedIds={expandedIds}
           onToggleExpanded={onToggleExpanded}
           onToggleSelection={onToggleSelection}
+          onLoadChildren={onLoadChildren}
         />
       ))}
     </div>
@@ -148,6 +153,7 @@ interface TreeNodeRowProps {
   expandedIds: Set<string>;
   onToggleExpanded: (nodeId: string) => void;
   onToggleSelection: (node: TreeNode) => void;
+  onLoadChildren?: (nodeId: string) => Promise<void>;
 }
 
 function TreeNodeRow({
@@ -156,6 +162,7 @@ function TreeNodeRow({
   expandedIds,
   onToggleExpanded,
   onToggleSelection,
+  onLoadChildren,
 }: TreeNodeRowProps) {
   const isExpanded = expandedIds.has(node.id);
   const isLeaf = node.level === 3;
@@ -167,23 +174,35 @@ function TreeNodeRow({
   const someSelected = leafIds.some((id) => selectedLeafIds.has(id));
   const isIndeterminate = someSelected && !allSelected;
 
+  const handleToggle = async () => {
+    if (isLeaf) return;
+
+    const willExpand = !isExpanded;
+    if (willExpand && !node.childrenLoaded && onLoadChildren) {
+      await onLoadChildren(node.id);
+    }
+    onToggleExpanded(node.id);
+  };
+
   return (
     <>
       <div style={{ paddingLeft: `${node.level * 20}px` }}>
         <div
           className="flex items-center border border-[#a1a1a0] rounded px-2 py-1 cursor-pointer"
-          onClick={() => {
-            if (!isLeaf) onToggleExpanded(node.id);
-          }}
+          onClick={handleToggle}
         >
           {!isLeaf && (
             <div className="w-5 h-5 flex items-center justify-center shrink-0">
-              <Icon
-                name={
-                  isExpanded ? "arrow-chevron-down" : "arrow-chevron-right"
-                }
-                size={16}
-              />
+              {node.loading ? (
+                <div className="w-4 h-4 border-2 border-[#2964a0] border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Icon
+                  name={
+                    isExpanded ? "arrow-chevron-down" : "arrow-chevron-right"
+                  }
+                  size={16}
+                />
+              )}
             </div>
           )}
 
@@ -209,6 +228,7 @@ function TreeNodeRow({
           expandedIds={expandedIds}
           onToggleExpanded={onToggleExpanded}
           onToggleSelection={onToggleSelection}
+          onLoadChildren={onLoadChildren}
         />
       )}
     </>
@@ -222,6 +242,7 @@ interface OrgUnitTreeProps {
   loading: boolean;
   selectedLeafIds: Set<string>;
   onToggleSelection: (node: TreeNode) => void;
+  onLoadChildren?: (nodeId: string) => Promise<void>;
 }
 
 export default function OrgUnitTree({
@@ -229,6 +250,7 @@ export default function OrgUnitTree({
   loading,
   selectedLeafIds,
   onToggleSelection,
+  onLoadChildren,
 }: OrgUnitTreeProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -283,6 +305,7 @@ export default function OrgUnitTree({
             expandedIds={effectiveExpandedIds}
             onToggleExpanded={toggleExpanded}
             onToggleSelection={onToggleSelection}
+            onLoadChildren={onLoadChildren}
           />
         )}
       </div>

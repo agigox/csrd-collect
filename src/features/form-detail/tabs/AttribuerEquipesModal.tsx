@@ -27,7 +27,7 @@ export default function AttribuerEquipesModal({
     [currentTeams]
   );
 
-  const { treeData, loading, selectedLeafIds, setSelectedLeafIds } =
+  const { treeData, loading, selectedLeafIds, setSelectedLeafIds, loadChildren } =
     useOrgUnitTree({ isOpen, initialSelectedIds });
 
   const toggleNodeSelection = (node: TreeNode) => {
@@ -133,6 +133,7 @@ export default function AttribuerEquipesModal({
         loading={loading}
         selectedLeafIds={selectedLeafIds}
         onToggleSelection={toggleNodeSelection}
+        onLoadChildren={loadChildren}
       />
     </Modal>
   );

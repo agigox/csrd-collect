@@ -19,6 +19,94 @@
         "team": "Equipe Alpha"
       },
       "password": "SuperAdmin123!"
+    },
+    {
+      "id": "a1b2",
+      "nni": "JMART",
+      "email": "jean.martin@rte-france.com",
+      "lastName": "Martin",
+      "firstName": "Jean",
+      "role": "admin",
+      "status": "approved",
+      "team": null,
+      "password": "Admin12345!"
+    },
+    {
+      "id": "c3d4",
+      "nni": "SBERN",
+      "email": "sophie.bernard@rte-france.com",
+      "lastName": "Bernard",
+      "firstName": "Sophie",
+      "role": "admin",
+      "status": "approved",
+      "team": null,
+      "password": "Admin12345!"
+    },
+    {
+      "id": "e5f6",
+      "nni": "LDUBO",
+      "email": "lucas.dubois@rte-france.com",
+      "lastName": "Dubois",
+      "firstName": "Lucas",
+      "role": "superAdmin",
+      "status": "approved",
+      "team": null,
+      "password": "SuperAdmin123!"
+    },
+    {
+      "id": "g7h8",
+      "nni": "CMORE",
+      "email": "claire.moreau@rte-france.com",
+      "lastName": "Moreau",
+      "firstName": "Claire",
+      "role": "admin",
+      "status": "approved",
+      "team": null,
+      "password": "Admin12345!"
+    },
+    {
+      "id": "i9j0",
+      "nni": "PLEFE",
+      "email": "pierre.lefevre@rte-france.com",
+      "lastName": "Lefevre",
+      "firstName": "Pierre",
+      "role": "admin",
+      "status": "approved",
+      "team": null,
+      "password": "Admin12345!"
+    },
+    {
+      "id": "k1l2",
+      "nni": "NGARC",
+      "email": "nadia.garcia@rte-france.com",
+      "lastName": "Garcia",
+      "firstName": "Nadia",
+      "role": "admin",
+      "status": "approved",
+      "team": null,
+      "password": "Admin12345!"
+    },
+    {
+      "id": "m3n4",
+      "nni": "TROUX",
+      "email": "thomas.roux@rte-france.com",
+      "lastName": "Roux",
+      "firstName": "Thomas",
+      "role": "superAdmin",
+      "status": "approved",
+      "team": null,
+      "password": "SuperAdmin123!"
+    },
+    {
+      "id": "o5p6",
+      "nni": "EPETI",
+      "email": "emma.petit@rte-france.com",
+      "lastName": "Petit",
+      "firstName": "Emma",
+      "role": "admin",
+      "status": "approved",
+      "team": null,
+      "password": "Admin12345!"
     }
   ],
   "category-codes": [

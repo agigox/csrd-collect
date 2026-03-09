@@ -20,6 +20,8 @@ const defaultAdmins: MockAdmin[] = [
   { id: "admin-3", name: "Sophie Bernard", role: "admin" },
 ];
 
+const formAdminsMap = new Map<string, MockAdmin[]>();
+
 // this function allow us to get the list of teams for a given form
 // TODO: in this mock implementation we return a default list for any form, but in a real implementation we would fetch the teams from the backend based on the formId
 export function getMockTeams(formId: string): MockTeam[] {
@@ -37,6 +39,21 @@ export function setMockTeams(formId: string, teams: MockTeam[]): void {
 }
 // this function allow us to get the list of admins for a given form
 // TODO: in this mock implementation we return the same list for any form, but in a real implementation we would fetch the admins from the backend based on the formId
-export function getMockAdmins(_formId: string): MockAdmin[] {
-  return defaultAdmins;
+export function getMockAdmins(formId: string): MockAdmin[] {
+  return formAdminsMap.get(formId) ?? [...defaultAdmins];
+}
+
+export function addMockAdmin(formId: string, admin: MockAdmin): MockAdmin[] {
+  const current = getMockAdmins(formId);
+  if (current.some((a) => a.id === admin.id)) return current;
+  const updated = [...current, admin];
+  formAdminsMap.set(formId, updated);
+  return updated;
+}
+
+export function removeMockAdmin(formId: string, adminId: string): MockAdmin[] {
+  const current = getMockAdmins(formId);
+  const updated = current.filter((a) => a.id !== adminId);
+  formAdminsMap.set(formId, updated);
+  return updated;
 }

@@ -97,6 +97,27 @@ export async function fetchUserById(id: string): Promise<User> {
   return userWithoutPassword;
 }
 
+export async function fetchAdminUsers(): Promise<User[]> {
+  const response = await fetch(`${API_BASE_URL}/users?role=admin`);
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  const admins = (await response.json()) as User[];
+
+  const superAdminResponse = await fetch(
+    `${API_BASE_URL}/users?role=superAdmin`,
+  );
+
+  if (superAdminResponse.ok) {
+    const superAdmins = (await superAdminResponse.json()) as User[];
+    admins.push(...superAdmins);
+  }
+
+  return admins.map(({ password: _pw, ...user }) => user);
+}
+
 // Organizational unit endpoints (real API)
 
 export async function fetchDirections(): Promise<OrgUnit[]> {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   fetchDirections,
   fetchMaintenanceCenters,
@@ -12,8 +12,19 @@ interface UseOrgUnitTreeOptions {
   initialSelectedIds: string[];
 }
 
+function findNodeInTree(nodes: TreeNode[], targetId: string): TreeNode | null {
+  for (const node of nodes) {
+    if (node.id === targetId) return node;
+    const found = findNodeInTree(node.children, targetId);
+    if (found) return found;
+  }
+  return null;
+}
+
 export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOptions) {
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
+  const treeDataRef = useRef(treeData);
+  treeDataRef.current = treeData;
   const [loading, setLoading] = useState(false);
   const [selectedLeafIds, setSelectedLeafIds] = useState<Set<string>>(
     new Set()
@@ -30,82 +41,13 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
 
         const directions = await fetchDirections();
 
-        const centersPerDirection = await Promise.all(
-          directions.map((dir) => fetchMaintenanceCenters(dir.id))
-        );
-
-        const allCenters: Array<{
-          id: string;
-          name: string;
-          directionId: string;
-        }> = [];
-        directions.forEach((dir, idx) => {
-          centersPerDirection[idx].forEach((center) => {
-            allCenters.push({ ...center, directionId: dir.id });
-          });
-        });
-
-        const gmrsPerCenter = await Promise.all(
-          allCenters.map((center) => fetchGmrs(center.id))
-        );
-
-        const allGmrs: Array<{
-          id: string;
-          name: string;
-          centerId: string;
-        }> = [];
-        allCenters.forEach((center, idx) => {
-          gmrsPerCenter[idx].forEach((gmr) => {
-            allGmrs.push({ ...gmr, centerId: center.id });
-          });
-        });
-
-        const teamsPerGmr = await Promise.all(
-          allGmrs.map((gmr) => fetchTeams(gmr.id))
-        );
-
-        const tree = directions.map((dir) => {
-          const dirCenters = allCenters.filter(
-            (c) => c.directionId === dir.id
-          );
-
-          const centerNodes = dirCenters.map((center) => {
-            const centerGmrs = allGmrs.filter(
-              (g) => g.centerId === center.id
-            );
-
-            const gmrNodes = centerGmrs.map((gmr) => {
-              const gmrIdx = allGmrs.findIndex((g) => g.id === gmr.id);
-              const teamNodes = teamsPerGmr[gmrIdx].map((team) => ({
-                id: team.id,
-                name: team.name,
-                level: 3,
-                children: [] as TreeNode[],
-              }));
-
-              return {
-                id: gmr.id,
-                name: gmr.name,
-                level: 2,
-                children: teamNodes,
-              };
-            });
-
-            return {
-              id: center.id,
-              name: center.name,
-              level: 1,
-              children: gmrNodes,
-            };
-          });
-
-          return {
-            id: dir.id,
-            name: dir.name,
-            level: 0,
-            children: centerNodes,
-          };
-        });
+        const tree = directions.map((dir) => ({
+          id: dir.id,
+          name: dir.name,
+          level: 0,
+          children: [] as TreeNode[],
+          childrenLoaded: false,
+        }));
 
         if (cancelled) return;
         setTreeData(tree);
@@ -113,7 +55,7 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
         setLoading(false);
       } catch (error) {
         if (!cancelled) {
-          console.error("Failed to load org units:", error);
+          console.error("Failed to load directions:", error);
           setLoading(false);
         }
       }
@@ -126,5 +68,73 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
     };
   }, [isOpen, initialSelectedIds]);
 
-  return { treeData, loading, selectedLeafIds, setSelectedLeafIds };
+  const loadChildren = useCallback(async (nodeId: string) => {
+    setTreeData((prev) => {
+      const updated = JSON.parse(JSON.stringify(prev)) as TreeNode[];
+      const node = findNodeInTree(updated, nodeId);
+      if (!node || node.childrenLoaded) return prev;
+
+      node.loading = true;
+      return updated;
+    });
+
+    try {
+      const node = findNodeInTree(treeDataRef.current, nodeId);
+      if (!node) return;
+
+      let children: TreeNode[] = [];
+
+      if (node.level === 0) {
+        const centers = await fetchMaintenanceCenters(nodeId);
+        children = centers.map((center) => ({
+          id: center.id,
+          name: center.name,
+          level: 1,
+          children: [] as TreeNode[],
+          childrenLoaded: false,
+        }));
+      } else if (node.level === 1) {
+        const gmrs = await fetchGmrs(nodeId);
+        children = gmrs.map((gmr) => ({
+          id: gmr.id,
+          name: gmr.name,
+          level: 2,
+          children: [] as TreeNode[],
+          childrenLoaded: false,
+        }));
+      } else if (node.level === 2) {
+        const teams = await fetchTeams(nodeId);
+        children = teams.map((team) => ({
+          id: team.id,
+          name: team.name,
+          level: 3,
+          children: [] as TreeNode[],
+          childrenLoaded: true,
+        }));
+      }
+
+      setTreeData((prev) => {
+        const updated = JSON.parse(JSON.stringify(prev)) as TreeNode[];
+        const targetNode = findNodeInTree(updated, nodeId);
+        if (targetNode) {
+          targetNode.children = children;
+          targetNode.childrenLoaded = true;
+          targetNode.loading = false;
+        }
+        return updated;
+      });
+    } catch (error) {
+      console.error(`Failed to load children for node ${nodeId}:`, error);
+      setTreeData((prev) => {
+        const updated = JSON.parse(JSON.stringify(prev)) as TreeNode[];
+        const node = findNodeInTree(updated, nodeId);
+        if (node) {
+          node.loading = false;
+        }
+        return updated;
+      });
+    }
+  }, []);
+
+  return { treeData, loading, selectedLeafIds, setSelectedLeafIds, loadChildren };
 }
