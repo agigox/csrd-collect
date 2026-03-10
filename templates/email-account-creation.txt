@@ -1,0 +1,10 @@
+CSRD collecte
+
+Création de votre compte
+
+Cliquez sur ce lien pour valider votre compte :
+{{validation_link}}
+
+---
+RTE - CSRD collecte
+{{app_url}}
