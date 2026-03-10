@@ -38,7 +38,9 @@ interface PersistedAuthState {
 
 // Computed selectors (use outside the store via useAuthStore(selectX))
 export const selectIsAdmin = (state: AuthState) =>
-  state.user?.role === "admin";
+  state.user?.role === "admin" || state.user?.role === "superAdmin";
+export const selectIsSuperAdmin = (state: AuthState) =>
+  state.user?.role === "superAdmin";
 export const selectIsMember = (state: AuthState) =>
   state.user?.role === "member";
 export const selectIsPendingApproval = (state: AuthState) =>

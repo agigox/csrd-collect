@@ -15,6 +15,12 @@ interface ParametresTabProps {
   form: FormTemplate;
 }
 
+const EDITABLE_BY_OPTIONS = [
+  { value: "equipe", label: "Equipe" },
+  { value: "gre", label: "GRE" },
+  { value: "utilisateur", label: "Utilisateur" },
+];
+
 function formatDate(dateString: string | null): string {
   if (!dateString) return "-";
   try {
@@ -58,6 +64,9 @@ export function ParametresTab({ form }: ParametresTabProps) {
   const [editedCategoryCode, setEditedCategoryCode] = useState(
     form.categoryCode,
   );
+  const [editedEditableBy, setEditedEditableBy] = useState(
+    form.editableBy ?? "",
+  );
   const [editedIsSuspended, setEditedIsSuspended] = useState(
     form.isSuspended ?? false,
   );
@@ -67,8 +76,9 @@ export function ParametresTab({ form }: ParametresTabProps) {
   useEffect(() => {
     setEditedDescription(form.description ?? "");
     setEditedCategoryCode(form.categoryCode);
+    setEditedEditableBy(form.editableBy ?? "");
     setEditedIsSuspended(form.isSuspended ?? false);
-  }, [form.id, form.description, form.categoryCode, form.isSuspended]);
+  }, [form.id, form.description, form.categoryCode, form.editableBy, form.isSuspended]);
 
   // Load category codes on mount
   useEffect(() => {
@@ -83,6 +93,7 @@ export function ParametresTab({ form }: ParametresTabProps) {
         ...form,
         description: editedDescription || null,
         categoryCode: editedCategoryCode,
+        editableBy: editedEditableBy || undefined,
         isSuspended: editedIsSuspended,
       });
       await fetchForms();
@@ -95,6 +106,7 @@ export function ParametresTab({ form }: ParametresTabProps) {
     form,
     editedDescription,
     editedCategoryCode,
+    editedEditableBy,
     editedIsSuspended,
     saving,
     fetchForms,
@@ -120,6 +132,20 @@ export function ParametresTab({ form }: ParametresTabProps) {
         <span className="text-[16px] font-medium">
           Suspendre la declaration
         </span>
+      </div>
+
+      {/* Modifiable par select */}
+      <div className="flex flex-col gap-1" style={{ maxWidth: 280 }}>
+        <Select
+          id="editable-by-select"
+          label="Modifiable par"
+          options={EDITABLE_BY_OPTIONS}
+          value={editedEditableBy}
+          onChange={setEditedEditableBy}
+          showResetButton
+          onClear={() => setEditedEditableBy("")}
+          width="100%"
+        />
       </div>
 
       {/* Norme select */}
