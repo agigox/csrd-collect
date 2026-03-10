@@ -57,3 +57,16 @@ export function removeMockAdmin(formId: string, adminId: string): MockAdmin[] {
   formAdminsMap.set(formId, updated);
   return updated;
 }
+
+export function updateMockAdminRole(
+  formId: string,
+  adminId: string,
+  newRole: UserRole,
+): MockAdmin[] {
+  const current = getMockAdmins(formId);
+  const updated = current.map((a) =>
+    a.id === adminId ? { ...a, role: newRole } : a,
+  );
+  formAdminsMap.set(formId, updated);
+  return updated;
+}

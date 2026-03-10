@@ -6,7 +6,7 @@
       "email": "superadmin@rte-france.com",
       "lastName": "Am",
       "firstName": "Am",
-      "role": "admin",
+      "role": "superAdmin",
       "status": "approved",
       "team": {
         "directionId": "65a51999-25a4-41e6-9c27-8dd13b4d5614",

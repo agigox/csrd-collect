@@ -46,6 +46,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     if (
       isAuthenticated &&
       user?.role !== "admin" &&
+      user?.role !== "superAdmin" &&
       pathname.startsWith("/admin")
     ) {
       router.replace("/declarations");
