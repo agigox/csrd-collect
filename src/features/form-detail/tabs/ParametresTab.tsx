@@ -64,21 +64,19 @@ export function ParametresTab({ form }: ParametresTabProps) {
   const [editedCategoryCode, setEditedCategoryCode] = useState(
     form.categoryCode,
   );
-  const [editedEditableBy, setEditedEditableBy] = useState(
-    form.editableBy ?? "",
+  const [editedVisibilityLevel, setEditedVisibilityLevel] = useState(
+    form.visibilityLevel ?? "",
   );
-  const [editedIsSuspended, setEditedIsSuspended] = useState(
-    form.isSuspended ?? false,
-  );
+  const [editedIsActive, setEditedIsActive] = useState(form.isActive);
   const [saving, setSaving] = useState(false);
 
   // Re-sync local state when the selected form changes
   useEffect(() => {
     setEditedDescription(form.description ?? "");
     setEditedCategoryCode(form.categoryCode);
-    setEditedEditableBy(form.editableBy ?? "");
-    setEditedIsSuspended(form.isSuspended ?? false);
-  }, [form.id, form.description, form.categoryCode, form.editableBy, form.isSuspended]);
+    setEditedVisibilityLevel(form.visibilityLevel ?? "");
+    setEditedIsActive(form.isActive);
+  }, [form.id, form.description, form.categoryCode, form.visibilityLevel, form.isActive]);
 
   // Load category codes on mount
   useEffect(() => {
@@ -93,8 +91,8 @@ export function ParametresTab({ form }: ParametresTabProps) {
         ...form,
         description: editedDescription || null,
         categoryCode: editedCategoryCode,
-        editableBy: editedEditableBy || undefined,
-        isSuspended: editedIsSuspended,
+        visibilityLevel: editedVisibilityLevel || form.visibilityLevel,
+        isActive: editedIsActive,
       });
       await fetchForms();
     } catch (err) {
@@ -106,8 +104,8 @@ export function ParametresTab({ form }: ParametresTabProps) {
     form,
     editedDescription,
     editedCategoryCode,
-    editedEditableBy,
-    editedIsSuspended,
+    editedVisibilityLevel,
+    editedIsActive,
     saving,
     fetchForms,
   ]);
@@ -126,8 +124,8 @@ export function ParametresTab({ form }: ParametresTabProps) {
       <div className="flex items-center gap-3 bg-[#f5f5f5] rounded p-2 px-4">
         <Switch
           id="suspend-switch"
-          checked={editedIsSuspended}
-          onChange={() => setEditedIsSuspended(!editedIsSuspended)}
+          checked={!editedIsActive}
+          onChange={() => setEditedIsActive(!editedIsActive)}
         />
         <span className="text-[16px] font-medium">
           Suspendre la declaration
@@ -140,10 +138,10 @@ export function ParametresTab({ form }: ParametresTabProps) {
           id="editable-by-select"
           label="Modifiable par"
           options={EDITABLE_BY_OPTIONS}
-          value={editedEditableBy}
-          onChange={setEditedEditableBy}
+          value={editedVisibilityLevel}
+          onChange={setEditedVisibilityLevel}
           showResetButton
-          onClear={() => setEditedEditableBy("")}
+          onClear={() => setEditedVisibilityLevel("")}
           width="100%"
         />
       </div>

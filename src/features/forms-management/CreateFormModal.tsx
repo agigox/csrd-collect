@@ -11,7 +11,7 @@ interface CreateFormModalProps {
     name: string;
     categoryCode: string;
     description: string;
-    editableBy: string;
+    visibilityLevel: string;
   }) => void;
 }
 
@@ -31,7 +31,7 @@ export default function CreateFormModal({
   const [name, setName] = useState("");
   const [categoryCode, setCategoryCode] = useState("");
   const [description, setDescription] = useState("");
-  const [editableBy, setEditableBy] = useState("");
+  const [visibilityLevel, setEditableBy] = useState("");
   const [nameError, setNameError] = useState(false);
 
   const resetForm = () => {
@@ -52,7 +52,7 @@ export default function CreateFormModal({
       setNameError(true);
       return;
     }
-    onValidate({ name: name.trim(), categoryCode, description, editableBy });
+    onValidate({ name: name.trim(), categoryCode, description, visibilityLevel });
     resetForm();
   };
 
@@ -108,7 +108,7 @@ export default function CreateFormModal({
         <Select
           id="create-form-editable-by"
           label="Modifiable par"
-          value={editableBy}
+          value={visibilityLevel}
           onChange={setEditableBy}
           options={EDITABLE_BY_OPTIONS}
           showResetButton

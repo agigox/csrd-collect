@@ -15,15 +15,8 @@ export interface FormTemplate {
   isPublished: boolean;
   publishedAt: string | null;
   parentTemplateId: string | null;
+  visibilityLevel: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  createdBy?: string;
-  isSuspended?: boolean;
-  editableBy?: string;
 }
-
-export type CreateFormTemplateInput = Omit<
-  FormTemplate,
-  "id" | "version" | "isPublished" | "publishedAt" | "parentTemplateId" | "isActive" | "createdAt" | "updatedAt"
->;

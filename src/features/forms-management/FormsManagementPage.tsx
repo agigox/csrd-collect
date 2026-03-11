@@ -15,7 +15,7 @@ export default function AdminPageContent() {
   const router = useRouter();
   const { forms, loading, fetchForms, publishForm } = useFormsStore();
   const { categoryCodes, fetchCategoryCodes } = useCategoryCodesStore();
-  const { setFormName, setFormDescription, setFormCategoryCode, setFormEditableBy } =
+  const { setFormName, setFormDescription, setFormCategoryCode, setFormVisibilityLevel } =
     useFormEditorStore();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,15 +71,15 @@ export default function AdminPageContent() {
   );
 
   const handleCreateValidate = useCallback(
-    (data: { name: string; categoryCode: string; description: string; editableBy: string }) => {
+    (data: { name: string; categoryCode: string; description: string; visibilityLevel: string }) => {
       setFormName(data.name);
       setFormCategoryCode(data.categoryCode);
       setFormDescription(data.description);
-      setFormEditableBy(data.editableBy);
+      setFormVisibilityLevel(data.visibilityLevel);
       setIsCreateModalOpen(false);
       router.push("/admin/new");
     },
-    [setFormName, setFormCategoryCode, setFormDescription, setFormEditableBy, router],
+    [setFormName, setFormCategoryCode, setFormDescription, setFormVisibilityLevel, router],
   );
 
   if (loading) {
