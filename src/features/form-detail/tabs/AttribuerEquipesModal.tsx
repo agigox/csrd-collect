@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useMemo } from "react";
+import Image from "next/image";
 import { Modal, Button, Icon } from "@rte-ds/react";
 import type { MockTeam } from "../mockData";
-import OrgUnitTree, { getLeafDescendants, type TreeNode } from "../components/OrgUnitTree";
+import OrgUnitTree, {
+  getLeafDescendants,
+  type TreeNode,
+} from "../components/OrgUnitTree";
 import { useOrgUnitTree } from "../hooks/useOrgUnitTree";
 
 interface AttribuerEquipesModalProps {
@@ -20,15 +24,20 @@ export default function AttribuerEquipesModal({
   onValidate,
 }: AttribuerEquipesModalProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const pendingTeamsRef = useRef<MockTeam[]>([]);
+  const [pendingTeams, setPendingTeams] = useState<MockTeam[]>([]);
 
   const initialSelectedIds = useMemo(
     () => currentTeams.map((t) => t.id),
-    [currentTeams]
+    [currentTeams],
   );
 
-  const { treeData, loading, selectedLeafIds, setSelectedLeafIds, loadChildren } =
-    useOrgUnitTree({ isOpen, initialSelectedIds });
+  const {
+    treeData,
+    loading,
+    selectedLeafIds,
+    setSelectedLeafIds,
+    loadChildren,
+  } = useOrgUnitTree({ isOpen, initialSelectedIds });
 
   const toggleNodeSelection = (node: TreeNode) => {
     const leaves = getLeafDescendants(node);
@@ -60,12 +69,12 @@ export default function AttribuerEquipesModal({
     };
 
     collectSelectedTeams(treeData);
-    pendingTeamsRef.current = selectedTeams;
+    setPendingTeams(selectedTeams);
     setShowConfirmation(true);
   };
 
   const handleConfirmOk = () => {
-    onValidate(pendingTeamsRef.current);
+    onValidate(pendingTeams);
     setShowConfirmation(false);
   };
 
@@ -81,33 +90,36 @@ export default function AttribuerEquipesModal({
         isOpen={isOpen}
         onClose={handleClose}
         title="Attribuer des équipes"
-        size="m"
+        size="s"
         primaryButton={
           <Button variant="primary" label="Ok" onClick={handleConfirmOk} />
         }
       >
-        <div className="flex flex-col items-center gap-6 py-4">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-6">
+          <div className="flex items-start gap-2">
             <Icon name="check-circle" size={32} color="#2d7738" />
             <span className="text-xl text-[#201f1f]">
-              L&apos;attribution a bien été prise en compte.
+              L&apos;attribution des équipes suivantes a bien été prise en
+              compte :
             </span>
           </div>
-          {/* Illustration: see Figma node 565:20268 */}
-          <div className="w-[250px] h-[250px] flex items-center justify-center">
-            <svg
-              width="200"
-              height="200"
-              viewBox="0 0 200 200"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="100" cy="100" r="95" fill="#F5F0E8" />
-              <circle cx="70" cy="75" r="30" fill="#D4C5A0" stroke="#C8B88A" strokeWidth="2" />
-              <circle cx="130" cy="65" r="28" fill="#6B7B4F" stroke="#5A6A3E" strokeWidth="2" />
-              <circle cx="100" cy="130" r="28" fill="#D4A245" stroke="#C89535" strokeWidth="2" />
-              <circle cx="100" cy="100" r="12" fill="white" />
-            </svg>
+          <div className="flex items-center gap-6 pl-18">
+            <div className="shrink-0">
+              <Image
+                src="/Human_resource.png"
+                alt="Human Resource"
+                width={204}
+                height={204}
+              />
+            </div>
+            <ul className="list-disc pl-5 text-sm text-[#3e3e3d] leading-8">
+              {pendingTeams.map((team, index) => (
+                <li key={team.id}>
+                  {team.name}
+                  {index < pendingTeams.length - 1 ? "," : ""}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </Modal>
