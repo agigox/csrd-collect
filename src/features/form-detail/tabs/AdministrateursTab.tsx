@@ -26,7 +26,7 @@ interface AdministrateursTabProps {
 }
 
 function getRoleBadge(admin: MockAdmin) {
-  if (admin.role === "superAdmin") {
+  if (admin.role === "SUPER_ADMIN") {
     return {
       label: "Super admin",
       bg: "var(--decorative-vert-indications)",
@@ -58,7 +58,7 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
   const [deleteTarget, setDeleteTarget] = useState<MockAdmin | null>(null);
 
   const currentUser = useAuthStore((s) => s.user);
-  const isSuperAdmin = currentUser?.role === "superAdmin";
+  const isSuperAdmin = currentUser?.role === "SUPER_ADMIN";
 
   useEffect(() => {
     fetchAdminUsers()
@@ -85,7 +85,7 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
       const newAdmin: MockAdmin = {
         id: user.id,
         name: userToDisplayName(user),
-        role: user.role === "superAdmin" ? "superAdmin" : "admin",
+        role: user.role === "SUPER_ADMIN" ? "SUPER_ADMIN" : "ADMIN",
       };
 
       const updated = addMockAdmin(form.id, newAdmin);
@@ -112,7 +112,7 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
 
   const handleToggleRole = useCallback(
     (admin: MockAdmin) => {
-      const newRole = admin.role === "superAdmin" ? "admin" : "superAdmin";
+      const newRole = admin.role === "SUPER_ADMIN" ? "ADMIN" : "SUPER_ADMIN";
       const updated = updateMockAdminRole(form.id, admin.id, newRole);
       setAdmins(updated);
     },
@@ -131,7 +131,7 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
         {admins.map((admin) => {
           const badge = getRoleBadge(admin);
           const canInteract =
-            isSuperAdmin && !isOwnRow(admin) && admin.role !== "superAdmin";
+            isSuperAdmin && !isOwnRow(admin) && admin.role !== "SUPER_ADMIN";
 
           return (
             <div key={admin.id} className="flex flex-col">

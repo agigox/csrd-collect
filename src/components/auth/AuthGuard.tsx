@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { useAuthStore, selectIsPendingApproval, selectNeedsTeamOnboarding } from "@/stores/authStore";
+import { useAuthStore, selectIsAdmin, selectIsPendingApproval, selectNeedsTeamOnboarding } from "@/stores/authStore";
 import { usePathname, useRouter } from "next/navigation";
 import TeamOnboardingModal from "./TeamOnboardingModal";
 import AdminApprovalModal from "./AdminApprovalModal";
@@ -20,6 +20,7 @@ function isAuthRoute(pathname: string) {
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
   const { isAuthenticated, isLoading, user } = useAuthStore();
+  const isAdmin = useAuthStore(selectIsAdmin);
   const isPendingApproval = useAuthStore(selectIsPendingApproval);
   const needsTeamOnboarding = useAuthStore(selectNeedsTeamOnboarding);
   const pathname = usePathname();
@@ -43,12 +44,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     }
 
     // Non-admin on admin routes → redirect to declarations
-    if (
-      isAuthenticated &&
-      user?.role !== "admin" &&
-      user?.role !== "superAdmin" &&
-      pathname.startsWith("/admin")
-    ) {
+    if (isAuthenticated && !isAdmin && pathname.startsWith("/admin")) {
       router.replace("/declarations");
       return;
     }

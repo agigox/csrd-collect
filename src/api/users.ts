@@ -1,81 +1,70 @@
-import { API_BASE_URL, REAL_API_URL } from "./config";
+import { API_BASE_URL } from "./config";
+import { authHeaders } from "./authHeaders";
 import type { User, RegisterData, OrgUnit } from "@/models/User";
 
-export async function loginUser(
-  nniOrEmail: string,
-  password: string,
-): Promise<User> {
-  // Determine if it's NNI (5 alphanumeric uppercase) or email
-  const isNni = /^[A-Z0-9]{5}$/.test(nniOrEmail);
-  const queryParam = isNni
-    ? `nni=${encodeURIComponent(nniOrEmail)}`
-    : `email=${encodeURIComponent(nniOrEmail)}`;
+let _accessToken: string | null = null;
 
-  const response = await fetch(`${API_BASE_URL}/users?${queryParam}`);
-
-  if (!response.ok) {
-    throw new Error(`Erreur HTTP: ${response.status}`);
-  }
-
-  const rawUsers = (await response.json()) as User[];
-
-  // json-server v1 beta returns records where the filtered property is missing,
-  // so we filter client-side to ensure an exact match.
-  const users = rawUsers.filter((u) =>
-    isNni ? u.nni === nniOrEmail : u.email === nniOrEmail,
-  );
-
-  if (users.length === 0) {
-    throw new Error("Identifiant incorrect");
-  }
-
-  const user = users[0];
-
-  // json-server stores passwords in plain text (dev only)
-  if (user.password !== password) {
-    throw new Error("Mot de passe incorrect");
-  }
-
-  // Don't return password to the client store
-  const { password: _pw, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+export function setAccessToken(token: string | null) {
+  _accessToken = token;
 }
 
-export async function registerUser(data: RegisterData): Promise<User> {
-  const body: Record<string, unknown> = {
-    nni: data.nni,
-    email: data.email,
-    lastName: data.lastName || "",
-    firstName: data.firstName || "",
-    role: "member",
-    status: "pending",
-    team: null,
-    password: data.password,
-  };
+export function getAccessToken(): string | null {
+  return _accessToken;
+}
 
-  const response = await fetch(`${API_BASE_URL}/users`, {
+export async function loginUser(
+  identifier: string,
+  password: string,
+): Promise<{ user: User; access_token: string }> {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ identifier, password }),
   });
 
   if (!response.ok) {
-    throw new Error(`Erreur HTTP: ${response.status}`);
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.message || "Identifiant ou mot de passe incorrect");
   }
 
-  const user = (await response.json()) as User;
-  const { password: _pw, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+  const data = await response.json();
+  _accessToken = data.access_token;
+  return data;
 }
 
-export async function patchUserTeam(
-  id: string,
+export async function registerUser(data: RegisterData): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nni: data.nni,
+      email: data.email,
+      password: data.password,
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.message || "Erreur lors de l'inscription");
+  }
+
+  return response.json() as Promise<User>;
+}
+
+export async function patchCurrentUserTeam(
   team: User["team"],
 ): Promise<User> {
-  const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/auth/me/team`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ team }),
+    headers: authHeaders(),
+    body: JSON.stringify({
+      directionId: team?.directionId,
+      maintenanceCenterId: team?.maintenanceCenterId,
+      gmrId: team?.gmrId,
+      teamId: team?.teamId,
+    }),
   });
 
   if (!response.ok) {
@@ -85,44 +74,24 @@ export async function patchUserTeam(
   return response.json() as Promise<User>;
 }
 
-export async function fetchUserById(id: string): Promise<User> {
-  const response = await fetch(`${API_BASE_URL}/users/${id}`);
+export async function fetchCurrentUser(): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    headers: authHeaders(),
+  });
 
   if (!response.ok) {
     throw new Error(`Erreur HTTP: ${response.status}`);
   }
 
-  const user = (await response.json()) as User;
-  const { password: _pw, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+  return response.json() as Promise<User>;
 }
 
-export async function fetchAdminUsers(): Promise<User[]> {
-  const response = await fetch(`${API_BASE_URL}/users?role=admin`);
-
-  if (!response.ok) {
-    throw new Error(`Erreur HTTP: ${response.status}`);
-  }
-
-  const admins = (await response.json()) as User[];
-
-  const superAdminResponse = await fetch(
-    `${API_BASE_URL}/users?role=superAdmin`,
-  );
-
-  if (superAdminResponse.ok) {
-    const superAdmins = (await superAdminResponse.json()) as User[];
-    admins.push(...superAdmins);
-  }
-
-  return admins.map(({ password: _pw, ...user }) => user);
-}
-
-// Organizational unit endpoints (real API)
+// Organizational unit endpoints
 
 export async function fetchDirections(): Promise<OrgUnit[]> {
   const response = await fetch(
-    `${REAL_API_URL}/organizational-units/directions`,
+    `${API_BASE_URL}/organizational-units/directions`,
+    { headers: authHeaders() },
   );
 
   if (!response.ok) {
@@ -136,7 +105,8 @@ export async function fetchMaintenanceCenters(
   directionId: string,
 ): Promise<OrgUnit[]> {
   const response = await fetch(
-    `${REAL_API_URL}/organizational-units/maintenance-centers?directionId=${encodeURIComponent(directionId)}`,
+    `${API_BASE_URL}/organizational-units/maintenance-centers?directionId=${encodeURIComponent(directionId)}`,
+    { headers: authHeaders() },
   );
 
   if (!response.ok) {
@@ -150,7 +120,8 @@ export async function fetchGmrs(
   maintenanceCenterId: string,
 ): Promise<OrgUnit[]> {
   const response = await fetch(
-    `${REAL_API_URL}/organizational-units/gmrs?maintenanceCenterId=${encodeURIComponent(maintenanceCenterId)}`,
+    `${API_BASE_URL}/organizational-units/gmrs?maintenanceCenterId=${encodeURIComponent(maintenanceCenterId)}`,
+    { headers: authHeaders() },
   );
 
   if (!response.ok) {
@@ -162,7 +133,8 @@ export async function fetchGmrs(
 
 export async function fetchTeams(gmrId: string): Promise<OrgUnit[]> {
   const response = await fetch(
-    `${REAL_API_URL}/organizational-units/teams?gmrId=${encodeURIComponent(gmrId)}`,
+    `${API_BASE_URL}/organizational-units/teams?gmrId=${encodeURIComponent(gmrId)}`,
+    { headers: authHeaders() },
   );
 
   if (!response.ok) {
@@ -170,4 +142,17 @@ export async function fetchTeams(gmrId: string): Promise<OrgUnit[]> {
   }
 
   return response.json() as Promise<OrgUnit[]>;
+}
+
+export async function fetchAdminUsers(): Promise<User[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/users?role=ADMIN&role=SUPER_ADMIN`,
+    { headers: authHeaders() },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<User[]>;
 }

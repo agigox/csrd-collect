@@ -64,7 +64,7 @@ export const FormsList = ({
         onClear={() => onSearchChange("")}
         label="Rechercher"
         showResetButton={!!searchQuery}
-        fullWidth
+        style={{ width: "100%" }}
       />
       {!hasResults ? (
         <EmptyCard message="Aucun formulaire trouvé" />

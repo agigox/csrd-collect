@@ -1,5 +1,13 @@
-export type UserRole = "member" | "admin" | "superAdmin";
-export type UserStatus = "pending" | "approved";
+export type UserRole =
+  | "SUPER_ADMIN"
+  | "ADMIN"
+  | "DIRECTOR"
+  | "MC_MANAGER"
+  | "GMR_MANAGER"
+  | "TEAM_LEADER"
+  | "OPERATOR";
+
+export type UserStatus = "PENDING" | "ACTIVE" | "SUSPENDED" | "REJECTED";
 
 export interface User {
   id: string;
@@ -11,6 +19,11 @@ export interface User {
   status?: UserStatus;
   password?: string;
   team?: Team | null;
+  // Backend fields
+  teamId?: string | null;
+  directionId?: string | null;
+  maintenanceCenterId?: string | null;
+  gmrId?: string | null;
 }
 
 export interface Team {
@@ -35,4 +48,5 @@ export interface RegisterData {
 export interface OrgUnit {
   id: string;
   name: string;
+  code?: string;
 }

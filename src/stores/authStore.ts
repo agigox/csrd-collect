@@ -1,17 +1,19 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import type { User, RegisterData } from "@/models/User";
 import type { Team } from "@/models/User";
 import {
   loginUser,
   registerUser,
-  patchUserTeam,
-  fetchUserById,
+  patchCurrentUserTeam,
+  fetchCurrentUser,
+  setAccessToken,
 } from "@/api/users";
 
 interface AuthState {
   // Core state
   user: User | null;
+  accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -29,30 +31,38 @@ interface AuthState {
   clearError: () => void;
 }
 
-// Shape persisted to / restored from localStorage
+// Shape persisted to / restored from sessionStorage
 interface PersistedAuthState {
   user: User | null;
+  accessToken: string | null;
   isAuthenticated: boolean;
   team: Team | null;
 }
 
 // Computed selectors (use outside the store via useAuthStore(selectX))
-export const selectIsAdmin = (state: AuthState) =>
-  state.user?.role === "admin" || state.user?.role === "superAdmin";
+export const selectIsAdmin = (state: AuthState) => {
+  const role = state.user?.role;
+  return role === "ADMIN" || role === "SUPER_ADMIN";
+};
 export const selectIsSuperAdmin = (state: AuthState) =>
-  state.user?.role === "superAdmin";
-export const selectIsMember = (state: AuthState) =>
-  state.user?.role === "member";
-export const selectIsPendingApproval = (state: AuthState) =>
-  state.user?.status === "pending";
+  state.user?.role === "SUPER_ADMIN";
+export const selectIsMember = (state: AuthState) => {
+  const role = state.user?.role;
+  return role === "OPERATOR" || role === "TEAM_LEADER";
+};
+export const selectIsPendingApproval = (state: AuthState) => {
+  const status = state.user?.status;
+  return status === "PENDING";
+};
 export const selectNeedsTeamOnboarding = (state: AuthState) =>
-  !!state.user && state.user.status !== "pending" && !state.user.team;
+  !!state.user && !selectIsPendingApproval(state) && !selectIsAdmin(state) && !state.user.team && !state.user.teamId;
 
 export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
       (set, get) => ({
         user: null,
+        accessToken: null,
         isAuthenticated: false,
         isLoading: true,
         error: null,
@@ -61,10 +71,12 @@ export const useAuthStore = create<AuthState>()(
         login: async (nniOrEmail: string, password: string) => {
           set({ isLoading: true, error: null }, false, "AUTH/LOGIN_START");
           try {
-            const user = await loginUser(nniOrEmail, password);
+            const { user, access_token } = await loginUser(nniOrEmail, password);
+            setAccessToken(access_token);
             set(
               {
                 user,
+                accessToken: access_token,
                 isAuthenticated: true,
                 isLoading: false,
                 error: null,
@@ -111,24 +123,30 @@ export const useAuthStore = create<AuthState>()(
           }
         },
 
-        logout: () =>
+        logout: () => {
+          setAccessToken(null);
           set(
             {
               user: null,
+              accessToken: null,
               team: null,
               isAuthenticated: false,
               error: null,
             },
             false,
             "AUTH/LOGOUT"
-          ),
+          );
+        },
 
         refreshUser: async () => {
-          const { user } = get();
-          if (!user?.id) return;
+          const { accessToken } = get();
+          if (!accessToken) return;
+
+          // Restore token in API module on rehydration
+          setAccessToken(accessToken);
 
           try {
-            const freshUser = await fetchUserById(user.id);
+            const freshUser = await fetchCurrentUser();
             set(
               {
                 user: freshUser,
@@ -146,7 +164,7 @@ export const useAuthStore = create<AuthState>()(
           const { user } = get();
           if (!user) throw new Error("Utilisateur non connecté");
 
-          await patchUserTeam(user.id, team);
+          await patchCurrentUserTeam(team);
           set(
             {
               user: { ...user, team },
@@ -165,43 +183,31 @@ export const useAuthStore = create<AuthState>()(
       }),
       {
         name: "csrd_auth",
-        version: 2,
+        version: 4,
+        storage: createJSONStorage(() => sessionStorage),
         migrate: (persistedState, version): PersistedAuthState => {
           const state = persistedState as Record<string, unknown>;
-          if (version === 0) {
-            // Migration from v0: add user field from existing teamInfo
-            const teamInfo = state.teamInfo as Team | null;
+          if (version < 4) {
+            // Clear all old state — force re-login
             return {
-              user: state.isAuthenticated
-                ? {
-                    id: "migrated",
-                    role: "member" as const,
-                    team: teamInfo ?? null,
-                  }
-                : null,
-              isAuthenticated: !!state.isAuthenticated,
-              team: teamInfo ?? null,
-            };
-          }
-          if (version === 1) {
-            // Migration from v1: rename teamInfo → team
-            const teamInfo = state.teamInfo as Team | null;
-            return {
-              user: state.user as User | null,
-              isAuthenticated: !!state.isAuthenticated,
-              team: teamInfo ?? null,
+              user: null,
+              accessToken: null,
+              isAuthenticated: false,
+              team: null,
             };
           }
           return state as unknown as PersistedAuthState;
         },
         partialize: (state): PersistedAuthState => ({
           user: state.user,
+          accessToken: state.accessToken,
           isAuthenticated: state.isAuthenticated,
           team: state.team,
         }),
         onRehydrateStorage: () => (state) => {
-          if (state?.isAuthenticated && state?.user?.id) {
-            // Re-fetch user from server to get latest status/team
+          if (state?.isAuthenticated && state?.accessToken) {
+            // Restore token in API module
+            setAccessToken(state.accessToken);
             state.refreshUser().finally(() => {
               state.setLoading(false);
             });

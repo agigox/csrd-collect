@@ -15,9 +15,9 @@ export interface MockAdmin {
 const formTeamsMap = new Map<string, MockTeam[]>();
 
 const defaultAdmins: MockAdmin[] = [
-  { id: "admin-1", name: "Marie Dupont", role: "superAdmin" },
-  { id: "admin-2", name: "Jean Martin", role: "admin", isCreator: true },
-  { id: "admin-3", name: "Sophie Bernard", role: "admin" },
+  { id: "admin-1", name: "Marie Dupont", role: "SUPER_ADMIN" },
+  { id: "admin-2", name: "Jean Martin", role: "ADMIN", isCreator: true },
+  { id: "admin-3", name: "Sophie Bernard", role: "ADMIN" },
 ];
 
 const formAdminsMap = new Map<string, MockAdmin[]>();
