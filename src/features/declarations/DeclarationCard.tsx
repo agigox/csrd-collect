@@ -5,8 +5,8 @@ import { Card, Chip } from "@rte-ds/react";
 interface DeclarationCardProps {
   createdAt: string;
   authorName: string;
-  name: string;
-  description: string;
+  formName: string;
+  location: string;
   onClick?: () => void;
   isSelected?: boolean;
   isNew?: boolean;
@@ -15,8 +15,8 @@ interface DeclarationCardProps {
 const DeclarationCard = ({
   createdAt,
   authorName,
-  name,
-  description,
+  formName,
+  location,
   onClick,
   isSelected = false,
   isNew = false,
@@ -49,14 +49,14 @@ const DeclarationCard = ({
         <Chip id="author-chip" label={authorName} size="s" clickable={false} />
       </div>
 
-      {/* Row 2: Title */}
+      {/* Row 2: Title (form template name) */}
       <h3 className="text-xl font-semibold text-[#201f1f] tracking-tight leading-7 w-full">
-        {name || "Sans titre"}
+        {formName || "Sans titre"}
       </h3>
 
-      {/* Row 3: Description */}
+      {/* Row 3: Location */}
       <p className="text-sm font-normal text-[#11161a] leading- w-full">
-        {description || "Aucune description"}
+        {location || "Aucune localisation"}
       </p>
     </Card>
   );

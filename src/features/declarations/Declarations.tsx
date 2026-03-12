@@ -228,28 +228,6 @@ const Declarations = () => {
     [finalSelectedDeclaration, updateTempDeclaration, validateForm],
   );
 
-  // Handler for declaration name changes
-  const handleDeclarationNameChange = useCallback(
-    (newName: string) => {
-      if (!finalSelectedDeclaration) return;
-      updateTempDeclaration(finalSelectedDeclaration.id, {
-        name: newName,
-      });
-      setTempDeclarations((prev) => {
-        const next = new Map(prev);
-        const existing = next.get(finalSelectedDeclaration.id);
-        if (existing) {
-          next.set(finalSelectedDeclaration.id, {
-            ...existing,
-            name: newName,
-          });
-        }
-        return next;
-      });
-    },
-    [finalSelectedDeclaration, updateTempDeclaration],
-  );
-
   // Check if form is valid (no errors)
   const isFormValid = useMemo(() => {
     return Object.keys(formErrors).length === 0;
@@ -342,7 +320,6 @@ const Declarations = () => {
               formValues={formValues}
               formErrors={formErrors}
               onFormValuesChange={handleFormValuesChange}
-              onDeclarationNameChange={handleDeclarationNameChange}
               isFormValid={isFormValid}
               onSubmit={handleSubmit}
               showHistory={showHistory}

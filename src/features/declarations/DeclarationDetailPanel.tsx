@@ -3,7 +3,6 @@
 import { Button } from "@rte-ds/react";
 import { SidePanel } from "@/components/common";
 import { DynamicForm } from "@/features/form-builder/DynamicForm";
-import { LabelField } from "@/features/field-configurator/common/LabelField";
 import Icon from "@/lib/Icons";
 import ModificationHistory from "./ModificationHistory";
 import type { FormTemplate } from "@/models/FormTemplate";
@@ -17,7 +16,6 @@ interface DeclarationDetailPanelProps {
   formValues: Record<string, unknown>;
   formErrors: Record<string, string>;
   onFormValuesChange: (values: Record<string, unknown>) => void;
-  onDeclarationNameChange: (name: string) => void;
   isFormValid: boolean;
   onSubmit: () => void;
   showHistory: boolean;
@@ -32,7 +30,6 @@ export const DeclarationDetailPanel = ({
   formValues,
   formErrors,
   onFormValuesChange,
-  onDeclarationNameChange,
   isFormValid,
   onSubmit,
   showHistory,
@@ -43,19 +40,18 @@ export const DeclarationDetailPanel = ({
   return (
     <SidePanel open={open} onClose={onClose}>
       {/* Header */}
-      <div className="flex flex-col gap-2 px-6 -mt-2">
+      <div className="flex flex-col gap-1 px-6 -mt-2">
         <div className="flex items-center gap-2 justify-between">
           <div className="flex flex-col">
-            <span className="text-base font-semibold">
-              {declaration?.isNew
-                ? "Nouvelle déclaration"
-                : "Modifier la déclaration"}
-            </span>
+            <h2
+              className="text-xl font-bold truncate"
+              style={{ fontFamily: "Nunito, sans-serif", fontSize: "20px" }}
+            >
+              {selectedForm?.name || ""}
+            </h2>
             <span className="text-sm text-muted-foreground">
               ID{" "}
-              {(declaration?.id || selectedForm?.id || "")
-                .split("-")[0]
-                .toUpperCase()}
+              {(selectedForm?.id || "").split("-")[0].toUpperCase()}
             </span>
           </div>
           {declaration &&
@@ -70,17 +66,6 @@ export const DeclarationDetailPanel = ({
               />
             )}
         </div>
-
-        {declaration && (
-          <LabelField
-            value={declaration.name}
-            onChange={onDeclarationNameChange}
-            placeholder="Titre de la déclaration"
-            label="Titre de la déclaration"
-            displayClassName="heading-m bg-background-hover"
-            className="w-full"
-          />
-        )}
       </div>
 
       <div className="h-px w-full bg-border" />

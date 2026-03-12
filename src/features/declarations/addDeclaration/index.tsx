@@ -1,14 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/lib/ui/dialog";
-import { Button } from "@/lib/ui/button";
+import { Modal, Button } from "@rte-ds/react";
 import Icon from "@/lib/Icons";
 import FormSelectionDialog from "../FormSelectionDialog";
 import type { FormTemplate } from "@/models/FormTemplate";
@@ -36,22 +29,23 @@ const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
     setDeclarationDialogOpen(true);
   };
 
-  const handleCloseDeclaration = (open: boolean) => {
-    setDeclarationDialogOpen(open);
-    if (!open) {
-      setSelectedForm(null);
-      setFormValues({});
-      setFormErrors({});
-    }
+  const handleCloseDeclaration = () => {
+    setDeclarationDialogOpen(false);
+    setSelectedForm(null);
+    setFormValues({});
+    setFormErrors({});
   };
 
   return (
     <>
       {triggerButton && (
-        <Button onClick={handleOpenSelection}>
+        <button
+          onClick={handleOpenSelection}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded bg-primary text-white hover:opacity-90"
+        >
           <span>Déclarer</span>
           <Icon name="campaign" />
-        </Button>
+        </button>
       )}
 
       {/* Modal de sélection du type de formulaire */}
@@ -62,47 +56,43 @@ const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
       />
 
       {/* Modal de déclaration avec le formulaire sélectionné */}
-      <Dialog
-        open={declarationDialogOpen}
-        onOpenChange={handleCloseDeclaration}
+      <Modal
+        id="declaration-form"
+        isOpen={declarationDialogOpen}
+        onClose={handleCloseDeclaration}
+        closeOnOverlayClick={false}
+        title="Nouvelle déclaration"
+        description={selectedForm?.name || "Formulaire"}
+        size="m"
+        primaryButton={
+          <Button
+            variant="primary"
+            label="Soumettre"
+            onClick={() => {
+              console.log("Soumettre:", formValues);
+              handleCloseDeclaration();
+            }}
+          />
+        }
+        secondaryButton={
+          <Button
+            variant="secondary"
+            label="Annuler"
+            onClick={handleCloseDeclaration}
+          />
+        }
       >
-        <DialogContent className="!fixed !top-0 !right-0 !left-auto !h-screen !w-[547px] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-l !border-y-0 !border-r-0 data-[state=open]:!animate-slide-in-from-right data-[state=closed]:!animate-slide-out-to-right">
-          <DialogHeader>
-            <DialogTitle>Nouvelle déclaration</DialogTitle>
-            <DialogDescription>
-              {selectedForm?.name || "Formulaire"}
-            </DialogDescription>
-          </DialogHeader>
-
-          {selectedForm && (
-            <div className="flex-1 overflow-y-auto py-4">
-              <DynamicForm
-                schema={selectedForm.schema.fields}
-                values={formValues}
-                onChange={setFormValues}
-                errors={formErrors}
-              />
-            </div>
-          )}
-
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button
-              variant="outline"
-              onClick={() => handleCloseDeclaration(false)}
-            >
-              Annuler
-            </Button>
-            <Button
-              onClick={() => {
-                console.log("Soumettre:", formValues);
-                handleCloseDeclaration(false);
-              }}
-            >
-              Soumettre
-            </Button>
+        {selectedForm && (
+          <div className="flex-1 overflow-y-auto py-4">
+            <DynamicForm
+              schema={selectedForm.schema.fields}
+              values={formValues}
+              onChange={setFormValues}
+              errors={formErrors}
+            />
           </div>
-        </DialogContent>
-      </Dialog>
+        )}
+      </Modal>
     </>
   );
 };

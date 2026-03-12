@@ -4,6 +4,7 @@ import type { Declaration } from "@/models/Declaration";
 import DeclarationCard from "../DeclarationCard";
 import { Divider } from "@rte-ds/react";
 import { EmptyCard } from "@/lib/ui/EmptyCard";
+import { useFormsStore } from "@/stores";
 
 interface ListProps {
   groupedDeclarations: Record<string, Declaration[]>;
@@ -22,6 +23,7 @@ const List = ({
   searchQuery = "",
   hasActiveFilters = false,
 }: ListProps) => {
+  const { forms } = useFormsStore();
   const hasDeclarations = Object.keys(groupedDeclarations).length > 0;
 
   if (!hasDeclarations) {
@@ -49,8 +51,8 @@ const List = ({
                 key={declaration.id}
                 createdAt={declaration.createdAt}
                 authorName={declaration.authorName}
-                name={declaration.name}
-                description={declaration.description}
+                formName={forms.find((f) => f.id === declaration.formTemplateId)?.name || declaration.name}
+                location={declaration.location}
                 onClick={() => onEditDeclaration?.(declaration)}
                 isSelected={declaration.id === selectedDeclarationId}
                 isNew={declaration.isNew}
