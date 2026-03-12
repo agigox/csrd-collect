@@ -1,0 +1,129 @@
+"use client";
+
+import { Button } from "@rte-ds/react";
+import { SidePanel } from "@/components/common";
+import { DynamicForm } from "@/features/form-builder/DynamicForm";
+import { LabelField } from "@/features/field-configurator/common/LabelField";
+import Icon from "@/lib/Icons";
+import ModificationHistory from "./ModificationHistory";
+import type { FormTemplate } from "@/models/FormTemplate";
+import type { Declaration } from "@/models/Declaration";
+
+interface DeclarationDetailPanelProps {
+  open: boolean;
+  onClose: () => void;
+  selectedForm: FormTemplate | null;
+  declaration: Declaration | null;
+  formValues: Record<string, unknown>;
+  formErrors: Record<string, string>;
+  onFormValuesChange: (values: Record<string, unknown>) => void;
+  onDeclarationNameChange: (name: string) => void;
+  isFormValid: boolean;
+  onSubmit: () => void;
+  showHistory: boolean;
+  onToggleHistory: (show: boolean) => void;
+}
+
+export const DeclarationDetailPanel = ({
+  open,
+  onClose,
+  selectedForm,
+  declaration,
+  formValues,
+  formErrors,
+  onFormValuesChange,
+  onDeclarationNameChange,
+  isFormValid,
+  onSubmit,
+  showHistory,
+  onToggleHistory,
+}: DeclarationDetailPanelProps) => {
+  if (!declaration && !selectedForm) return null;
+
+  return (
+    <SidePanel open={open} onClose={onClose}>
+      {/* Header */}
+      <div className="flex flex-col gap-2 px-6 -mt-2">
+        <div className="flex items-center gap-2 justify-between">
+          <div className="flex flex-col">
+            <span className="text-base font-semibold">
+              {declaration?.isNew
+                ? "Nouvelle déclaration"
+                : "Modifier la déclaration"}
+            </span>
+            <span className="text-sm text-muted-foreground">
+              ID{" "}
+              {(declaration?.id || selectedForm?.id || "")
+                .split("-")[0]
+                .toUpperCase()}
+            </span>
+          </div>
+          {declaration &&
+            !showHistory &&
+            declaration.history &&
+            declaration.history.length > 0 && (
+              <Icon
+                name="listAlt"
+                size={24}
+                className="cursor-pointer hover:opacity-70"
+                onClick={() => onToggleHistory(true)}
+              />
+            )}
+        </div>
+
+        {declaration && (
+          <LabelField
+            value={declaration.name}
+            onChange={onDeclarationNameChange}
+            placeholder="Titre de la déclaration"
+            label="Titre de la déclaration"
+            displayClassName="heading-m bg-background-hover"
+            className="w-full"
+          />
+        )}
+      </div>
+
+      <div className="h-px w-full bg-border" />
+
+      {/* Body */}
+      {(selectedForm || declaration) && (
+        <div className="flex flex-1 min-h-0">
+          {selectedForm && (
+            <div className="flex-1 overflow-y-auto pt-4 px-6">
+              <DynamicForm
+                schema={selectedForm.schema.fields}
+                values={formValues}
+                onChange={onFormValuesChange}
+                errors={formErrors}
+              />
+            </div>
+          )}
+          {!selectedForm && declaration && (
+            <div className="flex-1 p-4 text-center text-muted-foreground">
+              <p className="mb-2 font-semibold">{declaration.name}</p>
+              <p>{declaration.description}</p>
+            </div>
+          )}
+          {declaration && showHistory && (
+            <ModificationHistory
+              entries={declaration.history || []}
+              onClose={() => onToggleHistory(false)}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Footer */}
+      <div className="flex justify-end gap-2 px-6 pb-4 border-t pt-4">
+        <Button label="Annuler" variant="secondary" size="m" onClick={onClose} />
+        <Button
+          label="Soumettre"
+          variant="primary"
+          size="m"
+          disabled={!isFormValid}
+          onClick={onSubmit}
+        />
+      </div>
+    </SidePanel>
+  );
+};

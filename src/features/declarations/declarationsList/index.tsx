@@ -137,7 +137,7 @@ const DeclarationsList = ({
   }
 
   return (
-    <div className="w-full max-w-101.5">
+    <div className="flex flex-col pl-4">
       <Header
         onDeclarer={onDeclarer}
         onSearch={handleSearchToggle}

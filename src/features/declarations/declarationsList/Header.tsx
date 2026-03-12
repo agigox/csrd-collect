@@ -1,5 +1,6 @@
 "use client";
 
+import PageTitle from "@/lib/ui/page-title";
 import {
   Button,
   Divider,
@@ -36,9 +37,8 @@ const Header = ({
       {/* Header row */}
       <div className="flex items-center gap-2">
         {/* Title */}
-        <h1 className="flex-1 text-2xl font-semibold text-content-text tracking-tight">
-          Déclarations
-        </h1>
+
+        <PageTitle title="Déclarations" />
 
         {/* Search button */}
         <IconButton

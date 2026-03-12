@@ -3,7 +3,7 @@ import type { Declaration } from "@/models/Declaration";
 
 // TODO: replace with token from auth store once login is migrated to real API
 const ACCESS_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxYWI0ZWU5YS1hMDllLTQ0OTAtYWI1ZC1hODFkMjM2Mzk5NmUiLCJlbWFpbCI6ImFtaW4udGFib3VAcnRlLWZyYW5jZS5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NzI3ODc3NTgsImV4cCI6MTc3MjgxNjU1OH0.b546Gsk5JEd7uIH4zB0B-L0j8Ma2mncL-K7qgu-RrRw";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MDc2ZTg5Mi1mZDEyLTQwNTgtODBhYS1jZDVmZjg4YTc0MmYiLCJlbWFpbCI6InN1cGVyYWRtaW5AcnRlLWZyYW5jZS5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJpYXQiOjE3NzMzMDc3MDYsImV4cCI6MTc3MzMzNjUwNn0.WeMWmIOMCYKyza0PLvt-aqo2zK0U4XhQo_aIpN-uYeM";
 
 function authHeaders(): Record<string, string> {
   return {

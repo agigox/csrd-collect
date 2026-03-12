@@ -6,10 +6,7 @@ import type { FormTemplate } from "@/models/FormTemplate";
 import { useCategoryCodesStore } from "@/stores/categoryCodesStore";
 import { useFormsStore } from "@/stores/formsStore";
 import { saveFormTemplate } from "@/api/forms";
-import {
-  statusConfig,
-  getFormStatus,
-} from "@/features/forms-management/statusConfig";
+import { statusConfig, getFormStatus } from "@/features/forms/statusConfig";
 
 interface ParametresTabProps {
   form: FormTemplate;
@@ -76,7 +73,13 @@ export function ParametresTab({ form }: ParametresTabProps) {
     setEditedCategoryCode(form.categoryCode);
     setEditedVisibilityLevel(form.visibilityLevel ?? "");
     setEditedIsActive(form.isActive);
-  }, [form.id, form.description, form.categoryCode, form.visibilityLevel, form.isActive]);
+  }, [
+    form.id,
+    form.description,
+    form.categoryCode,
+    form.visibilityLevel,
+    form.isActive,
+  ]);
 
   // Load category codes on mount
   useEffect(() => {

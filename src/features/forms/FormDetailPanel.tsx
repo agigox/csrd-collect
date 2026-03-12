@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Chip, IconButton } from "@rte-ds/react";
+import { Button, Chip } from "@rte-ds/react";
 import { statusConfig, getFormStatus } from "./statusConfig";
 import type { FormTemplate } from "@/models/FormTemplate";
 import { FormDetailTabs } from "@/features/form-detail/FormDetailTabs";
+import { SidePanel } from "@/components/common";
 
 interface FormDetailPanelProps {
   form: FormTemplate | null;
@@ -23,7 +24,7 @@ export const FormDetailPanel = ({
   const router = useRouter();
   const [publishing, setPublishing] = useState(false);
 
-  if (!form || !open) return null;
+  if (!form) return null;
 
   const status = getFormStatus(form);
   const chipConfig = statusConfig[status];
@@ -43,16 +44,11 @@ export const FormDetailPanel = ({
   };
 
   return (
-    <div
-      className="flex flex-col h-screen w-full sticky top-0 border-l bg-background pl-4 gap-4"
-      style={{
-        boxShadow: "0 2px 4px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.14)",
-      }}
-    >
+    <SidePanel open={open} onClose={onClose}>
       {/* Header */}
-      <div className="flex flex-col gap-1 px-6 pt-4">
-        {/* Status chip + close button */}
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-1 px-6 -mt-2">
+        {/* Status chip */}
+        <div className="flex items-center">
           <Chip
             id={`panel-status-${form.id}`}
             label={chipConfig.label}
@@ -63,15 +59,6 @@ export const FormDetailPanel = ({
               color: "var(--content-primary)",
             }}
             icon={chipConfig.icon}
-          />
-          <IconButton
-            appearance="outlined"
-            aria-label="close"
-            name="close"
-            onClick={onClose}
-            size="m"
-            variant="neutral"
-            iconColor="var(--content-tertiary)"
           />
         </div>
 
@@ -112,6 +99,6 @@ export const FormDetailPanel = ({
       <div className="flex-1 overflow-y-auto px-6">
         <FormDetailTabs form={form} />
       </div>
-    </div>
+    </SidePanel>
   );
 };

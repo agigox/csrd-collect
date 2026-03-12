@@ -2,22 +2,11 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import DeclarationsList from "./declarationsList";
+import { Grid, useBreakpoint } from "@rte-ds/react";
 import FormSelectionDialog from "./FormSelectionDialog";
+import { DeclarationDetailPanel } from "./DeclarationDetailPanel";
 import { useAuthStore, useFormsStore } from "@/stores";
 import type { FormTemplate } from "@/models/FormTemplate";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/lib/ui/dialog";
-import { Button } from "@/lib/ui/button";
-import { DynamicForm } from "@/features/form-builder/DynamicForm";
-import Icon from "@/lib/Icons";
-import { LabelField } from "@/features/field-configurator/common/LabelField";
-import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
-import ModificationHistory from "./ModificationHistory";
 import { useDeclarationsStore } from "@/stores";
 import type { Declaration } from "@/models/Declaration";
 import type {
@@ -25,11 +14,14 @@ import type {
   RadioFieldConfig,
   CheckboxFieldConfig,
 } from "@/models/FieldTypes";
+import DeclarationsList from "./declarationsList";
 
 const Declarations = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { isBelow } = useBreakpoint();
+  const isMobile = isBelow("s");
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
@@ -236,6 +228,28 @@ const Declarations = () => {
     [finalSelectedDeclaration, updateTempDeclaration, validateForm],
   );
 
+  // Handler for declaration name changes
+  const handleDeclarationNameChange = useCallback(
+    (newName: string) => {
+      if (!finalSelectedDeclaration) return;
+      updateTempDeclaration(finalSelectedDeclaration.id, {
+        name: newName,
+      });
+      setTempDeclarations((prev) => {
+        const next = new Map(prev);
+        const existing = next.get(finalSelectedDeclaration.id);
+        if (existing) {
+          next.set(finalSelectedDeclaration.id, {
+            ...existing,
+            name: newName,
+          });
+        }
+        return next;
+      });
+    },
+    [finalSelectedDeclaration, updateTempDeclaration],
+  );
+
   // Check if form is valid (no errors)
   const isFormValid = useMemo(() => {
     return Object.keys(formErrors).length === 0;
@@ -256,25 +270,23 @@ const Declarations = () => {
     router.push(`/declarations/new?formId=${form.id}`);
   };
 
-  const handleCloseDeclaration = (open: boolean) => {
-    if (!open) {
-      // Navigate back to declarations list
-      router.push("/declarations");
+  const handleCloseDeclaration = () => {
+    // Navigate back to declarations list
+    router.push("/declarations");
 
-      // Clean up temp declarations
-      if (finalSelectedDeclaration?.isNew) {
-        removeTempDeclaration(finalSelectedDeclaration.id);
-        setTempDeclarations((prev) => {
-          const next = new Map(prev);
-          next.delete(finalSelectedDeclaration.id);
-          return next;
-        });
-      }
-
-      setCurrentTempId(null);
-      setFormValues({});
-      setFormErrors({});
+    // Clean up temp declarations
+    if (finalSelectedDeclaration?.isNew) {
+      removeTempDeclaration(finalSelectedDeclaration.id);
+      setTempDeclarations((prev) => {
+        const next = new Map(prev);
+        next.delete(finalSelectedDeclaration.id);
+        return next;
+      });
     }
+
+    setCurrentTempId(null);
+    setFormValues({});
+    setFormErrors({});
   };
 
   // Handler for editing an existing declaration
@@ -309,12 +321,36 @@ const Declarations = () => {
   };
 
   return (
-    <div className="flex justify-start min-h-screen p-8">
-      <DeclarationsList
-        onDeclarer={handleOpenSelection}
-        onEditDeclaration={handleEditDeclaration}
-        selectedDeclarationId={finalSelectedDeclaration?.id}
-      />
+    <div className="max-w-480 mx-auto h-full">
+      <Grid gridType="fluid">
+        {!(isMobile && declarationDialogOpen) && (
+          <Grid.Col xxs={2} xs={6} s={3} m={5}>
+            <DeclarationsList
+              onDeclarer={handleOpenSelection}
+              onEditDeclaration={handleEditDeclaration}
+              selectedDeclarationId={finalSelectedDeclaration?.id}
+            />
+          </Grid.Col>
+        )}
+        {declarationDialogOpen && (
+          <Grid.Col xxs={2} xs={6} s={3} m={7}>
+            <DeclarationDetailPanel
+              open={declarationDialogOpen}
+              onClose={handleCloseDeclaration}
+              selectedForm={selectedForm}
+              declaration={finalSelectedDeclaration}
+              formValues={formValues}
+              formErrors={formErrors}
+              onFormValuesChange={handleFormValuesChange}
+              onDeclarationNameChange={handleDeclarationNameChange}
+              isFormValid={isFormValid}
+              onSubmit={handleSubmit}
+              showHistory={showHistory}
+              onToggleHistory={setShowHistory}
+            />
+          </Grid.Col>
+        )}
+      </Grid>
 
       {/* Modal de sélection du type de formulaire */}
       <FormSelectionDialog
@@ -326,117 +362,6 @@ const Declarations = () => {
         }}
         onFormSelect={handleFormSelect}
       />
-
-      {/* Modal de déclaration avec le formulaire sélectionné */}
-      <Dialog
-        open={declarationDialogOpen}
-        onOpenChange={handleCloseDeclaration}
-        modal={false}
-      >
-        <DialogContent
-          hideOverlay
-          onInteractOutside={(e) => e.preventDefault()}
-          onPointerDownOutside={(e) => e.preventDefault()}
-          className="fixed! top-0! right-0! left-auto! h-screen! w-198! max-w-none! translate-x-0! translate-y-0! rounded-none! border-l! border-y-0! border-r-0! flex! flex-col! min-h-0!"
-        >
-          <DialogHeader>
-            <div className="flex items-center gap-2 justify-between">
-              <DialogTitle>
-                <div className="flex flex-col">
-                  <div>
-                    {finalSelectedDeclaration?.isNew
-                      ? "Nouvelle déclaration"
-                      : "Modifier la déclaration"}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    ID {finalSelectedDeclaration?.id || selectedForm?.id || ""}
-                  </div>
-                </div>
-              </DialogTitle>
-              {finalSelectedDeclaration &&
-                !showHistory &&
-                finalSelectedDeclaration.history &&
-                finalSelectedDeclaration.history.length > 0 && (
-                  <Icon
-                    name="listAlt"
-                    size={24}
-                    className="cursor-pointer hover:opacity-70"
-                    onClick={() => setShowHistory(true)}
-                  />
-                )}
-            </div>
-          </DialogHeader>
-
-          {finalSelectedDeclaration && (
-            <LabelField
-              value={finalSelectedDeclaration.name}
-              onChange={(newName) => {
-                updateTempDeclaration(finalSelectedDeclaration.id, {
-                  name: newName,
-                });
-                setTempDeclarations((prev) => {
-                  const next = new Map(prev);
-                  const existing = next.get(finalSelectedDeclaration.id);
-                  if (existing) {
-                    next.set(finalSelectedDeclaration.id, {
-                      ...existing,
-                      name: newName,
-                    });
-                  }
-                  return next;
-                });
-              }}
-              placeholder="Titre de la déclaration"
-              label="Titre de la déclaration"
-              displayClassName="heading-m bg-background-hover"
-              className="w-full"
-            />
-          )}
-
-          <div className="h-px w-full bg-border" />
-
-          {(selectedForm || finalSelectedDeclaration) && (
-            <div className="flex flex-1 min-h-0">
-              {selectedForm && (
-                <ScrollableContainer className="flex-1 pt-4 pr-4" height="100%">
-                  <DynamicForm
-                    schema={selectedForm.schema.fields}
-                    values={formValues}
-                    onChange={handleFormValuesChange}
-                    errors={formErrors}
-                  />
-                </ScrollableContainer>
-              )}
-              {!selectedForm && finalSelectedDeclaration && (
-                <div className="flex-1 p-4 text-center text-muted-foreground">
-                  <p className="mb-2 font-semibold">
-                    {finalSelectedDeclaration.name}
-                  </p>
-                  <p>{finalSelectedDeclaration.description}</p>
-                </div>
-              )}
-              {finalSelectedDeclaration && showHistory && (
-                <ModificationHistory
-                  entries={finalSelectedDeclaration.history || []}
-                  onClose={() => setShowHistory(false)}
-                />
-              )}
-            </div>
-          )}
-
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button
-              variant="outline"
-              onClick={() => handleCloseDeclaration(false)}
-            >
-              Annuler
-            </Button>
-            <Button onClick={handleSubmit} disabled={!isFormValid}>
-              Soumettre
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

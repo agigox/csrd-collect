@@ -1,5 +1,5 @@
-import AdminPageContent from "@/features/forms-management/FormsManagementPage";
+import Forms from "@/features/forms/Forms";
 
 export default function AdminPage() {
-  return <AdminPageContent />;
+  return <Forms />;
 }

@@ -11,12 +11,16 @@ import { useCategoryCodesStore } from "@/stores/categoryCodesStore";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import type { FormTemplate } from "@/models/FormTemplate";
 
-export default function AdminPageContent() {
+export default function Forms() {
   const router = useRouter();
   const { forms, loading, fetchForms, publishForm } = useFormsStore();
   const { categoryCodes, fetchCategoryCodes } = useCategoryCodesStore();
-  const { setFormName, setFormDescription, setFormCategoryCode, setFormVisibilityLevel } =
-    useFormEditorStore();
+  const {
+    setFormName,
+    setFormDescription,
+    setFormCategoryCode,
+    setFormVisibilityLevel,
+  } = useFormEditorStore();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -71,7 +75,12 @@ export default function AdminPageContent() {
   );
 
   const handleCreateValidate = useCallback(
-    (data: { name: string; categoryCode: string; description: string; visibilityLevel: string }) => {
+    (data: {
+      name: string;
+      categoryCode: string;
+      description: string;
+      visibilityLevel: string;
+    }) => {
       setFormName(data.name);
       setFormCategoryCode(data.categoryCode);
       setFormDescription(data.description);
@@ -79,7 +88,13 @@ export default function AdminPageContent() {
       setIsCreateModalOpen(false);
       router.push("/admin/new");
     },
-    [setFormName, setFormCategoryCode, setFormDescription, setFormVisibilityLevel, router],
+    [
+      setFormName,
+      setFormCategoryCode,
+      setFormDescription,
+      setFormVisibilityLevel,
+      router,
+    ],
   );
 
   if (loading) {
