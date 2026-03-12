@@ -159,18 +159,15 @@ export const useDeclarationsStore = create<DeclarationsState>()(
           // Remove isNew flag for the API call
           const { isNew: _isNew, ...declarationToSave } = declaration;
 
-          await createDeclarationApi(declarationToSave);
+          // Use the server response to replace the temp declaration with real data
+          const created = await createDeclarationApi(declarationToSave);
 
-          // Update local state - remove isNew flag
           set(
-            (state) => {
-              const newDeclarations = state.declarations.map((d) =>
-                d.id === id ? { ...d, isNew: undefined } : d,
-              );
-              return {
-                declarations: newDeclarations,
-              };
-            },
+            (state) => ({
+              declarations: state.declarations.map((d) =>
+                d.id === id ? { ...created, isNew: false } : d,
+              ),
+            }),
             false,
             "DECLARATIONS/CONFIRM_TEMP",
           );

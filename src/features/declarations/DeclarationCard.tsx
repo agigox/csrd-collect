@@ -32,7 +32,8 @@ const DeclarationCard = ({
     <Card
       onClick={onClick}
       clickable
-      pressed={isSelected || isNew}
+      selected={isSelected}
+      pressed={isNew}
       size="full"
       className="px-3 py-1.75"
     >
@@ -46,7 +47,13 @@ const DeclarationCard = ({
             {formattedTime}
           </span>
         </div>
-        <Chip id="author-chip" label={authorName} size="s" clickable={false} />
+        <Chip
+          id="author-chip"
+          label={authorName}
+          size="s"
+          clickable={false}
+          style={isNew ? { backgroundColor: "white" } : undefined}
+        />
       </div>
 
       {/* Row 2: Title (form template name) */}

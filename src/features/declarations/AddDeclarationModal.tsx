@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { Modal, Button } from "@rte-ds/react";
 import Icon from "@/lib/Icons";
-import FormSelectionDialog from "../FormSelectionDialog";
+import FormSelectionDialog from "./FormSelectionModal";
 import type { FormTemplate } from "@/models/FormTemplate";
 import { DynamicForm } from "@/features/form-builder/DynamicForm";
 
-interface AddDeclarationProps {
+interface AddDeclarationModalProps {
   triggerButton?: boolean;
 }
 
-const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
+const AddDeclarationModal = ({
+  triggerButton = true,
+}: AddDeclarationModalProps) => {
   const [selectionDialogOpen, setSelectionDialogOpen] = useState(false);
   const [declarationDialogOpen, setDeclarationDialogOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<FormTemplate | null>(null);
@@ -97,4 +99,4 @@ const AddDeclaration = ({ triggerButton = true }: AddDeclarationProps) => {
   );
 };
 
-export default AddDeclaration;
+export default AddDeclarationModal;

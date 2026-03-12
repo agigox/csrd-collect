@@ -127,14 +127,13 @@ export const mockDeclarations = [
     authorId: "user-1",
     authorName: "Jean Dupont",
     teamId: "TEAM-01",
-    description: "Fuite détectée au niveau du transformateur T3",
     status: "pending" as const,
     formData: {
       name: "Fuite d'huile - Transformateur T3",
       localisation: "Transformateur T3",
       gravite: "moyenne"
     },
-    submitedBy: "user-1",
+    submittedBy: "user-1",
     reviewedBy: "",
     reviewComment: "",
     createdAt: "2025-02-07T10:30:00Z",
@@ -159,13 +158,12 @@ export const mockDeclarations = [
     authorId: "user-2",
     authorName: "Marie Martin",
     teamId: "TEAM-02",
-    description: "Incident signalé au bâtiment B",
     status: "validated" as const,
     formData: {
       name: "Incident de sécurité",
       description_incident: "Chute de matériel"
     },
-    submitedBy: "user-2",
+    submittedBy: "user-2",
     reviewedBy: "user-admin",
     reviewComment: "Validé",
     createdAt: "2025-02-07T08:00:00Z",
@@ -190,14 +188,13 @@ export const mockDeclarations = [
     authorId: "user-3",
     authorName: "Pierre Bernard",
     teamId: "TEAM-01",
-    description: "Fuite mineure sur la canalisation principale",
     status: "draft" as const,
     formData: {
       name: "Fuite d'huile - Canalisation",
       localisation: "Canalisation principale",
       gravite: "faible"
     },
-    submitedBy: "",
+    submittedBy: "",
     reviewedBy: "",
     reviewComment: "",
     createdAt: "2025-02-06T15:00:00Z",
@@ -214,13 +211,12 @@ export const mockDeclarations = [
     authorId: "user-1",
     authorName: "Jean Dupont",
     teamId: "TEAM-01",
-    description: "Contrôle qualité mensuel janvier",
     status: "draft" as const,
     formData: {
       name: "Contrôle qualité - Janvier 2025",
       conforme: true
     },
-    submitedBy: "",
+    submittedBy: "",
     reviewedBy: "",
     reviewComment: "",
     createdAt: "2025-02-05T09:00:00Z",

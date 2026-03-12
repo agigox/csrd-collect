@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Grid, useBreakpoint } from "@rte-ds/react";
-import FormSelectionDialog from "./FormSelectionDialog";
 import { DeclarationDetailPanel } from "./DeclarationDetailPanel";
 import { useAuthStore, useFormsStore } from "@/stores";
 import type { FormTemplate } from "@/models/FormTemplate";
@@ -14,7 +13,8 @@ import type {
   RadioFieldConfig,
   CheckboxFieldConfig,
 } from "@/models/FieldTypes";
-import DeclarationsList from "./declarationsList";
+import DeclarationsList from "./DeclarationsList";
+import FormSelectionModal from "./FormSelectionModal";
 
 const Declarations = () => {
   const router = useRouter();
@@ -66,12 +66,10 @@ const Declarations = () => {
       null
     : null;
 
-  // Get the selected form based on URL or declaration
+  // Get the selected form based on URL or declaration's embedded formTemplate
   const selectedForm = formId
     ? forms.find((f) => f.id === formId) || null
-    : selectedDeclaration
-      ? forms.find((f) => f.id === selectedDeclaration.formTemplateId) || null
-      : null;
+    : selectedDeclaration?.formTemplate || null;
 
   // Track current temp declaration ID for the selected form
   const [currentTempId, setCurrentTempId] = useState<string | null>(null);
@@ -104,17 +102,16 @@ const Declarations = () => {
 
       const tempDeclaration: Declaration = {
         id: tempId,
-        name: "",
         formTemplateId: selectedForm.id,
+        formTemplate: selectedForm,
         reference: `DECL-TEMP-${Date.now()}`,
         location: "",
         authorId: user?.nni || user?.id || "",
         authorName: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
         teamId: team?.teamId || "",
-        description: selectedForm.description || "",
         status: "draft",
         formData: initialFormData,
-        submitedBy: "",
+        submittedBy: "",
         reviewedBy: "",
         reviewComment: "",
         createdAt: now,
@@ -249,22 +246,22 @@ const Declarations = () => {
   };
 
   const handleCloseDeclaration = () => {
-    // Navigate back to declarations list
-    router.push("/declarations");
-
-    // Clean up temp declarations
-    if (finalSelectedDeclaration?.isNew) {
-      removeTempDeclaration(finalSelectedDeclaration.id);
+    // Remove temp declaration from both local Map and Zustand store
+    if (currentTempId) {
+      removeTempDeclaration(currentTempId);
       setTempDeclarations((prev) => {
         const next = new Map(prev);
-        next.delete(finalSelectedDeclaration.id);
+        next.delete(currentTempId);
         return next;
       });
     }
 
-    setCurrentTempId(null);
     setFormValues({});
     setFormErrors({});
+
+    // Navigate first — the URL-change effect will set currentTempId to null
+    // AFTER the URL has changed, preventing the creation effect from re-firing
+    router.push("/declarations");
   };
 
   // Handler for editing an existing declaration
@@ -291,11 +288,12 @@ const Declarations = () => {
       }
     }
 
-    // Navigate back to declarations list
-    router.push("/declarations");
-    setCurrentTempId(null);
     setFormValues({});
     setFormErrors({});
+
+    // Navigate — the URL-change effect will clear currentTempId
+    // after the URL has updated, preventing the creation effect from re-firing
+    router.push("/declarations");
   };
 
   return (
@@ -330,7 +328,7 @@ const Declarations = () => {
       </Grid>
 
       {/* Modal de sélection du type de formulaire */}
-      <FormSelectionDialog
+      <FormSelectionModal
         open={selectionDialogOpen}
         onOpenChange={(open) => {
           if (!open) {

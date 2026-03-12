@@ -80,7 +80,7 @@ export default function AuthCarousel() {
       {/* Text + Pagination */}
       <div className="flex flex-col items-center gap-2.5 w-full px-8">
         <p
-          className="text-center text-white font-semibold text-[32px] leading-[40px] w-full"
+          className="text-center text-white font-semibold text-[32px] leading-10 w-full"
           style={{
             fontFamily: "var(--font-nunito), Nunito, sans-serif",
             letterSpacing: "-1px",
@@ -89,14 +89,14 @@ export default function AuthCarousel() {
           {slides[currentSlide].title}
         </p>
         <p
-          className="text-center text-white text-base leading-6 w-86 max-w-full min-h-[50px]"
+          className="text-center text-white text-base leading-6 w-86 max-w-full min-h-12.5"
           style={{ fontFamily: "Arial, sans-serif" }}
         >
           {slides[currentSlide].subtitle}
         </p>
 
         {/* Pagination dots with connectors */}
-        <div className="flex items-center gap-[6px] w-[180px]">
+        <div className="flex items-center gap-1.5 w-45">
           {slides.map((_, index) => (
             <div key={index} className="contents">
               {/* Dot */}

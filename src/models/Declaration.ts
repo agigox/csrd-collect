@@ -10,19 +10,20 @@ export interface ModificationEntry {
   details?: ModificationDetail[];
 }
 
+import type { FormTemplate } from "./FormTemplate";
+
 export interface Declaration {
   id: string;
-  name: string;
   formTemplateId: string;
+  formTemplate?: FormTemplate;
   reference: string;
   location: string;
   authorId: string;
   authorName: string;
   teamId: string;
-  description: string;
   status: "draft" | "pending" | "validated";
   formData: Record<string, unknown>;
-  submitedBy: string;
+  submittedBy: string;
   reviewedBy: string;
   reviewComment: string;
   createdAt: string;

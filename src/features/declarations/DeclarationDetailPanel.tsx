@@ -85,8 +85,10 @@ export const DeclarationDetailPanel = ({
           )}
           {!selectedForm && declaration && (
             <div className="flex-1 p-4 text-center text-muted-foreground">
-              <p className="mb-2 font-semibold">{declaration.name}</p>
-              <p>{declaration.description}</p>
+              <p className="mb-2 font-semibold">
+                {declaration.formTemplate?.name || ""}
+              </p>
+              <p>{declaration.formTemplate?.description || ""}</p>
             </div>
           )}
           {declaration && showHistory && (

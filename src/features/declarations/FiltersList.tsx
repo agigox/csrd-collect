@@ -52,7 +52,7 @@ const FilterSelect = ({
   return (
     <div className="flex items-start gap-0 w-full">
       {/* Left label */}
-      <div className="flex-shrink-0 w-[140px] py-1.5 pr-2 text-right">
+      <div className="shrink-0 w-35 py-1.5 pr-2 text-right">
         <span className="text-sm text-[#3e3e3d]">{label}</span>
       </div>
 
@@ -61,7 +61,7 @@ const FilterSelect = ({
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex-1 max-w-[280px] min-w-[112px] h-8 flex items-center gap-2 px-2 py-1",
+              "flex-1 max-w-70 min-w-28 h-8 flex items-center gap-2 px-2 py-1",
               "border border-[#a1a1a0] rounded bg-white cursor-pointer",
               "shadow-[inset_0_1px_4px_0_rgba(0,0,0,0.14)]",
               "hover:border-gray-400 transition-colors",

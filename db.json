@@ -457,19 +457,17 @@
   "declarations": [
     {
       "id": "temp_1770994303741_47c0",
-      "name": "Formulaire de test",
       "formTemplateId": "47c0",
       "reference": "DECL-TEMP-1770994303741",
       "location": "",
       "authorId": "current-user",
       "authorName": "Utilisateur actuel",
       "teamId": "current-team",
-      "description": "ce formulaire est de test des differents champs",
       "status": "pending",
       "formData": {
         "text_1": "aaa"
       },
-      "submitedBy": "",
+      "submittedBy": "",
       "reviewedBy": "",
       "reviewComment": "",
       "createdAt": "2026-02-13T14:51:43.741Z",
