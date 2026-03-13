@@ -86,7 +86,7 @@ export default function TeamManagementPage() {
             <div className="flex flex-col gap-5 py-2.5 pl-4 h-full overflow-y-auto">
               <PageTitle title="Admin. des équipes" />
 
-              <div className="bg-white rounded">
+              <div className="[&_div]:!w-full">
                 <Searchbar
                   appearance="secondary"
                   value={searchQuery}

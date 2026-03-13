@@ -44,7 +44,7 @@ export function TeamDetailPanel({ team, open, onClose }: TeamDetailPanelProps) {
           <div>
             <h2
               className="text-xl font-bold truncate"
-              style={{ fontFamily: "Nunito, sans-serif" }}
+              style={{ fontFamily: "Nunito, sans-serif", fontSize: "20px" }}
             >
               Equipe {team.name}
             </h2>

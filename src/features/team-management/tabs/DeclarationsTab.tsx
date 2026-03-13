@@ -208,7 +208,7 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
             </div>
 
             {/* Search bar */}
-            <div className="pt-5 pr-7 pb-4 pl-[62px]">
+            <div className="pt-5 px-7 pb-4">
               <div className="flex items-center gap-2.5 border border-border-secondary rounded-lg px-3 py-2">
                 <Icon name="search" size={18} />
                 <input
@@ -291,7 +291,7 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
                         </div>
 
                         {/* Card */}
-                        <div className="flex-1 flex items-center rounded-lg bg-white shadow-[0_1px_4px_rgba(0,0,0,0.10)] overflow-hidden">
+                        <div className="flex-1 flex items-center rounded-lg bg-white border-t border-border-divider shadow-[0_1px_4px_rgba(0,0,0,0.10)] overflow-hidden">
                           {/* Name + code */}
                           <div className="flex flex-col justify-center gap-[3px] px-4 py-3 min-w-[220px]">
                             <span className="text-base font-semibold text-content-primary">

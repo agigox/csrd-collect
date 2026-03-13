@@ -153,8 +153,8 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
             user.id;
           return (
             <div key={user.id}>
-              <div className="grid grid-cols-[1fr_auto_auto] items-center gap-3 px-4 py-2.5">
-                <span className="text-sm text-content-secondary">{name}</span>
+              <div className="flex items-center py-2">
+                <div className="w-54.25 text-sm text-content-secondary">{name}</div>
                 <span
                   className="inline-flex items-center gap-1 rounded px-2.5 py-[3px] text-xs font-medium text-content-primary whitespace-nowrap"
                   style={{ background: badge.bg }}
@@ -162,14 +162,16 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
                   <Icon name="user" size={14} />
                   {badge.label}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveUser(user.id)}
-                  className="bg-transparent border-none cursor-pointer p-1 flex items-center text-content-tertiary hover:text-content-primary"
-                  title="Retirer de l'équipe"
-                >
-                  <Icon name="delete" size={16} />
-                </button>
+                <div className="ml-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveUser(user.id)}
+                    className="bg-transparent border-none cursor-pointer p-1 flex items-center text-content-tertiary hover:text-content-primary"
+                    title="Retirer de l'équipe"
+                  >
+                    <Icon name="delete" size={16} />
+                  </button>
+                </div>
               </div>
               {idx < users.length - 1 && (
                 <Divider appearance="default" orientation="horizontal" />

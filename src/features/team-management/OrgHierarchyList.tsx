@@ -31,7 +31,7 @@ function SectionCard({
         name={isExpanded ? "arrow-chevron-down" : "arrow-chevron-right"}
         size={16}
       />
-      <span className="text-sm truncate">{label}</span>
+      <span className="text-base font-normal truncate" style={{ fontFamily: "Arial, sans-serif", fontSize: "16px" }}>{label}</span>
     </button>
   );
 }
@@ -51,7 +51,7 @@ function TeamCard({
       className="flex items-center justify-between border border-[#c4c4c4] rounded px-3 py-2 cursor-pointer hover:bg-gray-50 bg-white"
       onClick={onSelect}
     >
-      <span className="text-sm truncate">{team.name}</span>
+      <span className="text-base font-normal truncate" style={{ fontFamily: "Arial, sans-serif", fontSize: "16px" }}>{team.name}</span>
       <RadioButton
         groupName="team-select"
         checked={isSelected}
