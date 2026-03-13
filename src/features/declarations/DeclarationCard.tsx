@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Chip } from "@rte-ds/react";
+import { Card, Chip, Icon } from "@rte-ds/react";
 
 interface DeclarationCardProps {
   createdAt: string;
@@ -10,6 +10,7 @@ interface DeclarationCardProps {
   onClick?: () => void;
   isSelected?: boolean;
   isNew?: boolean;
+  completionStatus?: "incomplet" | "complet";
 }
 
 const DeclarationCard = ({
@@ -20,6 +21,7 @@ const DeclarationCard = ({
   onClick,
   isSelected = false,
   isNew = false,
+  completionStatus,
 }: DeclarationCardProps) => {
   const date = new Date(createdAt);
   const formattedDate = date.toLocaleDateString("fr-FR");
@@ -47,13 +49,26 @@ const DeclarationCard = ({
             {formattedTime}
           </span>
         </div>
-        <Chip
-          id="author-chip"
-          label={authorName}
-          size="s"
-          clickable={false}
-          style={isNew ? { backgroundColor: "white" } : undefined}
-        />
+        <div className="flex items-center gap-1">
+          {completionStatus !== "complet" && (
+            <Icon
+              name="incomplete"
+              size={20}
+              style={{
+                backgroundColor: "#f5de93",
+                color: "#201f1f",
+                borderRadius: "4px",
+              }}
+            />
+          )}
+          <Chip
+            id="author-chip"
+            label={authorName}
+            size="s"
+            clickable={false}
+            style={isNew ? { backgroundColor: "white" } : undefined}
+          />
+        </div>
       </div>
 
       {/* Row 2: Title (form template name) */}

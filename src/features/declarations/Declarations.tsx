@@ -39,6 +39,9 @@ const Declarations = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [completionStatus, setCompletionStatus] = useState<
+    "incomplet" | "complet"
+  >("incomplet");
   const [tempDeclarations, setTempDeclarations] = useState<
     Map<string, Declaration>
   >(new Map());
@@ -117,6 +120,7 @@ const Declarations = () => {
         authorName: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim(),
         teamId: team?.teamId || "",
         status: "draft",
+        completionStatus: "incomplet",
         formData: initialFormData,
         submittedBy: "",
         reviewedBy: "",
@@ -189,10 +193,14 @@ const Declarations = () => {
       setFormValues(values);
       setFormErrors({});
       setHasAttemptedSubmit(false);
+      setCompletionStatus(
+        finalSelectedDeclaration.completionStatus ?? "incomplet",
+      );
     } else {
       setFormValues({});
       setFormErrors({});
       setHasAttemptedSubmit(false);
+      setCompletionStatus("incomplet");
     }
   }, [finalSelectedDeclaration]);
   /* eslint-enable react-hooks/set-state-in-effect */
@@ -231,6 +239,34 @@ const Declarations = () => {
       }
     },
     [finalSelectedDeclaration, updateTempDeclaration, validateForm, hasAttemptedSubmit],
+  );
+
+  // Handler for completion status changes
+  const handleCompletionStatusChange = useCallback(
+    (status: "incomplet" | "complet") => {
+      setCompletionStatus(status);
+
+      if (finalSelectedDeclaration?.isNew) {
+        updateTempDeclaration(finalSelectedDeclaration.id, {
+          completionStatus: status,
+          updatedAt: new Date().toISOString(),
+        });
+
+        setTempDeclarations((prev) => {
+          const next = new Map(prev);
+          const existing = next.get(finalSelectedDeclaration.id);
+          if (existing) {
+            next.set(finalSelectedDeclaration.id, {
+              ...existing,
+              completionStatus: status,
+              updatedAt: new Date().toISOString(),
+            });
+          }
+          return next;
+        });
+      }
+    },
+    [finalSelectedDeclaration, updateTempDeclaration],
   );
 
   // Check if form is valid (no errors)
@@ -335,6 +371,7 @@ const Declarations = () => {
               onEditDeclaration={handleEditDeclaration}
               selectedDeclarationId={finalSelectedDeclaration?.id}
               hasAvailableForms={forms.length > 0}
+              selectedCompletionStatus={completionStatus}
             />
           </Grid.Col>
         )}
@@ -352,6 +389,8 @@ const Declarations = () => {
               onSubmit={handleSubmit}
               showHistory={showHistory}
               onToggleHistory={setShowHistory}
+              completionStatus={completionStatus}
+              onCompletionStatusChange={handleCompletionStatusChange}
             />
           </Grid.Col>
         )}

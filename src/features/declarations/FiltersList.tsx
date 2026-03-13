@@ -176,6 +176,7 @@ const FilterSelect = ({
 
 export interface FiltersState {
   status: string[];
+  completionStatus: string[];
   authorName: string[];
   teamId: string[];
 }
@@ -204,6 +205,12 @@ const Filters = ({
     { value: "draft", label: "Brouillon" },
     { value: "pending", label: "En attente" },
     { value: "validated", label: "Validé" },
+  ];
+
+  // Completion status options
+  const completionStatusOptions: FilterOption[] = [
+    { value: "incomplet", label: "Incomplet" },
+    { value: "complet", label: "Complet" },
   ];
 
   // Extract unique author names from declarations
@@ -255,6 +262,16 @@ const Filters = ({
         value={filters.status}
         onChange={(value) => onFiltersChange({ ...filters, status: value })}
         placeholder="Tous les statuts"
+      />
+
+      <FilterSelect
+        label="Completude"
+        options={completionStatusOptions}
+        value={filters.completionStatus}
+        onChange={(value) =>
+          onFiltersChange({ ...filters, completionStatus: value })
+        }
+        placeholder="Tous"
       />
 
       <FilterSelect

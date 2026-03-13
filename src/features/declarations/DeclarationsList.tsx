@@ -14,6 +14,7 @@ interface DeclarationsListProps {
   onEditDeclaration?: (declaration: Declaration) => void;
   selectedDeclarationId?: string;
   hasAvailableForms?: boolean;
+  selectedCompletionStatus?: "incomplet" | "complet";
 }
 
 const DeclarationsList = ({
@@ -21,6 +22,7 @@ const DeclarationsList = ({
   onEditDeclaration,
   selectedDeclarationId,
   hasAvailableForms,
+  selectedCompletionStatus,
 }: DeclarationsListProps) => {
   const { declarations, loading, error, fetchDeclarations } =
     useDeclarationsStore();
@@ -28,6 +30,7 @@ const DeclarationsList = ({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<FiltersState>({
     status: [],
+    completionStatus: [],
     authorName: [],
     teamId: [],
   });
@@ -44,6 +47,7 @@ const DeclarationsList = ({
   const hasActiveFilters = useMemo(
     () =>
       filters.status.length > 0 ||
+      filters.completionStatus.length > 0 ||
       filters.authorName.length > 0 ||
       filters.teamId.length > 0,
     [filters],
@@ -56,6 +60,11 @@ const DeclarationsList = ({
       const matchesStatus =
         filters.status.length === 0 ||
         filters.status.includes(declaration.status);
+      const matchesCompletion =
+        filters.completionStatus.length === 0 ||
+        filters.completionStatus.includes(
+          declaration.completionStatus ?? "incomplet",
+        );
       const matchesAuthor =
         filters.authorName.length === 0 ||
         filters.authorName.includes(declaration.authorName);
@@ -63,7 +72,7 @@ const DeclarationsList = ({
         filters.teamId.length === 0 ||
         filters.teamId.includes(declaration.teamId);
 
-      return matchesStatus && matchesAuthor && matchesTeam;
+      return matchesStatus && matchesCompletion && matchesAuthor && matchesTeam;
     });
   }, [declarations, filters, hasActiveFilters]);
 
@@ -162,6 +171,11 @@ const DeclarationsList = ({
                       onClick={() => onEditDeclaration?.(declaration)}
                       isSelected={declaration.id === selectedDeclarationId}
                       isNew={declaration.isNew}
+                      completionStatus={
+                        declaration.id === selectedDeclarationId
+                          ? selectedCompletionStatus
+                          : declaration.completionStatus
+                      }
                     />
                   ))}
                 </div>

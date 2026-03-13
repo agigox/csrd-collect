@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@rte-ds/react";
+import { Button, Chip, RadioButtonGroup } from "@rte-ds/react";
 import { SidePanel } from "@/components/common";
 import { DynamicForm } from "@/features/form-builder/DynamicForm";
 import Icon from "@/lib/Icons";
@@ -20,6 +20,8 @@ interface DeclarationDetailPanelProps {
   onSubmit: () => void;
   showHistory: boolean;
   onToggleHistory: (show: boolean) => void;
+  completionStatus: "incomplet" | "complet";
+  onCompletionStatusChange: (status: "incomplet" | "complet") => void;
 }
 
 export const DeclarationDetailPanel = ({
@@ -34,6 +36,8 @@ export const DeclarationDetailPanel = ({
   onSubmit,
   showHistory,
   onToggleHistory,
+  completionStatus,
+  onCompletionStatusChange,
 }: DeclarationDetailPanelProps) => {
   if (!declaration && !selectedForm) return null;
 
@@ -54,6 +58,15 @@ export const DeclarationDetailPanel = ({
               {(selectedForm?.id || "").split("-")[0].toUpperCase()}
             </span>
           </div>
+          {completionStatus !== "complet" && (
+            <Chip
+              id="completion-status-chip"
+              label="Incomplet"
+              size="s"
+              clickable={false}
+              style={{ backgroundColor: "#f5de93", color: "#201f1f" }}
+            />
+          )}
           {declaration &&
             !showHistory &&
             declaration.history &&
@@ -81,6 +94,30 @@ export const DeclarationDetailPanel = ({
                 onChange={onFormValuesChange}
                 errors={formErrors}
               />
+
+              {/* Completion status block */}
+              <div className="bg-[#f5f5f5] rounded px-4 py-2 mt-4">
+                <span
+                  className="text-sm block mb-2"
+                  style={{ color: "#3e3e3d", fontSize: "14px" }}
+                >
+                  Statut de la declaration
+                </span>
+                <RadioButtonGroup
+                  direction="horizontal"
+                  groupName="completion-status"
+                  items={["Incomplet", "Complet"]}
+                  value={
+                    completionStatus === "complet" ? "Complet" : "Incomplet"
+                  }
+                  onChange={(label: string) => {
+                    onCompletionStatusChange(
+                      label === "Complet" ? "complet" : "incomplet",
+                    );
+                  }}
+                  showItemsLabel
+                />
+              </div>
             </div>
           )}
           {!selectedForm && declaration && (
