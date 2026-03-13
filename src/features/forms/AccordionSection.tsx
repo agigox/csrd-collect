@@ -36,7 +36,6 @@ export const AccordionSection = ({
           <Divider
             appearance="default"
             orientation="horizontal"
-            borderColor="#727272"
           />
         </div>
 
