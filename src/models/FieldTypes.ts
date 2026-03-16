@@ -6,7 +6,9 @@ export type FieldType =
   | "date"
   | "radio"
   | "checkbox"
-  | "import";
+  | "import"
+  | "dropdown"
+  | "textarea";
 
 export interface BranchingInfo {
   parentFieldId: string;

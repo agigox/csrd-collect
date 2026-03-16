@@ -130,7 +130,7 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
       <div className="flex flex-col gap-2">
         {admins.map((admin) => {
           const badge = getRoleBadge(admin);
-          const canInteract =
+          const canRemove =
             isSuperAdmin && !isOwnRow(admin) && admin.role !== "SUPER_ADMIN";
 
           return (
@@ -140,24 +140,19 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
                 <Chip
                   id={`admin-role-${admin.id}`}
                   label={badge.label}
-                  clickable={canInteract}
                   size="s"
-                  icon={canInteract ? "arrow-chevron-down" : badge.icon}
-                  iconPosition={canInteract ? "right" : "left"}
-                  onClick={
-                    canInteract ? () => handleToggleRole(admin) : undefined
-                  }
+                  icon={badge.icon}
+                  iconPosition="left"
                   style={
                     badge.bg
                       ? {
                           background: badge.bg,
                           color: "var(--content-primary)",
-                          cursor: canInteract ? "pointer" : "default",
                         }
                       : undefined
                   }
                 />
-                {canInteract && (
+                {canRemove && (
                   <div className="ml-auto">
                     <IconButton
                       appearance="outlined"

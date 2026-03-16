@@ -37,6 +37,7 @@ const Declarations = () => {
   const { forms, fetchForms } = useFormsStore();
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [tempDeclarations, setTempDeclarations] = useState<
     Map<string, Declaration>
@@ -180,15 +181,14 @@ const Declarations = () => {
     if (finalSelectedDeclaration) {
       const values = finalSelectedDeclaration.formData || {};
       setFormValues(values);
-
-      // Validate on load to detect errors immediately
-      const validationErrors = validateForm(values);
-      setFormErrors(validationErrors);
+      setFormErrors({});
+      setHasAttemptedSubmit(false);
     } else {
       setFormValues({});
       setFormErrors({});
+      setHasAttemptedSubmit(false);
     }
-  }, [finalSelectedDeclaration, validateForm]);
+  }, [finalSelectedDeclaration]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   // Handler for form value changes - sync with temp declaration
@@ -196,9 +196,11 @@ const Declarations = () => {
     (newValues: Record<string, unknown>) => {
       setFormValues(newValues);
 
-      // Validate form and update errors
-      const validationErrors = validateForm(newValues);
-      setFormErrors(validationErrors);
+      // Only show validation errors after user has attempted to submit
+      if (hasAttemptedSubmit) {
+        const validationErrors = validateForm(newValues);
+        setFormErrors(validationErrors);
+      }
 
       // Sync with temp declaration in real-time
       if (finalSelectedDeclaration?.isNew) {
@@ -222,7 +224,7 @@ const Declarations = () => {
         });
       }
     },
-    [finalSelectedDeclaration, updateTempDeclaration, validateForm],
+    [finalSelectedDeclaration, updateTempDeclaration, validateForm, hasAttemptedSubmit],
   );
 
   // Check if form is valid (no errors)
@@ -258,6 +260,7 @@ const Declarations = () => {
 
     setFormValues({});
     setFormErrors({});
+    setHasAttemptedSubmit(false);
 
     // Navigate first — the URL-change effect will set currentTempId to null
     // AFTER the URL has changed, preventing the creation effect from re-firing
@@ -273,7 +276,18 @@ const Declarations = () => {
 
   // Handler for submitting the form
   const handleSubmit = async () => {
-    if (finalSelectedDeclaration) {
+    if (!finalSelectedDeclaration) return;
+
+    // Validate on submit — show errors if invalid
+    const validationErrors = validateForm(formValues);
+    setFormErrors(validationErrors);
+    setHasAttemptedSubmit(true);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return; // Don't submit if there are errors
+    }
+
+    try {
       if (finalSelectedDeclaration.isNew) {
         // Confirm temp declaration (create new)
         await confirmTempDeclaration(finalSelectedDeclaration.id);
@@ -286,14 +300,22 @@ const Declarations = () => {
         // Update existing declaration
         await updateDeclaration(finalSelectedDeclaration.id, formValues);
       }
+
+      setFormValues({});
+      setFormErrors({});
+      setHasAttemptedSubmit(false);
+
+      // Navigate — the URL-change effect will clear currentTempId
+      // after the URL has updated, preventing the creation effect from re-firing
+      router.push("/declarations");
+    } catch (err) {
+      console.error("Erreur lors de la soumission:", err);
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la soumission de la déclaration",
+      );
     }
-
-    setFormValues({});
-    setFormErrors({});
-
-    // Navigate — the URL-change effect will clear currentTempId
-    // after the URL has updated, preventing the creation effect from re-firing
-    router.push("/declarations");
   };
 
   return (

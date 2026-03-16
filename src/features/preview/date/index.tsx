@@ -53,7 +53,11 @@ const DateField = ({
       prevDefaultDateValue.current = currentValue;
 
       if (currentValue === "today") {
-        onChange({ date: new Date().toISOString() });
+        const now = new Date();
+        const time = config.includeTime
+          ? `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
+          : undefined;
+        onChange({ date: now.toISOString(), time });
       } else if (currentValue === "none") {
         onChange(undefined);
       }

@@ -9,6 +9,7 @@ import {
   fetchCurrentUser,
   setAccessToken,
 } from "@/api/users";
+import { useDeclarationsStore } from "./declarationsStore";
 
 interface AuthState {
   // Core state
@@ -125,6 +126,7 @@ export const useAuthStore = create<AuthState>()(
 
         logout: () => {
           setAccessToken(null);
+          useDeclarationsStore.getState().reset();
           set(
             {
               user: null,

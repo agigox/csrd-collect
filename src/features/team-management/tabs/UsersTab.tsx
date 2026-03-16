@@ -85,7 +85,7 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
 
     searchTimeoutRef.current = setTimeout(async () => {
       try {
-        const results = await searchUsers(value.trim());
+        const results = await searchUsers(value.trim(), filterRoles);
         const teamUserIds = new Set(users.map((u) => u.id));
         const filtered = results.filter((u) => !teamUserIds.has(u.id));
         setSuggestions(filtered);

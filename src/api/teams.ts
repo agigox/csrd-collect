@@ -57,9 +57,15 @@ export async function fetchTeamUsers(teamId: string): Promise<TeamUser[]> {
   return response.json();
 }
 
-export async function searchUsers(query: string): Promise<TeamUser[]> {
+export async function searchUsers(query: string, roles?: string[]): Promise<TeamUser[]> {
+  const params = new URLSearchParams();
+  params.set("search", query);
+  params.set("status", "ACTIVE");
+  if (roles) {
+    roles.forEach((r) => params.append("role", r));
+  }
   const response = await fetch(
-    `${API_BASE_URL}/users?search=${encodeURIComponent(query)}&status=ACTIVE`,
+    `${API_BASE_URL}/users?${params.toString()}`,
     { headers: authHeaders() },
   );
   if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);

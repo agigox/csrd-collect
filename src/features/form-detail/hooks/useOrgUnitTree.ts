@@ -4,6 +4,7 @@ import {
   fetchMaintenanceCenters,
   fetchGmrs,
   fetchTeams,
+  fetchTeamsByMC,
 } from "@/api/users";
 import type { TreeNode } from "../components/OrgUnitTree";
 
@@ -95,13 +96,25 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
         }));
       } else if (node.level === 1) {
         const gmrs = await fetchGmrs(nodeId);
-        children = gmrs.map((gmr) => ({
-          id: gmr.id,
-          name: gmr.name,
-          level: 2,
-          children: [] as TreeNode[],
-          childrenLoaded: false,
-        }));
+        if (gmrs.length > 0) {
+          children = gmrs.map((gmr) => ({
+            id: gmr.id,
+            name: gmr.name,
+            level: 2,
+            children: [] as TreeNode[],
+            childrenLoaded: false,
+          }));
+        } else {
+          // No GMRs — load teams directly under MC
+          const teams = await fetchTeamsByMC(nodeId);
+          children = teams.map((team) => ({
+            id: team.id,
+            name: team.name,
+            level: 3,
+            children: [] as TreeNode[],
+            childrenLoaded: true,
+          }));
+        }
       } else if (node.level === 2) {
         const teams = await fetchTeams(nodeId);
         children = teams.map((team) => ({
