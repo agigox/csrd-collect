@@ -51,10 +51,7 @@ const Declarations = () => {
   // Derive modal state from URL
   const formId = searchParams.get("formId");
   const isOnNewPage = pathname === "/declarations/new";
-  const declarationId =
-    pathname.startsWith("/declarations/") && pathname !== "/declarations/new"
-      ? pathname.replace("/declarations/", "")
-      : null;
+  const declarationId = searchParams.get("id");
 
   // Determine which modals should be open based on URL
   const selectionDialogOpen = isOnNewPage && !formId;
@@ -271,7 +268,7 @@ const Declarations = () => {
   const handleEditDeclaration = (declaration: Declaration) => {
     // Navigate to the declaration URL
     // The useEffect will handle opening the modal
-    router.push(`/declarations/${declaration.id}`);
+    router.push(`/declarations?id=${declaration.id}`);
   };
 
   // Handler for submitting the form
