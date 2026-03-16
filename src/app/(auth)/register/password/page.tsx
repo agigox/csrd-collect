@@ -22,6 +22,7 @@ function PasswordForm() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmTouched, setConfirmTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,7 +35,21 @@ function PasswordForm() {
   const criteria = evaluateCriteria(password);
   const strength = evaluateStrength(password, criteria);
   const passwordsMatch = password === confirmPassword && confirmPassword !== "";
+  const confirmError =
+    confirmTouched && confirmPassword !== "" && !passwordsMatch
+      ? "Les mots de passe ne correspondent pas"
+      : undefined;
   const isFormValid = strength === "fort" && passwordsMatch && !isSubmitting;
+
+  const handleBack = () => {
+    // Preserve all step 1 values in query params
+    const params = new URLSearchParams();
+    params.set("nni", nni);
+    params.set("email", email);
+    if (lastName) params.set("lastName", lastName);
+    if (firstName) params.set("firstName", firstName);
+    router.push(`/register?${params.toString()}`);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,10 +110,17 @@ function PasswordForm() {
             id="confirm-password"
             label="Vérification mot de passe"
             value={confirmPassword}
-            onChange={(value) => setConfirmPassword(value)}
+            onChange={(value) => {
+              setConfirmPassword(value);
+              if (!confirmTouched) setConfirmTouched(true);
+            }}
+            onBlur={() => setConfirmTouched(true)}
             rightIconAction="visibilityOn"
             showRightIcon
             required
+            error={!!confirmError}
+            assistiveTextLabel={confirmError}
+            assistiveAppearance={confirmError ? "error" : "description"}
             data-testid="input-confirm-password"
             width="100%"
           />
@@ -113,14 +135,21 @@ function PasswordForm() {
           </p>
         )}
 
-        <div className="pt-6 w-full">
+        <div className="flex gap-3 pt-6 w-full">
+          <Button
+            label="Retour"
+            onClick={handleBack}
+            variant="secondary"
+            className="flex-1"
+            data-testid="btn-retour"
+          />
           <Button
             label={isSubmitting ? "Inscription..." : "S'inscrire"}
             onClick={() => {}}
             type="submit"
             disabled={!isFormValid}
             variant="primary"
-            className="w-full"
+            className="flex-1"
             data-testid="btn-sinscrire"
           />
         </div>
