@@ -31,8 +31,8 @@ export interface Team {
   direction: string;
   maintenanceCenterId: string;
   centre: string;
-  gmrId: string;
-  gmr: string;
+  gmrId?: string;
+  gmr?: string;
   teamId: string;
   team: string;
 }

@@ -144,6 +144,19 @@ export async function fetchTeams(gmrId: string): Promise<OrgUnit[]> {
   return response.json() as Promise<OrgUnit[]>;
 }
 
+export async function fetchTeamsByMC(maintenanceCenterId: string): Promise<OrgUnit[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/organizational-units/teams?maintenanceCenterId=${encodeURIComponent(maintenanceCenterId)}`,
+    { headers: authHeaders() },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<OrgUnit[]>;
+}
+
 export async function fetchAdminUsers(): Promise<User[]> {
   const response = await fetch(
     `${API_BASE_URL}/users?role=ADMIN&role=SUPER_ADMIN`,

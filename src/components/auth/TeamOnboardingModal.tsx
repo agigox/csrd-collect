@@ -8,6 +8,7 @@ import {
   fetchMaintenanceCenters,
   fetchGmrs,
   fetchTeams,
+  fetchTeamsByMC,
 } from "@/api/users";
 import type { OrgUnit, Team } from "@/models/User";
 
@@ -32,6 +33,7 @@ export default function TeamOnboardingModal() {
   const [centres, setCentres] = useState<OrgUnit[]>([]);
   const [gmrsList, setGmrsList] = useState<OrgUnit[]>([]);
   const [teams, setTeams] = useState<OrgUnit[]>([]);
+  const [hasGmrs, setHasGmrs] = useState(true);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -49,23 +51,38 @@ export default function TeamOnboardingModal() {
     fetchMaintenanceCenters(directionId).then(setCentres).catch(console.error);
   }, [directionId]);
 
-  // Fetch GMRs when centre changes
+  // Fetch GMRs when centre changes; if none, fetch teams directly under MC
   useEffect(() => {
     if (!centreId) {
       setGmrsList([]);
+      setTeams([]);
+      setHasGmrs(true);
       return;
     }
-    fetchGmrs(centreId).then(setGmrsList).catch(console.error);
+    fetchGmrs(centreId)
+      .then((gmrs) => {
+        if (gmrs.length > 0) {
+          setGmrsList(gmrs);
+          setHasGmrs(true);
+          setTeams([]);
+        } else {
+          setGmrsList([]);
+          setHasGmrs(false);
+          // No GMRs — fetch teams directly under this MC
+          fetchTeamsByMC(centreId).then(setTeams).catch(console.error);
+        }
+      })
+      .catch(console.error);
   }, [centreId]);
 
-  // Fetch teams when GMR changes
+  // Fetch teams when GMR changes (only when GMR level exists)
   useEffect(() => {
-    if (!gmrId) {
-      setTeams([]);
+    if (!gmrId || !hasGmrs) {
+      if (hasGmrs) setTeams([]);
       return;
     }
     fetchTeams(gmrId).then(setTeams).catch(console.error);
-  }, [gmrId]);
+  }, [gmrId, hasGmrs]);
 
   const handleDirectionChange = (value: string) => {
     const found = directions.find((d) => d.id === value);
@@ -106,7 +123,7 @@ export default function TeamOnboardingModal() {
     setTeamName(found?.name || "");
   };
 
-  const isFormValid = directionId && centreId && gmrId && teamId;
+  const isFormValid = directionId && centreId && teamId && (hasGmrs ? gmrId : true);
 
   const handleValidate = async () => {
     if (!isFormValid) return;
@@ -117,8 +134,8 @@ export default function TeamOnboardingModal() {
         direction: directionName,
         maintenanceCenterId: centreId,
         centre: centreName,
-        gmrId,
-        gmr: gmrName,
+        gmrId: gmrId || undefined,
+        gmr: gmrName || undefined,
         teamId,
         team: teamName,
       };
@@ -180,7 +197,7 @@ export default function TeamOnboardingModal() {
             />
           )}
 
-          {centreId && (
+          {centreId && hasGmrs && (
             <Select
               id="gmr"
               label="Service/GMR"
@@ -195,7 +212,7 @@ export default function TeamOnboardingModal() {
             />
           )}
 
-          {gmrId && (
+          {(gmrId || (centreId && !hasGmrs)) && (
             <Select
               id="team"
               label="Equipe"
