@@ -40,7 +40,7 @@ export const FormDetailPanel = ({
   };
 
   const handleEdit = () => {
-    router.push(`/admin/${form.id}`);
+    router.push(`/admin?id=${form.id}`);
   };
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useFormsStore, useCategoryCodesStore } from "@/stores";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { Button, IconButton, useBreakpoint } from "@rte-ds/react";
@@ -32,14 +32,13 @@ export default function FormCreation() {
 
   const { breakpoint, width } = useBreakpoint();
 
+  const searchParams = useSearchParams();
+
   // Derive form ID from URL
   const formId = useMemo(() => {
     if (pathname === "/admin/new") return null;
-    if (pathname.startsWith("/admin/") && pathname !== "/admin") {
-      return pathname.replace("/admin/", "");
-    }
-    return null;
-  }, [pathname]);
+    return searchParams.get("id");
+  }, [pathname, searchParams]);
 
   // Get current form from forms array based on URL
   const currentForm = useMemo(() => {
@@ -86,7 +85,7 @@ export default function FormCreation() {
           categoryCode: formCategoryCode,
           schema: { fields: schema },
         });
-        router.push(`/admin/${newForm.id}`);
+        router.push(`/admin?id=${newForm.id}`);
         return;
       }
       alert("Formulaire sauvegardé avec succès !");
