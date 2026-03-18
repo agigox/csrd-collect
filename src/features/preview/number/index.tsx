@@ -34,6 +34,7 @@ const NumberField = ({
         assistiveTextLabel={error}
         assistiveAppearance={error !== undefined ? "error" : undefined}
         showAssistiveIcon={error !== undefined}
+        showRightIcon={false}
       />
     </div>
   );

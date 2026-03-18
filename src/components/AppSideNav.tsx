@@ -148,7 +148,6 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       middleItem={adminToggle}
       showTeamData={!!teamData}
       teamData={teamData}
-      collapsible
       size="s"
       collapsed={width <= 1050}
     >

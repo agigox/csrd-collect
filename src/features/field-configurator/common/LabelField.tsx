@@ -115,21 +115,26 @@ export const LabelField = ({
               fieldIdentifier={fieldIdentifier}
             />
           )}
-          <TextInput
-            aria-required
-            assistiveAppearance="description"
-            autoComplete="off"
-            id="text-input-default"
-            label={label}
-            labelPosition="top"
-            maxLength={150}
-            onRightIconClick={() => {}}
-            placeholder={`${formattedIdentifier} ${placeholder}`}
-            value={value}
-            onChange={onChange}
-            onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
-            width={"100%"}
-          />
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs text-content-secondary">{label}</span>
+            <div className="flex items-center gap-1">
+              <span className="shrink-0 text-sm text-[#9c9c9c] font-medium">{formattedIdentifier}</span>
+              <TextInput
+                aria-required
+                assistiveAppearance="description"
+                autoComplete="off"
+                id="text-input-default"
+                label=""
+                maxLength={150}
+                onRightIconClick={() => {}}
+                placeholder={placeholder || "Renseignez le titre du champ"}
+                value={value}
+                onChange={onChange}
+                onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
+                width={"100%"}
+              />
+            </div>
+          </div>
         </div>
         {typeSelector}
       </div>
@@ -207,7 +212,11 @@ export const LabelField = ({
               {formattedIdentifier}
             </span>
           )}
-          <span className="text-content-primary">{value || placeholder}</span>
+          {value ? (
+            <span className="text-content-primary">{value}</span>
+          ) : (
+            <span className="text-[#9c9c9c] italic">titre à renseigner</span>
+          )}
         </div>
       </div>
       {typeSelector}

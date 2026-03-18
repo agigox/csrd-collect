@@ -23,10 +23,10 @@ export async function saveFormTemplate(
     headers: authHeaders(),
     body: JSON.stringify({
       name: form.name,
-      description: form.description,
-      categoryCode: form.categoryCode,
-      schema: form.schema,
-      visibilityLevel: form.visibilityLevel,
+      description: form.description || undefined,
+      categoryCode: form.categoryCode || undefined,
+      visibilityLevel: form.visibilityLevel || undefined,
+      isActive: form.isActive,
     }),
   });
 

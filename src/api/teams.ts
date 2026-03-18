@@ -96,6 +96,18 @@ export async function removeUserFromTeam(userId: string): Promise<void> {
   if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
 }
 
+export async function updateUserRole(userId: string, role: string): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/users/${userId}`,
+    {
+      method: "PATCH",
+      headers: authHeaders(),
+      body: JSON.stringify({ role }),
+    },
+  );
+  if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+}
+
 export async function fetchTeamTemplates(
   teamId: string,
 ): Promise<Array<{ id: string; name: string; code: string; description?: string }>> {

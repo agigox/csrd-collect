@@ -61,10 +61,12 @@ const DeclarationCard = ({
         {formName || "Sans titre"}
       </h3>
 
-      {/* Row 3: Location */}
-      <p className="text-sm font-normal text-[#11161a] leading- w-full">
-        {location || "Aucune localisation"}
-      </p>
+      {/* Row 3: Location (only show if location was provided) */}
+      {location && (
+        <p className="text-sm font-normal text-[#11161a] leading- w-full">
+          {location}
+        </p>
+      )}
     </Card>
   );
 };

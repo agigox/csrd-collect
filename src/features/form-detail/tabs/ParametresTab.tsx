@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Button, Chip, Divider, Select, Switch, Textarea } from "@rte-ds/react";
+import { Button, Chip, Divider, Select, Switch, Textarea, Toast } from "@rte-ds/react";
 import type { FormTemplate } from "@/models/FormTemplate";
 import { useCategoryCodesStore } from "@/stores/categoryCodesStore";
-import { useFormsStore } from "@/stores/formsStore";
 import { saveFormTemplate } from "@/api/forms";
 import { statusConfig, getFormStatus } from "@/features/forms/statusConfig";
 
@@ -13,9 +12,12 @@ interface ParametresTabProps {
 }
 
 const EDITABLE_BY_OPTIONS = [
-  { value: "equipe", label: "Equipe" },
-  { value: "gre", label: "GRE" },
-  { value: "utilisateur", label: "Utilisateur" },
+  { value: "author", label: "Auteur" },
+  { value: "team", label: "Equipe" },
+  { value: "gmr", label: "GMR" },
+  { value: "mc", label: "Centre de maintenance" },
+  { value: "direction", label: "Direction" },
+  { value: "all", label: "Tous" },
 ];
 
 function formatDate(dateString: string | null): string {
@@ -53,7 +55,6 @@ function MetadataRow({
 
 export function ParametresTab({ form }: ParametresTabProps) {
   const { categoryCodes, fetchCategoryCodes } = useCategoryCodesStore();
-  const fetchForms = useFormsStore((s) => s.fetchForms);
 
   const [editedDescription, setEditedDescription] = useState(
     form.description ?? "",
@@ -62,16 +63,17 @@ export function ParametresTab({ form }: ParametresTabProps) {
     form.categoryCode,
   );
   const [editedVisibilityLevel, setEditedVisibilityLevel] = useState(
-    form.visibilityLevel ?? "",
+    form.visibilityLevel || "team",
   );
   const [editedIsActive, setEditedIsActive] = useState(form.isActive);
   const [saving, setSaving] = useState(false);
+  const [showSaveToast, setShowSaveToast] = useState(false);
 
   // Re-sync local state when the selected form changes
   useEffect(() => {
     setEditedDescription(form.description ?? "");
     setEditedCategoryCode(form.categoryCode);
-    setEditedVisibilityLevel(form.visibilityLevel ?? "");
+    setEditedVisibilityLevel(form.visibilityLevel || "team");
     setEditedIsActive(form.isActive);
   }, [
     form.id,
@@ -94,10 +96,10 @@ export function ParametresTab({ form }: ParametresTabProps) {
         ...form,
         description: editedDescription || null,
         categoryCode: editedCategoryCode,
-        visibilityLevel: editedVisibilityLevel || form.visibilityLevel,
+        visibilityLevel: editedVisibilityLevel || form.visibilityLevel || "team",
         isActive: editedIsActive,
       });
-      await fetchForms();
+      setShowSaveToast(true);
     } catch (err) {
       console.error("Erreur lors de la sauvegarde des parametres:", err);
     } finally {
@@ -110,7 +112,6 @@ export function ParametresTab({ form }: ParametresTabProps) {
     editedVisibilityLevel,
     editedIsActive,
     saving,
-    fetchForms,
   ]);
 
   const status = getFormStatus(form);
@@ -208,6 +209,17 @@ export function ParametresTab({ form }: ParametresTabProps) {
           onClick={handleSave}
         />
       </div>
+
+      <Toast
+        message="Modifications enregistrées avec succès"
+        type="success"
+        isOpen={showSaveToast}
+        onClose={() => setShowSaveToast(false)}
+        closable
+        autoDismiss
+        duration="medium"
+        placement="bottom-right"
+      />
     </div>
   );
 }

@@ -57,19 +57,27 @@ export default function AttribuerEquipesModal({
   };
 
   const handleValidate = () => {
-    const selectedTeams: MockTeam[] = [];
-
+    // Collect teams visible in the tree
+    const treeTeamsMap = new Map<string, MockTeam>();
     const collectSelectedTeams = (nodes: typeof treeData) => {
       for (const node of nodes) {
         if (node.level === 3 && selectedLeafIds.has(node.id)) {
-          selectedTeams.push({ id: node.id, name: node.name });
+          treeTeamsMap.set(node.id, { id: node.id, name: node.name });
         }
         collectSelectedTeams(node.children);
       }
     };
-
     collectSelectedTeams(treeData);
-    setPendingTeams(selectedTeams);
+
+    // Also include currently assigned teams that are still selected but
+    // whose tree branch may not have been expanded/loaded
+    for (const team of currentTeams) {
+      if (selectedLeafIds.has(team.id) && !treeTeamsMap.has(team.id)) {
+        treeTeamsMap.set(team.id, { id: team.id, name: team.name });
+      }
+    }
+
+    setPendingTeams(Array.from(treeTeamsMap.values()));
     setShowConfirmation(true);
   };
 

@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Chip,
   Divider,
+  Icon,
   IconButton,
   Modal,
-  Searchbar,
 } from "@rte-ds/react";
 import type { FormTemplate } from "@/models/FormTemplate";
 import type { User } from "@/models/User";
@@ -95,8 +95,23 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
     [allUsers, form.id],
   );
 
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const handleSearchChange = useCallback((value: string | undefined) => {
     setSearchValue(value);
+    setShowDropdown(!!value?.trim());
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   const handleDeleteClick = useCallback((admin: MockAdmin) => {
@@ -172,16 +187,33 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
       </div>
 
       {/* Search bar with autocomplete */}
-      <Searchbar
-        appearance="secondary"
-        label="Rechercher un administrateur"
-        fullWidth
-        value={searchValue}
-        onChange={handleSearchChange}
-        options={filteredOptions}
-        maxDisplayedItems={MAX_DISPLAYED_OPTIONS}
-        onOptionSelect={handleOptionSelect}
-      />
+      <div ref={searchContainerRef} className="relative">
+        <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+          <Icon name="search" size={16} />
+          <input
+            type="text"
+            placeholder="Rechercher un administrateur"
+            value={searchValue ?? ""}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={() => { if (filteredOptions.length > 0) setShowDropdown(true); }}
+            className="flex-1 text-sm bg-transparent outline-none placeholder:text-content-tertiary"
+          />
+        </div>
+        {showDropdown && filteredOptions.length > 0 && (
+          <div className="absolute left-0 right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
+            {filteredOptions.slice(0, MAX_DISPLAYED_OPTIONS).map((name) => (
+              <button
+                key={name}
+                type="button"
+                className="flex items-center w-full px-3 py-2 text-left hover:bg-background-hover text-sm"
+                onClick={() => { handleOptionSelect(name); setShowDropdown(false); }}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Confirmation modal for admin deletion */}
       <Modal

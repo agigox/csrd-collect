@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Modal, Button, Card, Toast } from "@rte-ds/react";
+import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
 import { useFormsStore } from "@/stores";
 import type { FormTemplate } from "@/models/FormTemplate";
+import { API_BASE_URL } from "@/api/config";
+import { authHeaders } from "@/api/authHeaders";
+import { normalizeSchema } from "@/lib/utils/normalizeSchema";
 
 interface FormSelectionDialogProps {
   open: boolean;
@@ -16,15 +20,48 @@ const FormSelectionDialog = ({
   onOpenChange,
   onFormSelect,
 }: FormSelectionDialogProps) => {
-  const { forms, loading, fetchForms } = useFormsStore();
+  const { forms, loading: formsLoading, fetchForms } = useFormsStore();
+  const user = useAuthStore((s) => s.user);
+  const isAdmin = useAuthStore(selectIsAdmin);
+  const teamId = user?.teamId || user?.teamId;
+
+  const [teamForms, setTeamForms] = useState<FormTemplate[]>([]);
+  const [teamFormsLoading, setTeamFormsLoading] = useState(false);
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
 
+  // For admins: fetch all forms. For users with team: fetch team-assigned forms.
   useEffect(() => {
-    if (open) {
+    if (!open) return;
+
+    if (isAdmin) {
       fetchForms();
+    } else if (teamId) {
+      setTeamFormsLoading(true);
+      fetch(`${API_BASE_URL}/form-template-assignments/by-team/${teamId}`, {
+        headers: authHeaders(),
+      })
+        .then((res) => res.json())
+        .then((templates: FormTemplate[]) => {
+          const normalized = templates
+            .filter((t) => t.isPublished)
+            .map((t) => ({
+              ...t,
+              schema: normalizeSchema(t.schema as Record<string, unknown>),
+            }));
+          setTeamForms(normalized);
+        })
+        .catch((err) => {
+          console.error("Error fetching team templates:", err);
+          setTeamForms([]);
+        })
+        .finally(() => setTeamFormsLoading(false));
     }
-  }, [open, fetchForms]);
+  }, [open, isAdmin, teamId, fetchForms]);
+
+  // Use appropriate form list based on user role
+  const availableForms = isAdmin ? forms.filter((f) => f.isPublished) : teamForms;
+  const loading = isAdmin ? formsLoading : teamFormsLoading;
 
   const handleCancel = () => {
     setSelectedFormId(null);
@@ -32,7 +69,7 @@ const FormSelectionDialog = ({
   };
 
   const handleAdd = () => {
-    const selectedForm = forms.find((f) => f.id === selectedFormId);
+    const selectedForm = availableForms.find((f) => f.id === selectedFormId);
     if (selectedForm) {
       onFormSelect(selectedForm);
       setSelectedFormId(null);
@@ -75,13 +112,13 @@ const FormSelectionDialog = ({
               <div className="text-center py-8 text-content-secondary">
                 Chargement des formulaires...
               </div>
-            ) : forms.length === 0 ? (
+            ) : availableForms.length === 0 ? (
               <div className="text-center py-8 text-content-secondary">
                 Aucun formulaire disponible
               </div>
             ) : (
               <div className="flex flex-col gap-[8.5px]">
-                {forms.map((form) => (
+                {availableForms.map((form) => (
                   <Card
                     key={form.id}
                     size="m"

@@ -7,8 +7,10 @@ import {
   searchUsers,
   assignUserToTeam,
   removeUserFromTeam,
+  updateUserRole,
   type TeamUser,
 } from "@/api/teams";
+import { useAuthStore } from "@/stores/authStore";
 
 const ROLE_LABELS: Record<string, string> = {
   TEAM_LEADER: "Chef d'équipe",
@@ -35,6 +37,13 @@ interface UsersTabProps {
   searchPlaceholder?: string;
 }
 
+const ROLE_OPTIONS = [
+  { value: "OPERATOR", label: "Utilisateur" },
+  { value: "TEAM_LEADER", label: "Chef d'équipe" },
+  { value: "ADMIN", label: "Administrateur" },
+  { value: "SUPER_ADMIN", label: "Super admin" },
+];
+
 export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabProps) {
   const [users, setUsers] = useState<TeamUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +52,8 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
+  const currentUser = useAuthStore((s) => s.user);
+  const canChangeRoles = currentUser?.role === "SUPER_ADMIN" || currentUser?.role === "ADMIN";
 
   const loadUsers = useCallback(() => {
     setLoading(true);
@@ -108,6 +119,15 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
     }
   };
 
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    try {
+      await updateUserRole(userId, newRole);
+      loadUsers();
+    } catch (err) {
+      console.error("Failed to update role:", err);
+    }
+  };
+
   const handleRemoveUser = async (userId: string) => {
     const user = users.find((u) => u.id === userId);
     const name = user
@@ -155,13 +175,25 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
             <div key={user.id}>
               <div className="flex items-center py-2">
                 <div className="w-54.25 text-sm text-content-secondary">{name}</div>
-                <span
-                  className="inline-flex items-center gap-1 rounded px-2.5 py-[3px] text-xs font-medium text-content-primary whitespace-nowrap"
-                  style={{ background: badge.bg }}
-                >
-                  <Icon name="user" size={14} />
-                  {badge.label}
-                </span>
+                {canChangeRoles && user.id !== currentUser?.id ? (
+                  <select
+                    value={user.role}
+                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    className="rounded px-2 py-1 text-xs font-medium border border-gray-200 bg-white cursor-pointer"
+                  >
+                    {ROLE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <span
+                    className="inline-flex items-center gap-1 rounded px-2.5 py-[3px] text-xs font-medium text-content-primary whitespace-nowrap"
+                    style={{ background: badge.bg }}
+                  >
+                    <Icon name="user" size={14} />
+                    {badge.label}
+                  </span>
+                )}
                 <div className="ml-auto">
                   <button
                     type="button"

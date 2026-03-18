@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Grid, useBreakpoint } from "@rte-ds/react";
+import { Grid, useBreakpoint, Toast } from "@rte-ds/react";
 import { DeclarationDetailPanel } from "./DeclarationDetailPanel";
 import { useAuthStore, useFormsStore } from "@/stores";
 import type { FormTemplate } from "@/models/FormTemplate";
@@ -42,6 +42,7 @@ const Declarations = () => {
   const [tempDeclarations, setTempDeclarations] = useState<
     Map<string, Declaration>
   >(new Map());
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   // Load forms when component mounts
   useEffect(() => {
@@ -95,6 +96,14 @@ const Declarations = () => {
       selectedForm.schema.fields.forEach((field) => {
         if (field.defaultValue !== undefined) {
           initialFormData[field.name] = field.defaultValue;
+        }
+        // Handle date fields with defaultDateValue: "today"
+        if (field.type === "date" && "defaultDateValue" in field && (field as { defaultDateValue?: string }).defaultDateValue === "today") {
+          const todayNow = new Date();
+          const time = "includeTime" in field && (field as { includeTime?: boolean }).includeTime
+            ? `${todayNow.getHours().toString().padStart(2, "0")}:${todayNow.getMinutes().toString().padStart(2, "0")}`
+            : undefined;
+          initialFormData[field.name] = { date: todayNow.toISOString(), time };
         }
       });
 
@@ -301,6 +310,7 @@ const Declarations = () => {
       setFormValues({});
       setFormErrors({});
       setHasAttemptedSubmit(false);
+      setShowSuccessToast(true);
 
       // Navigate — the URL-change effect will clear currentTempId
       // after the URL has updated, preventing the creation effect from re-firing
@@ -355,6 +365,17 @@ const Declarations = () => {
           }
         }}
         onFormSelect={handleFormSelect}
+      />
+
+      <Toast
+        message="Déclaration soumise avec succès"
+        type="success"
+        isOpen={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+        closable
+        autoDismiss
+        duration="medium"
+        placement="bottom-right"
       />
     </div>
   );
