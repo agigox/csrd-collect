@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useFormsStore, useCategoryCodesStore } from "@/stores";
 import { useFormEditorStore } from "@/stores/formEditorStore";
-import { Button, IconButton, useBreakpoint } from "@rte-ds/react";
+import { Button, IconButton, Toast, useBreakpoint } from "@rte-ds/react";
 
 import { FormHeader } from "./FormHeader";
 import { SchemaBuilder } from "./SchemaBuilder";
@@ -33,6 +33,8 @@ export default function FormCreation() {
   const { breakpoint, width } = useBreakpoint();
 
   const searchParams = useSearchParams();
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   // Derive form ID from URL
   const formId = useMemo(() => {
@@ -62,8 +64,10 @@ export default function FormCreation() {
   const isEditMode = currentForm !== null;
 
   const handleSave = async () => {
+    setSaveError(null);
+
     if (!formName.trim()) {
-      alert("Veuillez entrer un titre pour la donnée déclarée");
+      setSaveError("Veuillez entrer un titre pour la donnée déclarée");
       return;
     }
 
@@ -79,20 +83,22 @@ export default function FormCreation() {
           schema: { fields: schema },
         });
       } else {
-        const newForm = await createForm({
+        await createForm({
           name: formName,
           description: formDescription,
           categoryCode: formCategoryCode,
           schema: { fields: schema },
         });
-        router.push(`/admin?id=${newForm.id}`);
-        return;
       }
-      alert("Formulaire sauvegardé avec succès !");
-      router.push("/admin");
+      setShowSuccessToast(true);
+      setTimeout(() => router.push("/admin"), 1500);
     } catch (err) {
       console.error("Erreur lors de la sauvegarde:", err);
-      alert("Erreur lors de la sauvegarde du formulaire");
+      setSaveError(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la sauvegarde du formulaire",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -133,6 +139,13 @@ export default function FormCreation() {
             onSave={handleSave}
             onDelete={handleDelete}
           />
+
+          {saveError && (
+            <div className="mx-auto mb-4 p-3 rounded-lg bg-[#FEF2F2] border border-[#F14662] text-[#F14662] text-sm">
+              {saveError}
+            </div>
+          )}
+
           <div className="flex flex-col gap-6">
             <SchemaBuilder />
           </div>
@@ -161,6 +174,18 @@ export default function FormCreation() {
           className="right-8 top-11 absolute"
         />
       )}
+
+      <Toast
+        message="Formulaire sauvegardé avec succès"
+        type="success"
+        isOpen={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+        closable
+        autoDismiss
+        duration="medium"
+        placement="top-right"
+        size="l"
+      />
     </div>
   );
 }

@@ -81,6 +81,7 @@ export default function LoginPage() {
             error={!!fieldError}
             assistiveTextLabel={fieldError}
             assistiveAppearance={fieldError ? "error" : "description"}
+            showRightIcon={false}
             data-testid="input-nni-email"
             width="100%"
           />

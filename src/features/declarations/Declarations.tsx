@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Grid, useBreakpoint, Toast } from "@rte-ds/react";
+import { Grid, useBreakpoint, Modal, Button } from "@rte-ds/react";
 import { DeclarationDetailPanel } from "./DeclarationDetailPanel";
 import { useAuthStore, useFormsStore } from "@/stores";
 import type { FormTemplate } from "@/models/FormTemplate";
@@ -367,16 +367,24 @@ const Declarations = () => {
         onFormSelect={handleFormSelect}
       />
 
-      <Toast
-        message="Déclaration soumise avec succès"
-        type="success"
+      <Modal
         isOpen={showSuccessToast}
         onClose={() => setShowSuccessToast(false)}
-        closable
-        autoDismiss
-        duration="medium"
-        placement="bottom-right"
-      />
+        title="Succès"
+        size="s"
+      >
+        <div className="flex flex-col gap-4 p-4">
+          <p>Déclaration soumise avec succès</p>
+          <div className="flex justify-end">
+            <Button
+              variant="primary"
+              size="m"
+              label="OK"
+              onClick={() => setShowSuccessToast(false)}
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

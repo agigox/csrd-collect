@@ -65,7 +65,9 @@ export async function createFormTemplate(formData: {
   });
 
   if (!response.ok) {
-    throw new Error(`Erreur HTTP: ${response.status}`);
+    const body = await response.json().catch(() => null);
+    const detail = body?.errors?.join(", ") || body?.message || `Erreur HTTP: ${response.status}`;
+    throw new Error(detail);
   }
 
   return response.json() as Promise<FormTemplate>;
