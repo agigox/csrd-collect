@@ -291,7 +291,7 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
                         </div>
 
                         {/* Card */}
-                        <div className="flex-1 flex items-center rounded-lg bg-white border-t border-border-divider shadow-[0_1px_4px_rgba(0,0,0,0.10)] overflow-hidden">
+                        <div className="flex-1 flex items-center rounded-lg bg-white border-t border-border-divider shadow-[0_1px_4px_rgba(0,0,0,0.10)] overflow-hidden min-h-[60px]">
                           {/* Name + code */}
                           <div className="flex flex-col justify-center gap-[3px] px-4 py-3 min-w-[220px]">
                             <span className="text-base font-semibold text-content-primary">

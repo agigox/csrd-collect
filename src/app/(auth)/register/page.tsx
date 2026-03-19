@@ -98,6 +98,7 @@ function RegisterStep1Form() {
           }}
           onBlur={() => setLastNameTouched(true)}
           required
+          showRightIcon={false}
           error={!!lastNameError}
           assistiveTextLabel={lastNameError}
           assistiveAppearance={lastNameError ? "error" : "description"}
@@ -114,6 +115,7 @@ function RegisterStep1Form() {
           }}
           onBlur={() => setFirstNameTouched(true)}
           required
+          showRightIcon={false}
           error={!!firstNameError}
           assistiveTextLabel={firstNameError}
           assistiveAppearance={firstNameError ? "error" : "description"}
@@ -132,6 +134,7 @@ function RegisterStep1Form() {
         }}
         onBlur={() => setNniTouched(true)}
         required
+        showRightIcon={false}
         error={!!nniError}
         assistiveTextLabel={nniError}
         assistiveAppearance={nniError ? "error" : "description"}
@@ -149,6 +152,7 @@ function RegisterStep1Form() {
         }}
         onBlur={() => setEmailTouched(true)}
         required
+        showRightIcon={false}
         error={!!emailError}
         assistiveTextLabel={emailError}
         assistiveAppearance={emailError ? "error" : "description"}

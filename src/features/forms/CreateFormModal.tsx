@@ -80,6 +80,7 @@ export default function CreateFormModal({
             if (nameError) setNameError(false);
           }}
           required
+          showRightIcon={false}
           error={nameError}
           assistiveTextLabel={
             nameError ? "Le titre est obligatoire" : undefined

@@ -126,7 +126,7 @@ export const LabelField = ({
                 id="text-input-default"
                 label=""
                 maxLength={150}
-                onRightIconClick={() => {}}
+                showRightIcon={false}
                 placeholder={placeholder || "Renseignez le titre du champ"}
                 value={value}
                 onChange={onChange}
@@ -156,7 +156,7 @@ export const LabelField = ({
               label={label}
               labelPosition="top"
               maxLength={150}
-              onRightIconClick={() => {}}
+              showRightIcon={false}
               placeholder={placeholder}
               value={editValue}
               onChange={(val) => {
@@ -221,7 +221,7 @@ export const LabelField = ({
       </div>
       {typeSelector}
       <div className="flex items-center gap-1 shrink-0">
-        {collapsedActions.onMoveUp && collapsedActions.onMoveDown && (
+        {!isChildField && collapsedActions.onMoveUp && collapsedActions.onMoveDown && (
           <>
             <IconButton
               appearance="outlined"

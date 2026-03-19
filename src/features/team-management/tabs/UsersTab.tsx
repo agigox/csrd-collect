@@ -88,7 +88,7 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
     setSearchQuery(value);
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
-    if (value.trim().length < 2) {
+    if (value.trim().length < 1) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -251,7 +251,7 @@ export function UsersTab({ teamId, filterRoles, searchPlaceholder }: UsersTabPro
             })}
           </div>
         )}
-        {showSuggestions && searchQuery.trim().length >= 2 && suggestions.length === 0 && (
+        {showSuggestions && searchQuery.trim().length >= 1 && suggestions.length === 0 && (
           <div className="absolute left-0 right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-50 px-3 py-2 text-sm text-muted-foreground">
             Aucun utilisateur trouvé
           </div>

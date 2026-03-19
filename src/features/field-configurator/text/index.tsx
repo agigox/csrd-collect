@@ -29,6 +29,7 @@ export const TextConfigurator = ({
           id="text-input-default"
           label="Valeur par défaut"
           labelPosition="top"
+          showRightIcon={false}
           onChange={(e) => onChange({ ...config, defaultValue: e })}
           value={(config.defaultValue as string) ?? ""}
         />

@@ -31,6 +31,7 @@ export const NumberConfigurator = ({
               defaultValue: e ? Number(e) : undefined,
             })
           }
+          showRightIcon={false}
           width={235}
           type="number"
           {...(config.unit && { unit: config.unit })}
@@ -42,6 +43,7 @@ export const NumberConfigurator = ({
           onChange={(value) =>
             onChange({ ...config, unit: value || undefined })
           }
+          showRightIcon={false}
           width={160}
         />
       </div>
