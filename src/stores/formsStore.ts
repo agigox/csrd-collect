@@ -124,6 +124,7 @@ export const useFormsStore = create<FormsState>()(
           );
         } catch (err) {
           console.error("Erreur lors de la sauvegarde du formulaire:", err);
+          throw err;
         }
       },
 

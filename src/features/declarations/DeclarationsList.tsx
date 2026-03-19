@@ -13,12 +13,14 @@ interface DeclarationsListProps {
   onDeclarer?: () => void;
   onEditDeclaration?: (declaration: Declaration) => void;
   selectedDeclarationId?: string;
+  hasAvailableForms?: boolean;
 }
 
 const DeclarationsList = ({
   onDeclarer,
   onEditDeclaration,
   selectedDeclarationId,
+  hasAvailableForms,
 }: DeclarationsListProps) => {
   const { declarations, loading, error, fetchDeclarations } =
     useDeclarationsStore();
@@ -121,6 +123,7 @@ const DeclarationsList = ({
             label="Déclarer"
             onClick={onDeclarer}
             variant="primary"
+            disabled={hasAvailableForms === false}
           />
         </div>
       </div>

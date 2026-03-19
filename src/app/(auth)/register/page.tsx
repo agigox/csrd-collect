@@ -89,23 +89,6 @@ function RegisterStep1Form() {
 
       <div className="flex flex-col sm:flex-row gap-2.5 w-full">
         <TextInput
-          id="lastName"
-          label="Nom"
-          value={lastName}
-          onChange={(value) => {
-            setLastName(value);
-            if (!lastNameTouched) setLastNameTouched(true);
-          }}
-          onBlur={() => setLastNameTouched(true)}
-          required
-          showRightIcon={false}
-          error={!!lastNameError}
-          assistiveTextLabel={lastNameError}
-          assistiveAppearance={lastNameError ? "error" : "description"}
-          data-testid="input-lastName"
-          width="100%"
-        />
-        <TextInput
           id="firstName"
           label="Prénom"
           value={firstName}
@@ -120,6 +103,23 @@ function RegisterStep1Form() {
           assistiveTextLabel={firstNameError}
           assistiveAppearance={firstNameError ? "error" : "description"}
           data-testid="input-firstName"
+          width="100%"
+        />
+        <TextInput
+          id="lastName"
+          label="Nom"
+          value={lastName}
+          onChange={(value) => {
+            setLastName(value);
+            if (!lastNameTouched) setLastNameTouched(true);
+          }}
+          onBlur={() => setLastNameTouched(true)}
+          required
+          showRightIcon={false}
+          error={!!lastNameError}
+          assistiveTextLabel={lastNameError}
+          assistiveAppearance={lastNameError ? "error" : "description"}
+          data-testid="input-lastName"
           width="100%"
         />
       </div>
@@ -148,7 +148,6 @@ function RegisterStep1Form() {
         value={email}
         onChange={(value) => {
           setEmail(value);
-          if (!emailTouched) setEmailTouched(true);
         }}
         onBlur={() => setEmailTouched(true)}
         required

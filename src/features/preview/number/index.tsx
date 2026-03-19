@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import type { NumberFieldConfig } from "@/models/FieldTypes";
 import type { FieldProps, FieldRegistration } from "@/lib/types/field";
 import { TextInput } from "@rte-ds/react";
@@ -11,9 +12,32 @@ const NumberField = ({
   error,
   readOnly = false,
 }: FieldProps<NumberFieldConfig>) => {
-  const handleChange = (value: string) => {
-    const numValue = value === "" ? 0 : Number(value);
-    onChange(numValue);
+  // Keep raw string for display so user can type "1," without it being reset to "1"
+  const [rawValue, setRawValue] = useState<string>(
+    value !== undefined && value !== 0 ? String(value) : "",
+  );
+
+  // Sync from external value changes (e.g. initial load)
+  useEffect(() => {
+    const external = value !== undefined && value !== 0 ? String(value) : "";
+    const normalized = rawValue.replace(",", ".");
+    const parsed = parseFloat(normalized);
+    if (!isNaN(parsed) && parsed !== value) {
+      setRawValue(external);
+    }
+  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleChange = (input: string) => {
+    setRawValue(input);
+    const normalized = input.replace(",", ".");
+    if (normalized === "" || normalized === "-") {
+      onChange(0);
+      return;
+    }
+    const num = parseFloat(normalized);
+    if (!isNaN(num)) {
+      onChange(num);
+    }
   };
 
   return (
@@ -24,7 +48,7 @@ const NumberField = ({
         label={config.label}
         labelPosition="top"
         onChange={handleChange}
-        value={value !== undefined ? String(value) : ""}
+        value={rawValue}
         required={config.required}
         readOnly={readOnly}
         {...(config.unit && { unit: config.unit })}

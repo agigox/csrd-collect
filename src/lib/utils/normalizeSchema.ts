@@ -13,6 +13,7 @@ interface RawField {
   unit?: string;
   includeTime?: boolean;
   defaultDateValue?: string;
+  noFutureDates?: boolean;
   selectionMode?: string;
   branchingInfo?: unknown;
   branchingEnabled?: boolean;
@@ -111,6 +112,7 @@ function normalizeField(raw: RawField): FieldConfig {
       type: "date",
       includeTime: raw.includeTime,
       defaultDateValue: raw.defaultDateValue as "none" | "today" | undefined,
+      noFutureDates: raw.noFutureDates,
     } as FieldConfig;
   }
 

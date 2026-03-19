@@ -100,6 +100,8 @@ export function OrgHierarchyList({
     <div className="flex flex-col gap-1">
       {hierarchy.map((dir) => {
         const dirExp = effectiveExpanded.has(dir.id);
+        // If direction has exactly 1 MC with same name, render MC's contents directly
+        const singleSameMC = dir.maintenanceCenters.length === 1 && dir.maintenanceCenters[0].name === dir.name ? dir.maintenanceCenters[0] : null;
         return (
           <div key={dir.id}>
             <SectionCard
@@ -109,54 +111,143 @@ export function OrgHierarchyList({
             />
             {dirExp && (
               <div className="flex flex-col gap-1 pl-4 pt-1">
-                {dir.maintenanceCenters.map((mc) => {
-                  const mcExp = effectiveExpanded.has(mc.id);
-                  return (
-                    <div key={mc.id}>
-                      <SectionCard
-                        label={mc.name}
-                        isExpanded={mcExp}
-                        onToggle={() => toggle(mc.id)}
-                      />
-                      {mcExp && (
-                        <div className="flex flex-col gap-1 pl-4 pt-1">
-                          {mc.gmrs.map((gmr) => {
-                            const gmrExp = effectiveExpanded.has(gmr.id);
-                            return (
-                              <div key={gmr.id}>
-                                <SectionCard
-                                  label={gmr.name}
-                                  isExpanded={gmrExp}
-                                  onToggle={() => toggle(gmr.id)}
+                {singleSameMC ? (
+                  // Render MC's children directly without showing the MC SectionCard
+                  <>
+                    {singleSameMC.gmrs.map((gmr) => {
+                      // If this MC has exactly 1 GMR with same name, skip the GMR level
+                      const singleSameGMR = singleSameMC.gmrs.length === 1 && singleSameMC.gmrs[0].name === singleSameMC.name ? singleSameMC.gmrs[0] : null;
+                      if (singleSameGMR) {
+                        // Render GMR's teams directly
+                        return singleSameGMR.teams.map((team) => (
+                          <TeamCard
+                            key={team.id}
+                            team={team}
+                            isSelected={selectedTeamId === team.id}
+                            onSelect={() => onSelectTeam(team)}
+                          />
+                        ));
+                      }
+                      // If GMR has exactly 1 team with same name, skip the GMR level
+                      const singleSameTeam = gmr.teams.length === 1 && gmr.teams[0].name === gmr.name ? gmr.teams[0] : null;
+                      if (singleSameTeam) {
+                        return (
+                          <TeamCard
+                            key={gmr.id}
+                            team={singleSameTeam}
+                            isSelected={selectedTeamId === singleSameTeam.id}
+                            onSelect={() => onSelectTeam(singleSameTeam)}
+                          />
+                        );
+                      }
+                      const gmrExp = effectiveExpanded.has(gmr.id);
+                      return (
+                        <div key={gmr.id}>
+                          <SectionCard
+                            label={gmr.name}
+                            isExpanded={gmrExp}
+                            onToggle={() => toggle(gmr.id)}
+                          />
+                          {gmrExp && (
+                            <div className="flex flex-col gap-1 pl-4 pt-1">
+                              {gmr.teams.map((team) => (
+                                <TeamCard
+                                  key={team.id}
+                                  team={team}
+                                  isSelected={selectedTeamId === team.id}
+                                  onSelect={() => onSelectTeam(team)}
                                 />
-                                {gmrExp && (
-                                  <div className="flex flex-col gap-1 pl-4 pt-1">
-                                    {gmr.teams.map((team) => (
-                                      <TeamCard
-                                        key={team.id}
-                                        team={team}
-                                        isSelected={selectedTeamId === team.id}
-                                        onSelect={() => onSelectTeam(team)}
-                                      />
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                          {(mc.teams || []).map((team) => (
-                            <TeamCard
-                              key={team.id}
-                              team={team}
-                              isSelected={selectedTeamId === team.id}
-                              onSelect={() => onSelectTeam(team)}
-                            />
-                          ))}
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                    {(singleSameMC.teams || []).map((team) => (
+                      <TeamCard
+                        key={team.id}
+                        team={team}
+                        isSelected={selectedTeamId === team.id}
+                        onSelect={() => onSelectTeam(team)}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  dir.maintenanceCenters.map((mc) => {
+                    const mcExp = effectiveExpanded.has(mc.id);
+                    // If this MC has exactly 1 GMR with same name, skip the GMR level
+                    const singleSameGMR = mc.gmrs.length === 1 && mc.gmrs[0].name === mc.name ? mc.gmrs[0] : null;
+                    return (
+                      <div key={mc.id}>
+                        <SectionCard
+                          label={mc.name}
+                          isExpanded={mcExp}
+                          onToggle={() => toggle(mc.id)}
+                        />
+                        {mcExp && (
+                          <div className="flex flex-col gap-1 pl-4 pt-1">
+                            {singleSameGMR ? (
+                              // Render GMR's teams directly without showing the GMR SectionCard
+                              singleSameGMR.teams.map((team) => (
+                                <TeamCard
+                                  key={team.id}
+                                  team={team}
+                                  isSelected={selectedTeamId === team.id}
+                                  onSelect={() => onSelectTeam(team)}
+                                />
+                              ))
+                            ) : (
+                              mc.gmrs.map((gmr) => {
+                                // If GMR has exactly 1 team with same name, skip the GMR level
+                                const singleSameTeam = gmr.teams.length === 1 && gmr.teams[0].name === gmr.name ? gmr.teams[0] : null;
+                                if (singleSameTeam) {
+                                  return (
+                                    <TeamCard
+                                      key={gmr.id}
+                                      team={singleSameTeam}
+                                      isSelected={selectedTeamId === singleSameTeam.id}
+                                      onSelect={() => onSelectTeam(singleSameTeam)}
+                                    />
+                                  );
+                                }
+                                const gmrExp = effectiveExpanded.has(gmr.id);
+                                return (
+                                  <div key={gmr.id}>
+                                    <SectionCard
+                                      label={gmr.name}
+                                      isExpanded={gmrExp}
+                                      onToggle={() => toggle(gmr.id)}
+                                    />
+                                    {gmrExp && (
+                                      <div className="flex flex-col gap-1 pl-4 pt-1">
+                                        {gmr.teams.map((team) => (
+                                          <TeamCard
+                                            key={team.id}
+                                            team={team}
+                                            isSelected={selectedTeamId === team.id}
+                                            onSelect={() => onSelectTeam(team)}
+                                          />
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })
+                            )}
+                            {(mc.teams || []).map((team) => (
+                              <TeamCard
+                                key={team.id}
+                                team={team}
+                                isSelected={selectedTeamId === team.id}
+                                onSelect={() => onSelectTeam(team)}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             )}
           </div>

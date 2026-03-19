@@ -75,6 +75,7 @@ export const FormsList = ({
               key={catCode}
               title={getCategoryLabel(catCode)}
               defaultOpen={index === 0}
+              forceOpen={!!searchQuery}
               data-testid={`accordion-${catCode}`}
             >
               {groupedForms[catCode].map((form) => (

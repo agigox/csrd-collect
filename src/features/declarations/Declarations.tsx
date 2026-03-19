@@ -334,6 +334,7 @@ const Declarations = () => {
               onDeclarer={handleOpenSelection}
               onEditDeclaration={handleEditDeclaration}
               selectedDeclarationId={finalSelectedDeclaration?.id}
+              hasAvailableForms={forms.length > 0}
             />
           </Grid.Col>
         )}

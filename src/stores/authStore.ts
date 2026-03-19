@@ -152,12 +152,18 @@ export const useAuthStore = create<AuthState>()(
             set(
               {
                 user: freshUser,
-                team: freshUser.team ?? null,
+                team: freshUser.team ?? get().team,
               },
               false,
               "AUTH/REFRESH_USER"
             );
-          } catch {
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : "";
+            if (msg.includes("401")) {
+              get().logout();
+              if (typeof window !== "undefined") window.location.replace("/login");
+              return;
+            }
             // Server unreachable — keep cached data
           }
         },

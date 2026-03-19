@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TextInput, Button } from "@rte-ds/react";
 import { useAuthStore } from "@/stores";
@@ -16,6 +16,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const emailInput = document.querySelector('[data-testid="input-nni-email"] input') as HTMLInputElement | null;
+      const passInput = document.querySelector('[data-testid="input-password"] input') as HTMLInputElement | null;
+      if (emailInput?.value) setNniOrEmail(emailInput.value);
+      if (passInput?.value) setPassword(passInput.value);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isNni = /^[a-zA-Z0-9]{1,10}$/.test(nniOrEmail);
   const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nniOrEmail);

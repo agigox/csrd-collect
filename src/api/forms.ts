@@ -18,7 +18,7 @@ export async function fetchFormTemplates(): Promise<FormTemplate[]> {
 export async function saveFormTemplate(
   form: FormTemplate,
 ): Promise<FormTemplate> {
-  const response = await fetch(`${API_BASE_URL}/form-templates/${form.id}`, {
+  const response = await fetch(`${API_BASE_URL}/form-templates/${form.id}?force=true`, {
     method: "PATCH",
     headers: authHeaders(),
     body: JSON.stringify({
@@ -27,11 +27,14 @@ export async function saveFormTemplate(
       categoryCode: form.categoryCode || undefined,
       visibilityLevel: form.visibilityLevel || undefined,
       isActive: form.isActive,
+      schema: form.schema,
     }),
   });
 
   if (!response.ok) {
-    throw new Error(`Erreur HTTP: ${response.status}`);
+    const body = await response.json().catch(() => null);
+    const detail = body?.errors?.join(", ") || body?.message || `Erreur HTTP: ${response.status}`;
+    throw new Error(detail);
   }
 
   return response.json() as Promise<FormTemplate>;

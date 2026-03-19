@@ -70,6 +70,14 @@ export const useDeclarationsStore = create<DeclarationsState>()(
             "DECLARATIONS/FETCH_SUCCESS",
           );
         } catch (err) {
+          const msg = err instanceof Error ? err.message : "";
+          if (msg.includes("401") || msg.toLowerCase().includes("unauthorized")) {
+            // Token expired — force logout and redirect to login
+            const { useAuthStore } = await import("./authStore");
+            useAuthStore.getState().logout();
+            if (typeof window !== "undefined") window.location.replace("/login");
+            return;
+          }
           set(
             {
               error:

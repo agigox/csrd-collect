@@ -205,18 +205,19 @@ const DateField = ({
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <div className="flex flex-col">
+          <div className="flex flex-row items-start">
             <Calendar
               mode="single"
               selected={dateObj}
               onSelect={readOnly ? undefined : handleSelectDate}
               defaultMonth={dateObj || getDefaultDate()}
               locale={fr}
+              disabled={config.noFutureDates ? { after: new Date() } : undefined}
             />
 
             {/* Time selector - only shown if includeTime is true */}
             {config.includeTime && (
-              <div className="border-t p-4">
+              <div className="border-l p-4 flex flex-col justify-center min-h-full">
                 <div className="text-sm font-medium text-center mb-3">
                   {readOnly ? "Heure incluse" : "Sélectionner l'heure"}
                 </div>

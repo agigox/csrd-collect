@@ -28,7 +28,7 @@ export const NumberConfigurator = ({
           onChange={(e) =>
             onChange({
               ...config,
-              defaultValue: e ? Number(e) : undefined,
+              defaultValue: e ? parseFloat(e.replace(",", ".")) || undefined : undefined,
             })
           }
           showRightIcon={false}

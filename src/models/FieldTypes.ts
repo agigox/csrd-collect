@@ -65,6 +65,7 @@ export interface DateFieldConfig extends BaseFieldConfig {
   type: "date";
   includeTime?: boolean;
   defaultDateValue?: DateDefaultValue;
+  noFutureDates?: boolean;
 }
 
 export interface RadioFieldConfig extends BaseFieldConfig {

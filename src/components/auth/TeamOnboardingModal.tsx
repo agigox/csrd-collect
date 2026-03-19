@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Modal, Button, Icon } from "@rte-ds/react";
 import { useAuthStore } from "@/stores";
+import { useDeclarationsStore } from "@/stores";
 import {
   fetchDirections,
   fetchMaintenanceCenters,
@@ -258,6 +259,8 @@ export default function TeamOnboardingModal() {
         team: teamName,
       };
       await updateTeam(team);
+      // Reset declarations so they reload with the new team's forms
+      useDeclarationsStore.getState().reset();
     } catch (err) {
       console.error("Erreur lors de la sauvegarde:", err);
     } finally {

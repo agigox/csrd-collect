@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Searchbar, Icon } from "@rte-ds/react";
 
 // --- Types ---
@@ -118,7 +118,7 @@ interface TreeNodeListProps {
   selectedLeafIds: Set<string>;
   expandedIds: Set<string>;
   onToggleExpanded: (nodeId: string) => void;
-  onToggleSelection: (node: TreeNode) => void;
+  onToggleSelection: (node: TreeNode) => void | Promise<void>;
   onLoadChildren?: (nodeId: string) => Promise<void>;
 }
 
@@ -152,7 +152,7 @@ interface TreeNodeRowProps {
   selectedLeafIds: Set<string>;
   expandedIds: Set<string>;
   onToggleExpanded: (nodeId: string) => void;
-  onToggleSelection: (node: TreeNode) => void;
+  onToggleSelection: (node: TreeNode) => void | Promise<void>;
   onLoadChildren?: (nodeId: string) => Promise<void>;
 }
 
@@ -241,7 +241,7 @@ interface OrgUnitTreeProps {
   treeData: TreeNode[];
   loading: boolean;
   selectedLeafIds: Set<string>;
-  onToggleSelection: (node: TreeNode) => void;
+  onToggleSelection: (node: TreeNode) => void | Promise<void>;
   onLoadChildren?: (nodeId: string) => Promise<void>;
 }
 
@@ -254,6 +254,24 @@ export default function OrgUnitTree({
 }: OrgUnitTreeProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  // When search is active, load all unloaded nodes so they become searchable
+  useEffect(() => {
+    if (!searchQuery || !onLoadChildren) return;
+
+    const loadAllUnloaded = async (nodes: TreeNode[]) => {
+      for (const node of nodes) {
+        if (node.level < 3 && !node.childrenLoaded) {
+          await onLoadChildren(node.id);
+        }
+        if (node.children.length > 0) {
+          await loadAllUnloaded(node.children);
+        }
+      }
+    };
+
+    loadAllUnloaded(treeData);
+  }, [searchQuery, treeData, onLoadChildren]);
 
   const toggleExpanded = (nodeId: string) => {
     setExpandedIds((prev) => {
