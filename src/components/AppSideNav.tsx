@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { SideNav, Switch, useBreakpoint } from "@rte-ds/react";
 import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
+import { useDeclarationsStore } from "@/stores/declarationsStore";
 
 interface AppSideNavProps {
   children: React.ReactNode;
@@ -56,6 +57,14 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   const handleToggleAdmin = () => {
     const newMode = !adminMode;
     setAdminMode(newMode);
+
+    // Clean up any in-progress temp declarations before switching mode
+    const { declarations, removeTempDeclaration } =
+      useDeclarationsStore.getState();
+    declarations
+      .filter((d) => d.id.startsWith("temp_"))
+      .forEach((d) => removeTempDeclaration(d.id));
+
     if (newMode) {
       router.push("/admin");
     } else {
