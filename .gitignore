@@ -57,3 +57,9 @@ _test-state/
 .github/
 .vscode/
 docs/
+
+e2e-tests/
+
+.idea/
+
+playwright.config.ts

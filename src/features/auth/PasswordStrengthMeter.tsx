@@ -6,7 +6,6 @@ interface PasswordStrengthMeterProps {
 
 interface PasswordCriteria {
   length: boolean;
-  longLength: boolean;
   uppercase: boolean;
   lowercase: boolean;
   special: boolean;
@@ -18,10 +17,9 @@ type Strength = "faible" | "moyen" | "fort";
 function evaluateCriteria(password: string): PasswordCriteria {
   return {
     length: password.length >= 8,
-    longLength: password.length >= 12,
     uppercase: /[A-Z]/.test(password),
     lowercase: /[a-z]/.test(password),
-    special: /[#&%*!@$^()_\-+=]/.test(password),
+    special: /[^a-zA-Z0-9\s]/.test(password),
     digit: /[0-9]/.test(password),
   };
 }
@@ -30,9 +28,10 @@ function evaluateStrength(
   _password: string,
   criteria: PasswordCriteria
 ): Strength {
+  const all = criteria.length && criteria.uppercase && criteria.lowercase && criteria.special && criteria.digit;
+  if (all) return "fort";
   const score = Object.values(criteria).filter(Boolean).length;
   if (score <= 2) return "faible";
-  if (score === 6) return "fort";
   return "moyen";
 }
 
@@ -51,7 +50,7 @@ const strengthConfig: Record<
     color: "#F4922B",
     label: "Moyen",
     message:
-      "Vous pouvez augmenter la sécurité de ce mot de passe avec plus de 12 caractères.",
+      "Ajoutez les critères manquants pour renforcer votre mot de passe.",
   },
   fort: {
     bars: 3,
@@ -62,11 +61,10 @@ const strengthConfig: Record<
 };
 
 const criteriaLabels = [
-  { key: "length" as const, label: "8 caractères" },
-  { key: "longLength" as const, label: "12 caractères" },
+  { key: "length" as const, label: "8 caractères minimum" },
   { key: "uppercase" as const, label: "1 lettre majuscule" },
   { key: "lowercase" as const, label: "1 lettre minuscule" },
-  { key: "special" as const, label: "1 caractère spécial (#&%*#...)" },
+  { key: "special" as const, label: "1 caractère spécial (#&%*!...)" },
   { key: "digit" as const, label: "1 chiffre" },
 ];
 

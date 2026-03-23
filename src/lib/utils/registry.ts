@@ -32,3 +32,7 @@ registerField(dateField);
 registerField(radioField);
 registerField(checkboxField);
 registerField(importField);
+
+// Aliases for legacy/backend field types
+registerField({ ...selectField, type: "dropdown" });
+registerField({ ...textField, type: "textarea" });

@@ -4,6 +4,7 @@ import {
   fetchMaintenanceCenters,
   fetchGmrs,
   fetchTeams,
+  fetchTeamsByMC,
 } from "@/api/users";
 import type { TreeNode } from "../components/OrgUnitTree";
 
@@ -68,7 +69,8 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
     };
   }, [isOpen, initialSelectedIds]);
 
-  const loadChildren = useCallback(async (nodeId: string) => {
+  // nodeLevel: if provided, skip the treeDataRef lookup (used when node not yet in tree state)
+  const loadChildren = useCallback(async (nodeId: string, nodeLevel?: number): Promise<TreeNode[]> => {
     setTreeData((prev) => {
       const updated = JSON.parse(JSON.stringify(prev)) as TreeNode[];
       const node = findNodeInTree(updated, nodeId);
@@ -79,12 +81,16 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
     });
 
     try {
-      const node = findNodeInTree(treeDataRef.current, nodeId);
-      if (!node) return;
+      const nodeFromRef = findNodeInTree(treeDataRef.current, nodeId);
+      // Use provided level, or fall back to ref lookup
+      const level = nodeLevel !== undefined ? nodeLevel : nodeFromRef?.level;
+      if (level === undefined) return [];
+      // Already loaded — return existing children from ref
+      if (nodeFromRef?.childrenLoaded) return nodeFromRef.children;
 
       let children: TreeNode[] = [];
 
-      if (node.level === 0) {
+      if (level === 0) {
         const centers = await fetchMaintenanceCenters(nodeId);
         children = centers.map((center) => ({
           id: center.id,
@@ -93,16 +99,28 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
           children: [] as TreeNode[],
           childrenLoaded: false,
         }));
-      } else if (node.level === 1) {
+      } else if (level === 1) {
         const gmrs = await fetchGmrs(nodeId);
-        children = gmrs.map((gmr) => ({
-          id: gmr.id,
-          name: gmr.name,
-          level: 2,
-          children: [] as TreeNode[],
-          childrenLoaded: false,
-        }));
-      } else if (node.level === 2) {
+        if (gmrs.length > 0) {
+          children = gmrs.map((gmr) => ({
+            id: gmr.id,
+            name: gmr.name,
+            level: 2,
+            children: [] as TreeNode[],
+            childrenLoaded: false,
+          }));
+        } else {
+          // No GMRs — load teams directly under MC
+          const teams = await fetchTeamsByMC(nodeId);
+          children = teams.map((team) => ({
+            id: team.id,
+            name: team.name,
+            level: 3,
+            children: [] as TreeNode[],
+            childrenLoaded: true,
+          }));
+        }
+      } else if (level === 2) {
         const teams = await fetchTeams(nodeId);
         children = teams.map((team) => ({
           id: team.id,
@@ -123,6 +141,7 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
         }
         return updated;
       });
+      return children;
     } catch (error) {
       console.error(`Failed to load children for node ${nodeId}:`, error);
       setTreeData((prev) => {
@@ -133,8 +152,9 @@ export function useOrgUnitTree({ isOpen, initialSelectedIds }: UseOrgUnitTreeOpt
         }
         return updated;
       });
+      return [];
     }
   }, []);
 
-  return { treeData, loading, selectedLeafIds, setSelectedLeafIds, loadChildren };
+  return { treeData, loading, selectedLeafIds, setSelectedLeafIds, loadChildren, treeDataRef };
 }

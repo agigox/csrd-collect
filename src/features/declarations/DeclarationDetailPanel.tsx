@@ -107,7 +107,6 @@ export const DeclarationDetailPanel = ({
           label="Soumettre"
           variant="primary"
           size="m"
-          disabled={!isFormValid}
           onClick={onSubmit}
         />
       </div>

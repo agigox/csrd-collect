@@ -6,6 +6,7 @@ import {
   updateDeclaration as updateDeclarationApi,
   createDeclaration as createDeclarationApi,
 } from "@/api/declarations";
+import { normalizeSchema } from "@/lib/utils/normalizeSchema";
 
 interface DeclarationsState {
   declarations: Declaration[];
@@ -13,6 +14,7 @@ interface DeclarationsState {
   hasFetched: boolean;
   error: string | null;
   fetchDeclarations: () => Promise<void>;
+  reset: () => void;
   updateDeclaration: (
     id: string,
     formData: Record<string, unknown>,
@@ -31,6 +33,14 @@ export const useDeclarationsStore = create<DeclarationsState>()(
       hasFetched: false,
       error: null,
 
+      reset: () => {
+        set(
+          { declarations: [], loading: false, hasFetched: false, error: null },
+          false,
+          "DECLARATIONS/RESET",
+        );
+      },
+
       fetchDeclarations: async () => {
         const { hasFetched, loading } = useDeclarationsStore.getState();
         if (hasFetched || loading) return;
@@ -39,20 +49,35 @@ export const useDeclarationsStore = create<DeclarationsState>()(
 
         try {
           // TODO: remove filter when backend supports deleting validated declarations
-          const data = (await fetchDeclarationsApi()).filter(
-            (d) => d.id !== "f6a395e8-1997-4c8f-876d-0f7df71e9d38",
-          );
+          const data = (await fetchDeclarationsApi())
+            .filter((d) => d.id !== "f6a395e8-1997-4c8f-876d-0f7df71e9d38")
+            .map((d) => d.formTemplate
+              ? { ...d, formTemplate: { ...d.formTemplate, schema: normalizeSchema(d.formTemplate.schema as Record<string, unknown>) } }
+              : d,
+            );
 
           set(
-            {
-              declarations: data,
-              loading: false,
-              hasFetched: true,
+            (state) => {
+              // Preserve any temp declarations that were added before fetch completed
+              const tempDeclarations = state.declarations.filter((d) => d.isNew);
+              return {
+                declarations: [...tempDeclarations, ...data],
+                loading: false,
+                hasFetched: true,
+              };
             },
             false,
             "DECLARATIONS/FETCH_SUCCESS",
           );
         } catch (err) {
+          const msg = err instanceof Error ? err.message : "";
+          if (msg.includes("401") || msg.toLowerCase().includes("unauthorized")) {
+            // Token expired — force logout and redirect to login
+            const { useAuthStore } = await import("./authStore");
+            useAuthStore.getState().logout();
+            if (typeof window !== "undefined") window.location.replace("/login");
+            return;
+          }
           set(
             {
               error:
@@ -162,15 +187,26 @@ export const useDeclarationsStore = create<DeclarationsState>()(
           // Use the server response to replace the temp declaration with real data
           const created = await createDeclarationApi(declarationToSave);
 
+          // Preserve formTemplate from temp since server response doesn't include it
+          const confirmed = {
+            ...created,
+            formTemplate: created.formTemplate || declaration.formTemplate,
+            isNew: false,
+          };
+
           set(
             (state) => ({
               declarations: state.declarations.map((d) =>
-                d.id === id ? { ...created, isNew: false } : d,
+                d.id === id ? confirmed : d,
               ),
             }),
             false,
             "DECLARATIONS/CONFIRM_TEMP",
           );
+
+          // Re-fetch to get authoritative server data (with formTemplate populated)
+          set({ hasFetched: false }, false, "DECLARATIONS/INVALIDATE");
+          await useDeclarationsStore.getState().fetchDeclarations();
         } catch (err) {
           console.error(
             "Erreur lors de la confirmation de la déclaration:",

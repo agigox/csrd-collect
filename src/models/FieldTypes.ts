@@ -6,7 +6,9 @@ export type FieldType =
   | "date"
   | "radio"
   | "checkbox"
-  | "import";
+  | "import"
+  | "dropdown"
+  | "textarea";
 
 export interface BranchingInfo {
   parentFieldId: string;
@@ -63,6 +65,7 @@ export interface DateFieldConfig extends BaseFieldConfig {
   type: "date";
   includeTime?: boolean;
   defaultDateValue?: DateDefaultValue;
+  noFutureDates?: boolean;
 }
 
 export interface RadioFieldConfig extends BaseFieldConfig {

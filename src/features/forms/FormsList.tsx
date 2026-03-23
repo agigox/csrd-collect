@@ -64,7 +64,7 @@ export const FormsList = ({
         onClear={() => onSearchChange("")}
         label="Rechercher"
         showResetButton={!!searchQuery}
-        fullWidth
+        style={{ width: "100%" }}
       />
       {!hasResults ? (
         <EmptyCard message="Aucun formulaire trouvé" />
@@ -75,6 +75,7 @@ export const FormsList = ({
               key={catCode}
               title={getCategoryLabel(catCode)}
               defaultOpen={index === 0}
+              forceOpen={!!searchQuery}
               data-testid={`accordion-${catCode}`}
             >
               {groupedForms[catCode].map((form) => (

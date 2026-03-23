@@ -285,8 +285,25 @@ export const FormBuilder = ({
         name: newName,
         isDuplicate: true,
       };
-      const newSchema = [...schema];
+      let newSchema = [...schema];
       newSchema.splice(index + 1, 0, duplicatedField);
+
+      // If this is a child field, register the duplicate in the parent's branching map
+      if (duplicatedField.branchingInfo?.parentFieldId && duplicatedField.branchingInfo?.parentOptionValue) {
+        const parentIdx = newSchema.findIndex(
+          (f) => f.id === duplicatedField.branchingInfo!.parentFieldId,
+        );
+        if (parentIdx >= 0) {
+          const parent = newSchema[parentIdx] as RadioFieldConfig | CheckboxFieldConfig;
+          if (parent.branching) {
+            const optionValue = duplicatedField.branchingInfo.parentOptionValue;
+            const newBranching = { ...parent.branching };
+            newBranching[optionValue] = [...(newBranching[optionValue] ?? []), newName];
+            newSchema[parentIdx] = { ...parent, branching: newBranching };
+          }
+        }
+      }
+
       sortedOnChange(newSchema);
       setActiveFieldName(duplicatedField.name, newSchema);
       return;

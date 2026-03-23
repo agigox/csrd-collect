@@ -23,6 +23,7 @@ interface FooterProps {
   isDetachingParent?: boolean;
   detachParentLabel?: string;
   detachChildCount?: number;
+  isChildField?: boolean;
 }
 
 export const Footer = ({
@@ -44,9 +45,11 @@ export const Footer = ({
   isDetachingParent = false,
   detachParentLabel,
   detachChildCount,
+  isChildField = false,
 }: FooterProps) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDetachConfirm, setShowDetachConfirm] = useState(false);
+  const [showBranchingConfirm, setShowBranchingConfirm] = useState(false);
 
   const handleConfirmDelete = () => {
     onRemove();
@@ -73,8 +76,8 @@ export const Footer = ({
             disabled={requiredDisabled}
           />
           <div className="flex gap-1">
-            {/* Drag handle */}
-            {dragControls && (
+            {/* Drag handle — hidden for child fields */}
+            {dragControls && !isChildField && (
               <div
                 onPointerDown={(e) => dragControls.start(e)}
                 className="cursor-grab active:cursor-grabbing touch-none"
@@ -90,8 +93,8 @@ export const Footer = ({
               </div>
             )}
 
-            {/* Move up/down buttons */}
-            {onMoveUp && onMoveDown && (
+            {/* Move up/down buttons — hidden for child fields */}
+            {!isChildField && onMoveUp && onMoveDown && (
               <IconButton
                 appearance="outlined"
                 aria-label="icon button aria label"
@@ -102,7 +105,7 @@ export const Footer = ({
                 disabled={!canMoveUp}
               />
             )}
-            {onMoveUp && onMoveDown && (
+            {!isChildField && onMoveUp && onMoveDown && (
               <IconButton
                 appearance="outlined"
                 aria-label="icon button aria label"
@@ -133,7 +136,13 @@ export const Footer = ({
                     appearance="outlined"
                     aria-label="Embranchement conditionnel"
                     name="branch"
-                    onClick={onBranching}
+                    onClick={() => {
+                      if (branchingEnabled) {
+                        setShowBranchingConfirm(true);
+                      } else {
+                        onBranching?.();
+                      }
+                    }}
                     size="m"
                     variant={branchingEnabled ? "primary" : "transparent"}
                   />
@@ -178,6 +187,25 @@ export const Footer = ({
         }
         secondaryButton={
           <Button variant="neutral" label="Annuler" onClick={() => setShowDeleteConfirm(false)} />
+        }
+      />
+
+      <Modal
+        id="branching-disable-confirm"
+        isOpen={showBranchingConfirm}
+        onClose={() => setShowBranchingConfirm(false)}
+        title="Désactiver l'embranchement ?"
+        icon="branch"
+        description="Tous les sous-champs conditionnels seront supprimés. Cette action est irréversible."
+        size="xs"
+        primaryButton={
+          <Button variant="danger" label="Confirmer" onClick={() => {
+            onBranching?.();
+            setShowBranchingConfirm(false);
+          }} />
+        }
+        secondaryButton={
+          <Button variant="neutral" label="Annuler" onClick={() => setShowBranchingConfirm(false)} />
         }
       />
 

@@ -59,6 +59,15 @@ export const DateConfigurator = ({
           }
           checked={config.includeTime}
         />
+        {/* Interdire les dates futures */}
+        <Checkbox
+          errorMessage=""
+          id="no-future-dates-checkbox"
+          label="Interdire les dates futures"
+          showLabel
+          onChange={() => onChange({ ...config, noFutureDates: !config.noFutureDates })}
+          checked={!!config.noFutureDates}
+        />
       </div>
     </div>
   );

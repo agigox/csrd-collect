@@ -45,6 +45,10 @@ export const DynamicForm = ({
     }
   };
 
+  if (!schema || !Array.isArray(schema)) {
+    return <div className="p-4 text-muted-foreground">Aucun champ à afficher</div>;
+  }
+
   return (
     <LayoutGroup>
       <div className={className ?? "flex flex-col gap-4"}>

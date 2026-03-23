@@ -3,18 +3,23 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores";
+import Link from "next/link";
 
 export default function LandingPage() {
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isLoading = useAuthStore((state) => state.isLoading);
 
   useEffect(() => {
-    // Redirect authenticated users to declarations
+    if (isLoading) return;
     if (isAuthenticated) {
-      router.push("/declarations");
+      router.replace("/declarations");
+    } else {
+      router.replace("/login");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isLoading, router]);
 
+  // Brief fallback while redirecting
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8">
       <div className="max-w-2xl text-center space-y-6">
@@ -26,7 +31,11 @@ export default function LandingPage() {
         </p>
         <div className="pt-8">
           <p className="text-sm text-muted-foreground">
-            Veuillez vous authentifier pour accéder à l&apos;application
+            Veuillez{" "}
+            <Link href="/login" className="underline text-[#2b86ff]">
+              vous connecter
+            </Link>{" "}
+            pour accéder à l&apos;application
           </p>
         </div>
       </div>

@@ -33,8 +33,13 @@ const DateField = ({
       const v = val as DateValue;
       return v.date ? v : null;
     }
-    // Support legacy string format (ISO date)
+    // Support legacy string format (ISO date) — extract time if present
     if (typeof val === "string") {
+      const d = new Date(val);
+      if (!isNaN(d.getTime())) {
+        const time = `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+        return { date: val, time };
+      }
       return { date: val };
     }
     return null;
@@ -42,8 +47,21 @@ const DateField = ({
 
   const dateValue = parseValue(value);
   const prevDefaultDateValue = useRef(config.defaultDateValue);
+  const hasInitialized = useRef(false);
 
-  // Apply default date value when config changes
+  // On first mount, if defaultDateValue is "today", set current date/time
+  useEffect(() => {
+    if (!hasInitialized.current && config.defaultDateValue === "today") {
+      hasInitialized.current = true;
+      const now = new Date();
+      const time = config.includeTime
+        ? `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
+        : undefined;
+      onChange({ date: now.toISOString(), time });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Apply default date value when config changes (admin preview)
   useEffect(() => {
     const prevValue = prevDefaultDateValue.current;
     const currentValue = config.defaultDateValue;
@@ -53,7 +71,11 @@ const DateField = ({
       prevDefaultDateValue.current = currentValue;
 
       if (currentValue === "today") {
-        onChange({ date: new Date().toISOString() });
+        const now = new Date();
+        const time = config.includeTime
+          ? `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`
+          : undefined;
+        onChange({ date: now.toISOString(), time });
       } else if (currentValue === "none") {
         onChange(undefined);
       }
@@ -183,18 +205,19 @@ const DateField = ({
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
-          <div className="flex flex-col">
+          <div className="flex flex-row items-start">
             <Calendar
               mode="single"
               selected={dateObj}
               onSelect={readOnly ? undefined : handleSelectDate}
               defaultMonth={dateObj || getDefaultDate()}
               locale={fr}
+              disabled={config.noFutureDates ? { after: new Date() } : undefined}
             />
 
             {/* Time selector - only shown if includeTime is true */}
             {config.includeTime && (
-              <div className="border-t p-4">
+              <div className="border-l p-4 flex flex-col justify-center min-h-full">
                 <div className="text-sm font-medium text-center mb-3">
                   {readOnly ? "Heure incluse" : "Sélectionner l'heure"}
                 </div>

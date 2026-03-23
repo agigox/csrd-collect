@@ -148,6 +148,7 @@ export const CheckboxConfigurator = ({
                 label={`Choix ${index + 1}`}
                 value={option.label}
                 onChange={(value) => handleOptionChange(index, "label", value)}
+                showRightIcon={false}
                 width="100%"
               />
               {config.branchingEnabled && (

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Grid, useBreakpoint } from "@rte-ds/react";
+import { Grid, useBreakpoint, Modal, Button } from "@rte-ds/react";
 import { DeclarationDetailPanel } from "./DeclarationDetailPanel";
 import { useAuthStore, useFormsStore } from "@/stores";
 import type { FormTemplate } from "@/models/FormTemplate";
@@ -37,10 +37,12 @@ const Declarations = () => {
   const { forms, fetchForms } = useFormsStore();
   const [formValues, setFormValues] = useState<Record<string, unknown>>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [tempDeclarations, setTempDeclarations] = useState<
     Map<string, Declaration>
   >(new Map());
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   // Load forms when component mounts
   useEffect(() => {
@@ -50,10 +52,7 @@ const Declarations = () => {
   // Derive modal state from URL
   const formId = searchParams.get("formId");
   const isOnNewPage = pathname === "/declarations/new";
-  const declarationId =
-    pathname.startsWith("/declarations/") && pathname !== "/declarations/new"
-      ? pathname.replace("/declarations/", "")
-      : null;
+  const declarationId = searchParams.get("id");
 
   // Determine which modals should be open based on URL
   const selectionDialogOpen = isOnNewPage && !formId;
@@ -97,6 +96,14 @@ const Declarations = () => {
       selectedForm.schema.fields.forEach((field) => {
         if (field.defaultValue !== undefined) {
           initialFormData[field.name] = field.defaultValue;
+        }
+        // Handle date fields with defaultDateValue: "today"
+        if (field.type === "date" && "defaultDateValue" in field && (field as { defaultDateValue?: string }).defaultDateValue === "today") {
+          const todayNow = new Date();
+          const time = "includeTime" in field && (field as { includeTime?: boolean }).includeTime
+            ? `${todayNow.getHours().toString().padStart(2, "0")}:${todayNow.getMinutes().toString().padStart(2, "0")}`
+            : undefined;
+          initialFormData[field.name] = { date: todayNow.toISOString(), time };
         }
       });
 
@@ -180,15 +187,14 @@ const Declarations = () => {
     if (finalSelectedDeclaration) {
       const values = finalSelectedDeclaration.formData || {};
       setFormValues(values);
-
-      // Validate on load to detect errors immediately
-      const validationErrors = validateForm(values);
-      setFormErrors(validationErrors);
+      setFormErrors({});
+      setHasAttemptedSubmit(false);
     } else {
       setFormValues({});
       setFormErrors({});
+      setHasAttemptedSubmit(false);
     }
-  }, [finalSelectedDeclaration, validateForm]);
+  }, [finalSelectedDeclaration]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   // Handler for form value changes - sync with temp declaration
@@ -196,9 +202,11 @@ const Declarations = () => {
     (newValues: Record<string, unknown>) => {
       setFormValues(newValues);
 
-      // Validate form and update errors
-      const validationErrors = validateForm(newValues);
-      setFormErrors(validationErrors);
+      // Only show validation errors after user has attempted to submit
+      if (hasAttemptedSubmit) {
+        const validationErrors = validateForm(newValues);
+        setFormErrors(validationErrors);
+      }
 
       // Sync with temp declaration in real-time
       if (finalSelectedDeclaration?.isNew) {
@@ -222,7 +230,7 @@ const Declarations = () => {
         });
       }
     },
-    [finalSelectedDeclaration, updateTempDeclaration, validateForm],
+    [finalSelectedDeclaration, updateTempDeclaration, validateForm, hasAttemptedSubmit],
   );
 
   // Check if form is valid (no errors)
@@ -258,6 +266,7 @@ const Declarations = () => {
 
     setFormValues({});
     setFormErrors({});
+    setHasAttemptedSubmit(false);
 
     // Navigate first — the URL-change effect will set currentTempId to null
     // AFTER the URL has changed, preventing the creation effect from re-firing
@@ -268,12 +277,23 @@ const Declarations = () => {
   const handleEditDeclaration = (declaration: Declaration) => {
     // Navigate to the declaration URL
     // The useEffect will handle opening the modal
-    router.push(`/declarations/${declaration.id}`);
+    router.push(`/declarations?id=${declaration.id}`);
   };
 
   // Handler for submitting the form
   const handleSubmit = async () => {
-    if (finalSelectedDeclaration) {
+    if (!finalSelectedDeclaration) return;
+
+    // Validate on submit — show errors if invalid
+    const validationErrors = validateForm(formValues);
+    setFormErrors(validationErrors);
+    setHasAttemptedSubmit(true);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return; // Don't submit if there are errors
+    }
+
+    try {
       if (finalSelectedDeclaration.isNew) {
         // Confirm temp declaration (create new)
         await confirmTempDeclaration(finalSelectedDeclaration.id);
@@ -286,14 +306,23 @@ const Declarations = () => {
         // Update existing declaration
         await updateDeclaration(finalSelectedDeclaration.id, formValues);
       }
+
+      setFormValues({});
+      setFormErrors({});
+      setHasAttemptedSubmit(false);
+      setShowSuccessToast(true);
+
+      // Navigate — the URL-change effect will clear currentTempId
+      // after the URL has updated, preventing the creation effect from re-firing
+      router.push("/declarations");
+    } catch (err) {
+      console.error("Erreur lors de la soumission:", err);
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la soumission de la déclaration",
+      );
     }
-
-    setFormValues({});
-    setFormErrors({});
-
-    // Navigate — the URL-change effect will clear currentTempId
-    // after the URL has updated, preventing the creation effect from re-firing
-    router.push("/declarations");
   };
 
   return (
@@ -305,6 +334,7 @@ const Declarations = () => {
               onDeclarer={handleOpenSelection}
               onEditDeclaration={handleEditDeclaration}
               selectedDeclarationId={finalSelectedDeclaration?.id}
+              hasAvailableForms={forms.length > 0}
             />
           </Grid.Col>
         )}
@@ -337,6 +367,25 @@ const Declarations = () => {
         }}
         onFormSelect={handleFormSelect}
       />
+
+      <Modal
+        isOpen={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+        title="Succès"
+        size="s"
+      >
+        <div className="flex flex-col gap-4 p-4">
+          <p>Déclaration soumise avec succès</p>
+          <div className="flex justify-end">
+            <Button
+              variant="primary"
+              size="m"
+              label="OK"
+              onClick={() => setShowSuccessToast(false)}
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -39,7 +39,7 @@ export const FormCard = ({
         <Chip
           id={`status-${title}`}
           label={chipConfig.label}
-          clickable={false}
+          clickable={undefined}
           size="s"
           style={{
             background: chipConfig.backgroundColor,

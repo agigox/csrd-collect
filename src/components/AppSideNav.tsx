@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { SideNav, Switch, useBreakpoint } from "@rte-ds/react";
 import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
@@ -111,6 +111,21 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     </div>
   ) : undefined;
 
+  // Intercept SideNav <a> clicks to use client-side navigation (avoids full
+  // page reload which breaks on S3/CloudFront where nested routes have no HTML file)
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const anchor = (e.target as HTMLElement).closest("a");
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (href && href.startsWith("/")) {
+        e.preventDefault();
+        router.push(href);
+      }
+    },
+    [router],
+  );
+
   // Avoid hydration mismatch: SideNav uses window.innerWidth to choose
   // between mobile/desktop layout, which differs from SSR (width=0 → mobile)
   if (!mounted) {
@@ -118,6 +133,8 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+    <div onClick={handleNavClick}>
     <SideNav
       headerConfig={{
         ...headerConfig,
@@ -131,11 +148,11 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       middleItem={adminToggle}
       showTeamData={!!teamData}
       teamData={teamData}
-      collapsible
       size="s"
       collapsed={width <= 1050}
     >
       {children}
     </SideNav>
+    </div>
   );
 }

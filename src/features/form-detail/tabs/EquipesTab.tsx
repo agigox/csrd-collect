@@ -1,23 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button, Divider } from "@rte-ds/react";
 import type { FormTemplate } from "@/models/FormTemplate";
-import { getMockTeams, setMockTeams, type MockTeam } from "../mockData";
+import {
+  fetchTemplateTeams,
+  assignTeamsToTemplate,
+} from "@/api/forms";
 import AttribuerEquipesModal from "./AttribuerEquipesModal";
+
+interface TeamInfo {
+  id: string;
+  name: string;
+}
 
 interface EquipesTabProps {
   form: FormTemplate;
 }
 
 export function EquipesTab({ form }: EquipesTabProps) {
-  const [teams, setTeams] = useState(() => getMockTeams(form.id));
+  const [teams, setTeams] = useState<TeamInfo[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function handleValidate(newTeams: MockTeam[]) {
-    setMockTeams(form.id, newTeams);
-    setTeams(newTeams);
+  const loadTeams = useCallback(async () => {
+    try {
+      setLoading(true);
+      const result = await fetchTemplateTeams(form.id);
+      setTeams(result.map((t) => ({ id: t.id, name: t.name })));
+    } catch (err) {
+      console.error("Failed to load teams:", err);
+      setTeams([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [form.id]);
+
+  useEffect(() => {
+    loadTeams();
+  }, [loadTeams]);
+
+  async function handleValidate(newTeams: TeamInfo[]) {
+    try {
+      const newTeamIds = newTeams.map((t) => t.id);
+      await assignTeamsToTemplate(form.id, newTeamIds);
+      setTeams(newTeams);
+    } catch (err) {
+      console.error("Failed to assign teams:", err);
+    }
     setIsModalOpen(false);
+  }
+
+  if (loading) {
+    return <p className="text-sm text-muted-foreground">Chargement...</p>;
   }
 
   return (

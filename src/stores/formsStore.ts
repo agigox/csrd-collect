@@ -10,6 +10,7 @@ import {
   deleteFormTemplate,
   publishFormTemplate,
 } from "@/api/forms";
+import { normalizeSchema } from "@/lib/utils/normalizeSchema";
 
 interface FormsState {
   forms: FormTemplate[];
@@ -97,7 +98,8 @@ export const useFormsStore = create<FormsState>()(
 
       saveForm: async (updatedForm: FormTemplate) => {
         try {
-          const savedForm = await saveFormTemplate(updatedForm);
+          const raw = await saveFormTemplate(updatedForm);
+          const savedForm = { ...raw, schema: normalizeSchema(raw.schema as Record<string, unknown>) };
 
           set(
             (state) => {
@@ -122,12 +124,14 @@ export const useFormsStore = create<FormsState>()(
           );
         } catch (err) {
           console.error("Erreur lors de la sauvegarde du formulaire:", err);
+          throw err;
         }
       },
 
       createForm: async (formData) => {
         try {
-          const createdForm = await createFormTemplateApi(formData);
+          const raw = await createFormTemplateApi(formData);
+          const createdForm = { ...raw, schema: normalizeSchema(raw.schema as Record<string, unknown>) };
 
           set(
             (state) => ({ forms: [...state.forms, createdForm] }),
@@ -162,7 +166,8 @@ export const useFormsStore = create<FormsState>()(
 
       publishForm: async (id: string) => {
         try {
-          const published = await publishFormTemplate(id);
+          const raw = await publishFormTemplate(id);
+          const published = { ...raw, schema: normalizeSchema(raw.schema as Record<string, unknown>) };
 
           set(
             (state) => ({
@@ -183,7 +188,11 @@ export const useFormsStore = create<FormsState>()(
         set({ loading: true, error: null }, false, "FORMS/FETCH_START");
 
         try {
-          const forms = await fetchFormTemplates();
+          const rawForms = await fetchFormTemplates();
+          const forms = rawForms.map((f) => ({
+            ...f,
+            schema: normalizeSchema(f.schema as Record<string, unknown>),
+          }));
           set({ forms, loading: false }, false, "FORMS/FETCH_SUCCESS");
         } catch (err) {
           set(

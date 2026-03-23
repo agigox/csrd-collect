@@ -310,6 +310,7 @@ export const FieldConfigurator = ({
             isDetachingParent={isDetachingParent}
             detachParentLabel={detachParentLabel}
             detachChildCount={detachChildCount}
+            isChildField={isChildField}
           />
         </motion.div>
       )}

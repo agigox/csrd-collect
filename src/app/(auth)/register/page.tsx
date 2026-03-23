@@ -1,26 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TextInput, Button } from "@rte-ds/react";
 import Link from "next/link";
 
 const NNI_REGEX = /^[a-zA-Z0-9]{1,10}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function RegisterStep1Page() {
+function RegisterStep1Form() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [lastName, setLastName] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [nni, setNni] = useState("");
-  const [email, setEmail] = useState("");
+  // Restore values from query params (when coming back from step 2)
+  const [lastName, setLastName] = useState(searchParams.get("lastName") || "");
+  const [firstName, setFirstName] = useState(searchParams.get("firstName") || "");
+  const [nni, setNni] = useState(searchParams.get("nni") || "");
+  const [email, setEmail] = useState(searchParams.get("email") || "");
   const [nniTouched, setNniTouched] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
+  const [lastNameTouched, setLastNameTouched] = useState(false);
+  const [firstNameTouched, setFirstNameTouched] = useState(false);
 
   const isNniValid = NNI_REGEX.test(nni);
   const isEmailValid = EMAIL_REGEX.test(email);
-  const isFormValid = isNniValid && isEmailValid;
+  const isLastNameValid = lastName.trim().length > 0;
+  const isFirstNameValid = firstName.trim().length > 0;
+  const isFormValid = isNniValid && isEmailValid && isLastNameValid && isFirstNameValid;
 
   const getNniError = (): string | undefined => {
     if (!nniTouched || nni === "") return undefined;
@@ -35,17 +41,36 @@ export default function RegisterStep1Page() {
     return undefined;
   };
 
+  const getLastNameError = (): string | undefined => {
+    if (!lastNameTouched || lastName === "") return undefined;
+    if (!isLastNameValid) return "Le nom est requis";
+    return undefined;
+  };
+
+  const getFirstNameError = (): string | undefined => {
+    if (!firstNameTouched || firstName === "") return undefined;
+    if (!isFirstNameValid) return "Le prénom est requis";
+    return undefined;
+  };
+
   const nniError = getNniError();
   const emailError = getEmailError();
+  const lastNameError = getLastNameError();
+  const firstNameError = getFirstNameError();
 
   const handleContinue = () => {
+    // Touch all fields to show errors
+    setNniTouched(true);
+    setEmailTouched(true);
+    setLastNameTouched(true);
+    setFirstNameTouched(true);
     if (!isFormValid) return;
 
     const params = new URLSearchParams();
     params.set("nni", nni);
     params.set("email", email);
-    if (lastName) params.set("lastName", lastName);
-    if (firstName) params.set("firstName", firstName);
+    params.set("lastName", lastName);
+    params.set("firstName", firstName);
 
     router.push(`/register/password?${params.toString()}`);
   };
@@ -64,19 +89,37 @@ export default function RegisterStep1Page() {
 
       <div className="flex flex-col sm:flex-row gap-2.5 w-full">
         <TextInput
-          id="lastName"
-          label="Nom"
-          value={lastName}
-          onChange={(value) => setLastName(value)}
-          data-testid="input-lastName"
-          width="100%"
-        />
-        <TextInput
           id="firstName"
           label="Prénom"
           value={firstName}
-          onChange={(value) => setFirstName(value)}
+          onChange={(value) => {
+            setFirstName(value);
+            if (!firstNameTouched) setFirstNameTouched(true);
+          }}
+          onBlur={() => setFirstNameTouched(true)}
+          required
+          showRightIcon={false}
+          error={!!firstNameError}
+          assistiveTextLabel={firstNameError}
+          assistiveAppearance={firstNameError ? "error" : "description"}
           data-testid="input-firstName"
+          width="100%"
+        />
+        <TextInput
+          id="lastName"
+          label="Nom"
+          value={lastName}
+          onChange={(value) => {
+            setLastName(value);
+            if (!lastNameTouched) setLastNameTouched(true);
+          }}
+          onBlur={() => setLastNameTouched(true)}
+          required
+          showRightIcon={false}
+          error={!!lastNameError}
+          assistiveTextLabel={lastNameError}
+          assistiveAppearance={lastNameError ? "error" : "description"}
+          data-testid="input-lastName"
           width="100%"
         />
       </div>
@@ -85,9 +128,13 @@ export default function RegisterStep1Page() {
         id="nni"
         label="NNI"
         value={nni}
-        onChange={(value) => setNni(value)}
+        onChange={(value) => {
+          setNni(value);
+          if (!nniTouched) setNniTouched(true);
+        }}
         onBlur={() => setNniTouched(true)}
         required
+        showRightIcon={false}
         error={!!nniError}
         assistiveTextLabel={nniError}
         assistiveAppearance={nniError ? "error" : "description"}
@@ -99,9 +146,12 @@ export default function RegisterStep1Page() {
         id="email"
         label="Email"
         value={email}
-        onChange={(value) => setEmail(value)}
+        onChange={(value) => {
+          setEmail(value);
+        }}
         onBlur={() => setEmailTouched(true)}
         required
+        showRightIcon={false}
         error={!!emailError}
         assistiveTextLabel={emailError}
         assistiveAppearance={emailError ? "error" : "description"}
@@ -134,5 +184,19 @@ export default function RegisterStep1Page() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function RegisterStep1Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[200px]">
+          <div className="text-gray-500">Chargement...</div>
+        </div>
+      }
+    >
+      <RegisterStep1Form />
+    </Suspense>
   );
 }
