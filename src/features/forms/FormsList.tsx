@@ -45,13 +45,13 @@ export const FormsList = ({
   const hasResults = forms.length > 0;
 
   return (
-    <div className="flex flex-col gap-5 py-2.5 pl-4 h-full overflow-y-auto">
-      <PageTitle title="Admin. des déclarations" />
+    <div className="flex flex-col gap-5 my-5 ml-8 mr-4 h-full overflow-y-auto">
+      <PageTitle title="Administration des déclarations" />
       <div className="text-center">
         <Button
           icon="add-box"
           iconPosition="right"
-          label="Créer un formulaire"
+          label="Créer une déclaration"
           size="m"
           variant="primary"
           onClick={onCreateForm}

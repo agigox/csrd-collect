@@ -105,7 +105,7 @@ export default function Forms() {
 
   return (
     <div className="max-w-480 mx-auto h-full">
-      <Grid gridType="fluid">
+      <Grid gridType="fluid" className="h-full">
         {!(isMobile && selectedForm) && (
           <Grid.Col xxs={2} xs={6} s={3} m={5}>
             <FormsList
