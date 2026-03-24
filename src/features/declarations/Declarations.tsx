@@ -13,8 +13,12 @@ import type {
   RadioFieldConfig,
   CheckboxFieldConfig,
 } from "@/models/FieldTypes";
+import { API_BASE_URL } from "@/api/config";
+import { authHeaders } from "@/api/authHeaders";
+import { normalizeSchema } from "@/lib/utils/normalizeSchema";
 import DeclarationsList from "./DeclarationsList";
 import FormSelectionModal from "./FormSelectionModal";
+import { selectIsAdmin } from "@/stores/authStore";
 
 const Declarations = () => {
   const router = useRouter();
@@ -26,6 +30,7 @@ const Declarations = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
   const team = useAuthStore((state) => state.team);
+  const isAdmin = useAuthStore(selectIsAdmin);
   const {
     declarations,
     updateDeclaration,
@@ -46,11 +51,45 @@ const Declarations = () => {
     Map<string, Declaration>
   >(new Map());
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [teamForms, setTeamForms] = useState<FormTemplate[]>([]);
+  const [teamFormsLoading, setTeamFormsLoading] = useState(false);
 
   // Load forms when component mounts
   useEffect(() => {
     fetchForms();
   }, [fetchForms]);
+
+  // Fetch team-assigned forms for members
+  useEffect(() => {
+    if (isAdmin || !user?.teamId) return;
+
+    setTeamFormsLoading(true);
+    fetch(
+      `${API_BASE_URL}/form-template-assignments/by-team/${user.teamId}`,
+      { headers: authHeaders() },
+    )
+      .then((res) => res.json())
+      .then((templates: FormTemplate[]) => {
+        setTeamForms(
+          templates
+            .filter((t) => t.isPublished)
+            .map((t) => ({
+              ...t,
+              schema: normalizeSchema(
+                t.schema as unknown as Record<string, unknown>,
+              ),
+            })),
+        );
+      })
+      .catch(() => setTeamForms([]))
+      .finally(() => setTeamFormsLoading(false));
+  }, [isAdmin, user?.teamId]);
+
+  // Derive available forms based on role (no setState, no extra render)
+  const availableForms = isAdmin
+    ? forms.filter((f) => f.isPublished)
+    : teamForms;
+  const availableFormsLoading = isAdmin ? false : teamFormsLoading;
 
   // Derive modal state from URL
   const formId = searchParams.get("formId");
@@ -101,11 +140,17 @@ const Declarations = () => {
           initialFormData[field.name] = field.defaultValue;
         }
         // Handle date fields with defaultDateValue: "today"
-        if (field.type === "date" && "defaultDateValue" in field && (field as { defaultDateValue?: string }).defaultDateValue === "today") {
+        if (
+          field.type === "date" &&
+          "defaultDateValue" in field &&
+          (field as { defaultDateValue?: string }).defaultDateValue === "today"
+        ) {
           const todayNow = new Date();
-          const time = "includeTime" in field && (field as { includeTime?: boolean }).includeTime
-            ? `${todayNow.getHours().toString().padStart(2, "0")}:${todayNow.getMinutes().toString().padStart(2, "0")}`
-            : undefined;
+          const time =
+            "includeTime" in field &&
+            (field as { includeTime?: boolean }).includeTime
+              ? `${todayNow.getHours().toString().padStart(2, "0")}:${todayNow.getMinutes().toString().padStart(2, "0")}`
+              : undefined;
           initialFormData[field.name] = { date: todayNow.toISOString(), time };
         }
       });
@@ -238,7 +283,12 @@ const Declarations = () => {
         });
       }
     },
-    [finalSelectedDeclaration, updateTempDeclaration, validateForm, hasAttemptedSubmit],
+    [
+      finalSelectedDeclaration,
+      updateTempDeclaration,
+      validateForm,
+      hasAttemptedSubmit,
+    ],
   );
 
   // Handler for completion status changes
@@ -370,7 +420,7 @@ const Declarations = () => {
               onDeclarer={handleOpenSelection}
               onEditDeclaration={handleEditDeclaration}
               selectedDeclarationId={finalSelectedDeclaration?.id}
-              hasAvailableForms={forms.length > 0}
+              hasAvailableForms={availableForms.length > 0}
               selectedCompletionStatus={completionStatus}
             />
           </Grid.Col>
@@ -405,6 +455,8 @@ const Declarations = () => {
           }
         }}
         onFormSelect={handleFormSelect}
+        availableForms={availableForms}
+        loading={availableFormsLoading}
       />
 
       <Modal

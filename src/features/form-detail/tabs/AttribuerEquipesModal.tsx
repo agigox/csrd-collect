@@ -4,10 +4,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import { Modal, Button, Icon } from "@rte-ds/react";
 import type { MockTeam } from "../mockData";
-import OrgUnitTree, {
-  getLeafDescendants,
-  type TreeNode,
-} from "../components/OrgUnitTree";
+import OrgUnitTree, { type TreeNode } from "../components/OrgUnitTree";
 import { useOrgUnitTree } from "../hooks/useOrgUnitTree";
 
 interface AttribuerEquipesModalProps {
@@ -37,17 +34,8 @@ export default function AttribuerEquipesModal({
     selectedLeafIds,
     setSelectedLeafIds,
     loadChildren,
-    treeDataRef,
+    initialExpandedIds,
   } = useOrgUnitTree({ isOpen, initialSelectedIds });
-
-  function findNodeInTree(nodes: TreeNode[], targetId: string): TreeNode | null {
-    for (const node of nodes) {
-      if (node.id === targetId) return node;
-      const found = findNodeInTree(node.children, targetId);
-      if (found) return found;
-    }
-    return null;
-  }
 
   // Recursively collect all leaf IDs, loading unloaded children on demand.
   // We pass node.level to loadChildren so it works even when the node isn't
@@ -122,21 +110,22 @@ export default function AttribuerEquipesModal({
         isOpen={isOpen}
         onClose={handleClose}
         title="Attribuer des équipes"
-        size="s"
+        size="m"
         primaryButton={
           <Button variant="primary" label="Ok" onClick={handleConfirmOk} />
         }
       >
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 h-118.75 w-full">
           <div className="flex items-start gap-2">
             <Icon name="check-circle" size={32} color="#2d7738" />
             <span className="text-xl text-[#201f1f]">
-              L&apos;attribution des équipes suivantes a bien été prise en
-              compte :
+              L&apos;attribution des {pendingTeams.length} équipe
+              {pendingTeams.length > 1 ? "s" : ""} suivante
+              {pendingTeams.length > 1 ? "s" : ""} a bien été prise en compte :
             </span>
           </div>
           <div className="flex items-center gap-6 pl-18">
-            <div className="shrink-0">
+            <div className="shrink-0 self-start">
               <Image
                 src="/Human_resource.png"
                 alt="Human Resource"
@@ -146,7 +135,7 @@ export default function AttribuerEquipesModal({
             </div>
             <ul className="list-disc pl-5 text-sm text-[#3e3e3d] leading-8">
               {pendingTeams.map((team, index) => (
-                <li key={team.id}>
+                <li key={team.id} className="h-7">
                   {team.name}
                   {index < pendingTeams.length - 1 ? "," : ""}
                 </li>
@@ -166,19 +155,34 @@ export default function AttribuerEquipesModal({
       title="Attribuer des équipes"
       size="m"
       primaryButton={
-        <Button variant="primary" label="Valider" onClick={handleValidate} />
+        <Button
+          variant="primary"
+          label="Valider"
+          onClick={handleValidate}
+          disabled={loading}
+        />
       }
       secondaryButton={
         <Button variant="neutral" label="Annuler" onClick={handleClose} />
       }
     >
-      <OrgUnitTree
-        treeData={treeData}
-        loading={loading}
-        selectedLeafIds={selectedLeafIds}
-        onToggleSelection={toggleNodeSelection}
-        onLoadChildren={loadChildren}
-      />
+      <div
+        style={{
+          height: "475px",
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+        }}
+      >
+        <OrgUnitTree
+          treeData={treeData}
+          loading={loading}
+          selectedLeafIds={selectedLeafIds}
+          onToggleSelection={toggleNodeSelection}
+          onLoadChildren={loadChildren}
+          initialExpandedIds={initialExpandedIds}
+        />
+      </div>
     </Modal>
   );
 }

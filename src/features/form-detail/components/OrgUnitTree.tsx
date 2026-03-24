@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Searchbar, Icon } from "@rte-ds/react";
+import { Searchbar, Icon, Loader } from "@rte-ds/react";
+import LoadingState from "@/lib/ui/loading-state";
+import { EmptyCard } from "@/lib/ui/EmptyCard";
 
 // --- Types ---
 
@@ -40,10 +42,7 @@ function filterVisibleTree(nodes: TreeNode[], query: string): TreeNode[] {
     }));
 }
 
-function computeAutoExpandedIds(
-  nodes: TreeNode[],
-  query: string
-): Set<string> {
+function computeAutoExpandedIds(nodes: TreeNode[], query: string): Set<string> {
   const result = new Set<string>();
   const q = query.toLowerCase();
 
@@ -243,6 +242,7 @@ interface OrgUnitTreeProps {
   selectedLeafIds: Set<string>;
   onToggleSelection: (node: TreeNode) => void | Promise<void>;
   onLoadChildren?: (nodeId: string) => Promise<void>;
+  initialExpandedIds?: Set<string>;
 }
 
 export default function OrgUnitTree({
@@ -251,9 +251,21 @@ export default function OrgUnitTree({
   selectedLeafIds,
   onToggleSelection,
   onLoadChildren,
+  initialExpandedIds,
 }: OrgUnitTreeProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  // Apply initial expanded IDs when they change (e.g. after loading pre-selected teams)
+  useEffect(() => {
+    if (initialExpandedIds && initialExpandedIds.size > 0) {
+      setExpandedIds((prev) => {
+        const next = new Set(prev);
+        initialExpandedIds.forEach((id) => next.add(id));
+        return next;
+      });
+    }
+  }, [initialExpandedIds]);
 
   // When search is active, load all unloaded nodes so they become searchable
   useEffect(() => {
@@ -292,8 +304,12 @@ export default function OrgUnitTree({
 
   const visibleTree = filterVisibleTree(treeData, searchQuery);
 
+  if (loading) {
+    return <LoadingState />;
+  }
+
   return (
-    <div className="flex flex-col gap-4" style={{ maxHeight: "60vh" }}>
+    <div className="flex flex-col gap-4 w-[65%]" style={{ flex: 1 }}>
       <Searchbar
         appearance="secondary"
         value={searchQuery}
@@ -304,18 +320,10 @@ export default function OrgUnitTree({
       />
 
       <div style={{ overflowY: "auto", flex: 1 }}>
-        {loading ? (
-          <div className="flex items-center justify-center h-40 text-sm text-gray-500">
-            Chargement...
-          </div>
-        ) : visibleTree.length === 0 && searchQuery ? (
-          <div className="text-center text-sm text-gray-500">
-            Aucun résultat pour cette recherche
-          </div>
+        {visibleTree.length === 0 && searchQuery ? (
+          <EmptyCard message="Aucun résultat pour cette recherche" />
         ) : visibleTree.length === 0 ? (
-          <div className="text-center text-sm text-gray-500">
-            Aucune équipe disponible
-          </div>
+          <EmptyCard message="Aucune équipe disponible" />
         ) : (
           <TreeNodeList
             nodes={visibleTree}
