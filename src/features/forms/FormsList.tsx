@@ -4,7 +4,7 @@ import { Searchbar, Button } from "@rte-ds/react";
 import { FormCard } from "./FormCard";
 import { AccordionSection } from "./AccordionSection";
 import { getFormStatus } from "./statusConfig";
-import { EmptyCard } from "@/lib/ui/EmptyCard";
+import { EmptyCard } from "@/lib/ui/empty-card";
 import PageTitle from "@/lib/ui/page-title";
 import type { FormTemplate } from "@/models/FormTemplate";
 import type { CategoryCode } from "@/models/CategoryCode";

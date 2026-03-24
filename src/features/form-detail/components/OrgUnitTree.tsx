@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Searchbar, Icon, Loader } from "@rte-ds/react";
 import LoadingState from "@/lib/ui/loading-state";
-import { EmptyCard } from "@/lib/ui/EmptyCard";
+import { EmptyCard } from "@/lib/ui/empty-card";
 
 // --- Types ---
 
@@ -305,7 +305,9 @@ export default function OrgUnitTree({
   const visibleTree = filterVisibleTree(treeData, searchQuery);
 
   if (loading) {
-    return <LoadingState />;
+    return (
+      <LoadingState message="Chargement des unités organisationnelles..." />
+    );
   }
 
   return (

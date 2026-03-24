@@ -147,16 +147,17 @@ export const Footer = ({
                     variant={branchingEnabled ? "primary" : "transparent"}
                   />
                 )}
-                {/* Duplicate button */}
-
-                <IconButton
-                  appearance="outlined"
-                  aria-label="icon button aria label"
-                  name="copy"
-                  onClick={onDuplicate}
-                  size="m"
-                  variant="transparent"
-                />
+                {/* Duplicate button — hidden for child fields */}
+                {!isChildField && (
+                  <IconButton
+                    appearance="outlined"
+                    aria-label="Dupliquer"
+                    name="copy"
+                    onClick={onDuplicate}
+                    size="m"
+                    variant="transparent"
+                  />
+                )}
               </div>
 
               {/* Delete button */}

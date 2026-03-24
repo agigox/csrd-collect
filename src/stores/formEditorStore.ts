@@ -25,6 +25,7 @@ interface FormEditorState {
   setIsSaving: (saving: boolean) => void;
   setShowPreview: (show: boolean) => void;
   initializeFromForm: (form: FormTemplate | null) => void;
+  reset: () => void;
 }
 
 const DEFAULT_CATEGORY_CODE = "E2-4";
@@ -79,6 +80,9 @@ export const useFormEditorStore = create<FormEditorState>()(
           false,
           "FORM_EDITOR/INITIALIZE"
         ),
+
+      reset: () =>
+        set({ ...initialState }, false, "FORM_EDITOR/RESET"),
     }),
     { name: "form-editor-store" }
   )

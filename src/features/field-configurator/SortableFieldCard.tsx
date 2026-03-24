@@ -109,6 +109,7 @@ export const SortableFieldCard = ({
       <Card
         className="py-4 px-4"
         cardType="default"
+        disableHover={isOpen}
         style={{
           borderLeft:
             isOpen && isChildField

@@ -243,14 +243,16 @@ export const LabelField = ({
             />
           </>
         )}
-        <IconButton
-          appearance="outlined"
-          aria-label="Dupliquer"
-          name="copy"
-          onClick={collapsedActions.onDuplicate}
-          size="m"
-          variant="transparent"
-        />
+        {!isChildField && (
+          <IconButton
+            appearance="outlined"
+            aria-label="Dupliquer"
+            name="copy"
+            onClick={collapsedActions.onDuplicate}
+            size="m"
+            variant="transparent"
+          />
+        )}
       </div>
     </div>
   );

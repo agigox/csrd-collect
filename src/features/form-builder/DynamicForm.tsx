@@ -4,6 +4,8 @@ import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { DynamicField } from "@/features/preview/DynamicField";
 import type { FieldConfig } from "@/models/FieldTypes";
 import { isChildFieldVisible } from "@/lib/utils/branching";
+import { EmptyState } from "@/components/common/EmptyState";
+import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 
 interface DynamicFormProps {
   schema: FieldConfig[];
@@ -46,7 +48,7 @@ export const DynamicForm = ({
   };
 
   if (!schema || !Array.isArray(schema)) {
-    return <div className="p-4 text-muted-foreground">Aucun champ à afficher</div>;
+    return <EmptyState text="Aucun champ à afficher" />;
   }
 
   return (

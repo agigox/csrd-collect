@@ -5,7 +5,9 @@ export async function fetchCategoryCodes(): Promise<CategoryCode[]> {
   const response = await fetch(`${API_BASE_URL}/category-codes`);
 
   if (!response.ok) {
-    throw new Error(`Erreur HTTP: ${response.status}`);
+    throw new Error(
+      `Erreur lors du chargement des codes categorie (/category-codes) : ${response.status}`,
+    );
   }
 
   return response.json() as Promise<CategoryCode[]>;

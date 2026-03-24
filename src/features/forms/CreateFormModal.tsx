@@ -52,7 +52,12 @@ export default function CreateFormModal({
       setNameError(true);
       return;
     }
-    onValidate({ name: name.trim(), categoryCode, description, visibilityLevel });
+    onValidate({
+      name: name.trim(),
+      categoryCode,
+      description,
+      visibilityLevel,
+    });
     resetForm();
   };
 
@@ -95,7 +100,6 @@ export default function CreateFormModal({
           value={categoryCode}
           onChange={setCategoryCode}
           options={categoryCodes}
-          showResetButton
           onClear={() => setCategoryCode("")}
           width={280}
         />
@@ -112,7 +116,6 @@ export default function CreateFormModal({
           value={visibilityLevel}
           onChange={setEditableBy}
           options={EDITABLE_BY_OPTIONS}
-          showResetButton
           onClear={() => setEditableBy("")}
           width={280}
         />

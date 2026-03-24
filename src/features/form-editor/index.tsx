@@ -4,11 +4,14 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useFormsStore, useCategoryCodesStore } from "@/stores";
 import { useFormEditorStore } from "@/stores/formEditorStore";
-import { Button, IconButton, Toast, useBreakpoint } from "@rte-ds/react";
+import { Button, IconButton, Modal, Toast, useBreakpoint } from "@rte-ds/react";
 
 import { FormHeader } from "./FormHeader";
 import { SchemaBuilder } from "./SchemaBuilder";
 import { FormPreview } from "./FormPreview";
+import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
+import { I18nErrorKey } from "@/lib/utils/i18nErrors";
+import { ErrorState } from "@/lib/ui/error-state";
 
 export default function FormCreation() {
   const router = useRouter();
@@ -28,6 +31,7 @@ export default function FormCreation() {
     setShowPreview,
     setIsSaving,
     initializeFromForm,
+    reset: resetFormEditor,
   } = useFormEditorStore();
 
   const { breakpoint, width } = useBreakpoint();
@@ -35,6 +39,7 @@ export default function FormCreation() {
   const searchParams = useSearchParams();
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   // Derive form ID from URL
   const formId = useMemo(() => {
@@ -107,8 +112,32 @@ export default function FormCreation() {
   const handleDelete = () => {
     if (currentForm && confirm("Supprimer ce formulaire ?")) {
       deleteForm(currentForm.id);
+      resetFormEditor();
       router.push("/admin");
     }
+  };
+
+  // Check if the form has unsaved content
+  const hasUnsavedContent = schema.length > 0 || formName.trim() !== "";
+
+  const handleBack = () => {
+    if (hasUnsavedContent && !isEditMode) {
+      setShowLeaveConfirm(true);
+    } else {
+      resetFormEditor();
+      router.push("/admin");
+    }
+  };
+
+  const handleLeaveDiscard = () => {
+    setShowLeaveConfirm(false);
+    resetFormEditor();
+    router.push("/admin");
+  };
+
+  const handleLeaveSave = async () => {
+    setShowLeaveConfirm(false);
+    await handleSave();
   };
 
   if (loading) {
@@ -126,13 +155,14 @@ export default function FormCreation() {
           label="Retour"
           icon="arrow-left"
           iconPosition="left"
-          onClick={() => router.push("/admin")}
+          onClick={handleBack}
           variant="transparent"
           className="h-6 top-2.25 left-2 absolute"
         />
 
-        <div
-          className={`py-5 mx-auto h-full ${breakpoint === "l" ? "w-200" : "w-150.5"}`}
+        <ScrollableContainer
+          className={`py-5 mx-auto ${breakpoint === "l" ? "w-200" : "w-150.5"}`}
+          height="100%"
         >
           <FormHeader
             isEditMode={isEditMode}
@@ -141,15 +171,16 @@ export default function FormCreation() {
           />
 
           {saveError && (
-            <div className="mx-auto mb-4 p-3 rounded-lg bg-[#FEF2F2] border border-[#F14662] text-[#F14662] text-sm">
-              {saveError}
-            </div>
+            <ErrorState
+              message={I18nErrorKey[saveError] || saveError}
+              className="mb-4"
+            />
           )}
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 px-1 pb-1">
             <SchemaBuilder />
           </div>
-        </div>
+        </ScrollableContainer>
       </div>
       {showPreview ? (
         <FormPreview />
@@ -175,6 +206,30 @@ export default function FormCreation() {
         />
       )}
 
+      <Modal
+        id="leave-form-confirm"
+        isOpen={showLeaveConfirm}
+        onClose={() => setShowLeaveConfirm(false)}
+        title="Enregistrer le formulaire"
+        size="s"
+        primaryButton={
+          <Button
+            variant="primary"
+            label="Enregistrer"
+            onClick={handleLeaveSave}
+          />
+        }
+        secondaryButton={
+          <Button
+            variant="danger"
+            label="Supprimer"
+            onClick={handleLeaveDiscard}
+          />
+        }
+      >
+        <p>Voulez-vous conserver ce formulaire ?</p>
+      </Modal>
+
       <Toast
         message="Formulaire sauvegardé avec succès"
         type="success"
@@ -184,7 +239,6 @@ export default function FormCreation() {
         autoDismiss
         duration="medium"
         placement="top-right"
-        size="l"
       />
     </div>
   );

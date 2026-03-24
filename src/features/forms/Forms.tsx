@@ -10,6 +10,7 @@ import { useFormsStore } from "@/stores";
 import { useCategoryCodesStore } from "@/stores/categoryCodesStore";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import type { FormTemplate } from "@/models/FormTemplate";
+import LoadingState from "@/lib/ui/loading-state";
 
 export default function Forms() {
   const router = useRouter();
@@ -98,9 +99,7 @@ export default function Forms() {
   );
 
   if (loading) {
-    return (
-      <div className="text-center py-8">Chargement des formulaires...</div>
-    );
+    return <LoadingState message="Chargement des formulaires..." />;
   }
 
   return (

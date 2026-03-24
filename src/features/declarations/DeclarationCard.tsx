@@ -49,17 +49,22 @@ const DeclarationCard = ({
             {formattedTime}
           </span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {completionStatus !== "complet" && (
-            <Icon
-              name="incomplete"
-              size={20}
+            <div
               style={{
                 backgroundColor: "#f5de93",
                 color: "#201f1f",
                 borderRadius: "4px",
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
+            >
+              <Icon name="incomplete" size={20} />
+            </div>
           )}
           <Chip
             id="author-chip"

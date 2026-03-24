@@ -390,14 +390,15 @@ export const FormBuilder = ({
     const descendantIds = getAllDescendantIds(field.id, schema);
     const groupSize = 1 + descendantIds.length;
 
-    // Find the field above the group
-    const fieldAbove = schema[index - 1];
-    if (fieldAbove.branchingInfo?.parentFieldId) return; // Can't swap into another group
+    // Find the start of the group above: walk back past any child fields
+    let aboveIdx = index - 1;
+    while (aboveIdx > 0 && schema[aboveIdx].branchingInfo?.parentFieldId) {
+      aboveIdx--;
+    }
 
     const newSchema = [...schema];
-    // Move the group up by 1
     const group = newSchema.splice(index, groupSize);
-    newSchema.splice(index - 1, 0, ...group);
+    newSchema.splice(aboveIdx, 0, ...group);
     sortedOnChange(newSchema);
   };
 

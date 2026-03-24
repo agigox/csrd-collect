@@ -7,6 +7,9 @@ import { LabelField } from "../common/LabelField";
 import { DefaultValueSelector } from "../common/DefaultValueSelector";
 import { SegmentedControl, Select } from "@rte-ds/react";
 import { fetchOptions as fetchOptionsApi } from "@/api/options";
+import LoadingState from "@/lib/ui/loading-state";
+import { ErrorState } from "@/lib/ui/error-state";
+import { I18nErrorKey } from "@/lib/utils/i18nErrors";
 
 // Type pour la structure des options dans db.json
 interface DataSourceItem {
@@ -164,10 +167,8 @@ export const SelectConfigurator = ({
       />
 
       {/* Chargement ou erreur */}
-      {isLoading && (
-        <div className="text-sm text-gray-500">Chargement des options...</div>
-      )}
-      {error && <div className="text-sm text-red-500">{error}</div>}
+      {isLoading && <LoadingState message="Chargement des options..." />}
+
       {/* Mode de sélection */}
       <div className="w-64.5">
         <SegmentedControl
@@ -182,6 +183,7 @@ export const SelectConfigurator = ({
           size="s"
         />
       </div>
+      {error && <ErrorState message={I18nErrorKey[error] || error} />}
 
       {/* Type de donnée et Source de donnée */}
       {!isLoading && !error && (
@@ -192,7 +194,6 @@ export const SelectConfigurator = ({
               label="Type de donnée"
               onChange={handleDataTypeChange}
               options={dataTypeOptions}
-              showResetButton={true}
               width={188}
             />
           </div>
@@ -204,7 +205,6 @@ export const SelectConfigurator = ({
               onChange={handleDataSourceChange}
               options={dataSourceOptions}
               disabled={!config.dataType}
-              showResetButton={true}
               width={188}
             />
           </div>

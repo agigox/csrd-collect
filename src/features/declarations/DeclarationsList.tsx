@@ -7,7 +7,7 @@ import PageTitle from "@/lib/ui/page-title";
 import Filters, { type FiltersState } from "./FiltersList";
 import DeclarationCard from "./DeclarationCard";
 import { Button, Divider, IconButtonToggle } from "@rte-ds/react";
-import { EmptyCard } from "@/lib/ui/EmptyCard";
+import { EmptyCard } from "@/lib/ui/empty-card";
 
 interface DeclarationsListProps {
   onDeclarer?: () => void;

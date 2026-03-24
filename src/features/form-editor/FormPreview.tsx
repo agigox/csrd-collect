@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/common";
 import { DynamicForm } from "@/features/form-builder/DynamicForm";
 import { useFormEditorStore } from "@/stores/formEditorStore";
 import { Divider, Icon } from "@rte-ds/react";
+import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 import type {
   FieldConfig,
   RadioFieldConfig,
@@ -76,9 +77,7 @@ export function FormPreviewContent({
     <div className="flex flex-col gap-2">
       <div className="flex flex-col">
         {formName && (
-          <div className={`heading-s ${!formId ? "pb-6" : ""}`}>
-            {formName}
-          </div>
+          <div className={`heading-s ${!formId ? "pb-6" : ""}`}>{formName}</div>
         )}
         {formId && (
           <div className="text-xs text-muted-foreground uppercase pb-6">
@@ -105,8 +104,8 @@ export function FormPreview() {
   const { formId, formName, schema, setShowPreview } = useFormEditorStore();
 
   return (
-    <div className="w-92 h-full absolute shrink-0 right-0 top-0 flex flex-col gap-4 p-6 bg-white shadow-[0px_4px_8px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)]">
-      <div className="flex flex-col gap-2">
+    <div className="w-92 h-full absolute shrink-0 right-0 top-0 flex flex-col gap-4 p-6 bg-white shadow-[0px_4px_8px_0px_rgba(0,0,0,0.14),0px_0px_2px_0px_rgba(0,0,0,0.12)] overflow-hidden">
+      <div className="flex flex-col gap-2 shrink-0">
         <div className="flex items-center justify-between h-6">
           <div className="heading-xs text-background-neutral-bold-default">
             Pré visualisation
@@ -125,11 +124,13 @@ export function FormPreview() {
           thickness="medium"
         />
       </div>
-      <FormPreviewContent
-        schema={schema}
-        formName={formName}
-        formId={formId ?? undefined}
-      />
+      <ScrollableContainer height="100%">
+        <FormPreviewContent
+          schema={schema}
+          formName={formName}
+          formId={formId ?? undefined}
+        />
+      </ScrollableContainer>
     </div>
   );
 }

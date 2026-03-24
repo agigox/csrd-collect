@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Grid, Searchbar, useBreakpoint } from "@rte-ds/react";
 import PageTitle from "@/lib/ui/page-title";
-import { EmptyCard } from "@/lib/ui/EmptyCard";
+import { EmptyCard } from "@/lib/ui/empty-card";
 import { OrgHierarchyList } from "./OrgHierarchyList";
 import { TeamDetailPanel } from "./TeamDetailPanel";
 import {
@@ -59,7 +59,9 @@ export default function TeamManagementPage() {
           })
           .filter(Boolean) as typeof dir.maintenanceCenters;
 
-        return filteredMCs.length > 0 ? { ...dir, maintenanceCenters: filteredMCs } : null;
+        return filteredMCs.length > 0
+          ? { ...dir, maintenanceCenters: filteredMCs }
+          : null;
       })
       .filter(Boolean) as OrgDirection[];
   }, [hierarchy, searchQuery]);
@@ -98,7 +100,9 @@ export default function TeamManagementPage() {
               </div>
 
               {filteredHierarchy.length === 0 ? (
-                <EmptyCard message={searchQuery ? "Aucun résultat" : "Aucune donnée"} />
+                <EmptyCard
+                  message={searchQuery ? "Aucun résultat" : "Aucune donnée"}
+                />
               ) : (
                 <OrgHierarchyList
                   hierarchy={filteredHierarchy}

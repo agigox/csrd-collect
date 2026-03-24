@@ -63,7 +63,6 @@ const SelectField = ({
           onMultipleChange={handleMultipleChange}
           options={options}
           readonly={readOnly}
-          showResetButton={!config.required}
           tooltipTextLabel={config.description}
           required={config.required}
         />
@@ -82,7 +81,6 @@ const SelectField = ({
       onChange={handleSingleChange}
       options={options}
       readonly={readOnly}
-      showResetButton={true}
       tooltipTextLabel={config.description}
       required={config.required}
     />

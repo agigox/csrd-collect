@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Button, Chip, Divider, Select, Switch, Textarea, Toast } from "@rte-ds/react";
+import {
+  Button,
+  Chip,
+  Divider,
+  Select,
+  Switch,
+  Textarea,
+  Toast,
+} from "@rte-ds/react";
 import type { FormTemplate } from "@/models/FormTemplate";
 import { useCategoryCodesStore } from "@/stores/categoryCodesStore";
 import { saveFormTemplate } from "@/api/forms";
@@ -96,7 +104,8 @@ export function ParametresTab({ form }: ParametresTabProps) {
         ...form,
         description: editedDescription || null,
         categoryCode: editedCategoryCode,
-        visibilityLevel: editedVisibilityLevel || form.visibilityLevel || "team",
+        visibilityLevel:
+          editedVisibilityLevel || form.visibilityLevel || "team",
         isActive: editedIsActive,
       });
       setShowSaveToast(true);
@@ -144,7 +153,6 @@ export function ParametresTab({ form }: ParametresTabProps) {
           options={EDITABLE_BY_OPTIONS}
           value={editedVisibilityLevel}
           onChange={setEditedVisibilityLevel}
-          showResetButton
           onClear={() => setEditedVisibilityLevel("")}
           width="100%"
         />

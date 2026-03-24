@@ -1,5 +1,5 @@
 import { Loader } from "@rte-ds/react";
-const LoadingState = () => {
+const LoadingState = ({ message }: { message: string }) => {
   return (
     <div
       className="flex items-center justify-center"
@@ -7,7 +7,7 @@ const LoadingState = () => {
     >
       <Loader
         appearance="brand"
-        label="Chargement des données..."
+        label={message}
         labelPosition="under"
         showLabel
         size="large"

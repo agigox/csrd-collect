@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Grid, useBreakpoint, Modal, Button } from "@rte-ds/react";
+import { Grid, useBreakpoint, Toast } from "@rte-ds/react";
 import { DeclarationDetailPanel } from "./DeclarationDetailPanel";
 import { useAuthStore, useFormsStore } from "@/stores";
 import type { FormTemplate } from "@/models/FormTemplate";
@@ -398,9 +398,8 @@ const Declarations = () => {
       setHasAttemptedSubmit(false);
       setShowSuccessToast(true);
 
-      // Navigate — the URL-change effect will clear currentTempId
-      // after the URL has updated, preventing the creation effect from re-firing
-      router.push("/declarations");
+      // Delay navigation so the Toast has time to appear
+      setTimeout(() => router.push("/declarations"), 1500);
     } catch (err) {
       console.error("Erreur lors de la soumission:", err);
       alert(
@@ -459,24 +458,16 @@ const Declarations = () => {
         loading={availableFormsLoading}
       />
 
-      <Modal
+      <Toast
+        message="Déclaration soumise avec succès"
+        type="success"
         isOpen={showSuccessToast}
         onClose={() => setShowSuccessToast(false)}
-        title="Succès"
-        size="s"
-      >
-        <div className="flex flex-col gap-4 p-4">
-          <p>Déclaration soumise avec succès</p>
-          <div className="flex justify-end">
-            <Button
-              variant="primary"
-              size="m"
-              label="OK"
-              onClick={() => setShowSuccessToast(false)}
-            />
-          </div>
-        </div>
-      </Modal>
+        closable
+        autoDismiss
+        duration="medium"
+        placement="top-right"
+      />
     </div>
   );
 };

@@ -54,8 +54,7 @@ export const DeclarationDetailPanel = ({
               {selectedForm?.name || ""}
             </h2>
             <span className="text-sm text-muted-foreground">
-              ID{" "}
-              {(selectedForm?.id || "").split("-")[0].toUpperCase()}
+              ID {(selectedForm?.id || "").split("-")[0].toUpperCase()}
             </span>
           </div>
           {completionStatus !== "complet" && (
@@ -65,6 +64,7 @@ export const DeclarationDetailPanel = ({
               size="s"
               clickable={false}
               style={{ backgroundColor: "#f5de93", color: "#201f1f" }}
+              icon="incomplete"
             />
           )}
           {declaration &&
@@ -139,7 +139,12 @@ export const DeclarationDetailPanel = ({
 
       {/* Footer */}
       <div className="flex justify-end gap-2 px-6 pb-4 border-t pt-4">
-        <Button label="Annuler" variant="secondary" size="m" onClick={onClose} />
+        <Button
+          label="Annuler"
+          variant="secondary"
+          size="m"
+          onClick={onClose}
+        />
         <Button
           label="Soumettre"
           variant="primary"
