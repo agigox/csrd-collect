@@ -157,6 +157,19 @@ export async function fetchTeamsByMC(maintenanceCenterId: string): Promise<OrgUn
   return response.json() as Promise<OrgUnit[]>;
 }
 
+export async function resendVerificationEmail(email: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.message || "Erreur lors de l'envoi");
+  }
+}
+
 export async function fetchAdminUsers(): Promise<User[]> {
   const response = await fetch(
     `${API_BASE_URL}/users?role=ADMIN&role=SUPER_ADMIN`,

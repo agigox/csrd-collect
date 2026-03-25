@@ -67,8 +67,8 @@ function PasswordForm() {
         firstName: firstName || undefined,
       });
 
-      // Redirect to login with success param
-      router.push("/login?registered=true");
+      // Redirect to check-email page
+      router.push(`/check-email?email=${encodeURIComponent(email)}`);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Erreur lors de l'inscription",
