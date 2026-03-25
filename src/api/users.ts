@@ -53,9 +53,50 @@ export async function registerUser(data: RegisterData): Promise<User> {
   return response.json() as Promise<User>;
 }
 
-export async function patchCurrentUserTeam(
-  team: User["team"],
-): Promise<User> {
+export async function patchCurrentUser(data: {
+  firstName?: string;
+  lastName?: string;
+}): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<User>;
+}
+
+export async function changePassword(data: {
+  currentPassword: string;
+  newPassword: string;
+}): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/me/password`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+}
+
+export async function deleteCurrentUser(): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+}
+
+export async function patchCurrentUserTeam(team: User["team"]): Promise<User> {
   const response = await fetch(`${API_BASE_URL}/auth/me/team`, {
     method: "PATCH",
     headers: authHeaders(),
@@ -144,7 +185,9 @@ export async function fetchTeams(gmrId: string): Promise<OrgUnit[]> {
   return response.json() as Promise<OrgUnit[]>;
 }
 
-export async function fetchTeamsByMC(maintenanceCenterId: string): Promise<OrgUnit[]> {
+export async function fetchTeamsByMC(
+  maintenanceCenterId: string,
+): Promise<OrgUnit[]> {
   const response = await fetch(
     `${API_BASE_URL}/organizational-units/teams?maintenanceCenterId=${encodeURIComponent(maintenanceCenterId)}`,
     { headers: authHeaders() },

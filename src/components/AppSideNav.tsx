@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { SideNav, Switch, useBreakpoint } from "@rte-ds/react";
 import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
 import { useDeclarationsStore } from "@/stores/declarationsStore";
+import { UserProfileModal } from "@/features/profile";
 
 interface AppSideNavProps {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [adminMode, setAdminMode] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const { width } = useBreakpoint();
   const user = useAuthStore((s) => s.user);
   const team = useAuthStore((s) => s.team);
@@ -154,6 +156,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       footerItems={footerItems}
       showProfile={!!profileName}
       profile={profileName}
+      onProfileClick={() => setShowProfileModal(true)}
       middleItem={adminToggle}
       showTeamData={!!teamData}
       teamData={teamData}
@@ -162,6 +165,10 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     >
       {children}
     </SideNav>
+    <UserProfileModal
+      isOpen={showProfileModal}
+      onClose={() => setShowProfileModal(false)}
+    />
     </div>
   );
 }

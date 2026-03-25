@@ -69,7 +69,6 @@ export const DefaultValueSelector = ({
               onChange={onSingleChange ?? (() => {})}
               options={options}
               disabled={disabled}
-              showResetButton={true}
               width={260}
             />
           ) : (
@@ -82,7 +81,6 @@ export const DefaultValueSelector = ({
               onMultipleChange={onMultipleChange ?? (() => {})}
               options={options}
               disabled={disabled}
-              showResetButton={true}
               width={260}
             />
           )}

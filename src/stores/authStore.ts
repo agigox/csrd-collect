@@ -5,6 +5,7 @@ import type { Team } from "@/models/User";
 import {
   loginUser,
   registerUser,
+  patchCurrentUser,
   patchCurrentUserTeam,
   fetchCurrentUser,
   setAccessToken,
@@ -28,6 +29,7 @@ interface AuthState {
   logout: () => void;
   refreshUser: () => Promise<void>;
   updateTeam: (team: Team) => Promise<void>;
+  updateProfile: (data: { firstName?: string; lastName?: string }) => Promise<void>;
   setLoading: (loading: boolean) => void;
   clearError: () => void;
 }
@@ -180,6 +182,20 @@ export const useAuthStore = create<AuthState>()(
             },
             false,
             "AUTH/UPDATE_TEAM"
+          );
+        },
+
+        updateProfile: async (data: { firstName?: string; lastName?: string }) => {
+          const { user } = get();
+          if (!user) throw new Error("Utilisateur non connecté");
+
+          const updatedUser = await patchCurrentUser(data);
+          set(
+            {
+              user: { ...user, ...updatedUser },
+            },
+            false,
+            "AUTH/UPDATE_PROFILE"
           );
         },
 
