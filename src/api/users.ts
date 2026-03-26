@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "./config";
 import { authHeaders } from "./authHeaders";
-import type { User, RegisterData, OrgUnit } from "@/models/User";
+import type { User, RegisterData, OrgUnit, Team } from "@/models/User";
 
 let _accessToken: string | null = null;
 
@@ -210,6 +210,46 @@ export async function resendVerificationEmail(email: string): Promise<void> {
   if (!response.ok) {
     const body = await response.json().catch(() => null);
     throw new Error(body?.message || "Erreur lors de l'envoi");
+  }
+}
+
+export async function resolveUserTeam(user: User): Promise<Team | null> {
+  if (!user.directionId || !user.maintenanceCenterId || !user.teamId) return null;
+
+  try {
+    const [directions, centres] = await Promise.all([
+      fetchDirections(),
+      fetchMaintenanceCenters(user.directionId),
+    ]);
+
+    const direction = directions.find((d) => d.id === user.directionId);
+    const centre = centres.find((c) => c.id === user.maintenanceCenterId);
+
+    let gmrName: string | undefined;
+    if (user.gmrId) {
+      const gmrs = await fetchGmrs(user.maintenanceCenterId);
+      gmrName = gmrs.find((g) => g.id === user.gmrId)?.name;
+    }
+
+    const teams = user.gmrId
+      ? await fetchTeams(user.gmrId)
+      : await fetchTeamsByMC(user.maintenanceCenterId);
+    const team = teams.find((t) => t.id === user.teamId);
+
+    if (!direction || !centre || !team) return null;
+
+    return {
+      directionId: user.directionId,
+      direction: direction.name,
+      maintenanceCenterId: user.maintenanceCenterId,
+      centre: centre.name,
+      gmrId: user.gmrId ?? undefined,
+      gmr: gmrName,
+      teamId: user.teamId,
+      team: team.name,
+    };
+  } catch {
+    return null;
   }
 }
 

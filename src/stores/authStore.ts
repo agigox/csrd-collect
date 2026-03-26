@@ -9,6 +9,7 @@ import {
   patchCurrentUserTeam,
   fetchCurrentUser,
   setAccessToken,
+  resolveUserTeam,
 } from "@/api/users";
 import { useDeclarationsStore } from "./declarationsStore";
 
@@ -76,14 +77,16 @@ export const useAuthStore = create<AuthState>()(
           try {
             const { user, access_token } = await loginUser(nniOrEmail, password);
             setAccessToken(access_token);
+
+            const team = user.team ?? (await resolveUserTeam(user));
             set(
               {
-                user,
+                user: { ...user, team },
                 accessToken: access_token,
                 isAuthenticated: true,
                 isLoading: false,
                 error: null,
-                team: user.team ?? null,
+                team,
               },
               false,
               "AUTH/LOGIN_SUCCESS"
@@ -151,10 +154,11 @@ export const useAuthStore = create<AuthState>()(
 
           try {
             const freshUser = await fetchCurrentUser();
+            const team = freshUser.team ?? get().team ?? (await resolveUserTeam(freshUser));
             set(
               {
-                user: freshUser,
-                team: freshUser.team ?? get().team,
+                user: { ...freshUser, team },
+                team,
               },
               false,
               "AUTH/REFRESH_USER"
