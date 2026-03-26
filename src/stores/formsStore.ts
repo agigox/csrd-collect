@@ -26,6 +26,7 @@ interface FormsState {
     name: string;
     description: string;
     categoryCode: string;
+    visibilityLevel?: string;
     schema: { fields: FieldConfig[] };
   }) => Promise<FormTemplate>;
   deleteForm: (id: string) => Promise<void>;

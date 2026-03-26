@@ -16,9 +16,12 @@ interface CreateFormModalProps {
 }
 
 const EDITABLE_BY_OPTIONS = [
-  { value: "equipe", label: "Equipe" },
-  { value: "gre", label: "GRE" },
-  { value: "utilisateur", label: "Utilisateur" },
+  { value: "author", label: "Auteur" },
+  { value: "team", label: "Équipe" },
+  { value: "gmr", label: "GMR" },
+  { value: "mc", label: "Centre de maintenance" },
+  { value: "direction", label: "Direction" },
+  { value: "all", label: "Tous" },
 ];
 
 export default function CreateFormModal({

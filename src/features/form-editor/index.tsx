@@ -26,6 +26,7 @@ export default function FormCreation() {
     formName,
     formDescription,
     formCategoryCode,
+    formVisibilityLevel,
     schema,
     showPreview,
     pendingNavigation,
@@ -94,6 +95,7 @@ export default function FormCreation() {
           name: formName,
           description: formDescription,
           categoryCode: formCategoryCode,
+          visibilityLevel: formVisibilityLevel || currentForm.visibilityLevel,
           schema: { fields: schema },
         });
       } else {
@@ -101,6 +103,7 @@ export default function FormCreation() {
           name: formName,
           description: formDescription,
           categoryCode: formCategoryCode,
+          visibilityLevel: formVisibilityLevel || undefined,
           schema: { fields: schema },
         });
       }

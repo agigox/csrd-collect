@@ -100,7 +100,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       ? [
           { label: "Direction", value: team.direction },
           { label: "CM", value: team.centre },
-          { label: "GMR", value: team.gmr ?? "" },
+          ...(team.gmr ? [{ label: "GMR", value: team.gmr }] : []),
           { label: "Équipe", value: team.team },
         ]
       : undefined;

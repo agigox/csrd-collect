@@ -44,6 +44,7 @@ export async function createFormTemplate(formData: {
   name: string;
   description: string;
   categoryCode: string;
+  visibilityLevel?: string;
   schema: { fields: FieldConfig[] };
 }): Promise<FormTemplate> {
   const nameSlug = formData.name
@@ -63,6 +64,7 @@ export async function createFormTemplate(formData: {
       name: formData.name,
       description: formData.description,
       categoryCode: formData.categoryCode,
+      visibilityLevel: formData.visibilityLevel || undefined,
       schema: formData.schema,
     }),
   });
