@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SideNav, Switch, useBreakpoint } from "@rte-ds/react";
 import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
 import { useDeclarationsStore } from "@/stores/declarationsStore";
+import { useFormEditorStore } from "@/stores/formEditorStore";
 import { UserProfileModal } from "@/features/profile";
 
 interface AppSideNavProps {
@@ -37,6 +38,7 @@ const adminMenuItems = [
 export default function AppSideNav({ children }: AppSideNavProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [adminMode, setAdminMode] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -56,6 +58,23 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     setAdminMode(pathname.startsWith("/admin"));
   }, [pathname]);
 
+  const isOnFormEditor =
+    pathname === "/admin/new" || (pathname === "/admin" && searchParams?.get("id") !== null);
+
+  const guardedNavigate = useCallback(
+    (path: string) => {
+      const { hasUnsavedContent, setPendingNavigation } =
+        useFormEditorStore.getState();
+      if (isOnFormEditor && hasUnsavedContent()) {
+        setPendingNavigation(path);
+        return;
+      }
+      useFormEditorStore.getState().reset();
+      router.push(path);
+    },
+    [isOnFormEditor, router],
+  );
+
   const handleToggleAdmin = () => {
     const newMode = !adminMode;
     setAdminMode(newMode);
@@ -67,11 +86,8 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       .filter((d) => d.id.startsWith("temp_"))
       .forEach((d) => removeTempDeclaration(d.id));
 
-    if (newMode) {
-      router.push("/admin");
-    } else {
-      router.push("/declarations");
-    }
+    const target = newMode ? "/admin" : "/declarations";
+    guardedNavigate(target);
   };
 
   const profileName =
@@ -84,7 +100,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       ? [
           { label: "Direction", value: team.direction },
           { label: "CM", value: team.centre },
-          { label: "GMR", value: team.gmr },
+          { label: "GMR", value: team.gmr ?? "" },
           { label: "Équipe", value: team.team },
         ]
       : undefined;
@@ -96,6 +112,7 @@ export default function AppSideNav({ children }: AppSideNavProps) {
     : undefined;
 
   const handleLogout = () => {
+    useFormEditorStore.getState().reset();
     logout();
     router.push("/login");
   };
@@ -131,10 +148,10 @@ export default function AppSideNav({ children }: AppSideNavProps) {
       const href = anchor.getAttribute("href");
       if (href && href.startsWith("/")) {
         e.preventDefault();
-        router.push(href);
+        guardedNavigate(href);
       }
     },
-    [router],
+    [guardedNavigate],
   );
 
   // Avoid hydration mismatch: SideNav uses window.innerWidth to choose

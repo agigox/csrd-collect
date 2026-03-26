@@ -28,9 +28,11 @@ export default function FormCreation() {
     formCategoryCode,
     schema,
     showPreview,
+    pendingNavigation,
     setShowPreview,
     setIsSaving,
     initializeFromForm,
+    setPendingNavigation,
     reset: resetFormEditor,
   } = useFormEditorStore();
 
@@ -67,6 +69,13 @@ export default function FormCreation() {
   }, [currentForm, initializeFromForm]);
 
   const isEditMode = currentForm !== null;
+
+  // Show leave confirm when sidebar navigation is intercepted
+  useEffect(() => {
+    if (pendingNavigation) {
+      setShowLeaveConfirm(true);
+    }
+  }, [pendingNavigation]);
 
   const handleSave = async () => {
     setSaveError(null);
@@ -130,14 +139,22 @@ export default function FormCreation() {
   };
 
   const handleLeaveDiscard = () => {
+    const destination = pendingNavigation || "/admin";
     setShowLeaveConfirm(false);
     resetFormEditor();
-    router.push("/admin");
+    router.push(destination);
   };
 
   const handleLeaveSave = async () => {
+    const destination = pendingNavigation || "/admin";
     setShowLeaveConfirm(false);
+    setPendingNavigation(null);
     await handleSave();
+    // handleSave already navigates to /admin on success,
+    // but if the destination differs, override it
+    if (destination !== "/admin") {
+      setTimeout(() => router.push(destination), 1500);
+    }
   };
 
   if (loading) {
@@ -209,7 +226,7 @@ export default function FormCreation() {
       <Modal
         id="leave-form-confirm"
         isOpen={showLeaveConfirm}
-        onClose={() => setShowLeaveConfirm(false)}
+        onClose={() => { setShowLeaveConfirm(false); setPendingNavigation(null); }}
         title="Enregistrer le formulaire"
         size="s"
         primaryButton={

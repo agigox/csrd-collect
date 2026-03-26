@@ -16,6 +16,9 @@ interface FormEditorState {
   isSaving: boolean;
   showPreview: boolean;
 
+  // Navigation guard
+  pendingNavigation: string | null;
+
   // Actions
   setFormName: (name: string) => void;
   setFormDescription: (description: string) => void;
@@ -25,6 +28,8 @@ interface FormEditorState {
   setIsSaving: (saving: boolean) => void;
   setShowPreview: (show: boolean) => void;
   initializeFromForm: (form: FormTemplate | null) => void;
+  setPendingNavigation: (path: string | null) => void;
+  hasUnsavedContent: () => boolean;
   reset: () => void;
 }
 
@@ -39,11 +44,12 @@ const initialState = {
   schema: [] as FieldConfig[],
   isSaving: false,
   showPreview: false,
+  pendingNavigation: null as string | null,
 };
 
 export const useFormEditorStore = create<FormEditorState>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
 
       setFormName: (name) =>
@@ -80,6 +86,14 @@ export const useFormEditorStore = create<FormEditorState>()(
           false,
           "FORM_EDITOR/INITIALIZE"
         ),
+
+      setPendingNavigation: (path) =>
+        set({ pendingNavigation: path }, false, "FORM_EDITOR/SET_PENDING_NAV"),
+
+      hasUnsavedContent: () => {
+        const { schema, formName, formId } = get();
+        return !formId && (schema.length > 0 || formName.trim() !== "");
+      },
 
       reset: () =>
         set({ ...initialState }, false, "FORM_EDITOR/RESET"),
