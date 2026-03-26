@@ -93,6 +93,7 @@ export default function UserProfileModal({
         size="s"
         showCloseIcon={true}
         closeOnOverlayClick={false}
+        className="max-md:w-full! max-md:h-full! max-md:max-h-full! max-md:rounded-none!"
         titleContent={
           <div className="flex items-center gap-2">
             <Icon name="user-circle" size={24} />

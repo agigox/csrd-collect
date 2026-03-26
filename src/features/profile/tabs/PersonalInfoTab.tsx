@@ -78,7 +78,7 @@ export default function PersonalInfoTab({
   }, [logout, onClose, router]);
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
+    <div className="flex flex-col gap-2.5">
       <TextInput
         id="profile-lastname"
         label="Nom"

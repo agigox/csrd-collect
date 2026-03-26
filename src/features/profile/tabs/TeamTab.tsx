@@ -11,7 +11,9 @@ import {
   fetchTeamsByMC,
 } from "@/api/users";
 import type { OrgUnit, Team } from "@/models/User";
-import SearchableSelect, { toOptions } from "@/components/common/SearchableSelect";
+import SearchableSelect, {
+  toOptions,
+} from "@/components/common/SearchableSelect";
 
 interface TeamTabProps {
   onDirtyChange: (dirty: boolean) => void;
@@ -50,37 +52,47 @@ export default function TeamTab({ onDirtyChange }: TeamTabProps) {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
-    fetchDirections().then((dirs) => {
-      setDirections(dirs);
+    fetchDirections()
+      .then((dirs) => {
+        setDirections(dirs);
 
-      if (!originalTeam) return;
+        if (!originalTeam) return;
 
-      setDirectionId(originalTeam.directionId);
-      setDirectionName(originalTeam.direction);
+        setDirectionId(originalTeam.directionId);
+        setDirectionName(originalTeam.direction);
 
-      fetchMaintenanceCenters(originalTeam.directionId).then((mcs) => {
-        setCentres(mcs);
-        setCentreId(originalTeam.maintenanceCenterId);
-        setCentreName(originalTeam.centre);
+        fetchMaintenanceCenters(originalTeam.directionId)
+          .then((mcs) => {
+            setCentres(mcs);
+            setCentreId(originalTeam.maintenanceCenterId);
+            setCentreName(originalTeam.centre);
 
-        fetchGmrs(originalTeam.maintenanceCenterId).then((gmrs) => {
-          if (gmrs.length > 0) {
-            setGmrsList(gmrs);
-            setHasGmrs(true);
-            if (originalTeam.gmrId) {
-              setGmrId(originalTeam.gmrId);
-              setGmrName(originalTeam.gmr ?? "");
-              fetchTeams(originalTeam.gmrId).then(setTeamsList).catch(console.error);
-            }
-          } else {
-            setHasGmrs(false);
-            fetchTeamsByMC(originalTeam.maintenanceCenterId).then(setTeamsList).catch(console.error);
-          }
-          setTeamId(originalTeam.teamId);
-          setTeamName(originalTeam.team);
-        }).catch(console.error);
-      }).catch(console.error);
-    }).catch(console.error);
+            fetchGmrs(originalTeam.maintenanceCenterId)
+              .then((gmrs) => {
+                if (gmrs.length > 0) {
+                  setGmrsList(gmrs);
+                  setHasGmrs(true);
+                  if (originalTeam.gmrId) {
+                    setGmrId(originalTeam.gmrId);
+                    setGmrName(originalTeam.gmr ?? "");
+                    fetchTeams(originalTeam.gmrId)
+                      .then(setTeamsList)
+                      .catch(console.error);
+                  }
+                } else {
+                  setHasGmrs(false);
+                  fetchTeamsByMC(originalTeam.maintenanceCenterId)
+                    .then(setTeamsList)
+                    .catch(console.error);
+                }
+                setTeamId(originalTeam.teamId);
+                setTeamName(originalTeam.team);
+              })
+              .catch(console.error);
+          })
+          .catch(console.error);
+      })
+      .catch(console.error);
   }, [originalTeam]);
 
   // Fetch centres when direction changes (user-initiated only)
@@ -104,7 +116,8 @@ export default function TeamTab({ onDirtyChange }: TeamTabProps) {
       setHasGmrs(true);
       return;
     }
-    if (centreId === originalTeam?.maintenanceCenterId && gmrsList.length > 0) return;
+    if (centreId === originalTeam?.maintenanceCenterId && gmrsList.length > 0)
+      return;
     fetchGmrs(centreId)
       .then((gmrs) => {
         if (gmrs.length > 0) {
@@ -141,10 +154,15 @@ export default function TeamTab({ onDirtyChange }: TeamTabProps) {
     const found = directions.find((d) => d.id === value);
     setDirectionId(value);
     setDirectionName(found?.name || "");
-    setCentreId(""); setCentreName("");
-    setGmrId(""); setGmrName("");
-    setTeamId(""); setTeamName("");
-    setCentres([]); setGmrsList([]); setTeamsList([]);
+    setCentreId("");
+    setCentreName("");
+    setGmrId("");
+    setGmrName("");
+    setTeamId("");
+    setTeamName("");
+    setCentres([]);
+    setGmrsList([]);
+    setTeamsList([]);
     if (value) {
       fetchMaintenanceCenters(value).then(setCentres).catch(console.error);
     }
@@ -154,19 +172,24 @@ export default function TeamTab({ onDirtyChange }: TeamTabProps) {
     const found = centres.find((c) => c.id === value);
     setCentreId(value);
     setCentreName(found?.name || "");
-    setGmrId(""); setGmrName("");
-    setTeamId(""); setTeamName("");
-    setGmrsList([]); setTeamsList([]);
+    setGmrId("");
+    setGmrName("");
+    setTeamId("");
+    setTeamName("");
+    setGmrsList([]);
+    setTeamsList([]);
     if (value) {
-      fetchGmrs(value).then((gmrs) => {
-        if (gmrs.length > 0) {
-          setGmrsList(gmrs);
-          setHasGmrs(true);
-        } else {
-          setHasGmrs(false);
-          fetchTeamsByMC(value).then(setTeamsList).catch(console.error);
-        }
-      }).catch(console.error);
+      fetchGmrs(value)
+        .then((gmrs) => {
+          if (gmrs.length > 0) {
+            setGmrsList(gmrs);
+            setHasGmrs(true);
+          } else {
+            setHasGmrs(false);
+            fetchTeamsByMC(value).then(setTeamsList).catch(console.error);
+          }
+        })
+        .catch(console.error);
     }
   };
 
@@ -174,7 +197,8 @@ export default function TeamTab({ onDirtyChange }: TeamTabProps) {
     const found = gmrsList.find((g) => g.id === value);
     setGmrId(value);
     setGmrName(found?.name || "");
-    setTeamId(""); setTeamName("");
+    setTeamId("");
+    setTeamName("");
     setTeamsList([]);
     if (value) {
       fetchTeams(value).then(setTeamsList).catch(console.error);
@@ -187,7 +211,8 @@ export default function TeamTab({ onDirtyChange }: TeamTabProps) {
     setTeamName(found?.name || "");
   };
 
-  const isFormValid = directionId && centreId && teamId && (hasGmrs ? gmrId : true);
+  const isFormValid =
+    directionId && centreId && teamId && (hasGmrs ? gmrId : true);
 
   const handleSave = useCallback(async () => {
     if (!isFormValid || !isDirty || isSubmitting) return;
@@ -207,15 +232,35 @@ export default function TeamTab({ onDirtyChange }: TeamTabProps) {
       await updateTeam(team);
       onDirtyChange(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erreur lors de la sauvegarde");
+      setError(
+        err instanceof Error ? err.message : "Erreur lors de la sauvegarde",
+      );
     } finally {
       setIsSubmitting(false);
     }
-  }, [isFormValid, isDirty, isSubmitting, directionId, directionName, centreId, centreName, gmrId, gmrName, teamId, teamName, updateTeam, onDirtyChange]);
+  }, [
+    isFormValid,
+    isDirty,
+    isSubmitting,
+    directionId,
+    directionName,
+    centreId,
+    centreName,
+    gmrId,
+    gmrName,
+    teamId,
+    teamName,
+    updateTeam,
+    onDirtyChange,
+  ]);
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
-      <p className="text-sm text-content-secondary">Votre équipe d&apos;appartenance :</p>
+    <div className="flex flex-col gap-2.5">
+      <p className="text-sm text-content-secondary">
+        {originalTeam
+          ? "Modifier votre équipe :"
+          : "Votre équipe d\u2019appartenance :"}
+      </p>
 
       <SearchableSelect
         id="direction"

@@ -70,7 +70,7 @@ export default function PasswordTab({ onDirtyChange }: PasswordTabProps) {
   }, [isFormValid, currentPassword, newPassword, onDirtyChange]);
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
+    <div className="flex flex-col gap-2.5">
       <TextInput
         id="current-password"
         label="Mot de passe actuel"
