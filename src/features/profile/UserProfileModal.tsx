@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores";
 import PersonalInfoTab from "./tabs/PersonalInfoTab";
 import TeamTab from "./tabs/TeamTab";
 import PasswordTab from "./tabs/PasswordTab";
+import DeleteAccountTab from "./tabs/DeleteAccountTab";
 
 const PROFILE_TAB_OPTIONS = [
   {
@@ -15,6 +16,7 @@ const PROFILE_TAB_OPTIONS = [
   },
   { id: "team", panelId: "panel-team", label: "Equipe" },
   { id: "password", panelId: "panel-password", label: "Mot de passe" },
+  { id: "delete-account", panelId: "panel-delete-account", label: "Supprimer le compte" },
 ];
 
 interface UserProfileModalProps {
@@ -117,10 +119,7 @@ export default function UserProfileModal({
 
           {/* Tab panels */}
           {activeTabId === "personal-info" && (
-            <PersonalInfoTab
-              onDirtyChange={handleDirtyChange}
-              onClose={handleClose}
-            />
+            <PersonalInfoTab onDirtyChange={handleDirtyChange} />
           )}
           {activeTabId === "team" && (
             <TeamTab onDirtyChange={handleDirtyChange} onClose={handleClose} />
@@ -130,6 +129,9 @@ export default function UserProfileModal({
               onDirtyChange={handleDirtyChange}
               onClose={handleClose}
             />
+          )}
+          {activeTabId === "delete-account" && (
+            <DeleteAccountTab onClose={handleClose} />
           )}
         </div>
       </Modal>
