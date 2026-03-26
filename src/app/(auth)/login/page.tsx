@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TextInput, Button } from "@rte-ds/react";
 import { useAuthStore } from "@/stores";
 import Link from "next/link";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const justVerified = searchParams.get("verified") === "true";
   const login = useAuthStore((s) => s.login);
   const clearError = useAuthStore((s) => s.clearError);
 
@@ -80,6 +82,12 @@ export default function LoginPage() {
           Se connecter
         </h2>
 
+        {justVerified && (
+          <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm text-center w-full">
+            Email vérifié avec succès ! Vous pouvez maintenant vous connecter.
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-2.75 w-full">
           <TextInput
             id="nni-email"
@@ -108,11 +116,22 @@ export default function LoginPage() {
               width="100%"
             />
 
-            {error && (
+            {error && error.includes("non vérifié") ? (
+              <div className="flex flex-col gap-1">
+                <p className="text-sm text-[#F14662]">{error}</p>
+                <Link
+                  href={`/check-email?email=${encodeURIComponent(nniOrEmail)}`}
+                  className="text-sm underline"
+                  style={{ color: "#2b86ff" }}
+                >
+                  Renvoyer l&apos;email de vérification
+                </Link>
+              </div>
+            ) : error ? (
               <p className="text-sm text-[#F14662]" data-testid="login-error">
                 {error}
               </p>
-            )}
+            ) : null}
             <div className="flex items-center justify-end w-full">
               <Link
                 href="#"
@@ -150,5 +169,19 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[200px]">
+          <div className="text-gray-500">Chargement...</div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

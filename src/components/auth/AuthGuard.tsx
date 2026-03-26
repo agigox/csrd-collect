@@ -10,7 +10,7 @@ interface AuthGuardProps {
   children: ReactNode;
 }
 
-const AUTH_ROUTES = ["/login", "/register"];
+const AUTH_ROUTES = ["/login", "/register", "/check-email", "/verify-email"];
 
 function isAuthRoute(pathname: string) {
   return AUTH_ROUTES.some(
