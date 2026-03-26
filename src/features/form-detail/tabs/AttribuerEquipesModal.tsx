@@ -6,6 +6,7 @@ import { Modal, Button, Icon } from "@rte-ds/react";
 import type { MockTeam } from "../mockData";
 import OrgUnitTree, { type TreeNode } from "../components/OrgUnitTree";
 import { useOrgUnitTree } from "../hooks/useOrgUnitTree";
+import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 
 interface AttribuerEquipesModalProps {
   isOpen: boolean;
@@ -115,7 +116,7 @@ export default function AttribuerEquipesModal({
           <Button variant="primary" label="Ok" onClick={handleConfirmOk} />
         }
       >
-        <div className="flex flex-col gap-6 h-118.75 w-full">
+        <div className="flex flex-col gap-6 h-118.75 w-full overflow-hidden">
           <div className="flex items-start gap-2">
             <Icon name="check-circle" size={32} color="#2d7738" />
             <span className="text-xl text-[#201f1f]">
@@ -133,14 +134,16 @@ export default function AttribuerEquipesModal({
                 height={204}
               />
             </div>
-            <ul className="list-disc pl-5 text-sm text-[#3e3e3d] leading-8">
-              {pendingTeams.map((team, index) => (
-                <li key={team.id} className="h-7">
-                  {team.name}
-                  {index < pendingTeams.length - 1 ? "," : ""}
-                </li>
-              ))}
-            </ul>
+            <ScrollableContainer height="415px">
+              <ul className="list-disc pl-5 text-sm text-[#3e3e3d] leading-8 h-full">
+                {pendingTeams.map((team, index) => (
+                  <li key={team.id} className="h-7">
+                    {team.name}
+                    {index < pendingTeams.length - 1 ? "," : ""}
+                  </li>
+                ))}
+              </ul>
+            </ScrollableContainer>
           </div>
         </div>
       </Modal>
