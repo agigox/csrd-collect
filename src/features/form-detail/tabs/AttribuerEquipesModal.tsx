@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import { Modal, Button, Icon } from "@rte-ds/react";
 import type { MockTeam } from "../mockData";
-import OrgUnitTree, { type TreeNode } from "../components/OrgUnitTree";
+import OrgUnitTree, { type TreeNode, type SelectionMode, type LeafAncestors, findLeafAncestors } from "../components/OrgUnitTree";
 import { useOrgUnitTree } from "../hooks/useOrgUnitTree";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 
@@ -12,7 +12,8 @@ interface AttribuerEquipesModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentTeams: MockTeam[];
-  onValidate: (teams: MockTeam[]) => void;
+  onValidate: (teams: MockTeam[], ancestors?: LeafAncestors | null) => void;
+  selectionMode?: SelectionMode;
 }
 
 export default function AttribuerEquipesModal({
@@ -20,9 +21,11 @@ export default function AttribuerEquipesModal({
   onClose,
   currentTeams,
   onValidate,
+  selectionMode = "multiple",
 }: AttribuerEquipesModalProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [pendingTeams, setPendingTeams] = useState<MockTeam[]>([]);
+  const [pendingAncestors, setPendingAncestors] = useState<LeafAncestors | null>(null);
 
   const initialSelectedIds = useMemo(
     () => currentTeams.map((t) => t.id),
@@ -54,7 +57,18 @@ export default function AttribuerEquipesModal({
   };
 
   const toggleNodeSelection = async (node: TreeNode) => {
-    // Collect all leaf team IDs, loading any unloaded branches along the way
+    if (selectionMode === "single") {
+      // Single mode: only leaf nodes, replace selection entirely
+      if (node.level !== 3) return;
+      setSelectedLeafIds((prev) => {
+        // Toggle off if already selected, otherwise select only this one
+        if (prev.has(node.id)) return new Set<string>();
+        return new Set([node.id]);
+      });
+      return;
+    }
+
+    // Multiple mode: collect all leaf team IDs, loading any unloaded branches along the way
     const leafIds = await collectAllLeafIds(node);
     setSelectedLeafIds((prev) => {
       const allSelected =
@@ -90,12 +104,19 @@ export default function AttribuerEquipesModal({
       }
     }
 
-    setPendingTeams(Array.from(treeTeamsMap.values()));
+    const teams = Array.from(treeTeamsMap.values());
+    setPendingTeams(teams);
+    // In single mode, compute ancestors for the selected team
+    if (selectionMode === "single" && teams.length === 1) {
+      setPendingAncestors(findLeafAncestors(treeData, teams[0].id));
+    } else {
+      setPendingAncestors(null);
+    }
     setShowConfirmation(true);
   };
 
   const handleConfirmOk = () => {
-    onValidate(pendingTeams);
+    onValidate(pendingTeams, pendingAncestors);
     setShowConfirmation(false);
   };
 
@@ -184,6 +205,7 @@ export default function AttribuerEquipesModal({
           onToggleSelection={toggleNodeSelection}
           onLoadChildren={loadChildren}
           initialExpandedIds={initialExpandedIds}
+          selectionMode={selectionMode}
         />
       </div>
     </Modal>

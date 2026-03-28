@@ -18,6 +18,52 @@ export interface TreeNode {
 
 // --- Pure utility functions ---
 
+export interface LeafAncestors {
+  directionId: string;
+  maintenanceCenterId: string;
+  gmrId?: string;
+  teamId: string;
+}
+
+/**
+ * Walk the tree to find a leaf's ancestor path (direction -> MC -> GMR? -> team).
+ * Returns null if the leaf is not found.
+ */
+export function findLeafAncestors(
+  nodes: TreeNode[],
+  leafId: string,
+): LeafAncestors | null {
+  for (const dir of nodes) {
+    if (dir.level !== 0) continue;
+    for (const mc of dir.children) {
+      // Teams directly under MC (no GMR)
+      for (const child of mc.children) {
+        if (child.level === 3 && child.id === leafId) {
+          return {
+            directionId: dir.id,
+            maintenanceCenterId: mc.id,
+            teamId: child.id,
+          };
+        }
+        // GMR level
+        if (child.level === 2) {
+          for (const team of child.children) {
+            if (team.id === leafId) {
+              return {
+                directionId: dir.id,
+                maintenanceCenterId: mc.id,
+                gmrId: child.id,
+                teamId: team.id,
+              };
+            }
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
 export function getLeafDescendants(node: TreeNode): TreeNode[] {
   if (node.level === 3) return [node];
   const leaves: TreeNode[] = [];
@@ -64,7 +110,37 @@ function computeAutoExpandedIds(nodes: TreeNode[], query: string): Set<string> {
   return result;
 }
 
+export type SelectionMode = "single" | "multiple";
+
 // --- Components ---
+
+function TreeRadio({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onChange();
+      }}
+      className="w-4 h-4 shrink-0 rounded-full border-2 flex items-center justify-center"
+      style={{
+        borderColor: checked ? "#2964a0" : "#737272",
+      }}
+    >
+      {checked && (
+        <div
+          className="w-2 h-2 rounded-full"
+          style={{ backgroundColor: "#2964a0" }}
+        />
+      )}
+    </button>
+  );
+}
 
 function TreeCheckbox({
   checked,
@@ -119,6 +195,7 @@ interface TreeNodeListProps {
   onToggleExpanded: (nodeId: string) => void;
   onToggleSelection: (node: TreeNode) => void | Promise<void>;
   onLoadChildren?: (nodeId: string) => Promise<void>;
+  selectionMode?: SelectionMode;
 }
 
 function TreeNodeList({
@@ -128,6 +205,7 @@ function TreeNodeList({
   onToggleExpanded,
   onToggleSelection,
   onLoadChildren,
+  selectionMode = "multiple",
 }: TreeNodeListProps) {
   return (
     <div className="flex flex-col gap-1">
@@ -140,6 +218,7 @@ function TreeNodeList({
           onToggleExpanded={onToggleExpanded}
           onToggleSelection={onToggleSelection}
           onLoadChildren={onLoadChildren}
+          selectionMode={selectionMode}
         />
       ))}
     </div>
@@ -153,6 +232,7 @@ interface TreeNodeRowProps {
   onToggleExpanded: (nodeId: string) => void;
   onToggleSelection: (node: TreeNode) => void | Promise<void>;
   onLoadChildren?: (nodeId: string) => Promise<void>;
+  selectionMode?: SelectionMode;
 }
 
 function TreeNodeRow({
@@ -162,9 +242,11 @@ function TreeNodeRow({
   onToggleExpanded,
   onToggleSelection,
   onLoadChildren,
+  selectionMode = "multiple",
 }: TreeNodeRowProps) {
   const isExpanded = expandedIds.has(node.id);
   const isLeaf = node.level === 3;
+  const isSingle = selectionMode === "single";
 
   const leaves = getLeafDescendants(node);
   const leafIds = leaves.map((l) => l.id);
@@ -174,7 +256,13 @@ function TreeNodeRow({
   const isIndeterminate = someSelected && !allSelected;
 
   const handleToggle = async () => {
-    if (isLeaf) return;
+    if (isLeaf) {
+      // In single mode, clicking the row also toggles selection for leaves
+      if (isSingle) {
+        onToggleSelection(node);
+      }
+      return;
+    }
 
     const willExpand = !isExpanded;
     if (willExpand && !node.childrenLoaded && onLoadChildren) {
@@ -182,6 +270,9 @@ function TreeNodeRow({
     }
     onToggleExpanded(node.id);
   };
+
+  // In single mode, only leaf nodes show a radio button (no parent selection)
+  const showSelection = isSingle ? isLeaf : true;
 
   return (
     <>
@@ -212,11 +303,20 @@ function TreeNodeRow({
             {node.name}
           </span>
 
-          <TreeCheckbox
-            checked={allSelected}
-            indeterminate={isIndeterminate}
-            onChange={() => onToggleSelection(node)}
-          />
+          {showSelection && (
+            isSingle ? (
+              <TreeRadio
+                checked={selectedLeafIds.has(node.id)}
+                onChange={() => onToggleSelection(node)}
+              />
+            ) : (
+              <TreeCheckbox
+                checked={allSelected}
+                indeterminate={isIndeterminate}
+                onChange={() => onToggleSelection(node)}
+              />
+            )
+          )}
         </div>
       </div>
 
@@ -228,6 +328,7 @@ function TreeNodeRow({
           onToggleExpanded={onToggleExpanded}
           onToggleSelection={onToggleSelection}
           onLoadChildren={onLoadChildren}
+          selectionMode={selectionMode}
         />
       )}
     </>
@@ -243,6 +344,7 @@ interface OrgUnitTreeProps {
   onToggleSelection: (node: TreeNode) => void | Promise<void>;
   onLoadChildren?: (nodeId: string) => Promise<void>;
   initialExpandedIds?: Set<string>;
+  selectionMode?: SelectionMode;
 }
 
 export default function OrgUnitTree({
@@ -252,6 +354,7 @@ export default function OrgUnitTree({
   onToggleSelection,
   onLoadChildren,
   initialExpandedIds,
+  selectionMode = "multiple",
 }: OrgUnitTreeProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -334,6 +437,7 @@ export default function OrgUnitTree({
             onToggleExpanded={toggleExpanded}
             onToggleSelection={onToggleSelection}
             onLoadChildren={onLoadChildren}
+            selectionMode={selectionMode}
           />
         )}
       </div>

@@ -294,3 +294,69 @@ export async function fetchAdminUsers(): Promise<User[]> {
 
   return response.json() as Promise<User[]>;
 }
+
+export async function fetchAllUsers(): Promise<User[]> {
+  const response = await fetch(`${API_BASE_URL}/users`, {
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<User[]>;
+}
+
+export async function updateUser(
+  id: string,
+  data: Partial<Pick<User, "role" | "teamId" | "directionId" | "maintenanceCenterId" | "gmrId">>,
+): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<User>;
+}
+
+export async function approveUser(id: string): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/users/${id}/approve`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<User>;
+}
+
+export async function rejectUser(id: string): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/users/${id}/reject`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<User>;
+}
+
+export async function suspendUser(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/users/${id}/suspend`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+}

@@ -33,6 +33,12 @@ const adminMenuItems = [
     label: "Admin. d'équipe",
     link: "/admin/teams-admin",
   },
+  {
+    id: "admin-utilisateurs",
+    icon: "user",
+    label: "Admin. d'utilisateurs",
+    link: "/admin/users-admin",
+  },
 ];
 
 export default function AppSideNav({ children }: AppSideNavProps) {
