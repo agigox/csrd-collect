@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import AppSideNav from "@/components/AppSideNav";
 import Providers from "@/components/Providers";
 
@@ -7,8 +8,10 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AppSideNav>
-      <Providers>{children}</Providers>
-    </AppSideNav>
+    <Suspense fallback={<div>Chargement...</div>}>
+      <AppSideNav>
+        <Providers>{children}</Providers>
+      </AppSideNav>
+    </Suspense>
   );
 }
