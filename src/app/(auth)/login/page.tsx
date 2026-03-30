@@ -10,6 +10,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const justVerified = searchParams.get("verified") === "true";
+  const justReset = searchParams.get("reset") === "true";
   const login = useAuthStore((s) => s.login);
   const clearError = useAuthStore((s) => s.clearError);
 
@@ -87,6 +88,11 @@ function LoginForm() {
             Email vérifié avec succès ! Vous pouvez maintenant vous connecter.
           </div>
         )}
+        {justReset && (
+          <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm text-center w-full">
+            Mot de passe réinitialisé avec succès ! Connectez-vous avec votre nouveau mot de passe.
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-2.75 w-full">
           <TextInput
@@ -134,7 +140,7 @@ function LoginForm() {
             ) : null}
             <div className="flex items-center justify-end w-full">
               <Link
-                href="#"
+                href="/forgot-password"
                 className="text-sm underline"
                 style={{ color: "#2b86ff" }}
                 data-testid="link-mot-de-passe-oublie"

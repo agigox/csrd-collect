@@ -253,6 +253,35 @@ export async function resolveUserTeam(user: User): Promise<Team | null> {
   }
 }
 
+export async function forgotPassword(email: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.message || "Erreur lors de l'envoi");
+  }
+}
+
+export async function resetPassword(
+  token: string,
+  password: string,
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, password }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.message || "Erreur lors de la réinitialisation");
+  }
+}
+
 export async function fetchAdminUsers(): Promise<User[]> {
   const response = await fetch(
     `${API_BASE_URL}/users?role=ADMIN&role=SUPER_ADMIN`,
