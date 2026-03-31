@@ -1,10 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Forms from "@/features/forms/Forms";
 import FormEditor from "@/features/form-editor";
 
-export default function AdminPage() {
+function AdminContent() {
   const searchParams = useSearchParams();
   const formId = searchParams.get("id");
 
@@ -13,4 +14,12 @@ export default function AdminPage() {
   }
 
   return <Forms />;
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div>Chargement...</div>}>
+      <AdminContent />
+    </Suspense>
+  );
 }
