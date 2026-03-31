@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Toast } from "@rte-ds/react";
+import { Chip, Divider, SelectableChip, Toast } from "@rte-ds/react";
 import type { User, UserRole } from "@/models/User";
 import { useAuthStore, selectIsSuperAdmin } from "@/stores/authStore";
 import { updateUser } from "@/api/users";
-import { RoleChip } from "../components/RoleChip";
 
 const ROLE_LABELS: Record<string, string> = {
   SUPER_ADMIN: "Super administrateur",
@@ -16,9 +15,10 @@ const ROLE_LABELS: Record<string, string> = {
 interface RolesTabProps {
   user: User;
   onRoleChanged: (updatedUser: User) => void;
+  readOnly?: boolean;
 }
 
-export function RolesTab({ user, onRoleChanged }: RolesTabProps) {
+export function RolesTab({ user, onRoleChanged, readOnly }: RolesTabProps) {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{
     open: boolean;
@@ -31,7 +31,13 @@ export function RolesTab({ user, onRoleChanged }: RolesTabProps) {
     ? ["SUPER_ADMIN", "ADMIN", "OPERATOR"]
     : ["ADMIN", "OPERATOR"];
 
-  const handleRoleChange = async (role: UserRole) => {
+  const roleOptions = availableRoles.map((role) => ({
+    value: role,
+    label: ROLE_LABELS[role] ?? role,
+  }));
+
+  const handleRoleChange = async (value: string) => {
+    const role = value as UserRole;
     if (role === user.role) return;
     setSaving(true);
     try {
@@ -54,14 +60,31 @@ export function RolesTab({ user, onRoleChanged }: RolesTabProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <span className="text-sm text-gray-600">Rôle actuel :</span>
-      <RoleChip
-        currentRole={user.role}
-        availableRoles={availableRoles}
-        onRoleChange={handleRoleChange}
-        disabled={saving}
-      />
+    <div className="flex flex-col gap-4 h-12 justify-center">
+      {readOnly ? (
+        <Chip
+          id={`role-chip-${user.id}`}
+          label={ROLE_LABELS[user.role] ?? user.role}
+          icon="user"
+          size="s"
+          style={{
+            backgroundColor: "#e6f2a4",
+            color: "var(--content-primary)",
+            width: "fit-content",
+          }}
+        />
+      ) : (
+        <SelectableChip
+          id={`role-chip-${user.id}`}
+          label={ROLE_LABELS[user.role] ?? user.role}
+          icon="user"
+          options={roleOptions}
+          value={user.role}
+          onChange={handleRoleChange}
+          disabled={saving}
+          backgroundColor="#e6f2a4"
+        />
+      )}
       <Toast
         message={toast.message}
         type={toast.type}
@@ -69,8 +92,11 @@ export function RolesTab({ user, onRoleChanged }: RolesTabProps) {
         autoDismiss
         duration="medium"
         placement="bottom-right"
-        onClose={() => setToast((prev) => (prev.open ? { ...prev, open: false } : prev))}
+        onClose={() =>
+          setToast((prev) => (prev.open ? { ...prev, open: false } : prev))
+        }
       />
+      <Divider />
     </div>
   );
 }

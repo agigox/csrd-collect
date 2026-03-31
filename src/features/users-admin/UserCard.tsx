@@ -10,14 +10,15 @@ interface UserCardProps {
 }
 
 export function UserCard({ user, selected, onClick }: UserCardProps) {
-  const fullName = `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const fullName =
+    `${user.firstName ? capitalize(user.firstName) : ""} ${user.lastName ? capitalize(user.lastName) : ""}`.trim();
   const isSuspended = user.status === "SUSPENDED";
 
   return (
     <Card
       onClick={onClick}
-      clickable={!isSuspended}
-      disabled={isSuspended}
+      clickable
       selected={selected}
       size="full"
       style={{

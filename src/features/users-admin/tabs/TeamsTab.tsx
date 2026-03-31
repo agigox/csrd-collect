@@ -8,13 +8,16 @@ import type { MockTeam } from "@/features/form-detail/mockData";
 import type { LeafAncestors } from "@/features/form-detail/components/OrgUnitTree";
 import AttribuerEquipesModal from "@/features/form-detail/tabs/AttribuerEquipesModal";
 import { updateUser, fetchTeams, fetchTeamsByMC } from "@/api/users";
+import { EmptyState } from "@/components/common";
+import { EmptyCard } from "@/lib/ui/empty-card";
 
 interface TeamsTabProps {
   user: User;
   onUserUpdated: (updatedUser: User) => void;
+  readOnly?: boolean;
 }
 
-export function TeamsTab({ user, onUserUpdated }: TeamsTabProps) {
+export function TeamsTab({ user, onUserUpdated, readOnly }: TeamsTabProps) {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -49,7 +52,9 @@ export function TeamsTab({ user, onUserUpdated }: TeamsTabProps) {
       }
     };
     resolve();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user.teamId, user.gmrId, user.maintenanceCenterId, user.team?.team]);
 
   const teamDisplayName = user.team?.team ?? resolvedTeamName ?? user.teamId;
@@ -84,7 +89,10 @@ export function TeamsTab({ user, onUserUpdated }: TeamsTabProps) {
       // Enrich with team name since the API returns flat IDs only
       onUserUpdated({
         ...updated,
-        team: { ...(updated.team ?? {}), team: selectedTeam.name } as User["team"],
+        team: {
+          ...(updated.team ?? {}),
+          team: selectedTeam.name,
+        } as User["team"],
       });
       setToast({
         open: true,
@@ -111,16 +119,18 @@ export function TeamsTab({ user, onUserUpdated }: TeamsTabProps) {
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
         <Button
-          variant="primary"
-          label="Attribuer"
+          variant="secondary"
+          label="Ajouter"
           onClick={() => setShowModal(true)}
           size="s"
-          disabled={saving}
+          disabled={saving || readOnly}
+          icon="add-box"
+          iconPosition="right"
         />
       </div>
 
       {currentTeams.length === 0 ? (
-        <p className="text-sm text-gray-500">Aucune équipe attribuée</p>
+        <EmptyCard message="Aucune équipe attribuée à cet utilisateur." />
       ) : (
         <div className="flex flex-col gap-2">
           {currentTeams.map((team) => (
@@ -157,7 +167,9 @@ export function TeamsTab({ user, onUserUpdated }: TeamsTabProps) {
         autoDismiss
         duration="medium"
         placement="bottom-right"
-        onClose={() => setToast((prev) => (prev.open ? { ...prev, open: false } : prev))}
+        onClose={() =>
+          setToast((prev) => (prev.open ? { ...prev, open: false } : prev))
+        }
       />
     </div>
   );

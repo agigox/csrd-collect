@@ -2,7 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { SideNav, Switch, useBreakpoint } from "@rte-ds/react";
+import {
+  Icon,
+  IconButton,
+  Popover,
+  SideNav,
+  Switch,
+  useBreakpoint,
+} from "@rte-ds/react";
 import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
 import { useDeclarationsStore } from "@/stores/declarationsStore";
 import { useFormEditorStore } from "@/stores/formEditorStore";
@@ -17,7 +24,6 @@ const headerConfig = {
   identifier: "CC",
   link: "/declarations",
   title: "CSRD collecte",
-  version: "V1.1.3",
 };
 
 const adminMenuItems = [
@@ -65,7 +71,8 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   }, [pathname]);
 
   const isOnFormEditor =
-    pathname === "/admin/new" || (pathname === "/admin" && searchParams?.get("id") !== null);
+    pathname === "/admin/new" ||
+    (pathname === "/admin" && searchParams?.get("id") !== null);
 
   const guardedNavigate = useCallback(
     (path: string) => {
@@ -169,29 +176,68 @@ export default function AppSideNav({ children }: AppSideNavProps) {
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div onClick={handleNavClick}>
-    <SideNav
-      headerConfig={{
-        ...headerConfig,
-        version: "V1.1.3",
-      }}
-      {...(adminMode && { items: adminMenuItems })}
-      activeItem={activeItem}
-      footerItems={footerItems}
-      showProfile={!!profileName}
-      profile={profileName}
-      onProfileClick={() => setShowProfileModal(true)}
-      middleItem={adminToggle}
-      showTeamData={!!teamData}
-      teamData={teamData}
-      size="s"
-      collapsed={width <= 1050}
-    >
-      {children}
-    </SideNav>
-    <UserProfileModal
-      isOpen={showProfileModal}
-      onClose={() => setShowProfileModal(false)}
-    />
+      <SideNav
+        headerConfig={{
+          ...headerConfig,
+        }}
+        {...(adminMode && { items: adminMenuItems })}
+        activeItem={activeItem}
+        footerItems={footerItems}
+        showProfile={!!profileName}
+        profile={profileName}
+        onProfileClick={() => setShowProfileModal(true)}
+        infoElement={
+          <Popover
+            position="right"
+            alignment="start"
+            arrow={false}
+            showCloseIcon
+            title={
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Icon name="cc-logo" size={24} />
+                <span>CSRD collecte</span>
+              </div>
+            }
+            content={
+              <div
+                className="flex flex-col"
+                style={{ fontFamily: "Nunito, sans-serif" }}
+              >
+                <div className="h-8">Version : V1.1.3</div>
+                <div className="h-8">Date : 01/03/2026</div>
+                <div className="h-8 flex items-center gap-1">
+                  Développé par
+                  <img
+                    src="/logo-rte.png"
+                    alt="RTE"
+                    height={24}
+                    style={{ height: 24, width: "auto" }}
+                  />
+                  <span className="text-base text-[#225082]">Datadev</span>
+                </div>
+              </div>
+            }
+          >
+            <IconButton
+              name="info"
+              size="m"
+              variant="neutral"
+              aria-label="Information"
+            />
+          </Popover>
+        }
+        middleItem={adminToggle}
+        showTeamData={!!teamData}
+        teamData={teamData}
+        size="s"
+        collapsed={width <= 1050}
+      >
+        {children}
+      </SideNav>
+      <UserProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
     </div>
   );
 }

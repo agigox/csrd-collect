@@ -35,7 +35,7 @@ interface AuthState {
   clearError: () => void;
 }
 
-// Shape persisted to / restored from sessionStorage
+// Shape persisted to / restored from localStorage
 interface PersistedAuthState {
   user: User | null;
   accessToken: string | null;
@@ -212,7 +212,7 @@ export const useAuthStore = create<AuthState>()(
       {
         name: "csrd_auth",
         version: 4,
-        storage: createJSONStorage(() => sessionStorage),
+        storage: createJSONStorage(() => localStorage),
         migrate: (persistedState, version): PersistedAuthState => {
           const state = persistedState as Record<string, unknown>;
           if (version < 4) {

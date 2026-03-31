@@ -9,7 +9,7 @@ import { RolesTab } from "./tabs/RolesTab";
 import { TeamsTab } from "./tabs/TeamsTab";
 
 const TAB_OPTIONS = [
-  { id: "roles", panelId: "panel-roles", label: "Rôle(s)" },
+  { id: "roles", panelId: "panel-roles", label: "Rôle" },
   { id: "equipes", panelId: "panel-equipes", label: "Équipe(s)" },
 ];
 
@@ -47,9 +47,12 @@ export function UserDetailPanel({
 
   if (!user || !open) return null;
 
-  const fullName = `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim();
+  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const fullName =
+    `${user.firstName ? capitalize(user.firstName) : ""} ${user.lastName ? capitalize(user.lastName) : ""}`.trim();
   const isSelf = currentUser?.id === user.id;
   const isPending = user.status === "PENDING";
+  const isSuspended = user.status === "SUSPENDED";
 
   const handleDelete = async () => {
     setActionLoading(true);
@@ -106,7 +109,7 @@ export function UserDetailPanel({
         <div className="flex flex-col gap-1 px-6 pt-4">
           <div className="flex items-center justify-between">
             <h2
-              className="text-xl font-bold truncate flex-1"
+              className="text-[24px] font-bold truncate flex-1"
               style={{ fontFamily: "Nunito, sans-serif", fontSize: "20px" }}
             >
               {fullName}
@@ -134,11 +137,12 @@ export function UserDetailPanel({
                   <IconButton
                     appearance="outlined"
                     aria-label="Supprimer l'utilisateur"
-                    name="delete"
+                    name="suspended"
                     onClick={() => setShowDeleteConfirm(true)}
                     size="m"
-                    variant="danger"
-                    iconColor="var(--content-danger)"
+                    variant="neutral"
+                    iconColor={isSuspended ? undefined : "#ED1C1C"}
+                    disabled={isSuspended}
                   />
                 )
               )}
@@ -155,9 +159,6 @@ export function UserDetailPanel({
           </div>
         </div>
 
-        {/* Divider */}
-        <hr className="border-t mx-6" />
-
         {/* Scrollable Body */}
         <div className="flex-1 overflow-y-auto px-6">
           <div className="flex flex-col gap-4">
@@ -170,12 +171,20 @@ export function UserDetailPanel({
 
             {activeTabId === "roles" && (
               <div role="tabpanel" id="panel-roles" aria-labelledby="roles">
-                <RolesTab user={user} onRoleChanged={onUserUpdated} />
+                <RolesTab
+                  user={user}
+                  onRoleChanged={onUserUpdated}
+                  readOnly={isSuspended}
+                />
               </div>
             )}
             {activeTabId === "equipes" && (
               <div role="tabpanel" id="panel-equipes" aria-labelledby="equipes">
-                <TeamsTab user={user} onUserUpdated={onUserUpdated} />
+                <TeamsTab
+                  user={user}
+                  onUserUpdated={onUserUpdated}
+                  readOnly={isSuspended}
+                />
               </div>
             )}
           </div>
@@ -218,7 +227,9 @@ export function UserDetailPanel({
         autoDismiss
         duration="medium"
         placement="bottom-right"
-        onClose={() => setToast((prev) => (prev.open ? { ...prev, open: false } : prev))}
+        onClose={() =>
+          setToast((prev) => (prev.open ? { ...prev, open: false } : prev))
+        }
       />
     </>
   );
