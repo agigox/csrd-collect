@@ -11,11 +11,9 @@ const TextField = ({
   error,
   readOnly = false,
 }: FieldProps<TextFieldConfig>) => {
-  // Use default value from config if no value is set
-
-  const defaultValue = (config.defaultValue as string) ?? "";
-  const currentValue =
-    value !== undefined && value !== "" ? (value as string) : defaultValue;
+  // Value comes from parent (seeded with defaultValue in Declarations.tsx on first load)
+  // No local fallback to config.defaultValue — validation handles empty state
+  const currentValue = (value as string) ?? "";
 
   const handleChange = (value: string) => {
     onChange(value);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Grid, useBreakpoint, Toast } from "@rte-ds/react";
 import { DeclarationDetailPanel } from "./DeclarationDetailPanel";
@@ -64,10 +64,9 @@ const Declarations = () => {
     if (isAdmin || !user?.teamId) return;
 
     setTeamFormsLoading(true);
-    fetch(
-      `${API_BASE_URL}/form-template-assignments/by-team/${user.teamId}`,
-      { headers: authHeaders() },
-    )
+    fetch(`${API_BASE_URL}/form-template-assignments/by-team/${user.teamId}`, {
+      headers: authHeaders(),
+    })
       .then((res) => res.json())
       .then((templates: FormTemplate[]) => {
         setTeamForms(
@@ -194,10 +193,9 @@ const Declarations = () => {
   }, [isOnNewPage, formId]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  // Check if a field has a configured default value
+  // Check if a field has a configured default that is auto-applied by the preview component
+  // Only radio/checkbox auto-apply defaults; text fields use defaultValue as initial value only
   const fieldHasDefault = useCallback((field: FieldConfig) => {
-    if (field.defaultValue !== undefined && field.defaultValue !== "")
-      return true;
     if (field.type === "radio")
       return (field as RadioFieldConfig).defaultIndex !== undefined;
     if (field.type === "checkbox") {
@@ -213,14 +211,15 @@ const Declarations = () => {
       if (!selectedForm) return {};
 
       const errors: Record<string, string> = {};
-
+      console.log(values);
       for (const field of selectedForm.schema.fields) {
         if (field.required) {
           const value = values[field.name];
+
           const isEmpty = value === undefined || value === null || value === "";
           // Skip error if field has a configured default (preview component uses it as fallback)
           if (isEmpty && !fieldHasDefault(field)) {
-            errors[field.name] = "Ce champ est requis";
+            errors[field.name] = `Le champ ${field.label} est obligatoire`;
           }
         }
       }
@@ -231,10 +230,16 @@ const Declarations = () => {
   );
 
   // Load form values when declaration changes
+  // Track which declaration ID we've already loaded to avoid re-resetting on temp updates
+  const loadedDeclarationId = useRef<string | null>(null);
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (finalSelectedDeclaration) {
-      const values = finalSelectedDeclaration.formData || {};
+      // Only reset form state when switching to a different declaration
+      if (loadedDeclarationId.current === finalSelectedDeclaration.id) return;
+      loadedDeclarationId.current = finalSelectedDeclaration.id;
+
+      const values = { ...finalSelectedDeclaration.formData } || {};
       setFormValues(values);
       setFormErrors({});
       setHasAttemptedSubmit(false);
@@ -242,12 +247,40 @@ const Declarations = () => {
         finalSelectedDeclaration.completionStatus ?? "incomplet",
       );
     } else {
+      loadedDeclarationId.current = null;
       setFormValues({});
       setFormErrors({});
       setHasAttemptedSubmit(false);
       setCompletionStatus("incomplet");
     }
   }, [finalSelectedDeclaration]);
+
+  // Seed default values once selectedForm is available (only once per declaration)
+  const seededDeclarationId = useRef<string | null>(null);
+  useEffect(() => {
+    if (
+      selectedForm &&
+      finalSelectedDeclaration &&
+      seededDeclarationId.current !== finalSelectedDeclaration.id
+    ) {
+      seededDeclarationId.current = finalSelectedDeclaration.id;
+      setFormValues((prev) => {
+        const seeded = { ...prev };
+        let changed = false;
+        for (const field of selectedForm.schema.fields) {
+          if (
+            seeded[field.name] === undefined &&
+            field.defaultValue !== undefined &&
+            field.defaultValue !== ""
+          ) {
+            seeded[field.name] = field.defaultValue;
+            changed = true;
+          }
+        }
+        return changed ? seeded : prev;
+      });
+    }
+  }, [selectedForm, finalSelectedDeclaration]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   // Handler for form value changes - sync with temp declaration
@@ -319,10 +352,10 @@ const Declarations = () => {
     [finalSelectedDeclaration, updateTempDeclaration],
   );
 
-  // Check if form is valid (no errors)
+  // Check if form is valid — validates live against current values (not just after submit)
   const isFormValid = useMemo(() => {
-    return Object.keys(formErrors).length === 0;
-  }, [formErrors]);
+    return Object.keys(validateForm(formValues)).length === 0;
+  }, [formValues, validateForm]);
 
   // Don't render declarations if user is not authenticated
   if (!isAuthenticated) {
@@ -381,16 +414,16 @@ const Declarations = () => {
 
     try {
       if (finalSelectedDeclaration.isNew) {
-        // Confirm temp declaration (create new)
-        await confirmTempDeclaration(finalSelectedDeclaration.id);
+        // Confirm temp declaration (create new) with completionStatus
+        await confirmTempDeclaration(finalSelectedDeclaration.id, completionStatus);
         setTempDeclarations((prev) => {
           const next = new Map(prev);
           next.delete(finalSelectedDeclaration.id);
           return next;
         });
       } else {
-        // Update existing declaration
-        await updateDeclaration(finalSelectedDeclaration.id, formValues);
+        // Update existing declaration with completionStatus
+        await updateDeclaration(finalSelectedDeclaration.id, formValues, completionStatus);
       }
 
       setFormValues({});

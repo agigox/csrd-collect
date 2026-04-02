@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorState } from "@/lib/ui/error-state";
 import { getField } from "@/lib/utils/registry";
 import type { FieldConfig } from "@/models/FieldTypes";
 
@@ -21,11 +22,7 @@ export const DynamicField = ({
   const registration = getField(config.type);
 
   if (!registration) {
-    return (
-      <div className="p-4 border border-red-300 bg-red-50 rounded-md text-red-700">
-        Type de champ inconnu: {config.type}
-      </div>
-    );
+    return <ErrorState message={`Type de champ inconnu: ${config.type}`} />;
   }
 
   const FieldComponent = registration.component;

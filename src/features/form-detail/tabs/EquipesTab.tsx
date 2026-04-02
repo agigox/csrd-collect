@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Button, Divider } from "@rte-ds/react";
+import { Button, Divider, IconButton, Modal } from "@rte-ds/react";
 import type { FormTemplate } from "@/models/FormTemplate";
 import {
   fetchTemplateTeams,
   assignTeamsToTemplate,
+  removeTeamFromTemplate,
 } from "@/api/forms";
 import AttribuerEquipesModal from "./AttribuerEquipesModal";
 
@@ -22,6 +23,7 @@ export function EquipesTab({ form }: EquipesTabProps) {
   const [teams, setTeams] = useState<TeamInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teamToRemove, setTeamToRemove] = useState<TeamInfo | null>(null);
 
   const loadTeams = useCallback(async () => {
     try {
@@ -51,6 +53,18 @@ export function EquipesTab({ form }: EquipesTabProps) {
     setIsModalOpen(false);
   }
 
+  async function handleConfirmRemove() {
+    if (!teamToRemove) return;
+    try {
+      await removeTeamFromTemplate(form.id, teamToRemove.id);
+      setTeams((prev) => prev.filter((t) => t.id !== teamToRemove.id));
+    } catch (err) {
+      console.error("Failed to remove team:", err);
+    } finally {
+      setTeamToRemove(null);
+    }
+  }
+
   if (loading) {
     return <p className="text-sm text-muted-foreground">Chargement...</p>;
   }
@@ -75,12 +89,49 @@ export function EquipesTab({ form }: EquipesTabProps) {
         <div className="flex flex-col">
           {teams.map((team) => (
             <div key={team.id}>
-              <div className="py-3 px-2 text-base">{team.name}</div>
+              <div className="py-3 px-2 text-base flex items-center justify-between">
+                <span>{team.name}</span>
+                <IconButton
+                  aria-label={`Retirer ${team.name}`}
+                  name="delete"
+                  size="m"
+                  variant="neutral"
+                  onClick={() => setTeamToRemove(team)}
+                  iconColor="#ED1C1C"
+                />
+              </div>
               <Divider appearance="default" orientation="horizontal" />
             </div>
           ))}
         </div>
       )}
+
+      <Modal
+        id="confirm-remove-team"
+        isOpen={teamToRemove !== null}
+        onClose={() => setTeamToRemove(null)}
+        title="Retirer l'équipe"
+        size="s"
+        primaryButton={
+          <Button
+            variant="danger"
+            label="Retirer"
+            onClick={handleConfirmRemove}
+          />
+        }
+        secondaryButton={
+          <Button
+            variant="secondary"
+            label="Annuler"
+            onClick={() => setTeamToRemove(null)}
+          />
+        }
+      >
+        <p>
+          Voulez-vous retirer l'équipe <strong>{teamToRemove?.name}</strong> de
+          ce formulaire ?
+        </p>
+      </Modal>
 
       <AttribuerEquipesModal
         isOpen={isModalOpen}

@@ -108,6 +108,7 @@ export default function FormCreation() {
         });
       }
       setShowSuccessToast(true);
+      resetFormEditor();
       setTimeout(() => router.push("/admin"), 1500);
     } catch (err) {
       console.error("Erreur lors de la sauvegarde:", err);

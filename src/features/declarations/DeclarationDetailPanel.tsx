@@ -32,7 +32,6 @@ export const DeclarationDetailPanel = ({
   formValues,
   formErrors,
   onFormValuesChange,
-  isFormValid,
   onSubmit,
   showHistory,
   onToggleHistory,
@@ -40,7 +39,6 @@ export const DeclarationDetailPanel = ({
   onCompletionStatusChange,
 }: DeclarationDetailPanelProps) => {
   if (!declaration && !selectedForm) return null;
-
   return (
     <SidePanel open={open} onClose={onClose}>
       {/* Header */}
@@ -150,6 +148,7 @@ export const DeclarationDetailPanel = ({
           variant="primary"
           size="m"
           onClick={onSubmit}
+          disabled={Object.keys(formErrors).length > 0}
         />
       </div>
     </SidePanel>

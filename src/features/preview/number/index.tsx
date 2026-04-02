@@ -12,17 +12,21 @@ const NumberField = ({
   error,
   readOnly = false,
 }: FieldProps<NumberFieldConfig>) => {
-  // Keep raw string for display so user can type "1," without it being reset to "1"
+  // Display: value from parent (seeded with defaultValue in Declarations.tsx)
+  // No local fallback to config.defaultValue — seeding handles initial defaults
   const [rawValue, setRawValue] = useState<string>(
-    value !== undefined && value !== 0 ? String(value) : "",
+    value !== undefined && value !== null ? String(value) : "",
   );
 
-  // Sync from external value changes (e.g. initial load)
+  // Sync from external value changes (e.g. initial load via seeding)
   useEffect(() => {
-    const external = value !== undefined && value !== 0 ? String(value) : "";
+    const external = value !== undefined && value !== null ? String(value) : "";
     const normalized = rawValue.replace(",", ".");
     const parsed = parseFloat(normalized);
-    if (!isNaN(parsed) && parsed !== value) {
+    if (
+      external !== rawValue &&
+      (rawValue === "" || (!isNaN(parsed) && parsed !== value))
+    ) {
       setRawValue(external);
     }
   }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -31,7 +35,7 @@ const NumberField = ({
     setRawValue(input);
     const normalized = input.replace(",", ".");
     if (normalized === "" || normalized === "-") {
-      onChange(0);
+      onChange(undefined);
       return;
     }
     const num = parseFloat(normalized);

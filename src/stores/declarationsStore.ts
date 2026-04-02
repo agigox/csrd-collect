@@ -18,11 +18,12 @@ interface DeclarationsState {
   updateDeclaration: (
     id: string,
     formData: Record<string, unknown>,
+    completionStatus?: "incomplet" | "complet",
   ) => Promise<void>;
   addTempDeclaration: (declaration: Declaration) => void;
   updateTempDeclaration: (id: string, updates: Partial<Declaration>) => void;
   removeTempDeclaration: (id: string) => void;
-  confirmTempDeclaration: (id: string) => Promise<void>;
+  confirmTempDeclaration: (id: string, completionStatus?: "incomplet" | "complet") => Promise<void>;
 }
 
 export const useDeclarationsStore = create<DeclarationsState>()(
@@ -98,6 +99,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
       updateDeclaration: async (
         id: string,
         formData: Record<string, unknown>,
+        completionStatus?: "incomplet" | "complet",
       ) => {
         try {
           // Get current declaration
@@ -108,11 +110,11 @@ export const useDeclarationsStore = create<DeclarationsState>()(
             throw new Error("Déclaration non trouvée");
           }
 
-          // Update declaration with new form data
+          // Update declaration with new form data and completionStatus
           const updatedDeclaration: Declaration = {
             ...declaration,
             formData,
-            status: "pending",
+            completionStatus: completionStatus ?? declaration.completionStatus,
             updatedAt: new Date().toISOString(),
           };
 
@@ -172,7 +174,7 @@ export const useDeclarationsStore = create<DeclarationsState>()(
         );
       },
 
-      confirmTempDeclaration: async (id: string) => {
+      confirmTempDeclaration: async (id: string, completionStatus?: "incomplet" | "complet") => {
         try {
           const state = useDeclarationsStore.getState();
           const declaration = state.declarations.find((d) => d.id === id);
@@ -181,8 +183,11 @@ export const useDeclarationsStore = create<DeclarationsState>()(
             throw new Error("Déclaration non trouvée");
           }
 
-          // Remove isNew flag for the API call
-          const { isNew: _isNew, ...declarationToSave } = declaration;
+          // Remove isNew flag and set completionStatus for the API call
+          const { isNew: _isNew, ...declarationToSave } = {
+            ...declaration,
+            completionStatus: completionStatus ?? declaration.completionStatus,
+          };
 
           // Use the server response to replace the temp declaration with real data
           const created = await createDeclarationApi(declarationToSave);

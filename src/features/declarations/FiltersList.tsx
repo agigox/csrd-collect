@@ -203,8 +203,10 @@ const Filters = ({
   // Status options - hardcoded with French labels
   const statusOptions: FilterOption[] = [
     { value: "draft", label: "Brouillon" },
-    { value: "pending", label: "En attente" },
-    { value: "validated", label: "Validé" },
+    { value: "submitted", label: "Soumise" },
+    { value: "in_review", label: "En revue" },
+    { value: "validated", label: "Validée" },
+    { value: "rejected", label: "Rejetée" },
   ];
 
   // Completion status options
