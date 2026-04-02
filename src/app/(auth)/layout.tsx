@@ -1,6 +1,5 @@
 "use client";
 
-import { Grid } from "@rte-ds/react";
 import AuthCarousel from "@/features/auth/AuthCarousel";
 import AuthGuard from "@/components/auth/AuthGuard";
 
@@ -11,24 +10,21 @@ export default function AuthLayout({
 }) {
   return (
     <AuthGuard>
-      <Grid gridType="fluid" className="min-h-screen !p-0 !gap-0">
+      <div className="flex min-h-screen">
         {/* Left panel — carousel / illustration */}
-        <Grid.Col
-          m={7}
-          className="hidden lg:flex flex-col"
+        <div
+          className="hidden min-[1280px]:flex flex-col flex-1"
           style={{
             backgroundColor: "#15253c",
             borderRight: "1px solid #214770",
           }}
         >
           <AuthCarousel />
-        </Grid.Col>
+        </div>
 
-        {/* Right panel — form */}
-        <Grid.Col
-          m={5}
-          xxs={12}
-          className="flex flex-col items-center overflow-y-auto"
+        {/* Right panel — form (fixed 544px from 1280px+) */}
+        <div
+          className="flex flex-col items-center overflow-y-auto w-full min-[1280px]:w-[544px] min-[1280px]:min-w-[544px]"
           style={{ backgroundColor: "#f5f5f5" }}
         >
           <div className="w-full max-w-107 py-12 px-8">
@@ -47,8 +43,8 @@ export default function AuthLayout({
 
             {children}
           </div>
-        </Grid.Col>
-      </Grid>
+        </div>
+      </div>
     </AuthGuard>
   );
 }
