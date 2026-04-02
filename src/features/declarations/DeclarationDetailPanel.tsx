@@ -99,7 +99,7 @@ export const DeclarationDetailPanel = ({
                   className="text-sm block mb-2"
                   style={{ color: "#3e3e3d", fontSize: "14px" }}
                 >
-                  Statut de la declaration
+                  Statut de la déclaration
                 </span>
                 <RadioButtonGroup
                   direction="horizontal"

@@ -21,7 +21,7 @@ interface ParametresTabProps {
 
 const EDITABLE_BY_OPTIONS = [
   { value: "author", label: "Auteur" },
-  { value: "team", label: "Equipe" },
+  { value: "team", label: "Équipe" },
   { value: "gmr", label: "GMR" },
   { value: "mc", label: "Centre de maintenance" },
   { value: "direction", label: "Direction" },
@@ -110,7 +110,7 @@ export function ParametresTab({ form }: ParametresTabProps) {
       });
       setShowSaveToast(true);
     } catch (err) {
-      console.error("Erreur lors de la sauvegarde des parametres:", err);
+      console.error("Erreur lors de la sauvegarde des paramètres:", err);
     } finally {
       setSaving(false);
     }
@@ -141,7 +141,7 @@ export function ParametresTab({ form }: ParametresTabProps) {
           onChange={() => setEditedIsActive(!editedIsActive)}
         />
         <span className="text-[16px] font-medium">
-          Suspendre la declaration
+          Suspendre la déclaration
         </span>
       </div>
 
@@ -183,7 +183,7 @@ export function ParametresTab({ form }: ParametresTabProps) {
       <div className="flex flex-col gap-2 text-sm">
         <MetadataRow label="Code" value={form.code} />
         <MetadataRow label="Version" value={`V${form.version}`} />
-        <MetadataRow label="Visibilite">
+        <MetadataRow label="Visibilité">
           <Chip
             id={`param-status-${form.id}`}
             label={chipConfig.label}
@@ -200,9 +200,9 @@ export function ParametresTab({ form }: ParametresTabProps) {
           label="Date de publication"
           value={formatDate(form.publishedAt)}
         />
-        <MetadataRow label="Cree le" value={formatDate(form.createdAt)} />
+        <MetadataRow label="Créé le" value={formatDate(form.createdAt)} />
         <MetadataRow
-          label="Derniere modification"
+          label="Dernière modification"
           value={formatDate(form.updatedAt)}
         />
       </div>

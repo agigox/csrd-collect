@@ -9,17 +9,17 @@ import { ParametresTab } from "./tabs/ParametresTab";
 import { PreviewTab } from "./tabs/PreviewTab";
 
 const TAB_OPTIONS = [
-  { id: "equipes", panelId: "panel-equipes", label: "Equipe(s) d'attribution" },
+  { id: "equipes", panelId: "panel-equipes", label: "Équipe(s) d'attribution" },
   {
     id: "administrateurs",
     panelId: "panel-administrateurs",
     label: "Administrateurs",
   },
-  { id: "parametres", panelId: "panel-parametres", label: "Parametres" },
+  { id: "parametres", panelId: "panel-parametres", label: "Paramètres" },
   {
     id: "previsualisation",
     panelId: "panel-previsualisation",
-    label: "Previsualisation",
+    label: "Prévisualisation",
   },
 ];
 
