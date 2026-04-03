@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Chip, RadioButtonGroup } from "@rte-ds/react";
+import { useState } from "react";
+import { Button, Chip, Modal, RadioButtonGroup } from "@rte-ds/react";
 import { SidePanel } from "@/components/common";
 import { DynamicForm } from "@/features/form-builder/DynamicForm";
 import Icon from "@/lib/Icons";
@@ -38,6 +39,9 @@ export const DeclarationDetailPanel = ({
   completionStatus,
   onCompletionStatusChange,
 }: DeclarationDetailPanelProps) => {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const isNew = declaration?.isNew ?? false;
+
   if (!declaration && !selectedForm) return null;
   return (
     <SidePanel open={open} onClose={onClose}>
@@ -147,10 +151,41 @@ export const DeclarationDetailPanel = ({
           label="Soumettre"
           variant="primary"
           size="m"
-          onClick={onSubmit}
+          onClick={() => setShowConfirm(true)}
           disabled={Object.keys(formErrors).length > 0}
         />
       </div>
+
+      <Modal
+        id="confirm-submit-declaration"
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        title={isNew ? "Créer la déclaration" : "Modifier la déclaration"}
+        size="s"
+        primaryButton={
+          <Button
+            variant="primary"
+            label="Confirmer"
+            onClick={() => {
+              setShowConfirm(false);
+              onSubmit();
+            }}
+          />
+        }
+        secondaryButton={
+          <Button
+            variant="secondary"
+            label="Annuler"
+            onClick={() => setShowConfirm(false)}
+          />
+        }
+      >
+        <p>
+          {isNew
+            ? "Voulez-vous créer cette déclaration ?"
+            : "Voulez-vous enregistrer les modifications de cette déclaration ?"}
+        </p>
+      </Modal>
     </SidePanel>
   );
 };
