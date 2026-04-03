@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Icon, RadioButton } from "@rte-ds/react";
 import type { OrgDirection, OrgTeam } from "@/api/teams";
 
@@ -9,6 +9,7 @@ interface OrgHierarchyListProps {
   selectedTeamId: string | null;
   onSelectTeam: (team: OrgTeam) => void;
   autoExpandAll?: boolean;
+  initialExpandedIds?: string[];
 }
 
 /** Bordered card row for a collapsible section (direction, MC, GMR) */
@@ -68,8 +69,21 @@ export function OrgHierarchyList({
   selectedTeamId,
   onSelectTeam,
   autoExpandAll,
+  initialExpandedIds = [],
 }: OrgHierarchyListProps) {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [expanded, setExpanded] = useState<Set<string>>(
+    () => new Set(initialExpandedIds),
+  );
+
+  useEffect(() => {
+    if (initialExpandedIds.length > 0) {
+      setExpanded((prev) => {
+        const next = new Set(prev);
+        initialExpandedIds.forEach((id) => next.add(id));
+        return next;
+      });
+    }
+  }, [initialExpandedIds]);
 
   const effectiveExpanded = useMemo(() => {
     if (autoExpandAll) {

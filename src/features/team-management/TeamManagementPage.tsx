@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Grid, Searchbar, useBreakpoint } from "@rte-ds/react";
 import PageTitle from "@/lib/ui/page-title";
 import { EmptyCard } from "@/lib/ui/empty-card";
@@ -12,20 +13,54 @@ import {
   type OrgTeam,
 } from "@/api/teams";
 
+function findTeamWithAncestors(
+  hierarchy: OrgDirection[],
+  teamId: string,
+): { team: OrgTeam; ancestorIds: string[] } | null {
+  for (const dir of hierarchy) {
+    for (const mc of dir.maintenanceCenters) {
+      for (const team of mc.teams || []) {
+        if (team.id === teamId) return { team, ancestorIds: [dir.id, mc.id] };
+      }
+      for (const gmr of mc.gmrs) {
+        for (const team of gmr.teams) {
+          if (team.id === teamId)
+            return { team, ancestorIds: [dir.id, mc.id, gmr.id] };
+        }
+      }
+    }
+  }
+  return null;
+}
+
 export default function TeamManagementPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const teamIdParam = searchParams.get("teamId");
+
   const [hierarchy, setHierarchy] = useState<OrgDirection[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeam, setSelectedTeam] = useState<OrgTeam | null>(null);
+  const [initialExpandedIds, setInitialExpandedIds] = useState<string[]>([]);
   const { isBelow } = useBreakpoint();
   const isMobile = isBelow("s");
 
   useEffect(() => {
     fetchOrgHierarchy()
-      .then(setHierarchy)
+      .then((data) => {
+        setHierarchy(data);
+        if (teamIdParam) {
+          const result = findTeamWithAncestors(data, teamIdParam);
+          if (result) {
+            setSelectedTeam(result.team);
+            setInitialExpandedIds(result.ancestorIds);
+          }
+        }
+      })
       .catch((err) => console.error("Failed to load hierarchy:", err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [teamIdParam]);
 
   // Filter hierarchy by search query
   const filteredHierarchy = useMemo(() => {
@@ -68,11 +103,13 @@ export default function TeamManagementPage() {
 
   const handleSelectTeam = useCallback((team: OrgTeam) => {
     setSelectedTeam(team);
-  }, []);
+    router.replace(`/admin/teams-admin?teamId=${team.id}`, { scroll: false });
+  }, [router]);
 
   const handleClosePanel = useCallback(() => {
     setSelectedTeam(null);
-  }, []);
+    router.replace("/admin/teams-admin", { scroll: false });
+  }, [router]);
 
   if (loading) {
     return (
@@ -109,6 +146,7 @@ export default function TeamManagementPage() {
                   selectedTeamId={selectedTeam?.id ?? null}
                   onSelectTeam={handleSelectTeam}
                   autoExpandAll={!!searchQuery}
+                  initialExpandedIds={initialExpandedIds}
                 />
               )}
             </div>
