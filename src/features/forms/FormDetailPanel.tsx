@@ -13,6 +13,7 @@ interface FormDetailPanelProps {
   open: boolean;
   onClose: () => void;
   onPublish: (formId: string) => Promise<void>;
+  onUnpublish: (formId: string) => Promise<void>;
 }
 
 export const FormDetailPanel = ({
@@ -20,6 +21,7 @@ export const FormDetailPanel = ({
   open,
   onClose,
   onPublish,
+  onUnpublish,
 }: FormDetailPanelProps) => {
   const router = useRouter();
   const [publishing, setPublishing] = useState(false);
@@ -34,6 +36,16 @@ export const FormDetailPanel = ({
     setPublishing(true);
     try {
       await onPublish(form.id);
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const handleUnpublish = async () => {
+    if (publishing) return;
+    setPublishing(true);
+    try {
+      await onUnpublish(form.id);
     } finally {
       setPublishing(false);
     }
@@ -89,6 +101,15 @@ export const FormDetailPanel = ({
                 size="m"
                 disabled={publishing}
                 onClick={handlePublish}
+              />
+            )}
+            {status === "published" && (
+              <Button
+                label={publishing ? "..." : "Dépublier"}
+                variant="primary"
+                size="m"
+                disabled={publishing}
+                onClick={handleUnpublish}
               />
             )}
           </div>

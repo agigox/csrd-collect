@@ -60,7 +60,7 @@ export function RolesTab({ user, onRoleChanged, readOnly }: RolesTabProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4 h-12 justify-center">
+    <div className="flex flex-col gap-4">
       {readOnly ? (
         <Chip
           id={`role-chip-${user.id}`}
@@ -85,6 +85,10 @@ export function RolesTab({ user, onRoleChanged, readOnly }: RolesTabProps) {
           backgroundColor="#e6f2a4"
         />
       )}
+      <Divider />
+      <span className="text-base">{user.nni ?? "-"}</span>
+      <Divider />
+      <span className="text-base">{user.email ?? "-"}</span>
       <Toast
         message={toast.message}
         type={toast.type}
@@ -96,7 +100,6 @@ export function RolesTab({ user, onRoleChanged, readOnly }: RolesTabProps) {
           setToast((prev) => (prev.open ? { ...prev, open: false } : prev))
         }
       />
-      <Divider />
     </div>
   );
 }

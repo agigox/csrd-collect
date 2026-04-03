@@ -91,6 +91,19 @@ export async function publishFormTemplate(id: string): Promise<FormTemplate> {
   return response.json() as Promise<FormTemplate>;
 }
 
+export async function unpublishFormTemplate(id: string): Promise<FormTemplate> {
+  const response = await fetch(`${API_BASE_URL}/form-templates/${id}/unpublish`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json() as Promise<FormTemplate>;
+}
+
 export async function deleteFormTemplate(id: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/form-templates/${id}`, {
     method: "DELETE",

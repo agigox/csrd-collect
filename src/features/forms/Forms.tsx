@@ -14,7 +14,7 @@ import LoadingState from "@/lib/ui/loading-state";
 
 export default function Forms() {
   const router = useRouter();
-  const { forms, loading, fetchForms, publishForm } = useFormsStore();
+  const { forms, loading, fetchForms, publishForm, unpublishForm } = useFormsStore();
   const { categoryCodes, fetchCategoryCodes } = useCategoryCodesStore();
   const {
     setFormName,
@@ -75,6 +75,13 @@ export default function Forms() {
     [publishForm],
   );
 
+  const handleUnpublish = useCallback(
+    async (formId: string) => {
+      await unpublishForm(formId);
+    },
+    [unpublishForm],
+  );
+
   const handleCreateValidate = useCallback(
     (data: {
       name: string;
@@ -125,6 +132,7 @@ export default function Forms() {
             open={!!selectedForm}
             onClose={handleClosePanel}
             onPublish={handlePublish}
+            onUnpublish={handleUnpublish}
           />
         </Grid.Col>
       </Grid>

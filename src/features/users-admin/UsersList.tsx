@@ -27,7 +27,7 @@ export function UsersList({
     <div className="flex flex-col gap-5 py-2.5 pl-4 h-full overflow-y-auto pr-1">
       <PageTitle title="Administration d'utilisateurs" />
 
-      <div className="[&_div]:!w-full">
+      <div className="[&_div]:w-full!">
         <Searchbar
           appearance="secondary"
           value={searchQuery}

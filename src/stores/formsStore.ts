@@ -9,6 +9,7 @@ import {
   createFormTemplate as createFormTemplateApi,
   deleteFormTemplate,
   publishFormTemplate,
+  unpublishFormTemplate,
 } from "@/api/forms";
 import { normalizeSchema } from "@/lib/utils/normalizeSchema";
 
@@ -31,6 +32,7 @@ interface FormsState {
   }) => Promise<FormTemplate>;
   deleteForm: (id: string) => Promise<void>;
   publishForm: (id: string) => Promise<void>;
+  unpublishForm: (id: string) => Promise<void>;
   fetchForms: () => Promise<void>;
 }
 
@@ -181,6 +183,26 @@ export const useFormsStore = create<FormsState>()(
           );
         } catch (err) {
           console.error("Erreur lors de la publication du formulaire:", err);
+          throw err;
+        }
+      },
+
+      unpublishForm: async (id: string) => {
+        try {
+          const raw = await unpublishFormTemplate(id);
+          const unpublished = { ...raw, schema: normalizeSchema(raw.schema as Record<string, unknown>) };
+
+          set(
+            (state) => ({
+              forms: state.forms.map((f) => (f.id === id ? unpublished : f)),
+              currentForm:
+                state.currentForm?.id === id ? unpublished : state.currentForm,
+            }),
+            false,
+            "FORMS/UNPUBLISH_FORM",
+          );
+        } catch (err) {
+          console.error("Erreur lors de la dépublication du formulaire:", err);
           throw err;
         }
       },

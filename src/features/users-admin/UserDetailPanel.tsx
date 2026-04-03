@@ -9,7 +9,7 @@ import { RolesTab } from "./tabs/RolesTab";
 import { TeamsTab } from "./tabs/TeamsTab";
 
 const TAB_OPTIONS = [
-  { id: "roles", panelId: "panel-roles", label: "Rôle" },
+  { id: "roles", panelId: "panel-roles", label: "Informations" },
   { id: "equipes", panelId: "panel-equipes", label: "Équipe(s)" },
 ];
 
@@ -118,18 +118,18 @@ export function UserDetailPanel({
               {isPending ? (
                 <>
                   <Button
+                    variant="danger-secondary"
+                    label="Rejeter"
+                    onClick={handleReject}
+                    disabled={actionLoading}
+                    size="m"
+                  />
+                  <Button
                     variant="primary"
                     label="Approuver"
                     onClick={handleApprove}
                     disabled={actionLoading}
-                    size="s"
-                  />
-                  <Button
-                    variant="danger"
-                    label="Rejeter"
-                    onClick={handleReject}
-                    disabled={actionLoading}
-                    size="s"
+                    size="m"
                   />
                 </>
               ) : (
@@ -196,14 +196,16 @@ export function UserDetailPanel({
         id="delete-user-confirm"
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
-        title="Supprimer l'utilisateur"
+        title="Suspendre l'utilisateur"
+        icon="user"
         size="s"
         primaryButton={
           <Button
             variant="danger"
-            label="Supprimer"
+            label="Suspendre"
             onClick={handleDelete}
             disabled={actionLoading}
+            icon="suspended"
           />
         }
         secondaryButton={
@@ -215,7 +217,7 @@ export function UserDetailPanel({
         }
       >
         <p>
-          Êtes-vous sûr de vouloir supprimer l&apos;utilisateur{" "}
+          Êtes-vous sûr de vouloir suspendre l&apos;utilisateur{" "}
           <strong>{fullName}</strong> ? Cette action est irréversible.
         </p>
       </Modal>
