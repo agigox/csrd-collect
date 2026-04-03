@@ -1,3 +1,4 @@
+"use client";
 import { Loader } from "@rte-ds/react";
 const LoadingState = ({ message }: { message: string }) => {
   return (

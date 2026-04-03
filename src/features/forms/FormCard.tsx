@@ -41,6 +41,7 @@ export const FormCard = ({
           label={chipConfig.label}
           clickable={undefined}
           size="s"
+          className="w-20"
           style={{
             background: chipConfig.backgroundColor,
             color: "var(--content-primary)",

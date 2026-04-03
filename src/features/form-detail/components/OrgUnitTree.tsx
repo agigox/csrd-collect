@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Searchbar, Icon, Loader } from "@rte-ds/react";
+import { Searchbar, Icon } from "@rte-ds/react";
 import LoadingState from "@/lib/ui/loading-state";
 import { EmptyCard } from "@/lib/ui/empty-card";
 
@@ -303,8 +303,8 @@ function TreeNodeRow({
             {node.name}
           </span>
 
-          {showSelection && (
-            isSingle ? (
+          {showSelection &&
+            (isSingle ? (
               <TreeRadio
                 checked={selectedLeafIds.has(node.id)}
                 onChange={() => onToggleSelection(node)}
@@ -315,8 +315,7 @@ function TreeNodeRow({
                 indeterminate={isIndeterminate}
                 onChange={() => onToggleSelection(node)}
               />
-            )
-          )}
+            ))}
         </div>
       </div>
 

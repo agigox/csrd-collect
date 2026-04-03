@@ -69,6 +69,13 @@ export default function FormCreation() {
     }
   }, [currentForm, initializeFromForm]);
 
+  // Redirect to /admin if user accesses /admin/new directly without the modal
+  useEffect(() => {
+    if (pathname === "/admin/new" && !formName.trim()) {
+      router.replace("/admin");
+    }
+  }, [pathname, formName, router]);
+
   const isEditMode = currentForm !== null;
 
   // Show leave confirm when sidebar navigation is intercepted
