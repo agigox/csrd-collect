@@ -2,7 +2,7 @@
 
 import type { TextFieldConfig } from "@/models/FieldTypes";
 import type { FieldProps, FieldRegistration } from "@/lib/types/field";
-import { TextInput } from "@rte-ds/react";
+import { Textarea, TextInput } from "@rte-ds/react";
 
 const TextField = ({
   config,
@@ -18,6 +18,25 @@ const TextField = ({
   const handleChange = (value: string) => {
     onChange(value);
   };
+
+  if (config.type === "textarea") {
+    return (
+      <div className="flex flex-col gap-1">
+        <Textarea
+          id={config.name}
+          name={config.name}
+          onChange={(e) => handleChange(e.target.value)}
+          value={currentValue}
+          readOnly={readOnly}
+          rows={4}
+          style={{ width: "100%" }}
+          label={config.label}
+          required={config.required}
+        />
+        {error && <span className="text-sm text-red-500">{error}</span>}
+      </div>
+    );
+  }
 
   return (
     <TextInput

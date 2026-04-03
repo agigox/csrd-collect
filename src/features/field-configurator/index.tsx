@@ -171,6 +171,7 @@ export const FieldConfigurator = ({
     const typeChangeProps = { onFieldTypeChange: handleFieldTypeChange, fieldIdentifier };
     switch (config.type) {
       case "text":
+      case "textarea":
         return (
           <TextConfigurator
             config={config}

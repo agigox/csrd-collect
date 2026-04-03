@@ -54,7 +54,7 @@ export interface NumberFieldConfig extends BaseFieldConfig {
 }
 
 export interface TextFieldConfig extends BaseFieldConfig {
-  type: "text";
+  type: "text" | "textarea";
 }
 
 export interface SwitchFieldConfig extends BaseFieldConfig {

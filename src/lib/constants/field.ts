@@ -1,5 +1,6 @@
 export const typeLabels: Record<string, string> = {
   text: "Champ libre",
+  textarea: "Champ libre",
   number: "Nombre",
   select: "Liste déroulante",
   radio: "Choix unique",
@@ -11,6 +12,7 @@ export const typeLabels: Record<string, string> = {
 
 export const typeIcons: Record<string, string> = {
   text: "chat",
+  textarea: "chat",
   number: "chat",
   select: "list-alt",
   radio: "check-circle",
