@@ -12,20 +12,31 @@ import {
 import type { FormTemplate } from "@/models/FormTemplate";
 import type { User } from "@/models/User";
 import { fetchAdminUsers } from "@/api/users";
-import { useAuthStore } from "@/stores/authStore";
 import {
-  getMockAdmins,
-  addMockAdmin,
-  removeMockAdmin,
-  updateMockAdminRole,
-  type MockAdmin,
-} from "../mockData";
+  fetchTemplateAdmins,
+  addTemplateAdmin,
+  removeTemplateAdmin,
+} from "@/api/forms";
+import { useAuthStore } from "@/stores/authStore";
 
 interface AdministrateursTabProps {
   form: FormTemplate;
 }
 
-function getRoleBadge(admin: MockAdmin) {
+interface AdminEntry {
+  id: string;
+  name: string;
+  role: string;
+}
+
+function userToDisplayName(user: { firstName?: string; lastName?: string; email?: string | null; nni?: string | null; id: string }): string {
+  if (user.firstName && user.lastName) {
+    return `${user.firstName} ${user.lastName}`;
+  }
+  return user.email ?? user.nni ?? user.id;
+}
+
+function getRoleBadge(admin: AdminEntry) {
   if (admin.role === "SUPER_ADMIN") {
     return {
       label: "Super admin",
@@ -40,26 +51,36 @@ function getRoleBadge(admin: MockAdmin) {
   };
 }
 
-function userToDisplayName(user: User): string {
-  if (user.firstName && user.lastName) {
-    return `${user.firstName} ${user.lastName}`;
-  }
-  return user.email ?? user.nni ?? user.id;
-}
-
 const MAX_DISPLAYED_OPTIONS = 5;
 
 export function AdministrateursTab({ form }: AdministrateursTabProps) {
-  const [admins, setAdmins] = useState<MockAdmin[]>(() =>
-    getMockAdmins(form.id),
-  );
+  const [admins, setAdmins] = useState<AdminEntry[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [searchValue, setSearchValue] = useState<string | undefined>("");
-  const [deleteTarget, setDeleteTarget] = useState<MockAdmin | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminEntry | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const currentUser = useAuthStore((s) => s.user);
   const isSuperAdmin = currentUser?.role === "SUPER_ADMIN";
 
+  // Load admins from backend
+  useEffect(() => {
+    setLoading(true);
+    fetchTemplateAdmins(form.id)
+      .then((users) => {
+        setAdmins(
+          users.map((u) => ({
+            id: u.id,
+            name: userToDisplayName(u),
+            role: u.role,
+          })),
+        );
+      })
+      .catch(() => setAdmins([]))
+      .finally(() => setLoading(false));
+  }, [form.id]);
+
+  // Load all admin/super_admin users for the search
   useEffect(() => {
     fetchAdminUsers()
       .then(setAllUsers)
@@ -74,25 +95,23 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
     return allUsers
       .filter((user) => !adminIds.has(user.id))
       .filter((user) => userToDisplayName(user).toLowerCase().includes(query))
-      .map((user) => userToDisplayName(user));
+      .map((user) => ({ id: user.id, name: userToDisplayName(user), role: user.role }));
   }, [searchValue, allUsers, adminIds]);
 
   const handleOptionSelect = useCallback(
-    (selectedName: string) => {
-      const user = allUsers.find((u) => userToDisplayName(u) === selectedName);
-      if (!user) return;
-
-      const newAdmin: MockAdmin = {
-        id: user.id,
-        name: userToDisplayName(user),
-        role: user.role === "SUPER_ADMIN" ? "SUPER_ADMIN" : "ADMIN",
-      };
-
-      const updated = addMockAdmin(form.id, newAdmin);
-      setAdmins(updated);
-      setSearchValue("");
+    async (selected: { id: string; name: string; role: string }) => {
+      try {
+        await addTemplateAdmin(form.id, selected.id);
+        setAdmins((prev) => [
+          ...prev,
+          { id: selected.id, name: selected.name, role: selected.role },
+        ]);
+        setSearchValue("");
+      } catch {
+        // silently fail
+      }
     },
-    [allUsers, form.id],
+    [form.id],
   );
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -114,27 +133,26 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const handleDeleteClick = useCallback((admin: MockAdmin) => {
+  const handleDeleteClick = useCallback((admin: AdminEntry) => {
     setDeleteTarget(admin);
   }, []);
 
-  const handleConfirmDelete = useCallback(() => {
+  const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
-    const updated = removeMockAdmin(form.id, deleteTarget.id);
-    setAdmins(updated);
+    try {
+      await removeTemplateAdmin(form.id, deleteTarget.id);
+      setAdmins((prev) => prev.filter((a) => a.id !== deleteTarget.id));
+    } catch {
+      // silently fail
+    }
     setDeleteTarget(null);
   }, [deleteTarget, form.id]);
 
-  const handleToggleRole = useCallback(
-    (admin: MockAdmin) => {
-      const newRole = admin.role === "SUPER_ADMIN" ? "ADMIN" : "SUPER_ADMIN";
-      const updated = updateMockAdminRole(form.id, admin.id, newRole);
-      setAdmins(updated);
-    },
-    [form.id],
-  );
+  const isOwnRow = (admin: AdminEntry) => admin.id === currentUser?.id;
 
-  const isOwnRow = (admin: MockAdmin) => admin.id === currentUser?.id;
+  if (loading) {
+    return <div className="text-sm text-content-secondary">Chargement...</div>;
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -146,7 +164,7 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
         {admins.map((admin) => {
           const badge = getRoleBadge(admin);
           const canRemove =
-            isSuperAdmin && !isOwnRow(admin) && admin.role !== "SUPER_ADMIN";
+            isSuperAdmin && !isOwnRow(admin);
 
           return (
             <div key={admin.id} className="flex flex-col">
@@ -201,14 +219,14 @@ export function AdministrateursTab({ form }: AdministrateursTabProps) {
         </div>
         {showDropdown && filteredOptions.length > 0 && (
           <div className="absolute left-0 right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
-            {filteredOptions.slice(0, MAX_DISPLAYED_OPTIONS).map((name) => (
+            {filteredOptions.slice(0, MAX_DISPLAYED_OPTIONS).map((opt) => (
               <button
-                key={name}
+                key={opt.id}
                 type="button"
                 className="flex items-center w-full px-3 py-2 text-left hover:bg-background-hover text-sm"
-                onClick={() => { handleOptionSelect(name); setShowDropdown(false); }}
+                onClick={() => { handleOptionSelect(opt); setShowDropdown(false); }}
               >
-                {name}
+                {opt.name}
               </button>
             ))}
           </div>
