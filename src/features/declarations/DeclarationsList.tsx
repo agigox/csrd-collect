@@ -168,6 +168,7 @@ const DeclarationsList = ({
                       authorName={declaration.authorName}
                       formName={declaration.formTemplate?.name || ""}
                       location={declaration.location}
+                      status={declaration.status}
                       onClick={() => onEditDeclaration?.(declaration)}
                       isSelected={declaration.id === selectedDeclarationId}
                       isNew={declaration.isNew}

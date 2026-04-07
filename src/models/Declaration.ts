@@ -21,7 +21,7 @@ export interface Declaration {
   authorId: string;
   authorName: string;
   teamId: string;
-  status: "draft" | "submitted" | "in_review" | "validated" | "rejected";
+  status: "draft" | "validated";
   completionStatus?: "incomplet" | "complet";
   formData: Record<string, unknown>;
   submittedBy: string;

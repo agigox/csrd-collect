@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { IconButton, Tab, Button, Modal, Toast } from "@rte-ds/react";
 import type { User } from "@/models/User";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore, selectIsAdmin } from "@/stores/authStore";
 import { suspendUser, approveUser, rejectUser } from "@/api/users";
 import { RolesTab } from "./tabs/RolesTab";
 import { TeamsTab } from "./tabs/TeamsTab";
@@ -38,6 +38,7 @@ export function UserDetailPanel({
     message: string;
   }>({ open: false, type: "success", message: "" });
   const currentUser = useAuthStore((s) => s.user);
+  const canManageUsers = useAuthStore(selectIsAdmin);
 
   // Reset to first tab when user changes
   if (user && prevUserId !== user.id) {
@@ -115,7 +116,7 @@ export function UserDetailPanel({
               {fullName}
             </h2>
             <div className="flex items-center gap-2">
-              {isPending ? (
+              {isPending && canManageUsers ? (
                 <>
                   <Button
                     variant="danger-secondary"
@@ -133,7 +134,7 @@ export function UserDetailPanel({
                   />
                 </>
               ) : (
-                !isSelf && (
+                !isSelf && canManageUsers && (
                   <IconButton
                     appearance="outlined"
                     aria-label="Supprimer l'utilisateur"

@@ -7,17 +7,24 @@ interface DeclarationCardProps {
   authorName: string;
   formName: string;
   location: string;
+  status?: "draft" | "validated";
   onClick?: () => void;
   isSelected?: boolean;
   isNew?: boolean;
   completionStatus?: "incomplet" | "complet";
 }
 
+const statusConfig = {
+  draft: { label: "Brouillon", bg: "#E6EEF8", color: "#225082" },
+  validated: { label: "Validée", bg: "#D4EDDA", color: "#155724" },
+};
+
 const DeclarationCard = ({
   createdAt,
   authorName,
   formName,
   location,
+  status,
   onClick,
   isSelected = false,
   isNew = false,
@@ -50,6 +57,21 @@ const DeclarationCard = ({
           </span>
         </div>
         <div className="flex items-center gap-2">
+          {status && statusConfig[status] && (
+            <span
+              style={{
+                backgroundColor: statusConfig[status].bg,
+                color: statusConfig[status].color,
+                borderRadius: "4px",
+                padding: "2px 8px",
+                fontSize: "12px",
+                fontWeight: 600,
+                lineHeight: "20px",
+              }}
+            >
+              {statusConfig[status].label}
+            </span>
+          )}
           {completionStatus !== "complet" && (
             <div
               style={{
