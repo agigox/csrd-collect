@@ -8,6 +8,40 @@ import OrgUnitTree, { type TreeNode, type SelectionMode, type LeafAncestors, fin
 import { useOrgUnitTree } from "../hooks/useOrgUnitTree";
 import { ScrollableContainer } from "@/lib/utils/ScrollableContainer";
 
+/**
+ * Build a simplified display path for a team, collapsing consecutive
+ * same-name ancestor levels (case-insensitive).
+ */
+function buildMergedPath(treeData: TreeNode[], teamId: string): string | null {
+  const ancestors = findLeafAncestors(treeData, teamId);
+  if (!ancestors) return null;
+
+  const findNodeName = (nodes: TreeNode[], id: string): string | null => {
+    for (const n of nodes) {
+      if (n.id === id) return n.name;
+      const found = findNodeName(n.children, id);
+      if (found) return found;
+    }
+    return null;
+  };
+
+  const parts: string[] = [];
+  const ids = [ancestors.directionId, ancestors.maintenanceCenterId];
+  if (ancestors.gmrId) ids.push(ancestors.gmrId);
+  ids.push(ancestors.teamId);
+
+  for (const id of ids) {
+    const name = findNodeName(treeData, id);
+    if (!name) continue;
+    // Collapse consecutive same-name levels
+    if (parts.length === 0 || parts[parts.length - 1].trim().toLowerCase() !== name.trim().toLowerCase()) {
+      parts.push(name);
+    }
+  }
+
+  return parts.length > 1 ? parts.slice(0, -1).join(" > ") : null;
+}
+
 interface AttribuerEquipesModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -157,12 +191,18 @@ export default function AttribuerEquipesModal({
             </div>
             <ScrollableContainer height="415px">
               <ul className="list-disc pl-5 text-sm text-[#3e3e3d] leading-8 h-full">
-                {pendingTeams.map((team, index) => (
-                  <li key={team.id} className="h-7">
-                    {team.name}
-                    {index < pendingTeams.length - 1 ? "," : ""}
-                  </li>
-                ))}
+                {pendingTeams.map((team, index) => {
+                  const path = buildMergedPath(treeData, team.id);
+                  return (
+                    <li key={team.id} className="h-7">
+                      {path && (
+                        <span className="text-[#737272]">{path} &gt; </span>
+                      )}
+                      {team.name}
+                      {index < pendingTeams.length - 1 ? "," : ""}
+                    </li>
+                  );
+                })}
               </ul>
             </ScrollableContainer>
           </div>

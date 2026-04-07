@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Searchbar, Icon } from "@rte-ds/react";
+import { useState, useEffect, useMemo } from "react";
+import { Searchbar, Icon, Tooltip } from "@rte-ds/react";
 import LoadingState from "@/lib/ui/loading-state";
 import { EmptyCard } from "@/lib/ui/empty-card";
+import {
+  buildMergedTree,
+  getMergedTooltipLabel,
+  type MergedTreeNode,
+} from "../utils/mergeTreeNodes";
 
 // --- Types ---
 
@@ -189,7 +194,7 @@ function TreeCheckbox({
 }
 
 interface TreeNodeListProps {
-  nodes: TreeNode[];
+  nodes: MergedTreeNode[];
   selectedLeafIds: Set<string>;
   expandedIds: Set<string>;
   onToggleExpanded: (nodeId: string) => void;
@@ -209,10 +214,10 @@ function TreeNodeList({
 }: TreeNodeListProps) {
   return (
     <div className="flex flex-col gap-1">
-      {nodes.map((node) => (
+      {nodes.map((mergedNode) => (
         <TreeNodeRow
-          key={node.id}
-          node={node}
+          key={mergedNode.effectiveNode.id}
+          mergedNode={mergedNode}
           selectedLeafIds={selectedLeafIds}
           expandedIds={expandedIds}
           onToggleExpanded={onToggleExpanded}
@@ -226,7 +231,7 @@ function TreeNodeList({
 }
 
 interface TreeNodeRowProps {
-  node: TreeNode;
+  mergedNode: MergedTreeNode;
   selectedLeafIds: Set<string>;
   expandedIds: Set<string>;
   onToggleExpanded: (nodeId: string) => void;
@@ -236,7 +241,7 @@ interface TreeNodeRowProps {
 }
 
 function TreeNodeRow({
-  node,
+  mergedNode,
   selectedLeafIds,
   expandedIds,
   onToggleExpanded,
@@ -244,46 +249,50 @@ function TreeNodeRow({
   onLoadChildren,
   selectionMode = "multiple",
 }: TreeNodeRowProps) {
-  const isExpanded = expandedIds.has(node.id);
-  const isLeaf = node.level === 3;
-  const isSingle = selectionMode === "single";
+  const { effectiveNode, displayLevel, displayName, chain } = mergedNode;
 
-  const leaves = getLeafDescendants(node);
+  // Chain-aware: expanded if ANY node in the chain was expanded
+  const isExpanded = chain.some((n) => expandedIds.has(n.id));
+  const isLeaf = effectiveNode.level === 3;
+  const isSingle = selectionMode === "single";
+  const isLoading = chain.some((n) => n.loading);
+
+  const leaves = getLeafDescendants(effectiveNode);
   const leafIds = leaves.map((l) => l.id);
   const allSelected =
     leafIds.length > 0 && leafIds.every((id) => selectedLeafIds.has(id));
   const someSelected = leafIds.some((id) => selectedLeafIds.has(id));
   const isIndeterminate = someSelected && !allSelected;
 
+  const tooltipLabel = getMergedTooltipLabel(mergedNode);
+
   const handleToggle = async () => {
     if (isLeaf) {
-      // In single mode, clicking the row also toggles selection for leaves
       if (isSingle) {
-        onToggleSelection(node);
+        onToggleSelection(effectiveNode);
       }
       return;
     }
 
     const willExpand = !isExpanded;
-    if (willExpand && !node.childrenLoaded && onLoadChildren) {
-      await onLoadChildren(node.id);
+    if (willExpand && !effectiveNode.childrenLoaded && onLoadChildren) {
+      await onLoadChildren(effectiveNode.id);
     }
-    onToggleExpanded(node.id);
+    onToggleExpanded(effectiveNode.id);
   };
 
-  // In single mode, only leaf nodes show a radio button (no parent selection)
   const showSelection = isSingle ? isLeaf : true;
 
   return (
     <>
-      <div style={{ paddingLeft: `${node.level * 20}px` }}>
+      <div style={{ paddingLeft: `${displayLevel * 20}px` }}>
         <div
-          className="flex items-center border border-[#a1a1a0] rounded px-2 py-1 cursor-pointer"
+          className="flex items-center justify-between border border-[#a1a1a0] rounded px-2 py-1 cursor-pointer"
           onClick={handleToggle}
         >
           {!isLeaf && (
             <div className="w-5 h-5 flex items-center justify-center shrink-0">
-              {node.loading ? (
+              {isLoading ? (
                 <div className="w-4 h-4 border-2 border-[#2964a0] border-t-transparent rounded-full animate-spin" />
               ) : (
                 <Icon
@@ -295,33 +304,36 @@ function TreeNodeRow({
               )}
             </div>
           )}
-
-          <span
-            className="flex-1 text-sm text-[#201f1f] truncate"
-            style={{ paddingLeft: "8px" }}
-          >
-            {node.name}
-          </span>
-
+          {tooltipLabel ? (
+            <Tooltip label={tooltipLabel} position="bottom" arrow>
+              <span className="flex-1 text-sm text-[#201f1f] truncate">
+                {displayName}
+              </span>
+            </Tooltip>
+          ) : (
+            <span className="flex-1 text-sm text-[#201f1f] truncate">
+              {displayName}
+            </span>
+          )}
           {showSelection &&
             (isSingle ? (
               <TreeRadio
-                checked={selectedLeafIds.has(node.id)}
-                onChange={() => onToggleSelection(node)}
+                checked={selectedLeafIds.has(effectiveNode.id)}
+                onChange={() => onToggleSelection(effectiveNode)}
               />
             ) : (
               <TreeCheckbox
                 checked={allSelected}
                 indeterminate={isIndeterminate}
-                onChange={() => onToggleSelection(node)}
+                onChange={() => onToggleSelection(effectiveNode)}
               />
             ))}
         </div>
       </div>
 
-      {!isLeaf && isExpanded && node.children.length > 0 && (
+      {!isLeaf && isExpanded && mergedNode.children.length > 0 && (
         <TreeNodeList
-          nodes={node.children}
+          nodes={mergedNode.children}
           selectedLeafIds={selectedLeafIds}
           expandedIds={expandedIds}
           onToggleExpanded={onToggleExpanded}
@@ -405,6 +417,7 @@ export default function OrgUnitTree({
       : expandedIds;
 
   const visibleTree = filterVisibleTree(treeData, searchQuery);
+  const mergedTree = useMemo(() => buildMergedTree(visibleTree), [visibleTree]);
 
   if (loading) {
     return (
@@ -430,7 +443,7 @@ export default function OrgUnitTree({
           <EmptyCard message="Aucune équipe disponible" />
         ) : (
           <TreeNodeList
-            nodes={visibleTree}
+            nodes={mergedTree}
             selectedLeafIds={selectedLeafIds}
             expandedIds={effectiveExpandedIds}
             onToggleExpanded={toggleExpanded}
