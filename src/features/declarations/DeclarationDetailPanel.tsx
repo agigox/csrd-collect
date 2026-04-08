@@ -19,6 +19,7 @@ interface DeclarationDetailPanelProps {
   onFormValuesChange: (values: Record<string, unknown>) => void;
   isFormValid: boolean;
   onSubmit: () => void;
+  onPublish?: () => void;
   showHistory: boolean;
   onToggleHistory: (show: boolean) => void;
   completionStatus: "incomplet" | "complet";
@@ -34,13 +35,16 @@ export const DeclarationDetailPanel = ({
   formErrors,
   onFormValuesChange,
   onSubmit,
+  onPublish,
   showHistory,
   onToggleHistory,
   completionStatus,
   onCompletionStatusChange,
 }: DeclarationDetailPanelProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showPublishConfirm, setShowPublishConfirm] = useState(false);
   const isNew = declaration?.isNew ?? false;
+  const canPublish = !isNew && declaration?.status === "draft" && onPublish;
 
   if (!declaration && !selectedForm) return null;
   return (
@@ -148,12 +152,20 @@ export const DeclarationDetailPanel = ({
           onClick={onClose}
         />
         <Button
-          label="Soumettre"
+          label="Enregistrer"
           variant="primary"
           size="m"
           onClick={() => setShowConfirm(true)}
           disabled={Object.keys(formErrors).length > 0}
         />
+        {canPublish && (
+          <Button
+            label="Publier"
+            variant="primary"
+            size="m"
+            onClick={() => setShowPublishConfirm(true)}
+          />
+        )}
       </div>
 
       <Modal
@@ -184,6 +196,36 @@ export const DeclarationDetailPanel = ({
           {isNew
             ? "Voulez-vous créer cette déclaration ?"
             : "Voulez-vous enregistrer les modifications de cette déclaration ?"}
+        </p>
+      </Modal>
+
+      <Modal
+        id="confirm-publish-declaration"
+        isOpen={showPublishConfirm}
+        onClose={() => setShowPublishConfirm(false)}
+        title="Publier la déclaration"
+        size="s"
+        primaryButton={
+          <Button
+            variant="primary"
+            label="Publier"
+            onClick={() => {
+              setShowPublishConfirm(false);
+              onPublish?.();
+            }}
+          />
+        }
+        secondaryButton={
+          <Button
+            variant="secondary"
+            label="Annuler"
+            onClick={() => setShowPublishConfirm(false)}
+          />
+        }
+      >
+        <p>
+          Voulez-vous publier cette déclaration ? Une fois publiée, elle passera
+          en statut validé.
         </p>
       </Modal>
     </SidePanel>

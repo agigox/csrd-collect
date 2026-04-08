@@ -438,7 +438,30 @@ const Declarations = () => {
       alert(
         err instanceof Error
           ? err.message
-          : "Erreur lors de la soumission de la déclaration",
+          : "Erreur lors de l'enregistrement de la déclaration",
+      );
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!finalSelectedDeclaration || finalSelectedDeclaration.isNew) return;
+
+    try {
+      const { publishDeclaration } = await import("@/api/declarations");
+      await publishDeclaration(finalSelectedDeclaration.id);
+
+      setShowSuccessToast(true);
+
+      // Invalidate store to refetch
+      useDeclarationsStore.setState({ hasFetched: false });
+      await useDeclarationsStore.getState().fetchDeclarations();
+
+      setTimeout(() => router.push("/declarations"), 1500);
+    } catch (err) {
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la publication de la déclaration",
       );
     }
   };
@@ -469,6 +492,7 @@ const Declarations = () => {
               onFormValuesChange={handleFormValuesChange}
               isFormValid={isFormValid}
               onSubmit={handleSubmit}
+              onPublish={handlePublish}
               showHistory={showHistory}
               onToggleHistory={setShowHistory}
               completionStatus={completionStatus}
@@ -492,7 +516,7 @@ const Declarations = () => {
       />
 
       <Toast
-        message="Déclaration soumise avec succès"
+        message="Déclaration enregistrée avec succès"
         type="success"
         isOpen={showSuccessToast}
         onClose={() => setShowSuccessToast(false)}

@@ -24,7 +24,7 @@ export async function updateDeclaration(
     body: JSON.stringify({
       formData: declaration.formData,
       location: declaration.location,
-      // TODO: send completionStatus once backend supports it
+      completionStatus: declaration.completionStatus,
     }),
   });
 
@@ -35,14 +35,11 @@ export async function updateDeclaration(
   return response.json() as Promise<Declaration>;
 }
 
-export async function submitDeclaration(
-  id: string,
-  submitterId: string,
-): Promise<Declaration> {
-  const response = await fetch(`${API_BASE_URL}/declarations/${id}/submit`, {
+
+export async function publishDeclaration(id: string): Promise<Declaration> {
+  const response = await fetch(`${API_BASE_URL}/declarations/${id}/publish`, {
     method: "POST",
     headers: authHeaders(),
-    body: JSON.stringify({ submitterId }),
   });
 
   if (!response.ok) {
@@ -59,7 +56,7 @@ export async function createDeclaration(
     formTemplateId: declaration.formTemplateId,
     formData: declaration.formData,
     location: declaration.location,
-    // TODO: send completionStatus once backend supports it
+    completionStatus: declaration.completionStatus,
   };
 
   if (declaration.teamId) {

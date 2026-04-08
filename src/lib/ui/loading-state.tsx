@@ -1,18 +1,12 @@
 "use client";
-import { Loader } from "@rte-ds/react";
 const LoadingState = ({ message }: { message: string }) => {
   return (
     <div
-      className="flex items-center justify-center"
+      className="flex flex-col items-center justify-center gap-3"
       style={{ height: "100%" }}
     >
-      <Loader
-        appearance="brand"
-        label={message}
-        labelPosition="under"
-        showLabel
-        size="large"
-      />
+      <div className="w-8 h-8 border-3 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
+      <span className="text-sm text-content-secondary">{message}</span>
     </div>
   );
 };

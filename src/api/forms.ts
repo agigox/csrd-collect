@@ -195,3 +195,60 @@ export async function removeTemplateFromTeam(
     throw new Error(`Erreur HTTP: ${response.status}`);
   }
 }
+
+// Form template admin assignments
+
+export async function fetchTemplateAdmins(
+  templateId: string,
+): Promise<
+  Array<{
+    id: string;
+    email: string | null;
+    firstName: string;
+    lastName: string;
+    role: string;
+  }>
+> {
+  const response = await fetch(
+    `${API_BASE_URL}/form-template-admins/${templateId}`,
+    { headers: authHeaders() },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function addTemplateAdmin(
+  templateId: string,
+  userId: string,
+): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/form-template-admins/${templateId}`,
+    {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ userId }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+}
+
+export async function removeTemplateAdmin(
+  templateId: string,
+  userId: string,
+): Promise<void> {
+  const response = await fetch(
+    `${API_BASE_URL}/form-template-admins/${templateId}/${userId}`,
+    { method: "DELETE", headers: authHeaders() },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+}
