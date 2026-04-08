@@ -23,12 +23,10 @@ export default function Forms() {
     setFormVisibilityLevel,
   } = useFormEditorStore();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { isBelow } = useBreakpoint();
   const isMobile = isBelow("s");
 
-  // Derive selectedForm from forms array - automatically stays in sync
   const selectedForm = useMemo(
     () =>
       selectedFormId
@@ -41,24 +39,6 @@ export default function Forms() {
     fetchForms();
     fetchCategoryCodes();
   }, [fetchForms, fetchCategoryCodes]);
-
-  // Filter forms by search query (case-insensitive on form.name)
-  const filteredForms = useMemo(() => {
-    if (!searchQuery.trim()) return forms;
-    const query = searchQuery.toLowerCase().trim();
-    return forms.filter((f) => f.name.toLowerCase().includes(query));
-  }, [forms, searchQuery]);
-
-  // Group filtered forms by categoryCode
-  const groupedForms = useMemo(() => {
-    const groups: Record<string, FormTemplate[]> = {};
-    for (const form of filteredForms) {
-      const key = form.categoryCode || "other";
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(form);
-    }
-    return groups;
-  }, [filteredForms]);
 
   const handleSelectForm = useCallback((form: FormTemplate) => {
     setSelectedFormId(form.id);
@@ -113,15 +93,12 @@ export default function Forms() {
     <div className="max-w-480 mx-auto h-full">
       <Grid gridType="fluid" className="h-full">
         {!(isMobile && selectedForm) && (
-          <Grid.Col xxs={2} xs={6} s={3} m={5}>
+          <Grid.Col xxs={2} xs={6} s={3} m={5} className="overflow-hidden">
             <FormsList
-              forms={filteredForms}
-              groupedForms={groupedForms}
+              forms={forms}
               categoryCodes={categoryCodes}
               selectedFormId={selectedForm?.id ?? null}
               onSelectForm={handleSelectForm}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
               onCreateForm={() => setIsCreateModalOpen(true)}
             />
           </Grid.Col>

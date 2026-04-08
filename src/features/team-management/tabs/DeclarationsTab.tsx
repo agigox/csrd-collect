@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Button, Divider, Icon, Modal, Searchbar } from "@rte-ds/react";
+import { useState, useEffect, useCallback } from "react";
+import { Button, Checkbox, Divider, Icon, Modal } from "@rte-ds/react";
 import { fetchTeamTemplates } from "@/api/teams";
 import {
   fetchFormTemplates,
@@ -9,6 +9,9 @@ import {
   removeTemplateFromTeam,
 } from "@/api/forms";
 import { fetchCategoryCodes } from "@/api/categoryCodes";
+import { FormsListView } from "@/components/FormsListView";
+import { FormCard } from "@/features/forms/FormCard";
+import { getFormStatus } from "@/features/forms/statusConfig";
 import type { FormTemplate } from "@/models/FormTemplate";
 import type { CategoryCode } from "@/models/CategoryCode";
 
@@ -31,8 +34,6 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
   const [allTemplates, setAllTemplates] = useState<FormTemplate[]>([]);
   const [categoryCodes, setCategoryCodes] = useState<CategoryCode[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState("Tous");
   const [error, setError] = useState<string | null>(null);
 
   const loadTemplates = useCallback(() => {
@@ -56,8 +57,6 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
       setAllTemplates(all);
       setCategoryCodes(cats);
       setSelectedIds(new Set(templates.map((t) => t.id)));
-      setSearchQuery("");
-      setActiveFilter("Tous");
       setError(null);
     } catch {
       setAllTemplates([]);
@@ -99,28 +98,6 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
       return next;
     });
   };
-
-  // Filter templates by search + category (memoized)
-  const filteredTemplates = useMemo(() => {
-    return allTemplates.filter((t) => {
-      const matchesSearch =
-        !searchQuery.trim() ||
-        t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.code.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory =
-        activeFilter === "Tous" ||
-        categoryCodes.some(
-          (c) => c.label === activeFilter && c.value === t.categoryCode,
-        );
-      return matchesSearch && matchesCategory;
-    });
-  }, [allTemplates, searchQuery, activeFilter, categoryCodes]);
-
-  // Build filter tabs: "Tous" + each category label
-  const filterTabs = useMemo(
-    () => ["Tous", ...categoryCodes.map((c) => c.label)],
-    [categoryCodes],
-  );
 
   if (loading) {
     return <p className="text-sm text-muted-foreground py-4">Chargement...</p>;
@@ -203,40 +180,7 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
           />
         }
       >
-        <div className="flex flex-col gap-4" style={{ height: "475px" }}>
-          <Searchbar
-            appearance="secondary"
-            value={searchQuery}
-            onChange={(val) => setSearchQuery(val ?? "")}
-            onClear={() => setSearchQuery("")}
-            fullWidth
-            label="Rechercher"
-          />
-
-          {/* Category filter tabs */}
-          <div className="flex items-center">
-            <div className="flex items-center bg-background-brand-default rounded-[22px] p-[3px]">
-              {filterTabs.map((tab) => {
-                const isActive = activeFilter === tab;
-                return (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => setActiveFilter(tab)}
-                    className={`px-3.5 py-1.5 rounded-[20px] border-none text-[13px] font-medium cursor-pointer flex items-center gap-[5px] whitespace-nowrap transition-colors duration-150 ${
-                      isActive
-                        ? "bg-white text-content-secondary"
-                        : "bg-transparent text-white"
-                    }`}
-                  >
-                    {isActive && <Icon name="check" size={13} />}
-                    {tab}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
+        <div className="flex flex-col gap-3 w-full" style={{ height: "475px" }}>
           {/* Error message */}
           {error && (
             <div className="px-3 py-2 rounded-lg bg-background-danger-default/10 text-content-danger-default text-sm">
@@ -244,65 +188,51 @@ export function DeclarationsTab({ teamId }: DeclarationsTabProps) {
             </div>
           )}
 
-          {/* Template list */}
-          <div className="flex-1 overflow-y-auto">
-            {filteredTemplates.length === 0 ? (
-              <p className="text-sm text-content-tertiary py-5">
-                Aucun formulaire trouvé
-              </p>
-            ) : (
-              <div className="flex flex-col gap-2.5">
-                {filteredTemplates.map((t) => {
-                  const isSelected = selectedIds.has(t.id);
-                  return (
-                    <div
-                      key={t.id}
-                      onClick={() => toggleTemplate(t.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          toggleTemplate(t.id);
-                        }
-                      }}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={0}
-                      className="flex items-center gap-3 cursor-pointer"
-                    >
-                      <div
-                        className={`w-[22px] h-[22px] rounded flex items-center justify-center shrink-0 ${
-                          isSelected
-                            ? "bg-background-brand-default"
-                            : "border-2 border-border-secondary bg-white"
-                        }`}
-                      >
-                        {isSelected && (
-                          <Icon name="check" size={14} className="text-white" />
-                        )}
-                      </div>
-
-                      <div className="flex-1 flex items-center rounded-lg bg-white border-t border-border-divider shadow-[0_1px_4px_rgba(0,0,0,0.10)] overflow-hidden min-h-[60px]">
-                        <div className="flex flex-col justify-center gap-[3px] px-4 py-3 min-w-[220px]">
-                          <span className="text-base font-semibold text-content-primary">
-                            {t.name}
-                          </span>
-                          <span className="text-xs text-content-tertiary">
-                            {t.code}
-                          </span>
-                        </div>
-                        <div className="w-px self-stretch my-2 bg-border-divider" />
-                        <div className="flex-1 flex items-center px-4 py-3">
-                          <span className="text-[13px] text-content-secondary leading-[1.4]">
-                            {t.description || "NA"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          <FormsListView
+            forms={allTemplates}
+            categoryCodes={categoryCodes}
+            className="flex-1 overflow-y-auto"
+            renderItem={(form) => {
+              const isSelected = selectedIds.has(form.id);
+              const status = getFormStatus(form);
+              const isDisabled = status === "deleted";
+              return (
+                <div
+                  key={form.id}
+                  onKeyDown={(e) => {
+                    if (!isDisabled && (e.key === "Enter" || e.key === " ")) {
+                      e.preventDefault();
+                      toggleTemplate(form.id);
+                    }
+                  }}
+                  role="checkbox"
+                  aria-checked={isSelected}
+                  aria-disabled={isDisabled}
+                  tabIndex={0}
+                  className={`flex items-center gap-2.5 ${isDisabled ? "opacity-70" : "cursor-pointer"}`}
+                >
+                  {/* Stop propagation so checkbox onChange + parent onClick don't double-toggle */}
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      id={`template-${form.id}`}
+                      checked={isSelected}
+                      onChange={() => toggleTemplate(form.id)}
+                      label=""
+                      showLabel={false}
+                      disabled={isDisabled}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <FormCard
+                      title={form.name}
+                      status={status}
+                      onClick={() => !isDisabled && toggleTemplate(form.id)}
+                    />
+                  </div>
+                </div>
+              );
+            }}
+          />
         </div>
       </Modal>
     </div>

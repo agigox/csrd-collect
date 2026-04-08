@@ -39,11 +39,11 @@ importers:
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@rte-ds/core':
-        specifier: ^1.3.21
-        version: 1.3.21(sass@1.97.3)
+        specifier: ^1.3.22
+        version: 1.3.22(sass@1.97.3)
       '@rte-ds/react':
-        specifier: ^1.3.24
-        version: 1.3.24(react@19.2.3)
+        specifier: ^1.3.25
+        version: 1.3.25(react@19.2.3)
       axios:
         specifier: ^1.13.2
         version: 1.13.4
@@ -1248,13 +1248,13 @@ packages:
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
 
-  '@rte-ds/core@1.3.21':
-    resolution: {integrity: sha512-gyQEFr05TbG6MeRaUhGbM5RoZyhYb/uKWNYuajJ/RHVqCO+F3xmBS9BWZCpIKkqwWT7BrO9mQByHk1xpkw2Jsw==}
+  '@rte-ds/core@1.3.22':
+    resolution: {integrity: sha512-oD1hWB/8omWQQyljZS7qlXu2Vqyyai369ZxItkAsblORi039f78N0tzL6u63z6zDCk/gHO0XET3bPXvifM8h5Q==}
     peerDependencies:
       sass: ^1.85.1
 
-  '@rte-ds/react@1.3.24':
-    resolution: {integrity: sha512-yWPlyl82ABPH31jd8HYWXLXVNaXmChJmCc+u3tp6enz4aU3MiSrUlh5vuvrNoFc95ZotHHZXaKF68pVK75aFDw==}
+  '@rte-ds/react@1.3.25':
+    resolution: {integrity: sha512-rJCO2pTFl0e0uZGfB19rPThd3hQad0g8G4n95MPcRhK6lev0H7NS5evFZOMCMD+zNTCKRy6ICeZIEsB9czdPMw==}
     peerDependencies:
       react: '>=18.0.0'
 
@@ -5167,13 +5167,13 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
-  '@rte-ds/core@1.3.21(sass@1.97.3)':
+  '@rte-ds/core@1.3.22(sass@1.97.3)':
     dependencies:
       sass: 1.97.3
 
-  '@rte-ds/react@1.3.24(react@19.2.3)':
+  '@rte-ds/react@1.3.25(react@19.2.3)':
     dependencies:
-      '@rte-ds/core': 1.3.21(sass@1.97.3)
+      '@rte-ds/core': 1.3.22(sass@1.97.3)
       clsx: 2.1.1
       react: 19.2.3
       sass: 1.97.3
